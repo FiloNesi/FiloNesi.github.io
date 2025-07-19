@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Lucida Grande'}
+    span.s2 {font: 12.0px 'Apple Color Emoji'}
+    span.s3 {font: 12.0px 'PingFang SC'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="es"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Generador de Guion Filosófico: Popper vs. Kuhn&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Chosen Palette: Warm Neutrals (Stone, Amber, with a Teal accent) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Application Structure Plan: The SPA is designed as an interactive, multi-section tool to guide students. It starts with an introduction and character cards for context, moves to an interactive section for setting up the scene (title, location, and a dynamic pseudoscience selector), then provides a core script-building area using an accordion for Inicio, Desarrollo, and Cierre, enhanced with "idea spark" buttons. Finally, it allows format selection (Theatre/Comic) and generates a consolidated, copy-able script. This structure was chosen to transform a passive template into an active creative assistant, making the learning process more engaging and directly supporting the student's writing task. --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Visualization &amp; Content Choices:<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>- Report Info: Popper/Kuhn's core ideas. -&gt; Goal: Inform. -&gt; Presentation: Info Cards (HTML/Tailwind). -&gt; Interaction: Static display for quick reference. -&gt; Justification: Clearly separates and summarizes key concepts for students.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>- Report Info: Pseudoscience examples. -&gt; Goal: Spark conflict. -&gt; Presentation: Interactive Button Selector. -&gt; Interaction: Click a button to get a conflict-starting prompt. -&gt; Justification: More engaging than a static list and actively helps initiate the dialogue.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>- Report Info: Dialogue structure. -&gt; Goal: Guide writing. -&gt; Presentation: Accordion with text areas. -&gt; Interaction: "Idea Spark" buttons inject sample sentences into the text areas. -&gt; Justification: Directly aids students in applying complex philosophical ideas, preventing writer's block.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>- Report Info: Formatting rules. -&gt; Goal: Format output. -&gt; Presentation: Toggle switch. -&gt; Interaction: Show/hide relevant formatting guides. -&gt; Justification: Simplifies the UI by only showing relevant information.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>- Library/Method: Vanilla JavaScript for all interactions.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.prose-area {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.accordion-content {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-height: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: max-height 0.5s ease-in-out;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.idea-spark-btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.idea-spark-btn:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-2px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-stone-100 text-stone-800"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;main class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;header class="text-center mb-10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-3xl sm:text-4xl font-bold text-teal-800 mb-2"&gt;Generador de Guion Filosófico&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-lg text-stone-600"&gt;Popper vs. Kuhn: La Cena de Filósofos&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECCIÓN 1: INTRODUCCIÓN Y PERSONAJES --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="intro" class="mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">             </span>&lt;div class="prose-area mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-teal-700 mb-4 border-b pb-2"&gt;Bienvenido/a&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-stone-700"&gt;Esta es una herramienta interactiva para ayudarte a crear un guion teatral o una escena de cómic basada en la sesión de aprendizaje "La Cena Imaginaria". El objetivo es que explores las ideas de Karl Popper y Thomas Kuhn de forma creativa. Sigue los pasos, completa los campos y utiliza los "disparadores de ideas" si necesitas inspiración.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid md:grid-cols-2 gap-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-2xl font-bold mb-3 text-stone-800"&gt;Karl Popper&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-stone-600"&gt;Un filósofo crítico y racionalista. Para él, lo que hace que una teoría sea científica es que pueda ser &lt;span class="font-semibold text-teal-700"&gt;falsada&lt;/span&gt;, es decir, que podamos imaginar un experimento que la refute. La ciencia avanza a través de "conjeturas y refutaciones", derribando ideas antiguas para proponer otras mejores.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 class="text-2xl font-bold mb-3 text-stone-800"&gt;Thomas Kuhn&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-stone-600"&gt;Un historiador y filósofo de la ciencia. Sostiene que la ciencia opera dentro de &lt;span class="font-semibold text-orange-700"&gt;paradigmas&lt;/span&gt;: marcos de ideas aceptados por la comunidad científica. La "ciencia normal" resuelve problemas dentro del paradigma, pero las crisis pueden llevar a &lt;span class="font-semibold text-orange-700"&gt;revoluciones científicas&lt;/span&gt; que lo cambian todo.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECCIÓN 2: EL ESCENARIO DEL DEBATE --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="escenario" class="mb-12 prose-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2"&gt;1. Prepara la Escena&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid md:grid-cols-2 gap-6 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="titulo" class="block text-sm font-medium text-stone-700 mb-1"&gt;Título de la Obra/Escena&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="titulo" class="w-full p-2 border border-stone-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Ej: Duelo de Gigantes en la Mesa"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="lugar" class="block text-sm font-medium text-stone-700 mb-1"&gt;Lugar y Atmósfera&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="lugar" class="w-full p-2 border border-stone-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Ej: Una cena informal, ambiente tenso"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label class="block text-sm font-medium text-stone-700 mb-2"&gt;Elige el Elemento de Tensión (una pseudociencia)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex flex-wrap gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Astrología"&gt;Astrología&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Homeopatía"&gt;Homeopatía&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Ufología"&gt;Ufología&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Grafología"&gt;Grafología&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="provocacion" class="mt-4 p-4 bg-stone-50 rounded-lg border border-stone-200 text-stone-600 min-h-[50px]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>Selecciona una pseudociencia para ver una posible chispa que inicie la conversación...</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECCIÓN 3: ESTRUCTURA TU GUION --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="guion" class="mb-12 prose-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">             </span>&lt;h2 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2"&gt;2. Escribe el Diálogo&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">             </span>&lt;div id="accordion-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Inicio --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="accordion-item border-b border-stone-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;a) Inicio&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;<span class="s1">▼</span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="accordion-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="p-4 bg-stone-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-stone-600 mb-2"&gt;¿Cómo se encuentran? ¿Cómo comienza la conversación? Introduce una idea inicial de cada autor.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;textarea id="texto-inicio" rows="6" class="w-full p-2 border border-stone-300 rounded-md" placeholder="POPPER: Thomas, me sorprende verte aquí. Pensaba que solo acudías a eventos donde las conclusiones ya están dadas por el paradigma dominante..."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Desarrollo --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="accordion-item border-b border-stone-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;b) Desarrollo y Tensión&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;<span class="s1">▼</span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="accordion-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="p-4 bg-stone-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-stone-600 mb-4"&gt;Introduce la pseudociencia. Desarrolla los argumentos de cada filósofo. ¡Aquí ocurre el choque de ideas! Usa los disparadores si necesitas ayuda.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label class="font-semibold text-stone-700"&gt;Argumentos de Popper:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;textarea id="texto-popper" rows="4" class="w-full p-2 border border-stone-300 rounded-md mt-1 mb-2" placeholder="Desarrolla el argumento de Popper..."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="idea-spark-btn text-sm bg-teal-100 text-teal-800 py-1 px-3 rounded-full mb-4" data-target="texto-popper" data-idea="¡Pero eso es irrelevante! Si una afirmación no puede ser falsada, no es ciencia, sin importar cuánta gente crea en ella. Es un dogma."&gt;<span class="s2">💡</span> Disparador de idea Popper&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label class="font-semibold text-stone-700"&gt;Argumentos de Kuhn:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;textarea id="texto-kuhn" rows="4" class="w-full p-2 border border-stone-300 rounded-md mt-1 mb-2" placeholder="Desarrolla el argumento de Kuhn..."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="idea-spark-btn text-sm bg-orange-100 text-orange-800 py-1 px-3 rounded-full mb-4" data-target="texto-kuhn" data-idea="Karl, te obsesionas con la lógica de la refutación, pero ignoras la sociología de la ciencia. Quizás la astrología fue una 'ciencia normal' en su propio paradigma."&gt;<span class="s2">💡</span> Disparador de idea Kuhn&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;!-- Cierre --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div class="accordion-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;c) Cierre (posible)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;<span class="s1">▼</span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div class="accordion-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="p-4 bg-stone-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;p class="text-sm text-stone-600 mb-2"&gt;¿Llegan a un acuerdo o no? Escribe una conclusión para la escena, aunque sea un desacuerdo respetuoso.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;textarea id="texto-cierre" rows="4" class="w-full p-2 border border-stone-300 rounded-md" placeholder="KUHN: (Suspira) Supongo que nunca estaremos de acuerdo. Tú buscas una verdad universal y yo analizo cómo la verdad se construye en la historia."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECCIÓN 4: FORMATO Y EXPORTACIÓN --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="formato" class="mb-12 prose-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2"&gt;3. Da Formato y Genera tu Guion&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">             </span>&lt;div class="flex items-center justify-center gap-4 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="font-semibold"&gt;Teatro&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label class="relative inline-flex items-center cursor-pointer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="checkbox" id="format-toggle" class="sr-only peer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="font-semibold"&gt;Cómic&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="teatro-guide"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h4 class="font-bold text-stone-700"&gt;Guía para Guion Teatral:&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;ul class="list-disc list-inside text-sm text-stone-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;span class="font-semibold"&gt;Acotaciones:&lt;/span&gt; Usa paréntesis para describir acciones, gestos o tono. Ej: (Con una sonrisa irónica).&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;span class="font-semibold"&gt;Diálogo:&lt;/span&gt; Escribe el nombre del personaje en mayúsculas seguido de dos puntos.&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="comic-guide" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;h4 class="font-bold text-stone-700"&gt;Guía para Guion de Cómic:&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;ul class="list-disc list-inside text-sm text-stone-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;span class="font-semibold"&gt;Descripción de viñetas:&lt;/span&gt; Describe qué se ve en cada cuadro. Ej: VIÑETA 1: Popper y Kuhn sentados en una mesa.&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;span class="font-semibold"&gt;Bocadillos:&lt;/span&gt; Indica quién habla y qué dice.&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="text-center mt-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button id="generate-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg hover:shadow-xl transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>Generar Guion Completo</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECCIÓN 5: RESULTADO FINAL --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="resultado" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="prose-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-teal-700 mb-4 border-b pb-2"&gt;Tu Guion&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-sm text-stone-600 mb-4"&gt;¡Aquí está tu obra maestra! Puedes copiar el texto y pegarlo en tu editor de texto preferido.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="final-script" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-md whitespace-pre-wrap font-mono text-sm min-h-[200px]"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="text-center mt-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button id="copy-btn" class="bg-stone-500 hover:bg-stone-600 text-white font-bold py-2 px-4 rounded-md"&gt;Copiar al portapapeles&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p id="copy-feedback" class="text-sm text-teal-600 mt-2 h-4"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;footer class="text-center mt-12 text-sm text-stone-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Herramienta de aprendizaje basada en la propuesta de la sesión "La Cena Imaginaria".&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/footer&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/main&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const provocaciones = {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>'Astrología': 'Alguien en la cena comenta casualmente: "Soy Leo, por eso soy tan líder". Popper reacciona al instante...',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>'Homeopatía': 'Uno de los comensales pide un remedio homeopático en lugar de un analgésico, afirmando que "lo natural cura mejor".',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>'Ufología': 'La conversación deriva hacia los avistamientos de OVNIs. Alguien defiende que son visitas extraterrestres y que "hay pruebas que el gobierno oculta".',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>'Grafología': 'Un invitado se ofrece a analizar la personalidad de los demás a través de su firma, asegurando que es una ciencia precisa.'</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const pseudocienceBtns = document.querySelectorAll('.pseudoscience-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const provocacionDiv = document.getElementById('provocacion');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>pseudocienceBtns.forEach(btn =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const name = btn.dataset.name;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>provocacionDiv.textContent = provocaciones[name] || 'Selecciona una pseudociencia...';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>pseudocienceBtns.forEach(b =&gt; b.classList.remove('ring-2', 'ring-offset-2', 'ring-teal-500'));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>btn.classList.add('ring-2', 'ring-offset-2', 'ring-teal-500');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const accordionHeaders = document.querySelectorAll('.accordion-header');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>accordionHeaders.forEach(header =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>header.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const content = header.nextElementSibling;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const isOpen = content.style.maxHeight;</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Close all others</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.querySelectorAll('.accordion-content').forEach(c =&gt; c.style.maxHeight = null);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.querySelectorAll('.accordion-header span:last-child').forEach(arrow =&gt; arrow.textContent = '<span class="s1">▼</span>');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (!isOpen) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>content.style.maxHeight = content.scrollHeight + "px";</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>header.querySelector('span:last-child').textContent = '<span class="s3">▲</span>';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const ideaSparkBtns = document.querySelectorAll('.idea-spark-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ideaSparkBtns.forEach(btn =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const targetId = btn.dataset.target;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const idea = btn.dataset.idea;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const textarea = document.getElementById(targetId);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>textarea.value += (textarea.value ? '\n' : '') + idea;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const formatToggle = document.getElementById('format-toggle');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const teatroGuide = document.getElementById('teatro-guide');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const comicGuide = document.getElementById('comic-guide');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>formatToggle.addEventListener('change', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>teatroGuide.classList.toggle('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>comicGuide.classList.toggle('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const generateBtn = document.getElementById('generate-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const resultadoSection = document.getElementById('resultado');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const finalScriptDiv = document.getElementById('final-script');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>generateBtn.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const titulo = document.getElementById('titulo').value;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const lugar = document.getElementById('lugar').value;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const pseudocienciaSeleccionada = document.querySelector('.pseudoscience-btn.ring-2');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const pseudocienciaTexto = pseudocienciaSeleccionada ? pseudocienciaSeleccionada.dataset.name : "No seleccionada";</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>const inicio = document.getElementById('texto-inicio').value;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const popper = document.getElementById('texto-popper').value;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const kuhn = document.getElementById('texto-kuhn').value;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const cierre = document.getElementById('texto-cierre').value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>let script = `TÍTULO: ${titulo || "Sin Título"}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `ESCENARIO: ${lugar || "No definido"}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `ELEMENTO DE TENSIÓN: ${pseudocienciaTexto}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `-------------------------------------------------------\n\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `### INICIO ###\n\n${inicio || "(Sin contenido)"}\n\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `### DESARROLLO Y TENSIÓN ###\n\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `[Argumentos de Popper]\n${popper || "(Sin contenido)"}\n\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `[Argumentos de Kuhn]\n${kuhn || "(Sin contenido)"}\n\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>script += `### CIERRE ###\n\n${cierre || "(Sin contenido)"}\n`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>finalScriptDiv.textContent = script;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>resultadoSection.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>window.scrollTo({ top: resultadoSection.offsetTop, behavior: 'smooth' });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const copyBtn = document.getElementById('copy-btn');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const copyFeedback = document.getElementById('copy-feedback');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>copyBtn.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const textToCopy = finalScriptDiv.textContent;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>navigator.clipboard.writeText(textToCopy).then(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>copyFeedback.textContent = '¡Copiado!';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>setTimeout(() =&gt; { copyFeedback.textContent = '' }, 2000);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}).catch(err =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>copyFeedback.textContent = 'Error al copiar';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
