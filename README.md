@@ -52,7 +52,4 @@ Si compartes intereses, ¡me encantará saber de ti!
 
 📬 Puedes contactarme a través de GitHub o enlazar conmigo en otras redes profesionales.
 
----
 
-> _"La filosofía no es una materia más, es una forma de mirar el mundo."_  
-> — Inés
