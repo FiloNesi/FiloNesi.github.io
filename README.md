@@ -35,7 +35,7 @@ Muchos de estos recursos están pensados para 1º de Bachillerato, pero son fác
 
 ## 🌐 Próximamente: Web educativa con GitHub Pages
 
-Estoy trabajando en una web accesible desde [inespradana.github.io](https://inespradana.github.io) donde podrás navegar todos los recursos de forma visual e intuitiva. Incluirá:
+Estoy trabajando en una web accesible desde [FiloNesi.github.io](https://filonesi.github.io) donde podrás navegar todos los recursos de forma visual e intuitiva. Incluirá:
 
 - Una biblioteca de actividades interactivas
 - Galería de escape rooms filosóficos
