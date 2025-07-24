@@ -1,53 +1,87 @@
 body {
-      font-family: 'Inter', sans-serif;
-    .prose-area {
-      background-color: white;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-in-out;
-    }
-    .idea-spark-btn {
-      transition: all 0.2s ease;
-    }
-    .idea-spark-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    }
+  font-family: 'Inter', 'Roboto', Arial, sans-serif;
+  background: #f6f8fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
 }
-
 header, footer {
-  background-color: #f0f0f0;
+  background-color: #142850;
+  color: #fff;
   text-align: center;
-  padding: 1em;
+  padding: 2em 1em;
+  box-shadow: 0 2px 8px rgba(20,40,80,0.08);
 }
-
 nav ul {
   display: flex;
   justify-content: center;
   gap: 2em;
   list-style: none;
-  padding: 0;
-  background-color: #eee;
+  padding: 0.5em 0;
+  background-color: #27496d;
   margin: 0;
 }
-
 nav ul li a {
   text-decoration: none;
-  color: #444;
-  font-weight: bold;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: color 0.2s;
 }
-
+nav ul li a:hover {
+  color: #00aaff;
+}
 main {
-  padding: 2em;
-  max-width: 800px;
-  margin: auto;
+  padding: 2.5em 1em;
+  max-width: 900px;
+  margin: 2em auto;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(20,40,80,0.08);
 }
-
 h1, h2 {
-  color: #005577;
+  color: #142850;
+  margin-top: 0;
+}
+.prose-area {
+  background-color: #f1f6fa;
+  border-radius: 0.75rem;
+  padding: 2em;
+  margin-bottom: 2em;
+  box-shadow: 0 1px 6px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+}
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+  background: #eaf4fb;
+  border-radius: 0.5rem;
+  padding: 0 1em;
+}
+.idea-spark-btn {
+  background: #005577;
+  color: white;
+  border: none;
+  border-radius: 0.4em;
+  padding: 0.75em 1.5em;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,85,119,0.08);
+  transition: all 0.2s;
+}
+.idea-spark-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px -1px rgb(0 85 119 / 0.12), 0 2px 8px -2px rgb(0 85 119 / 0.08);
+  background: #00aaff;
+  color: #fff;
+}
+@media (max-width: 700px) {
+  main {
+    padding: 1em 0.5em;
+  }
+  nav ul {
+    flex-direction: column;
+    gap: 1em;
+  }
 }
