@@ -39,7 +39,11 @@ main {
   border-radius: 1rem;
   box-shadow: 0 4px 24px rgba(20,40,80,0.08);
 }
-h1, h2 {
+h1 {
+  color: #fff;
+  margin-top: 0;
+}
+h2 {
   color: #142850;
   margin-top: 0;
 }
