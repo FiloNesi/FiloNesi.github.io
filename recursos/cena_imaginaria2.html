@@ -5,54 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Guion Filosófico: Popper vs. Kuhn</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .prose-area {
-      background-color: white;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-in-out;
-    }
-    .idea-spark-btn {
-      transition: all 0.2s ease;
-    }
-    .idea-spark-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    }
+    body { font-family: 'Inter', sans-serif; }
+    .prose-area { background: #fff; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.10);}
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(.16,1,.3,1);}
+    .accordion-header[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+    .pseudoscience-btn { transition: all 0.2s ease; box-shadow: 0 2px 4px rgb(0 0 0 / 0.08);}
+    .pseudoscience-btn.selected { border:2px solid #14b8a6; background:#ccfbf1; color:#134e4a;}
+    .idea-spark-btn { transition: all 0.2s ease; }
+    .idea-spark-btn:active { transform: scale(0.95);}
+    #progress-bar { height: 4px; background: linear-gradient(90deg,#14b8a6,#f59e42); width: 0; transition: width 0.7s;}
+    #copy-btn.copied { background: #22c55e; }
+    .fade-in { animation: fadeIn 0.8s;}
+    @keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
   </style>
 </head>
-<body class="bg-stone-100 text-stone-800">
+<body class="bg-gradient-to-br from-stone-100 via-teal-50 to-orange-50 text-stone-800 fade-in">
   <main class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl">
     <header class="text-center mb-10">
-      <h1 class="text-3xl sm:text-4xl font-bold text-teal-800 mb-2">Generador de Guion Filosófico</h1>
+      <h1 class="text-4xl font-extrabold text-teal-800 mb-2 tracking-tight drop-shadow">Generador de Guion Filosófico</h1>
       <p class="text-lg text-stone-600">Popper vs. Kuhn: La Cena de Filósofos</p>
+      <div class="flex justify-center mt-2 gap-2">
+        <span class="inline-flex items-center px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-bold text-xs">Interactivo</span>
+        <span class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-bold text-xs">Creativo</span>
+      </div>
     </header>
+
+    <!-- PROGRESS BAR -->
+    <div id="progress-bar" class="rounded mb-6"></div>
 
     <!-- SECCIÓN 1: INTRODUCCIÓN Y PERSONAJES -->
     <section id="intro" class="mb-12">
       <div class="prose-area mb-8">
         <h2 class="text-2xl font-bold text-teal-700 mb-4 border-b pb-2">Bienvenido/a</h2>
-        <p class="text-stone-700">Esta es una herramienta interactiva para ayudarte a crear un guion teatral o una escena de cómic filosófica.</p>
+        <p class="text-stone-700">Utiliza esta herramienta interactiva para crear tu propio guion teatral o escena de cómic filosófica. ¡Explora, escribe y aprende!</p>
       </div>
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
-          <h3 class="text-2xl font-bold mb-3 text-stone-800">Karl Popper</h3>
-          <p class="text-stone-600">Un filósofo crítico y racionalista. Para él, lo que hace que una teoría sea científica es que pueda ser falsada.</p>
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 hover:scale-105 transition">
+          <h3 class="text-2xl font-bold mb-3 text-stone-800 flex items-center gap-2">
+            <span>🧑‍🎓</span> Karl Popper
+          </h3>
+          <p class="text-stone-600">Filósofo crítico y racionalista. Defiende que una teoría es científica si puede ser falsada.</p>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500">
-          <h3 class="text-2xl font-bold mb-3 text-stone-800">Thomas Kuhn</h3>
-          <p class="text-stone-600">Un historiador y filósofo de la ciencia. Sostiene que la ciencia opera dentro de paradigmas y cambia mediante revoluciones científicas.</p>
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 hover:scale-105 transition">
+          <h3 class="text-2xl font-bold mb-3 text-stone-800 flex items-center gap-2">
+            <span>🧑‍🔬</span> Thomas Kuhn
+          </h3>
+          <p class="text-stone-600">Historiador y filósofo de la ciencia. Sostiene que la ciencia cambia mediante revoluciones y paradigmas.</p>
         </div>
       </div>
     </section>
@@ -62,24 +62,24 @@
       <h2 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2">1. Prepara la Escena</h2>
       <div class="grid md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label for="titulo" class="block text-sm font-medium text-stone-700 mb-1">Título de la Obra/Escena</label>
-          <input type="text" id="titulo" class="w-full p-2 border border-stone-300 rounded-md focus:ring-teal-500 focus:border-teal-500">
+          <label for="titulo" class="block text-sm font-medium text-stone-700 mb-1">Título de la Obra/Escena <span class="text-orange-500">*</span></label>
+          <input type="text" id="titulo" class="w-full p-2 border border-teal-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Ej: Debate bajo las estrellas">
         </div>
         <div>
-          <label for="lugar" class="block text-sm font-medium text-stone-700 mb-1">Lugar y Atmósfera</label>
-          <input type="text" id="lugar" class="w-full p-2 border border-stone-300 rounded-md focus:ring-teal-500 focus:border-teal-500">
+          <label for="lugar" class="block text-sm font-medium text-stone-700 mb-1">Lugar y Atmósfera <span class="text-orange-500">*</span></label>
+          <input type="text" id="lugar" class="w-full p-2 border border-teal-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Ej: Restaurante elegante, noche lluviosa">
         </div>
       </div>
       <div>
         <label class="block text-sm font-medium text-stone-700 mb-2">Elige el Elemento de Tensión (una pseudociencia)</label>
-        <div class="flex flex-wrap gap-3">
-          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Astrología">Astrología</button>
-          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Homeopatía">Homeopatía</button>
-          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Ufología">Ufología</button>
-          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Grafología">Grafología</button>
+        <div class="flex flex-wrap gap-3 mb-2">
+          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Astrología"><span>🔮</span> Astrología</button>
+          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Homeopatía"><span>🌱</span> Homeopatía</button>
+          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Ufología"><span>🛸</span> Ufología</button>
+          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Grafología"><span>✍️</span> Grafología</button>
         </div>
-        <div id="provocacion" class="mt-4 p-4 bg-stone-50 rounded-lg border border-stone-200 text-stone-600 min-h-[50px]">
-          Selecciona una pseudociencia para ver una posible chispa que inicie la conversación...
+        <div id="provocacion" class="mt-4 p-4 bg-stone-50 rounded-lg border border-teal-100 text-stone-600 min-h-[50px] transition-all">
+          Selecciona una pseudociencia para ver una chispa que inicie la conversación...
         </div>
       </div>
     </section>
@@ -90,11 +90,11 @@
       <div id="accordion-container">
         <!-- Inicio -->
         <div class="accordion-item border-b border-stone-200">
-          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between">
+          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-teal-50 flex justify-between items-center" aria-expanded="false">
             <span>a) Inicio</span>
-            <span>▼</span>
+            <span class="arrow transition-transform">&#9660;</span>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" aria-hidden="true">
             <div class="p-4 bg-stone-50">
               <p class="text-sm text-stone-600 mb-2">¿Cómo se encuentran? ¿Cómo comienza la conversación?</p>
               <textarea id="texto-inicio" rows="6" class="w-full p-2 border border-stone-300 rounded-md" placeholder="Escribe el inicio..."></textarea>
@@ -103,29 +103,29 @@
         </div>
         <!-- Desarrollo -->
         <div class="accordion-item border-b border-stone-200">
-          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between">
+          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-teal-50 flex justify-between items-center" aria-expanded="false">
             <span>b) Desarrollo y Tensión</span>
-            <span>▼</span>
+            <span class="arrow transition-transform">&#9660;</span>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" aria-hidden="true">
             <div class="p-4 bg-stone-50">
               <p class="text-sm text-stone-600 mb-4">Introduce la pseudociencia. Desarrolla los argumentos de Popper y Kuhn.</p>
               <label class="font-semibold text-stone-700">Argumentos de Popper:</label>
               <textarea id="texto-popper" rows="4" class="w-full p-2 border border-stone-300 rounded-md mt-1 mb-2" placeholder="Escribe los argumentos de Popper..."></textarea>
-              <button class="idea-spark-btn text-sm bg-teal-100 text-teal-800 py-1 px-3 rounded-full mb-4" data-target="texto-popper" data-idea="¿Es falsable la pseudociencia?">Idea rápida Popper</button>
+              <button class="idea-spark-btn text-sm bg-teal-100 text-teal-800 py-1 px-3 rounded-full mb-4" data-target="texto-popper" data-idea="¿Es falsable la pseudociencia?">💡 Idea rápida Popper</button>
               <label class="font-semibold text-stone-700">Argumentos de Kuhn:</label>
               <textarea id="texto-kuhn" rows="4" class="w-full p-2 border border-stone-300 rounded-md mt-1 mb-2" placeholder="Escribe los argumentos de Kuhn..."></textarea>
-              <button class="idea-spark-btn text-sm bg-orange-100 text-orange-800 py-1 px-3 rounded-full mb-4" data-target="texto-kuhn" data-idea="¿Forma parte de un paradigma la pseudociencia?">Idea rápida Kuhn</button>
+              <button class="idea-spark-btn text-sm bg-orange-100 text-orange-800 py-1 px-3 rounded-full mb-4" data-target="texto-kuhn" data-idea="¿Forma parte de un paradigma la pseudociencia?">💡 Idea rápida Kuhn</button>
             </div>
           </div>
         </div>
         <!-- Cierre -->
         <div class="accordion-item">
-          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-stone-50 flex justify-between">
+          <button class="accordion-header w-full text-left p-4 font-semibold text-lg hover:bg-teal-50 flex justify-between items-center" aria-expanded="false">
             <span>c) Cierre (posible)</span>
-            <span>▼</span>
+            <span class="arrow transition-transform">&#9660;</span>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" aria-hidden="true">
             <div class="p-4 bg-stone-50">
               <p class="text-sm text-stone-600 mb-2">¿Llegan a un acuerdo o no? Escribe una conclusión para la escena.</p>
               <textarea id="texto-cierre" rows="4" class="w-full p-2 border border-stone-300 rounded-md" placeholder="Escribe el cierre..."></textarea>
@@ -136,15 +136,13 @@
     </section>
 
     <!-- SECCIÓN 4: PIDE AYUDA -->
-    <section id="escenario" class="mb-12 prose-area">
+    <section id="ayuda" class="mb-12 prose-area">
       <h2 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2">3. Pide ayuda</h2>
       <div>
-        <label class="block text-sm font-medium text-stone-700 mb-2">Puedes pedir ayuda a "Teatro filosófico"</label>
+        <label class="block text-sm font-medium text-stone-700 mb-2">¿Necesitas inspiración? Puedes pedir ayuda a "Teatro filosófico"</label>
         <div class="flex flex-wrap gap-3">
-          <button class="pseudoscience-btn bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-full" data-name="Astrología" link href: "https://chatgpt.com/g/g-67a7211a6888819189ebc2296d6e99a0-teatro-filosofico">Teatro Filosófico</button>
-      
+          <a class="pseudoscience-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-full" href="https://chatgpt.com/g/g-67a7211a6888819189ebc2d9d-teatro-filosofico" target="_blank">💭 Ir al chat de ayuda</a>
         </div>
-        
       </div>
     </section>
 
@@ -174,20 +172,20 @@
         </ul>
       </div>
       <div class="text-center mt-8">
-        <button id="generate-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg">
-          Generar Guion Completo
+        <button id="generate-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg flex items-center justify-center gap-2">
+          <span>🎬</span> Generar Guion Completo
         </button>
       </div>
     </section>
 
     <!-- SECCIÓN 6: RESULTADO FINAL -->
-    <section id="resultado" class="hidden">
+    <section id="resultado" class="hidden fade-in">
       <div class="prose-area">
         <h2 class="text-2xl font-bold text-teal-700 mb-4 border-b pb-2">Tu Guion</h2>
         <p class="text-sm text-stone-600 mb-4">¡Aquí está tu obra maestra! Puedes copiar el texto y pegarlo en tu editor favorito.</p>
         <div id="final-script" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-md whitespace-pre-wrap font-mono"></div>
         <div class="text-center mt-4">
-          <button id="copy-btn" class="bg-stone-500 hover:bg-stone-600 text-white font-bold py-2 px-4 rounded-md">Copiar Guion</button>
+          <button id="copy-btn" class="bg-stone-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-md transition-all">Copiar Guion</button>
           <p id="copy-feedback" class="text-sm text-teal-600 mt-2 h-4"></p>
         </div>
       </div>
@@ -200,41 +198,52 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Pseudociencias y provocaciones
       const provocaciones = {
-        'Astrología': 'Alguien en la cena comenta casualmente: "Soy Leo, por eso soy tan líder". Popper reacciona al instante...',
-        'Homeopatía': 'Uno de los comensales pide un remedio homeopático en lugar de un analgésico, afirmando que "lo natural siempre es mejor".',
-        'Ufología': 'La conversación deriva hacia los avistamientos de OVNIs. Alguien defiende que son visitas extraterrestres.',
-        'Grafología': 'Un invitado se ofrece a analizar la personalidad de los demás a través de su firma, asegurando que es un método científico.'
+        'Astrología': 'Alguien comenta: "Soy Leo, por eso soy líder". Popper reacciona al instante...',
+        'Homeopatía': 'Un comensal pide un remedio homeopático en vez de analgésico, diciendo "lo natural siempre es mejor".',
+        'Ufología': 'La conversación deriva en OVNIs. Alguien defiende que son visitas extraterrestres.',
+        'Grafología': 'Un invitado ofrece analizar la personalidad de los demás por su firma, asegurando que es científico.'
       };
 
+      // PROGRESS BAR
+      function setProgress(percent) {
+        document.getElementById('progress-bar').style.width = percent + '%';
+      }
+
+      // Pseudoscience select feedback
       const pseudocienceBtns = document.querySelectorAll('.pseudoscience-btn');
       const provocacionDiv = document.getElementById('provocacion');
-
       pseudocienceBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+          pseudocienceBtns.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
           const name = btn.dataset.name;
           provocacionDiv.textContent = provocaciones[name] || 'Selecciona una pseudociencia...';
-          pseudocienceBtns.forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-teal-500'));
-          btn.classList.add('ring-2', 'ring-offset-2', 'ring-teal-500');
+          setProgress(25);
         });
       });
 
-      const accordionHeaders = document.querySelectorAll('.accordion-header');
-      accordionHeaders.forEach(header => {
+      // Accordion interactivity + accessibility
+      document.querySelectorAll('.accordion-header').forEach(header => {
         header.addEventListener('click', () => {
-          const content = header.nextElementSibling;
-          const isOpen = content.style.maxHeight;
+          const expanded = header.getAttribute('aria-expanded') === 'true';
+          document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', false));
           document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
-          document.querySelectorAll('.accordion-header span:last-child').forEach(arrow => arrow.textContent = '▼');
-          if (!isOpen) {
+          document.querySelectorAll('.accordion-content').forEach(c => c.setAttribute('aria-hidden', true));
+          document.querySelectorAll('.arrow').forEach(arrow => arrow.style.transform = '');
+          if (!expanded) {
+            header.setAttribute('aria-expanded', true);
+            const content = header.nextElementSibling;
             content.style.maxHeight = content.scrollHeight + "px";
-            header.querySelector('span:last-child').textContent = '▲';
+            content.setAttribute('aria-hidden', false);
+            setProgress(40);
           }
         });
       });
 
-      const ideaSparkBtns = document.querySelectorAll('.idea-spark-btn');
-      ideaSparkBtns.forEach(btn => {
+      // Idea spark buttons
+      document.querySelectorAll('.idea-spark-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const targetId = btn.dataset.target;
           const idea = btn.dataset.idea;
@@ -243,51 +252,53 @@
         });
       });
 
-      const formatToggle = document.getElementById('format-toggle');
-      const teatroGuide = document.getElementById('teatro-guide');
-      const comicGuide = document.getElementById('comic-guide');
-      formatToggle.addEventListener('change', () => {
-        teatroGuide.classList.toggle('hidden');
-        comicGuide.classList.toggle('hidden');
+      // Toggle formato guía
+      document.getElementById('format-toggle').addEventListener('change', () => {
+        document.getElementById('teatro-guide').classList.toggle('hidden');
+        document.getElementById('comic-guide').classList.toggle('hidden');
+        setProgress(60);
       });
 
+      // Generar guion
       const generateBtn = document.getElementById('generate-btn');
       const resultadoSection = document.getElementById('resultado');
       const finalScriptDiv = document.getElementById('final-script');
       generateBtn.addEventListener('click', () => {
+        setProgress(90);
         const titulo = document.getElementById('titulo').value;
         const lugar = document.getElementById('lugar').value;
-        const pseudocienciaSeleccionada = document.querySelector('.pseudoscience-btn.ring-2');
+        const pseudocienciaSeleccionada = document.querySelector('.pseudoscience-btn.selected');
         const pseudocienciaTexto = pseudocienciaSeleccionada ? pseudocienciaSeleccionada.dataset.name : "No seleccionada";
         const inicio = document.getElementById('texto-inicio').value;
         const popper = document.getElementById('texto-popper').value;
         const kuhn = document.getElementById('texto-kuhn').value;
         const cierre = document.getElementById('texto-cierre').value;
-
         let script = `TÍTULO: ${titulo || "Sin Título"}\n`;
         script += `ESCENARIO: ${lugar || "No definido"}\n`;
         script += `ELEMENTO DE TENSIÓN: ${pseudocienciaTexto}\n`;
         script += `-------------------------------------------------------\n\n`;
         script += `### INICIO ###\n\n${inicio || "(Sin contenido)"}\n\n`;
-        script += `### DESARROLLO Y TENSIÓN ###\n\n`;
-        script += `[Argumentos de Popper]\n${popper || "(Sin contenido)"}\n\n`;
-        script += `[Argumentos de Kuhn]\n${kuhn || "(Sin contenido)"}\n\n`;
+        script += `### DESARROLLO Y TENSIÓN ###\n\n[Argumentos de Popper]\n${popper || "(Sin contenido)"}\n\n[Argumentos de Kuhn]\n${kuhn || "(Sin contenido)"}\n\n`;
         script += `### CIERRE ###\n\n${cierre || "(Sin contenido)"}\n`;
-
         finalScriptDiv.textContent = script;
         resultadoSection.classList.remove('hidden');
+        resultadoSection.classList.add('fade-in');
+        setProgress(100);
         window.scrollTo({ top: resultadoSection.offsetTop, behavior: 'smooth' });
       });
 
-      const copyBtn = document.getElementById('copy-btn');
-      const copyFeedback = document.getElementById('copy-feedback');
-      copyBtn.addEventListener('click', () => {
+      // Copy guion animado
+      document.getElementById('copy-btn').addEventListener('click', function () {
         const textToCopy = finalScriptDiv.textContent;
         navigator.clipboard.writeText(textToCopy).then(() => {
-          copyFeedback.textContent = '¡Copiado!';
-          setTimeout(() => { copyFeedback.textContent = '' }, 2000);
+          this.classList.add('copied');
+          document.getElementById('copy-feedback').textContent = '¡Copiado!';
+          setTimeout(() => {
+            this.classList.remove('copied');
+            document.getElementById('copy-feedback').textContent = '';
+          }, 2000);
         }).catch(err => {
-          copyFeedback.textContent = 'Error al copiar';
+          document.getElementById('copy-feedback').textContent = 'Error al copiar';
         });
       });
     });
