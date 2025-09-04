@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Juego: Línea del tiempo filosófica (30 autores)</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111; --muted:#555; --accent:#0b7285; --soft:#f1f5f9; --line:#e5e7eb;
+    --card-w: 68mm; --card-h: 44mm; --gap: 6mm; --br: 10px;
+  }
+  html,body{background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+  h1,h2,h3{margin:0.2rem 0 0.4rem}
+  .page{page-break-after:always; padding:10mm}
+  .rules{max-width:900px; margin:auto;}
+  .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap:var(--gap);}
+  .card{border:1px solid var(--line); border-radius:var(--br); padding:10px 12px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.04);}
+  .card h3{font-size:14pt; margin:0 0 4px}
+  .hint{font-size:10.5pt; color:var(--muted); line-height:1.25}
+  .stage{border:2px dashed var(--accent); background:var(--soft)}
+  .stage h2{font-size:14pt; color:var(--accent)}
+  .stage p{font-size:10.5pt}
+  .pill{display:inline-block; font-size:9pt; background:#eef6f8; color:var(--accent); padding:2px 8px; border-radius:999px; border:1px solid #d6eef2}
+  .tiny{font-size:9pt; color:var(--muted)}
+  details{border:1px solid var(--line); border-radius:var(--br); padding:10px 12px; background:#fcfcfc}
+  summary{cursor:pointer; font-weight:600}
+  .key{columns:2; column-gap:20px}
+  .key p{break-inside:avoid; margin:4px 0}
+  @page{size:A4; margin:10mm}
+  @media print{
+    .noprint{display:none}
+    .page{padding:6mm}
+    .card{box-shadow:none}
+  }
+  .levels{margin:6px 0 0; padding-left:16px; font-size:10pt; line-height:1.25}
+  .levels li{margin:2px 0}
+  .levels .tag{font-weight:600}
+</style>
+</head>
+<body>
+  <!-- PÁGINA 1: INSTRUCCIONES Y TAPETES -->
+  <section class="page">
+    <div class="rules">
+      <h1>Juego: Línea del tiempo filosófica</h1>
+      <p class="tiny">Imprime, recorta y clasifica. Duración sugerida: 25–35 minutos. Grupos de 3–4.</p>
+      <ol>
+        <li><strong>Reparte</strong> las 30 cartas de autores (nombre + pista sutil).</li>
+        <li>Coloca los <strong>4 tapetes</strong> de etapa sobre la mesa o en el suelo.</li>
+        <li><strong>Ronda 1</strong> (rápida, 6–8 min): Cada equipo coloca sus cartas en la etapa que crean correcta.</li>
+        <li><strong>Ronda 2</strong> (ajuste, 6–8 min): Pueden mover hasta 6 cartas tras debatir.</li>
+        <li><strong>Verificación</strong> (5 min): Compara con la clave. +1 punto por acierto. Bonus +3 si aciertan todas las del equipo.</li>
+        <li><strong>Extensión</strong> (opcional, 5–10 min): Cada equipo justifica oralmente 2 colocaciones dudosas citando la pista.</li>
+      </ol>
+      <details class="noprint"><summary>Modos de juego</summary>
+        <ul>
+          <li><strong>Pistas graduadas</strong>: revela solo la línea <em>básica</em>. Si fallan, añade la <em>intermedia</em>; por último la <em>críptica</em>.</li>
+          <li><strong>Modo sin siglos</strong>: usa las cartas con línea «Sin siglos» y los <em>tapetes sin fechas</em>.</li>
+        </ul>
+      </details>
+      <p class="tiny">Roles sugeridos (cooperativo): coordinador/a, lector/a de pistas, secretario/a, portavoz.</p>
+    </div>
+    <h2>Tapetes de etapa</h2>
+    <div class="grid">
+      <div class="card stage">
+        <h2>1) Filosofía antigua</h2>
+        <span class="pill">s. VI a. C. – s. IV d. C.</span>
+        <p>Aproximadamente s. VI a. C. – s. IV d. C. Nace en las <em>polis</em> griegas y en el entorno del Mediterráneo clásico. Se buscan explicaciones racionales a la naturaleza y a la vida en la ciudad.</p><ul><li>Señales típicas: <strong>ágora</strong>, <strong>polis</strong>, <strong>Atenas</strong>, <strong>Academia</strong>, <strong>Liceo</strong>, <strong>Ideas</strong>, <strong>virtud</strong>, <strong>logos</strong>.</li><li>Escuelas y lugares: Mileto, Éfeso, Atenas (Academia, Liceo).</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>2) Filosofía medieval</h2>
+        <span class="pill">s. V – s. XV</span>
+        <p>Del s. V al s. XV. Dialoga con el cristianismo (y también con tradiciones judía y árabe), se desarrolla en <strong>monasterios</strong> y <strong>universidades medievales</strong>.</p><ul><li>Señales típicas: <strong>escolástica</strong>, <strong>comentario</strong>, <strong>teología</strong>, <strong>traducciones árabes</strong>, <strong>París</strong>, <strong>Oxonia</strong>.</li><li>Lugares/figuras: Alejandría tardía, órdenes mendicantes, tomismo.</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>3) Filosofía moderna</h2>
+        <span class="pill">Renacimiento – Ilustración (s. XV–XVIII)</span>
+        <p>Del Renacimiento a la Ilustración (s. XV–XVIII). Humanismo, <strong>ciencia moderna</strong> (Galileo), <strong>racionalismo vs. empirismo</strong>, <strong>salones ilustrados</strong> y <strong>enciclopedias</strong>.</p><ul><li>Señales típicas: <strong>Renacimiento</strong>, <strong>Barroco</strong>, <strong>Ilustración</strong>, <strong>método</strong>, <strong>experiencia</strong>, <strong>derechos naturales</strong>, <strong>contrato social</strong>.</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>4) Filosofía contemporánea</h2>
+        <span class="pill">s. XIX – actualidad</span>
+        <p>Desde el s. XIX hasta hoy. <strong>Revolución industrial</strong>, democracias modernas, dos <strong>guerras mundiales</strong>, corrientes diversas (existencialismo, análisis del lenguaje, genealogía, feminismos).</p><ul><li>Señales típicas: <strong>industria</strong>, <strong>capitalismo</strong>, <strong>totalitarismo</strong>, <strong>lenguaje</strong>, <strong>biopolítica</strong>, <strong>posguerra</strong>, <strong>segunda ola</strong>.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PÁGINAS 2–4: CARTAS DE AUTORES (NOMBRE + PISTA SUTIL) -->
+  <section class="page">
+    <h2>Cartas de autores — Pistas graduadas</h2>
+    <p class="tiny">Cada carta ofrece cuatro niveles: <strong>Básica</strong>, <strong>Intermedia</strong>, <strong>Críptica</strong> y <strong>Sin siglos</strong> (para el modo difícil).</p>
+    <div class="grid">
+      <!-- ANTIGUA (5) -->
+      <div class="card"><h3>Parménides</h3><ul class="levels"><li><span class="tag">Básica:</span> Elea, s. V a. C.; «el ser es», inmóvil.</li><li><span class="tag">Intermedia:</span> Ser único; el cambio es apariencia; poema filosófico.</li><li><span class="tag">Críptica:</span> Si todo cambia, nada es; él afirma lo contrario.</li><li><span class="tag">Sin siglos:</span> Elea; ser inmóvil; vía de la verdad (logos).</li></ul></div>
+      <div class="card"><h3>Heráclito</h3><ul class="levels"><li><span class="tag">Básica:</span> Éfeso, s. VI–V a. C.; «panta rhei»; fuego.</li><li><span class="tag">Intermedia:</span> Río que fluye; tensión de opuestos; <em>logos</em>.</li><li><span class="tag">Críptica:</span> Guardián del fuego y de enigmas.</li><li><span class="tag">Sin siglos:</span> Éfeso; devenir permanente; lucha de contrarios.</li></ul></div>
+      <div class="card"><h3>Sócrates</h3><ul class="levels"><li><span class="tag">Básica:</span> Atenas, s. V a. C.; mayéutica; sin escritos.</li><li><span class="tag">Intermedia:</span> Diálogo en el ágora; «conócete a ti mismo».</li><li><span class="tag">Críptica:</span> Obedeció a la polis bebiendo cicuta.</li><li><span class="tag">Sin siglos:</span> Atenas; maestro del preguntar; ágora.</li></ul></div>
+      <div class="card"><h3>Platón</h3><ul class="levels"><li><span class="tag">Básica:</span> Atenas, s. IV a. C.; Academia; Ideas; caverna.</li><li><span class="tag">Intermedia:</span> Dualismo sensible/inteligible; filósofos‑reyes.</li><li><span class="tag">Críptica:</span> Sombras en la pared camino a Siracusa.</li><li><span class="tag">Sin siglos:</span> Academia; mundo de las Ideas; mito de la caverna.</li></ul></div>
+      <div class="card"><h3>Aristóteles</h3><ul class="levels"><li><span class="tag">Básica:</span> Atenas, s. IV a. C.; Liceo; cuatro causas.</li><li><span class="tag">Intermedia:</span> Sustancia y categorías; virtud como hábito.</li><li><span class="tag">Críptica:</span> Peripatético que piensa andando.</li><li><span class="tag">Sin siglos:</span> Liceo; observación y clasificación; teleología.</li></ul></div>
+
+      <!-- MEDIEVAL (3) -->
+      <div class="card"><h3>Hipatia de Alejandría</h3><ul class="levels"><li><span class="tag">Básica:</span> Alejandría, s. V d. C.; neoplatónica; matemática.</li><li><span class="tag">Intermedia:</span> Escuela alejandrina; astronomía y filosofía.</li><li><span class="tag">Críptica:</span> Astrolabios y pergaminos en el delta del Nilo.</li><li><span class="tag">Sin siglos:</span> Alejandría; neoplatonismo; enseñanza científica.</li></ul></div>
+      <div class="card"><h3>Agustín de Hipona</h3><ul class="levels"><li><span class="tag">Básica:</span> Norte de África, s. IV–V; <em>Confesiones</em>; <em>Ciudad de Dios</em>.</li><li><span class="tag">Intermedia:</span> Interioridad, tiempo y gracia; fe/razón.</li><li><span class="tag">Críptica:</span> «Tarde te amé»; corazón inquieto.</li><li><span class="tag">Sin siglos:</span> Hipona; conversión; fe y razón.</li></ul></div>
+      <div class="card"><h3>Tomás de Aquino</h3><ul class="levels"><li><span class="tag">Básica:</span> París/Nápoles, s. XIII; escolástica; <em>Suma Teológica</em>.</li><li><span class="tag">Intermedia:</span> Cinco vías; ley natural; universidad medieval.</li><li><span class="tag">Críptica:</span> Dominico con Aristóteles en el pupitre.</li><li><span class="tag">Sin siglos:</span> Escolástica; Aristóteles + teología; <em>Suma</em>.</li></ul></div>
+
+      <!-- MODERNA (10) -->
+      <div class="card"><h3>Nicolás Maquiavelo</h3><ul class="levels"><li><span class="tag">Básica:</span> Florencia, s. XVI; <em>El Príncipe</em>; <em>virtù</em> y <em>fortuna</em>.</li><li><span class="tag">Intermedia:</span> Repúblicas y realismo; embajadas italianas.</li><li><span class="tag">Críptica:</span> Zorro y león aconsejan en palacio.</li><li><span class="tag">Sin siglos:</span> Renacimiento florentino; razón de Estado.</li></ul></div>
+      <div class="card"><h3>René Descartes</h3><ul class="levels"><li><span class="tag">Básica:</span> S. XVII; método y duda; <em>cogito</em>.</li><li><span class="tag">Intermedia:</span> Ideas claras y distintas; mente‑cuerpo.</li><li><span class="tag">Críptica:</span> En una «estufa» traza coordenadas.</li><li><span class="tag">Sin siglos:</span> Racionalismo; método; <em>cogito</em>.</li></ul></div>
+      <div class="card"><h3>Baruch Spinoza</h3><ul class="levels"><li><span class="tag">Básica:</span> Países Bajos, s. XVII; «Deus sive Natura».</li><li><span class="tag">Intermedia:</span> Monismo; afectos; excomunión.</li><li><span class="tag">Críptica:</span> Pulió lentes para ver la sustancia.</li><li><span class="tag">Sin siglos:</span> Monismo; naturaleza divina; ética geométrica.</li></ul></div>
+      <div class="card"><h3>John Locke</h3><ul class="levels"><li><span class="tag">Básica:</span> Inglaterra, s. XVII; tabula rasa; derechos.</li><li><span class="tag">Intermedia:</span> Contrato y tolerancia; empirismo.</li><li><span class="tag">Críptica:</span> Ensayo y cartas que limitan al poder.</li><li><span class="tag">Sin siglos:</span> Empirismo; gobierno limitado; derechos naturales.</li></ul></div>
+      <div class="card"><h3>G. W. Leibniz</h3><ul class="levels"><li><span class="tag">Básica:</span> Alemania, s. XVII–XVIII; mónadas; armonía.</li><li><span class="tag">Intermedia:</span> Cálculo; «mejor de los mundos posibles».</li><li><span class="tag">Críptica:</span> Molinos dentro de la mente no bastan.</li><li><span class="tag">Sin siglos:</span> Mónadas; lógica combinatoria; armonía preestablecida.</li></ul></div>
+      <div class="card"><h3>Émilie du Châtelet</h3><ul class="levels"><li><span class="tag">Básica:</span> Francia, s. XVIII; Newton en francés; <em>mv²</em>.</li><li><span class="tag">Intermedia:</span> Salones ilustrados; física y filosofía.</li><li><span class="tag">Críptica:</span> Energía que crece al cuadrado entre espejos.</li><li><span class="tag">Sin siglos:</span> Ilustración; traducción de Newton; energía.</li></ul></div>
+      <div class="card"><h3>David Hume</h3><ul class="levels"><li><span class="tag">Básica:</span> Escocia, s. XVIII; impresión/idea; hábito.</li><li><span class="tag">Intermedia:</span> Escepticismo sobre causalidad; yo como haz.</li><li><span class="tag">Críptica:</span> El sol saldrá mañana… por costumbre.</li><li><span class="tag">Sin siglos:</span> Ilustración escocesa; experiencia y costumbre.</li></ul></div>
+      <div class="card"><h3>Jean‑Jacques Rousseau</h3><ul class="levels"><li><span class="tag">Básica:</span> S. XVIII; contrato social; educación natural.</li><li><span class="tag">Intermedia:</span> Voluntad general; sensibilidad crítica.</li><li><span class="tag">Críptica:</span> Paseos botánicos y melodías políticas.</li><li><span class="tag">Sin siglos:</span> Ilustración; contrato social; <em>Emilio</em>.</li></ul></div>
+      <div class="card"><h3>Immanuel Kant</h3><ul class="levels"><li><span class="tag">Básica:</span> Königsberg, s. XVIII; <em>Críticas</em>; imperativo categórico.</li><li><span class="tag">Intermedia:</span> A priori; síntesis; autonomía.</li><li><span class="tag">Críptica:</span> Paseos puntuales con brújula moral.</li><li><span class="tag">Sin siglos:</span> Ilustración; límites del conocer; deber.</li></ul></div>
+      <div class="card"><h3>Mary Wollstonecraft</h3><ul class="levels"><li><span class="tag">Básica:</span> Londres, s. XVIII; <em>Vindicación</em>; educación femenina.</li><li><span class="tag">Intermedia:</span> Ciudadanía igual; razón frente a prejuicio.</li><li><span class="tag">Críptica:</span> Pluma contra caballeros de fachada.</li><li><span class="tag">Sin siglos:</span> Ilustración; igualdad cívica; educación de mujeres.</li></ul></div>
+
+      <!-- CONTEMPORÁNEA (12) -->
+      <div class="card"><h3>G. W. F. Hegel</h3><ul class="levels"><li><span class="tag">Básica:</span> Alemania, s. XIX; dialéctica; <em>Fenomenología</em>.</li><li><span class="tag">Intermedia:</span> Historia como razón; Estado ético.</li><li><span class="tag">Críptica:</span> La conciencia se hace mundo y regresa.</li><li><span class="tag">Sin siglos:</span> Idealismo alemán; devenir dialéctico.</li></ul></div>
+      <div class="card"><h3>John Stuart Mill</h3><ul class="levels"><li><span class="tag">Básica:</span> Inglaterra, s. XIX; utilitarismo; libertad.</li><li><span class="tag">Intermedia:</span> Principio de daño; sufragio femenino.</li><li><span class="tag">Críptica:</span> Cálculo de placeres para proteger la libertad.</li><li><span class="tag">Sin siglos:</span> Utilitarismo; libertad individual; daño.</li></ul></div>
+      <div class="card"><h3>Karl Marx</h3><ul class="levels"><li><span class="tag">Básica:</span> Europa, s. XIX; plusvalía; lucha de clases.</li><li><span class="tag">Intermedia:</span> Materialismo histórico; crítica del capital.</li><li><span class="tag">Críptica:</span> Un fantasma y chimeneas humeantes.</li><li><span class="tag">Sin siglos:</span> Capitalismo; clase; historia como conflicto.</li></ul></div>
+      <div class="card"><h3>Friedrich Nietzsche</h3><ul class="levels"><li><span class="tag">Básica:</span> Alemania, fin s. XIX; «Dios ha muerto»; genealogía.</li><li><span class="tag">Intermedia:</span> Resentimiento y transvaloración; Zaratustra.</li><li><span class="tag">Críptica:</span> Un martillo para auscultar ídolos.</li><li><span class="tag">Sin siglos:</span> Perspectivismo; voluntad de poder; crítica moral.</li></ul></div>
+      <div class="card"><h3>G. E. M. Anscombe</h3><ul class="levels"><li><span class="tag">Básica:</span> Oxford, s. XX; <em>Intention</em>; anti‑consecuencialismo.</li><li><span class="tag">Intermedia:</span> Virtud rediviva; acción con razones.</li><li><span class="tag">Críptica:</span> ¿Qué haces? —No siempre es lo mismo que pasa.</li><li><span class="tag">Sin siglos:</span> Ética de la virtud; filosofía de la acción.</li></ul></div>
+      <div class="card"><h3>Simone Weil</h3><ul class="levels"><li><span class="tag">Básica:</span> Europa, s. XX; fábrica; atención; desdicha.</li><li><span class="tag">Intermedia:</span> Mística laica; opresión y trabajo.</li><li><span class="tag">Críptica:</span> El peso de la gracia en una fábrica.</li><li><span class="tag">Sin siglos:</span> Ética de la atención; trabajo y justicia.</li></ul></div>
+      <div class="card"><h3>Martin Heidegger</h3><ul class="levels"><li><span class="tag">Básica:</span> Alemania, s. XX (1927); <em>Ser y tiempo</em>; <em>Dasein</em>.</li><li><span class="tag">Intermedia:</span> Ser‑en‑el‑mundo; angustia; cuidado.</li><li><span class="tag">Críptica:</span> El martillo revela mundo al romperse.</li><li><span class="tag">Sin siglos:</span> Ontología fundamental; existencia; temporalidad.</li></ul></div>
+      <div class="card"><h3>Ludwig Wittgenstein</h3><ul class="levels"><li><span class="tag">Básica:</span> Viena‑Cambridge, s. XX; <em>Tractatus</em>; juegos de lenguaje.</li><li><span class="tag">Intermedia:</span> Decir/mostrar; seguir una regla; terapia.</li><li><span class="tag">Críptica:</span> Una escalera que se tira al llegar arriba.</li><li><span class="tag">Sin siglos:</span> Uso del lenguaje; formas de vida; significado = uso.</li></ul></div>
+      <div class="card"><h3>Hannah Arendt</h3><ul class="levels"><li><span class="tag">Básica:</span> S. XX (posguerra); totalitarismo; banalidad del mal.</li><li><span class="tag">Intermedia:</span> Acción y natalidad; espacio público.</li><li><span class="tag">Críptica:</span> Un juicio en Jerusalén y la plaza de la política.</li><li><span class="tag">Sin siglos:</span> Política de la acción; mal banal; esfera pública.</li></ul></div>
+      <div class="card"><h3>Simone de Beauvoir</h3><ul class="levels"><li><span class="tag">Básica:</span> París, s. XX; <em>El segundo sexo</em>; existencialismo y género.</li><li><span class="tag">Intermedia:</span> Devenir mujer; proyecto y libertad.</li><li><span class="tag">Críptica:</span> No se nace, se llega a ser.</li><li><span class="tag">Sin siglos:</span> Existencialismo; construcción de género; libertad.</li></ul></div>
+      <div class="card"><h3>Michel Foucault</h3><ul class="levels"><li><span class="tag">Básica:</span> Francia, s. XX (60–80); poder/saber; disciplina; biopolítica.</li><li><span class="tag">Intermedia:</span> Genealogía; microfísica del poder; archivos.</li><li><span class="tag">Críptica:</span> Vigilar, normalizar y confesar.</li><li><span class="tag">Sin siglos:</span> Historia de prácticas; poder relacional; subjetivación.</li></ul></div>
+      <div class="card"><h3>Judith Butler</h3><ul class="levels"><li><span class="tag">Básica:</span> EE. UU., s. XX–XXI; performatividad del género.</li><li><span class="tag">Intermedia:</span> Repetición de actos; crítica al esencialismo.</li><li><span class="tag">Críptica:</span> El género se hace haciéndolo.</li><li><span class="tag">Sin siglos:</span> Teoría <em>queer</em>; performatividad; crítica identitaria.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- PÁGINA FINAL: CLAVE DE CORRECCIÓN -->
+  <section class="page">
+    <h2>Tapetes de etapa — Versión sin fechas</h2>
+    <div class="grid">
+      <div class="card stage">
+        <h2>1) Filosofía antigua</h2>
+        <p>Origen en <strong>polis</strong> griegas y Mediterráneo clásico. Explicaciones <strong>racionales</strong> sobre la <strong>naturaleza</strong> y la <strong>vida cívica</strong>.</p>
+        <ul><li>Señales: <strong>ágora</strong>, <strong>logos</strong>, <strong>Ideas</strong>, <strong>Academia</strong>, <strong>Liceo</strong>.</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>2) Filosofía medieval</h2>
+        <p>Diálogo entre <strong>fe y razón</strong> en <strong>monasterios</strong> y <strong>universidades medievales</strong>; <strong>escolástica</strong> y <strong>traducciones árabes</strong>.</p>
+        <ul><li>Señales: <strong>comentario</strong>, <strong>teología</strong>, <strong>París</strong>, <strong>tomismo</strong>.</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>3) Filosofía moderna</h2>
+        <p><strong>Renacimiento</strong> y <strong>Ilustración</strong>: <strong>ciencia moderna</strong>, <strong>racionalismo vs. empirismo</strong>, <strong>salones</strong> y <strong>enciclopedias</strong>.</p>
+        <ul><li>Señales: <strong>método</strong>, <strong>experiencia</strong>, <strong>derechos naturales</strong>, <strong>contrato social</strong>.</li></ul>
+      </div>
+      <div class="card stage">
+        <h2>4) Filosofía contemporánea</h2>
+        <p><strong>Industrialización</strong>, <strong>democracias</strong>, <strong>guerras mundiales</strong>; corrientes como <strong>existencialismo</strong>, <strong>análisis del lenguaje</strong>, <strong>genealogía</strong>, <strong>feminismos</strong>.</p>
+        <ul><li>Señales: <strong>capitalismo</strong>, <strong>totalitarismo</strong>, <strong>biopolítica</strong>, <strong>posguerra</strong>.</li></ul>
+      </div>
+    </div>
+    <p class="tiny">Usa estos tapetes cuando quieras jugar sin referencias temporales explícitas.</p>
+  </section>
+
+  <section class="page">
+    <h2>Clave de corrección (para el profesorado)</h2>
+    <details open>
+      <summary>Ver solución por etapas</summary>
+      <div class="key">
+        <p><strong>Antigua</strong>: Parménides, Heráclito, Sócrates, Platón, Aristóteles.</p>
+        <p><strong>Medieval</strong>: Hipatia de Alejandría, Agustín de Hipona, Tomás de Aquino.</p>
+        <p><strong>Moderna</strong>: Maquiavelo, Descartes, Spinoza, Locke, Leibniz, Émilie du Châtelet, Hume, Rousseau, Kant, Mary Wollstonecraft.</p>
+        <p><strong>Contemporánea</strong>: Hegel, John Stuart Mill, Karl Marx, Friedrich Nietzsche, G. E. M. Anscombe, Simone Weil, Martin Heidegger, Ludwig Wittgenstein, Hannah Arendt, Simone de Beauvoir, Michel Foucault, Judith Butler.</p>
+      </div>
+    </details>
+    <p class="tiny">Sugerencia DUA: ofrece niveles diferentes de pista según necesidad y permite justificar por escuelas/corrientes.</p>
+    <p class="tiny">Impresión recomendada: A4, 100–160 g/m². Recorta las cartas; plastifica para reutilizar.</p>
+  </section>
+</body>
+</html>
