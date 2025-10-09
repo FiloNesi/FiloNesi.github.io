@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador Aleatorio de Comportamientos Humanos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Transición suave para la opacidad */
+        #explanation-container {
+            transition: opacity 0.5s ease-in-out;
+            overflow: hidden;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+        <!-- Título y descripción -->
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Generador de Comportamientos</h1>
+        <p class="text-gray-600 mb-8">Pulsa el botón, lee el comportamiento y clasifícalo.</p>
+
+        <!-- Contenedor para mostrar el comportamiento -->
+        <div id="behavior-container" class="bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-6 min-h-[160px] flex items-center justify-center mb-8 transition-opacity duration-300">
+            <p id="behavior-text" class="text-lg md:text-xl font-medium text-gray-700">Aquí aparecerá un comportamiento...</p>
+        </div>
+
+        <!-- Botón para generar un nuevo comportamiento -->
+        <button id="new-behavior-btn" class="bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 ease-in-out">
+            Mostrar Comportamiento
+        </button>
+
+        <!-- Botones de clasificación -->
+        <div id="classification-buttons" class="mt-8 flex flex-wrap justify-center gap-4 opacity-0 transition-opacity duration-500">
+            <button id="innate-btn" class="bg-green-500 text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 transform hover:scale-105 transition-all duration-200 ease-in-out">
+                Innato
+            </button>
+            <button id="learned-btn" class="bg-yellow-500 text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 transform hover:scale-105 transition-all duration-200 ease-in-out">
+                Aprendido
+            </button>
+            <button id="ai-analyze-btn" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 ease-in-out">
+                ✨ Analizar con IA
+            </button>
+        </div>
+
+        <!-- Contenedor para la respuesta/explicación -->
+        <div id="explanation-container" class="mt-8 p-6 rounded-lg text-left transition-opacity duration-500 opacity-0" style="display: none;">
+            <h3 id="explanation-title" class="font-bold text-lg mb-2"></h3>
+            <div id="explanation-text" class="text-gray-700"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Base de datos de objetos de comportamiento ---
+        const behaviors = [
+            { text: "Sentimiento de vergüenza al cometer un error en público.", type: "aprendido", explanation: "Es una emoción social compleja que se aprende a través de la interacción y las normas culturales. No nacemos sabiendo qué es 'vergonzoso'." },
+            { text: "Risa ante una situación graciosa.", type: "innato", explanation: "La capacidad de reír es un reflejo innato, una respuesta fisiológica. Sin embargo, lo que consideramos 'gracioso' está muy influenciado por la cultura y el aprendizaje." },
+            { text: "Lenguaje verbal (hablar una lengua concreta).", type: "aprendido", explanation: "Aunque la capacidad para adquirir un lenguaje es innata (predisposición biológica), el idioma específico que hablamos (español, inglés, etc.) es completamente aprendido." },
+            { text: "Aprender a leer y escribir.", type: "aprendido", explanation: "Son habilidades complejas inventadas por el ser humano que requieren instrucción y práctica deliberada. Ningún ser humano nace sabiendo leer." },
+            { text: "Sentir miedo a la oscuridad.", type: "innato", explanation: "Es un miedo ancestral, un mecanismo de supervivencia que nos mantenía alerta ante los depredadores que cazaban de noche. Es una respuesta adaptativa." },
+            { text: "Amar a los hijos.", type: "innato", explanation: "El vínculo de apego y el instinto de protección hacia la descendencia son impulsos biológicos muy fuertes, esenciales para la supervivencia de la especie." },
+            { text: "Preferir algunos colores a otros.", type: "aprendido", explanation: "Nuestras preferencias por los colores están mayormente moldeadas por experiencias personales, la cultura y las asociaciones que hacemos a lo largo de la vida." },
+            { text: "Rezar o tener creencias religiosas.", type: "aprendido", explanation: "Son sistemas de creencias y rituales complejos que se transmiten culturalmente de una generación a otra. Son un producto de la sociedad." },
+            { text: "Celebrar cumpleaños con tarta y velas.", type: "aprendido", explanation: "Es un ritual cultural específico. Otras culturas celebran los cumpleaños de formas muy diferentes o no les dan la misma importancia." },
+            { text: "Sentir envidia.", type: "innato", explanation: "Es una emoción social básica, ligada a la comparación con otros. Probablemente evolucionó como un mecanismo para evaluar nuestro estatus en un grupo." },
+            { text: "Identificarse con una bandera o símbolo nacional.", type: "aprendido", explanation: "El nacionalismo y el significado de los símbolos patrios son conceptos abstractos y construcciones sociales que se aprenden en la escuela y la sociedad." },
+            { text: "Bailar.", type: "aprendido", explanation: "Aunque la capacidad de sentir el ritmo puede tener una base innata, los estilos de baile y las coreografías son formas de expresión cultural totalmente aprendidas." },
+            { text: "Cuidar a los ancianos.", type: "aprendido", explanation: "Es un comportamiento basado en normas sociales y valores morales que varían entre culturas. No es un instinto biológico universal." },
+            { text: "Desear tener pareja.", type: "innato", explanation: "El impulso de buscar un vínculo afectivo-sexual (emparejamiento) tiene una fuerte base biológica y hormonal, ligada a la reproducción y el compañerismo." },
+            { text: "Vestirse de una forma concreta (moda).", type: "aprendido", explanation: "La moda es un fenómeno cultural que cambia constantemente. La ropa que usamos y cómo la combinamos se aprende por imitación y normas sociales." },
+            { text: "Huir de un peligro.", type: "innato", explanation: "La respuesta de 'lucha o huida' es un instinto de supervivencia fundamental. El sistema nervioso se activa automáticamente ante una amenaza percibida." },
+            { text: "Jugar de pequeños.", type: "innato", explanation: "El juego es un comportamiento instintivo en mamíferos jóvenes. Es crucial para el desarrollo físico, social y cognitivo, permitiendo practicar habilidades para la vida adulta." },
+            { text: "Usar cubiertos para comer.", type: "aprendido", explanation: "Es una norma cultural. Muchas culturas usan palillos, las manos u otros utensilios. Es una habilidad que requiere aprendizaje y práctica." },
+            { text: "Sentir atracción por determinadas personas.", type: "innato", explanation: "La atracción sexual y romántica tiene una base biológica y hormonal muy potente, aunque los 'estándares de belleza' puedan ser influidos por la cultura." },
+            { text: "Dividir el tiempo en horas y minutos.", type: "aprendido", explanation: "Es una construcción social y una herramienta que hemos inventado para organizar nuestras vidas. La percepción del tiempo es innata, pero no su división matemática." },
+            { text: "Contar historias.", type: "aprendido", explanation: "Es una tradición universal, pero la estructura, los temas y la forma de narrar se transmiten culturalmente. Es la base de la cultura humana." },
+            { text: "Buscar justicia.", type: "aprendido", explanation: "El concepto de justicia es una idea moral y filosófica muy compleja, desarrollada a través de la vida en sociedad y la creación de leyes y normas." },
+            { text: "Competir con otros.", type: "innato", explanation: "La competitividad es un impulso básico relacionado con la supervivencia, la obtención de recursos y la mejora del estatus dentro de un grupo social." },
+            { text: "Practicar deporte.", type: "aprendido", explanation: "Los deportes son actividades con reglas específicas y complejas que han sido inventadas y deben ser aprendidas. El impulso de jugar o competir, sin embargo, es innato." },
+            { text: "Pelearse entre hermanos.", type: "innato", explanation: "Se conoce como 'rivalidad fraterna' y es un comportamiento instintivo común en muchas especies, basado en la competencia por los recursos y la atención de los padres." },
+            { text: "Cantar nanas a los bebés.", type: "aprendido", explanation: "Es una práctica cultural para calmar a los bebés. Aunque el canto es universal, las melodías y letras específicas de las nanas se aprenden." },
+            { text: "Llorar al ver una película triste.", type: "aprendido", explanation: "Llorar es una respuesta innata, pero la capacidad de empatizar con personajes ficticios hasta el punto de llorar es una habilidad cognitiva y emocional compleja y aprendida." },
+            { text: "Necesidad de pertenecer a un grupo.", type: "innato", explanation: "Los humanos somos seres sociales por naturaleza. La pertenencia a un grupo era esencial para la supervivencia de nuestros ancestros (protección, caza, etc.)." },
+            { text: "Elegir una profesión.", type: "aprendido", explanation: "La idea de 'profesión' es un concepto de las sociedades modernas. La elección depende de la educación, las oportunidades, la cultura y los intereses personales." },
+            { text: "Establecer normas en una comunidad.", type: "aprendido", explanation: "La creación de leyes y normas sociales es un pilar de la civilización. Es un proceso intelectual y de consenso para regular la convivencia." }
+        ];
+
+        // --- Referencias a los elementos del DOM ---
+        const behaviorTextElement = document.getElementById('behavior-text');
+        const newBehaviorButton = document.getElementById('new-behavior-btn');
+        const classificationButtons = document.getElementById('classification-buttons');
+        const innateButton = document.getElementById('innate-btn');
+        const learnedButton = document.getElementById('learned-btn');
+        const aiAnalyzeButton = document.getElementById('ai-analyze-btn');
+        const explanationContainer = document.getElementById('explanation-container');
+        const explanationTitle = document.getElementById('explanation-title');
+        const explanationText = document.getElementById('explanation-text');
+
+        let currentBehavior = null;
+
+        // --- Funciones ---
+        function hideExplanation() {
+            explanationContainer.style.opacity = '0';
+            explanationContainer.style.display = 'none';
+        }
+
+        function displayRandomBehavior() {
+            hideExplanation();
+            const randomIndex = Math.floor(Math.random() * behaviors.length);
+            currentBehavior = behaviors[randomIndex];
+            
+            behaviorTextElement.textContent = currentBehavior.text;
+            classificationButtons.classList.remove('opacity-0');
+        }
+
+        function showExplanation(userChoice) {
+            if (!currentBehavior) return;
+
+            const isCorrect = userChoice === currentBehavior.type;
+            
+            explanationContainer.style.display = 'block';
+            
+            if (isCorrect) {
+                explanationTitle.textContent = "¡Correcto!";
+                explanationContainer.className = "mt-8 p-6 rounded-lg text-left bg-green-50 border-l-4 border-green-400";
+            } else {
+                explanationTitle.textContent = "No exactamente...";
+                explanationContainer.className = "mt-8 p-6 rounded-lg text-left bg-red-50 border-l-4 border-red-400";
+            }
+            
+            explanationText.textContent = currentBehavior.explanation;
+            void explanationContainer.offsetWidth;
+            explanationContainer.style.opacity = '1';
+        }
+        
+        // --- Integración con Gemini API ---
+        async function analyzeWithAI() {
+            if (!currentBehavior) return;
+
+            // Mostrar estado de carga
+            explanationContainer.style.display = 'block';
+            explanationTitle.textContent = "Analizando con IA...";
+            explanationText.innerHTML = `<div class="flex justify-center items-center"><div class="spinner"></div><p class="ml-4">Pensando...</p></div>`;
+            explanationContainer.className = "mt-8 p-6 rounded-lg text-left bg-purple-50 border-l-4 border-purple-400";
+            void explanationContainer.offsetWidth;
+            explanationContainer.style.opacity = '1';
+
+            const systemPrompt = "Actúa como un experto en psicología y antropología. Proporciona un análisis matizado y detallado sobre si el siguiente comportamiento humano es principalmente innato o aprendido. Considera las bases biológicas, las influencias culturales y los factores de desarrollo. Tu respuesta debe ser clara, concisa y adecuada para un estudiante de bachillerato.";
+            const userQuery = currentBehavior.text;
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error en la API: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    explanationTitle.textContent = "Análisis de la IA ✨";
+                    explanationText.textContent = candidate.content.parts[0].text;
+                } else {
+                    throw new Error("Respuesta de la IA no válida.");
+                }
+
+            } catch (error) {
+                console.error("Error al llamar a la API de Gemini:", error);
+                explanationTitle.textContent = "Error";
+                explanationText.textContent = "No se pudo obtener el análisis de la IA en este momento. Por favor, inténtalo de nuevo más tarde.";
+                explanationContainer.className = "mt-8 p-6 rounded-lg text-left bg-red-50 border-l-4 border-red-400";
+            }
+        }
+
+        // --- Event Listeners ---
+        newBehaviorButton.addEventListener('click', displayRandomBehavior);
+        innateButton.addEventListener('click', () => showExplanation('innato'));
+        learnedButton.addEventListener('click', () => showExplanation('aprendido'));
+        aiAnalyzeButton.addEventListener('click', analyzeWithAI);
+
+    </script>
+</body>
+</html>
+
