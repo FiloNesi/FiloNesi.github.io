@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Interactiva: La Condición Humana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para una transición suave del contenido */
+        .slide-content {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Contenedor principal de la presentación -->
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 md:p-10 overflow-hidden">
+        
+        <!-- Barra de progreso -->
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+            <div id="progressBar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <!-- Contenido de la diapositiva que cambiará dinámicamente -->
+        <div id="slideContainer" class="slide-content">
+            <h1 id="slideTitle" class="text-3xl md:text-4xl font-bold text-gray-800 mb-4"></h1>
+            <div id="slideBody" class="text-gray-700 text-base md:text-lg leading-relaxed space-y-4">
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+            <button id="nextButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                Empezar
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONTENIDO DE LA PRESENTACIÓN ---
+        const slides = [
+            {
+                title: "La Condición Humana",
+                body: `<p class="text-xl">Vamos a explorar una de las preguntas más profundas que existen: <strong>¿Qué nos hace humanos?</strong></p><p> Haz clic en 'Siguiente' para comenzar el viaje.</p>`
+            },
+            {
+                title: "1. ¿Naturaleza o Cultura?",
+                body: `<p>Los seres humanos hemos desarrollado la capacidad de crear una <strong>cultura</strong>, que a su vez moldea nuestra "naturaleza".</p><p>Esto crea una dualidad: ¿somos lo que queda de biológico en nosotros, o somos precisamente nuestro alejamiento de ello a través de la cultura?</p><p>Para evitar esta confusión, usaremos el término <strong>"condición humana"</strong> para referirnos a lo que nos caracteriza como especie.</p>`
+            },
+            {
+                title: "2. La Búsqueda de la Definición",
+                body: `<p>Desde la antigüedad, hemos intentado encontrar un <strong>rasgo único y diferenciador</strong> que nos separe del resto de los animales.</p><p>Sin embargo, estas definiciones a menudo reflejan más las modas culturales de su tiempo que una supuesta "esencia humana" intemporal.</p>`
+            },
+            {
+                title: "3. Un desfile de definiciones",
+                body: `
+                    <p>A lo largo de la historia, han surgido innumerables intentos de definirnos:</p>
+                    <ul class="list-none space-y-3 mt-4">
+                        <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <strong class="text-indigo-600">Platón:</strong> (a modo de broma) un "bípedo implume".
+                        </li>
+                        <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <strong class="text-indigo-600">Aristóteles:</strong> el célebre "animal racional".
+                        </li>
+                         <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <strong class="text-indigo-600">Nietzsche:</strong> "el único ser capaz de prometer".
+                        </li>
+                         <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <strong class="text-indigo-600">Heidegger:</strong> (de forma estremecedora) "un ser-para-la-muerte".
+                        </li>
+                  </li>
+                         <li class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <strong class="text-indigo-600">Edgar Allan Poe:</strong> (humorística) "el único animal que tima".
+                        </li>
+                    </ul>
+                `
+            },
+            {
+                title: "4. ¿Por qué nos obsesiona tanto?",
+                body: `
+                    <p class="font-bold text-lg text-indigo-800">Factor 1: Es una preocupación fundamental.</p>
+                    <p>No hay mitología, religión o filosofía que no intente definir al ser humano.</p>
+                    <p>El filósofo <strong>Immanuel Kant</strong> afirmaba que todas las grandes preguntas de la filosofía se resumen en una sola:</p>
+                    <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-gray-600 my-4">¿Qué es el hombre?</blockquote>
+                `
+            },
+            {
+                title: "5. Nuestro lugar en el mundo",
+                body: `
+                    <p class="font-bold text-lg text-indigo-800">Factor 2: Buscamos nuestro propósito.</p>
+                    <p>Definirnos implica también buscar cuál es nuestro <strong>puesto en el mundo y nuestra misión.</strong></p>
+                    <p>Esta necesidad podría nacer de nuestra "indeterminación genética". No estamos "programados" del todo. En gran medida, <strong>somos lo que nos vamos construyendo</strong>, y esa libertad puede generar angustia.</p>
+                `
+            },
+            {
+                title: "6. La paradoja de estudiarnos",
+                body: `
+                    <p class="font-bold text-lg text-indigo-800">Factor 3: Somos juez y parte.</p>
+                    <p>Cuando investigamos sobre nosotros mismos, el sujeto que estudia y el objeto estudiado <strong>son la misma cosa.</strong></p>
+                    <p>Es una situación paradójica, como intentar que un cuchillo corte su propio filo o, como contaba el Barón de Münchhausen, salir de un pozo tirando de tu propia coleta. </p>
+                `
+            },
+            {
+                title: "7. Conclusión: un problema para nosotros mismos",
+                body: `
+                    <p>Sumando todas estas dificultades, la corriente filosófica de <strong>José Ortega y Gasset</strong> llega a una poderosa conclusión:</p>
+                    <div class="my-4 p-6 bg-indigo-50 text-indigo-900 rounded-xl text-center">
+                        <p class="text-2xl font-bold">El ser humano es "un problema para sí mismo".</p>
+                    </div>
+                    <p><strong>Somos una criatura constantemente en busca de su propia identidad</strong>, una pregunta abierta más que una respuesta cerrada.</p>
+                `
+            },
+            {
+                title: "En busca de la identidad humana",
+                body: `<p>La pregunta sobre la condición humana no tiene una respuesta final, y quizás esa sea la característica más humana de todas. El viaje continúa en cada uno de nosotros.</p>`
+            }
+        ];
+
+        // --- LÓGICA DE LA PRESENTACIÓN ---
+        let currentSlide = 0;
+
+        const slideContainer = document.getElementById('slideContainer');
+        const slideTitle = document.getElementById('slideTitle');
+        const slideBody = document.getElementById('slideBody');
+        const nextButton = document.getElementById('nextButton');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadSlide(slideIndex) {
+            const slide = slides[slideIndex];
+            
+            // Animación de desvanecimiento
+            slideContainer.style.opacity = 0;
+
+            setTimeout(() => {
+                slideTitle.textContent = slide.title;
+                slideBody.innerHTML = slide.body;
+
+                // Actualizar barra de progreso
+                const progress = ((slideIndex) / (slides.length - 1)) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // Actualizar texto del botón
+                if (currentSlide === 0) {
+                     nextButton.textContent = "Siguiente";
+                }
+                
+                if (currentSlide === slides.length - 1) {
+                    nextButton.textContent = "Reiniciar";
+                } else if(currentSlide !== 0) {
+                    nextButton.textContent = "Siguiente";
+                }
+                
+                 // Animación de aparición
+                slideContainer.style.opacity = 1;
+            }, 300); // Coincide con la duración de la transición
+        }
+
+        nextButton.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+            } else {
+                // Si es la última diapositiva, reinicia
+                currentSlide = 0;
+            }
+            loadSlide(currentSlide);
+        });
+
+        // Cargar la primera diapositiva (introducción) al iniciar
+        loadSlide(0);
+        // Ajustamos el progreso inicial para la primera diapositiva (intro)
+        progressBar.style.width = `0%`;
+        nextButton.textContent = "Empezar";
+    </script>
+</body>
+</html>
