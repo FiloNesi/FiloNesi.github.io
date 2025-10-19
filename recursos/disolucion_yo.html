@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación: La Disolución del Yo y Nuevas Perspectivas</title>
+    <!-- Tailwind CSS para un diseño moderno y adaptable -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo base con la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Animación para la entrada de las diapositivas */
+        .slide-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Estilo para los botones de interacción */
+        .interactive-box {
+            border-left: 4px solid #60a5fa; /* Un color azul para destacar */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <main class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        <!-- Contenedor de las Diapositivas -->
+        <div id="presentation-container" class="relative p-8 md:p-12">
+
+            <!-- Diapositiva 0: Título -->
+            <div class="slide slide-fade-in">
+                <h1 class="text-4xl md:text-5xl font-black text-center mb-4 text-blue-400">La Disolución del Yo</h1>
+                <p class="text-xl text-center text-gray-300">Parte II: Estructuralismo, Posmodernidad y Existencialismo.</p>
+                <div class="mt-8 text-center">
+                    <img src="https://placehold.co/600x300/1f2937/60a5fa?text=Filosof%C3%ADa+Contempor%C3%A1nea" alt="Portada de la presentación de filosofía contemporánea" class="mx-auto rounded-lg shadow-lg">
+                </div>
+                <p class="text-center mt-8 text-lg">Continuamos nuestro viaje... ¿Qué queda del "yo"?</p>
+            </div>
+            
+            <!-- Diapositiva 1: Estructuralismo -->
+            <div class="slide slide-fade-in hidden">
+                 <h2 class="text-3xl font-bold mb-4 text-blue-400">1. El Yo Atrapado en la Estructura</h2>
+                 <p class="text-lg text-gray-300 mb-4">El <span class="font-bold">estructuralismo</span> nos dice que los individuos no importan tanto como los sistemas en los que viven. El "yo" está inmerso en una estructura que no puede controlar.</p>
+                <div class="md:flex md:items-center md:space-x-8">
+                    <img src="https://placehold.co/300x300/ffffff/000000?text=ESTRUCTURA" alt="[Imagen abstracta de una red o estructura]" class="w-full md:w-1/3 rounded-lg shadow-lg mb-4 md:mb-0">
+                    <div class="text-lg text-gray-300 space-y-4 flex-1">
+                        <ul class="list-disc list-inside bg-gray-700 p-4 rounded-lg">
+                            <li>Fuerzas <span class="font-bold text-blue-300">anónimas e impersonales</span> (el lenguaje, la economía, la cultura) fijan las normas, modas e ideas.</li>
+                            <li>El individuo no es el origen de sus pensamientos; es un producto de la estructura.</li>
+                            <li>El filósofo <span class="font-bold">Michel Foucault</span>, partiendo de aquí, anunció la <span class="font-bold text-blue-300">«muerte del hombre»</span>: el fin de la idea de un ser humano como sujeto autónomo y central.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diapositiva 2: Pensamiento Posmoderno -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-400">2. El Yo en la Posmodernidad: "No me encuentro muy bien"</h2>
+                 <p class="text-lg text-gray-300 mb-4">El <span class="font-bold">pensamiento posmoderno</span> profundiza esta crisis. Ya no creemos en las "grandes explicaciones" o "grandes relatos" (ciencia, religión, progreso).</p>
+                 <div class="bg-gray-700 p-6 rounded-lg text-center">
+                     <p class="text-2xl italic text-gray-300">"Dios ha muerto, Marx ha muerto y yo mismo no me encuentro muy bien."</p>
+                     <p class="text-right mt-2 text-blue-300">- Michel Le Bris (resumiendo el espíritu de la época)</p>
+                 </div>
+                 <ul class="list-disc list-inside space-y-2 mt-6 text-gray-300">
+                    <li><span class="font-bold">Se difuminan los límites (Jean Baudrillard):</span> ¿Qué es izquierda/derecha en política? ¿Verdadero/falso en periodismo? ¿Natural/cultural? Todo es <span class="font-bold">simulación</span>.</li>
+                    <li><span class="font-bold">La razón no es "desinteresada" (Jean-François Lyotard):</span> Todo pensamiento esconde un interés. Perdemos la fe en una Razón todopoderosa.</li>
+                </ul>
+            </div>
+
+            <!-- Diapositiva 3: El Existencialismo -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-green-400">3. Una Respuesta Humanista: El Existencialismo</h2>
+                <p class="text-lg text-gray-300 mb-4">En medio de la crisis, surge una escuela que vuelve a poner el foco en el individuo: el <span class="font-bold">existencialismo</span>. Su principal representante es <span class="font-bold">Jean-Paul Sartre</span>.</p>
+                <div class="bg-gray-700 p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-center text-green-300 mb-2">"La existencia precede a la esencia"</h3>
+                    <p class="text-center text-lg text-gray-300">Esto significa que no nacemos con una "naturaleza humana" definida. Primero existimos, y luego, a través de nuestras elecciones, <span class="font-bold">nos construimos a nosotros mismos</span>.</p>
+                </div>
+                <ul class="list-disc list-inside space-y-2 mt-6 text-gray-300">
+                    <li>El único rasgo del ser humano es su <span class="font-bold">falta de rasgos</span>, su radical libertad.</li>
+                    <li>Somos lo que elegimos ser. Estamos <span class="font-bold">condenados a ser libres</span>.</li>
+                    <li>Esta libertad nos hace <span class="font-bold text-green-300">absolutamente responsables</span> no solo de lo que hacemos, sino de lo que somos.</li>
+                </ul>
+            </div>
+
+            <!-- Diapositiva 4: Angustia y Absurdo -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-green-400">4. La Carga de la Libertad: Angustia y Absurdo</h2>
+                <p class="text-lg text-gray-300 mb-4">Esta libertad radical no es un regalo, sino una carga pesada. No tenemos patrones, ni guías, ni garantías.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold">La Angustia (Sartre)</h3>
+                        <p class="text-gray-300 mt-2">Nace del peso de la responsabilidad. Cada elección que hacemos configura la humanidad entera. Nunca sabremos si hemos elegido bien.</p>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold">El Absurdo (Camus)</h3>
+                        <p class="text-gray-300 mt-2">Surge del choque entre nuestro deseo de sentido y el silencio irracional del mundo. Probablemente nada tenga sentido.</p>
+                    </div>
+                </div>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-6">
+                    <h4 class="text-xl font-bold text-blue-400 mb-2">💡 Para Debatir:</h4>
+                    <p class="font-semibold text-gray-300">Si nada tiene sentido, ¿nos libera eso de la responsabilidad de nuestros actos? ¿O, por el contrario, nos hace aún más responsables?</p>
+                </div>
+            </div>
+
+            <!-- Diapositiva 5: Identidad Narrativa -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-yellow-400">5. Una Alternativa: La Identidad Narrativa de Paul Ricoeur</h2>
+                <p class="text-lg text-gray-300 mb-4">Frente a la disolución del "yo", el filósofo <span class="font-bold">Paul Ricoeur</span> propone una solución: no <span class="font-bold">somos</span> una esencia fija, sino que <span class="font-bold">nos constituimos a través de relatos</span>.</p>
+                <div class="md:flex md:items-center md:space-x-8">
+                     <div class="text-lg text-gray-300 space-y-4 flex-1">
+                        <ul class="list-disc list-inside space-y-2 mb-6">
+                            <li>Nuestra identidad es la <span class="font-bold">historia que contamos sobre nosotros mismos</span> para dar sentido a nuestras experiencias.</li>
+                            <li>La narración une el pasado, el presente y el futuro, dando <span class="font-bold">unidad y coherencia</span> a nuestra vida.</li>
+                            <li>No somos un "qué" (esencia), sino un "quién" que se compromete y responde.</li>
+                            <li>La identidad se forma en <span class="font-bold text-yellow-300">diálogo con los otros</span> y nos hace responsables de nuestra historia.</li>
+                        </ul>
+                    </div>
+                    <img src="https://placehold.co/300x350/ffffff/000000?text=CONTAR+UNA+HISTORIA" alt="[Icono de un libro o una pluma]" class="w-full md:w-1/3 rounded-lg shadow-lg mb-4 md:mb-0">
+                </div>
+            </div>
+
+            <!-- Diapositiva 6: Conclusión -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-400 text-center">6. Conclusión: ¿Un Nuevo Humanismo?</h2>
+                 <p class="text-lg text-gray-300 mb-6 text-center">Hemos viajado desde la "muerte del hombre" hasta nuevas formas de entender la identidad.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="font-bold text-xl mb-2">El Legado Existencialista</h3>
+                        <p>Nos deja un nuevo acento en la <span class="font-bold text-green-300">individualidad</span> y una visión renovada de la <span class="font-bold text-green-300">libertad, la responsabilidad y el compromiso moral</span>.</p>
+                    </div>
+                     <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="font-bold text-xl mb-2">La Propuesta Narrativa</h3>
+                        <p>Nos ofrece una forma de construir un "yo" coherente en un mundo fragmentado, a través de los <span class="font-bold text-yellow-300">relatos que nos contamos</span> y de los que nos hacemos responsables.</p>
+                    </div>
+                </div>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-8">
+                    <h4 class="text-2xl font-bold text-blue-400 mb-2 text-center">Pregunta Final</h4>
+                    <p class="text-center font-semibold text-gray-300 text-xl">Después de todo este recorrido, ¿con qué idea te quedas? ¿Eres una construcción social, un proyecto libre, una narración... o una mezcla de todo?</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navegación -->
+        <div class="bg-gray-900 p-4 flex justify-between items-center">
+            <button id="prevBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+            <div id="slide-counter" class="text-gray-400 text-sm"></div>
+            <button id="nextBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Siguiente</button>
+        </div>
+    </main>
+
+    <script>
+        // Lógica de la presentación interactiva
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.getElementById('slide-counter');
+            
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(index) {
+                slides.forEach((slide) => {
+                    slide.classList.add('hidden');
+                });
+                if (slides[index]) {
+                    slides[index].classList.remove('hidden');
+                    slides[index].classList.add('slide-fade-in');
+                }
+                updateNavigation();
+            }
+
+            function updateNavigation() {
+                slideCounter.textContent = `Diapositiva ${currentSlide + 1} de ${totalSlides}`;
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+                if (currentSlide === totalSlides - 1) {
+                    nextBtn.textContent = 'Finalizar';
+                } else {
+                    nextBtn.textContent = 'Siguiente';
+                }
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            });
+            
+            showSlide(currentSlide);
+        });
+    </script>
+</body>
+</html>
