@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación: El Problema del Yo y la Identidad Personal</title>
+    <!-- Tailwind CSS para un diseño moderno y adaptable -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo base con la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Animación para la entrada de las diapositivas */
+        .slide-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Estilo para los botones de interacción */
+        .interactive-box {
+            border-left: 4px solid #f59e0b; /* Un color ámbar para destacar */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <main class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        <!-- Contenedor de las Diapositivas -->
+        <div id="presentation-container" class="relative p-8 md:p-12">
+
+            <!-- Diapositiva 0: Título -->
+            <div class="slide slide-fade-in">
+                <h1 class="text-4xl md:text-5xl font-black text-center mb-4 text-amber-400">El Problema del Yo y de la Identidad Personal</h1>
+                <p class="text-xl text-center text-gray-300">Un viaje para desmontar la idea de quiénes creemos ser.</p>
+                <div class="mt-8 text-center">
+                    <img src="https://placehold.co/600x300/1f2937/f59e0b?text=Filosof%C3%ADa+-+1%C2%BA+Bachillerato" alt="Portada de la presentación de filosofía" class="mx-auto rounded-lg shadow-lg">
+                </div>
+                <p class="text-center mt-8 text-lg">Usa los botones de navegación para empezar.</p>
+            </div>
+            
+            <!-- Diapositiva 1: El punto de partida -->
+            <div class="slide slide-fade-in hidden">
+                 <h2 class="text-3xl font-bold mb-4 text-amber-400">1. El punto de partida: ¿Quién (creías que) eres?</h2>
+                 <div class="md:flex md:items-center md:space-x-8">
+                    <img src="https://placehold.co/300x300/ffffff/000000?text=Hombre+de+Vitruvio" alt="[Imagen del Hombre de Vitruvio]" class="w-full md:w-1/3 rounded-lg shadow-lg mb-4 md:mb-0">
+                    <div class="text-lg text-gray-300 space-y-4 flex-1">
+                        <p>Hasta hace no mucho, la filosofía occidental tenía una idea bastante clara del ser humano. Pensábamos que éramos:</p>
+                        <ul class="list-disc list-inside bg-gray-700 p-4 rounded-lg">
+                            <li>Seres <span class="font-bold text-amber-300">racionales</span>.</li>
+                            <li>Fundamentalmente <span class="font-bold text-amber-300">libres</span>.</li>
+                            <li>Guiados por una <span class="font-bold text-amber-300">conciencia</span> clara.</li>
+                            <li>Poseedores de una "esencia" humana, fija e inmutable.</li>
+                        </ul>
+                         <p class="mt-4 text-2xl font-bold text-center">Pero... ¿y si todo eso fuera una ilusión?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diapositiva 2: Los "Maestros de la Sospecha" -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-6 text-amber-400 text-center">2. Los 3 "Maestros de la Sospecha" 💣</h2>
+                <p class="text-lg text-gray-300 mb-8 text-center">En los últimos 150 años, tres pensadores pusieron una bomba a esta cómoda idea. Nos enseñaron a <span class="font-bold">sospechar</span> de lo que creíamos más seguro: nuestra propia identidad.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <img src="https://placehold.co/150x150/ef4444/ffffff?text=MARX" alt="[Retrato de Karl Marx]" class="mx-auto rounded-full mb-4 border-4 border-red-500">
+                        <h3 class="text-2xl font-bold">Karl Marx</h3>
+                        <p class="text-red-400">La sospecha económica</p>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <img src="https://placehold.co/150x150/3b82f6/ffffff?text=NIETZSCHE" alt="[Retrato de Friedrich Nietzsche]" class="mx-auto rounded-full mb-4 border-4 border-blue-500">
+                        <h3 class="text-2xl font-bold">F. Nietzsche</h3>
+                        <p class="text-blue-400">La sospecha moral</p>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <img src="https://placehold.co/150x150/a855f7/ffffff?text=FREUD" alt="[Retrato de Sigmund Freud]" class="mx-auto rounded-full mb-4 border-4 border-purple-500">
+                        <h3 class="text-2xl font-bold">Sigmund Freud</h3>
+                        <p class="text-purple-400">La sospecha psicológica</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diapositiva 3: Karl Marx -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-red-400">3. Karl Marx (1818-1883): La Conciencia de Clase</h2>
+                <p class="text-lg text-gray-300 mb-4">Marx nos dice: "¿Tus ideas son *tuyas*? ¡Error! Lo que define quién eres y qué piensas <span class="font-bold">no es tu espíritu, sino tu posición económica</span>."</p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-300">
+                    <li><span class="font-bold">La base material:</span> La economía es lo que mueve el mundo.</li>
+                    <li><span class="font-bold">Tu posición de clase:</span> No piensas igual si eres el dueño de la fábrica que si eres el obrero.</li>
+                    <li><span class="font-bold">Ideología:</span> Tus ideas (política, religión, moral) son un "recubrimiento" que justifica y oculta la realidad económica. Es una <span class="font-bold text-red-300">falsa conciencia</span>.</li>
+                </ul>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-4">
+                    <h4 class="text-xl font-bold text-amber-400 mb-2">💡 Para Debatir: ¿Quién piensa esto?</h4>
+                    <p class="mb-4">"El esfuerzo individual es la clave del éxito. Quien es pobre, es porque no se ha esforzado lo suficiente."</p>
+                    <p class="font-semibold text-gray-300">¿Crees que esta idea es "libre" o, como diría Marx, está determinada por la clase social de quien la dice? ¿Por qué?</p>
+                </div>
+                 <p class="mt-4 text-center text-xl font-bold">La sospecha de Marx: Tu "yo" no es libre; es un producto de las <span class="text-red-400">relaciones socioeconómicas.</span></p>
+            </div>
+
+            <!-- Diapositiva 4: Friedrich Nietzsche -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-400">4. Friedrich Nietzsche (1844-1900): La Muerte de Dios</h2>
+                <p class="text-lg text-gray-300 mb-4">Nietzsche llega con un martillo 🔨 y afirma: "¡Los valores, la moral y el sentido de la vida son invenciones de los débiles para soportar un mundo <span class="font-bold">caótico y sin sentido</span>!"</p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-300">
+                    <li><span class="font-bold">Valores de débiles:</span> La moral tradicional (cristiana, racional) es un síntoma de decadencia, un refugio para no afrontar la vida.</li>
+                    <li><span class="font-bold">La "Muerte de Dios":</span> Simboliza la caída de todos los valores absolutos que nos daban seguridad. Estamos solos.</li>
+                    <li><span class="font-bold">El Superhombre (Übermensch):</span> Un nuevo humano que no necesita muletas, que ama el caos y es capaz de <span class="font-bold text-blue-300">crear sus propios valores.</span></li>
+                </ul>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-4">
+                    <h4 class="text-xl font-bold text-amber-400 mb-2">💡 Para Reflexionar: ¿Qué harías en el caos?</h4>
+                    <p class="mb-4">Imagina que mañana desaparecen todas las leyes (morales, religiosas, legales). No hay premio ni castigo.</p>
+                    <p class="font-semibold text-gray-300">¿Seguirías actuando "bien"? ¿Tu moralidad es real o es, como dice Nietzsche, solo miedo y debilidad?</p>
+                </div>
+                <p class="mt-4 text-center text-xl font-bold">La sospecha de Nietzsche: Tu "yo" moral es una <span class="text-blue-400">máscara de debilidad.</span></p>
+            </div>
+
+            <!-- Diapositiva 5: Sigmund Freud -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-purple-400">5. Sigmund Freud (1856-1939): El Inconsciente</h2>
+                <p class="text-lg text-gray-300 mb-4">Freud nos da el golpe de gracia: "Tu 'conciencia' no es el capitán del barco. La mayor parte de tu mente es un océano oscuro que no controlas: <span class="font-bold">el inconsciente</span>."</p>
+                <div class="md:flex md:items-center md:space-x-8">
+                     <div class="text-lg text-gray-300 space-y-4 flex-1">
+                        <ul class="list-disc list-inside space-y-2 mb-6">
+                            <li><span class="font-bold">El Inconsciente:</span> Un fondo lleno de pulsiones, instintos (sexo, agresividad), deseos reprimidos y traumas.</li>
+                            <li><span class="font-bold">No eres libre:</span> Tus decisiones "conscientes" están dictadas por ese fondo instintivo.</li>
+                            <li><span class="font-bold">El "Yo" sospechoso:</span> La conciencia es solo la punta del iceberg. Ya no podemos hablar de <span class="font-bold text-purple-300">"voluntad" o "libertad"</span> con la misma tranquilidad.</li>
+                        </ul>
+                    </div>
+                    <img src="https://placehold.co/300x350/ffffff/000000?text=Consciente%0A%0APreconsciente%0A%0A%0AInconsciente" alt="[Esquema del iceberg de Freud]" class="w-full md:w-1/3 rounded-lg shadow-lg mb-4 md:mb-0">
+                </div>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-4">
+                    <h4 class="text-xl font-bold text-amber-400 mb-2">💡 Para Pensar: ¿Por qué lo hiciste?</h4>
+                    <p class="mb-4">Piensa en la última vez que procrastinaste en lugar de estudiar. ¿Fue una decisión 100% "libre" y "consciente"?</p>
+                    <p class="font-semibold text-gray-300">¿O había una fuerza más profunda (un miedo, un deseo) que te estaba empujando?</p>
+                </div>
+                 <p class="mt-4 text-center text-xl font-bold">La sospecha de Freud: Tu "yo" consciente <span class="text-purple-400">no es el dueño de su propia casa.</span></p>
+            </div>
+
+            <!-- Diapositiva 6: Conclusión -->
+            <div class="slide slide-fade-in hidden">
+                <h2 class="text-3xl font-bold mb-4 text-amber-400 text-center">6. Conclusión: La Identidad Rota</h2>
+                 <p class="text-lg text-gray-300 mb-6 text-center">Después de los "Maestros de la Sospecha", la idea de un "yo" simple, único y racional queda destrozada.</p>
+                <div class="flex justify-center mb-6">
+                   <img src="https://placehold.co/400x250/1f2937/ffffff?text=ESPEJO+ROTO" alt="[Imagen de un espejo roto reflejando un rostro]" class="rounded-lg shadow-lg">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center text-lg">
+                    <p class="bg-red-900/50 p-4 rounded-lg">Para <span class="font-bold">MARX</span>, eres un producto de tu <span class="font-bold">clase social.</span></p>
+                    <p class="bg-blue-900/50 p-4 rounded-lg">Para <span class="font-bold">NIETZSCHE</span>, eres una <span class="font-bold">voluntad</span> en un mundo sin sentido.</p>
+                    <p class="bg-purple-900/50 p-4 rounded-lg">Para <span class="font-bold">FREUD</span>, eres una marioneta de tu <span class="font-bold">inconsciente.</span></p>
+                </div>
+                <div class="interactive-box bg-gray-900/50 p-6 rounded-lg mt-8">
+                    <h4 class="text-2xl font-bold text-amber-400 mb-2 text-center">Debate Final: Entonces... ¿Quién soy?</h4>
+                    <p class="text-center font-semibold text-gray-300 text-xl">Si no soy (solo) mis ideas, ni (solo) mi moral, ni (solo) mi conciencia... ¿Qué queda de "mí"?</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navegación -->
+        <div class="bg-gray-900 p-4 flex justify-between items-center">
+            <button id="prevBtn" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+            <div id="slide-counter" class="text-gray-400 text-sm"></div>
+            <button id="nextBtn" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition duration-300">Siguiente</button>
+        </div>
+    </main>
+
+    <script>
+        // Lógica de la presentación interactiva
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.getElementById('slide-counter');
+            
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(index) {
+                // Oculta todas las diapositivas
+                slides.forEach((slide, i) => {
+                    slide.classList.add('hidden');
+                });
+
+                // Muestra la diapositiva actual con una animación
+                if (slides[index]) {
+                    slides[index].classList.remove('hidden');
+                    slides[index].classList.add('slide-fade-in');
+                }
+                
+                updateNavigation();
+            }
+
+            function updateNavigation() {
+                // Actualiza el contador
+                slideCounter.textContent = `Diapositiva ${currentSlide + 1} de ${totalSlides}`;
+                
+                // Habilita o deshabilita los botones de navegación
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+                
+                // Cambia el texto del último botón
+                if (currentSlide === totalSlides - 1) {
+                    nextBtn.textContent = 'Finalizar';
+                } else {
+                    nextBtn.textContent = 'Siguiente';
+                }
+            }
+
+            // Event listeners para los botones
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            });
+            
+            // Inicializa la presentación mostrando la primera diapositiva
+            showSlide(currentSlide);
+        });
+    </script>
+</body>
+</html>
