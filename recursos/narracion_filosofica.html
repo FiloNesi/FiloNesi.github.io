@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha de actividad — Humanidad 2.0: utopía, distopía y transhumanismo</title>
+  <style>
+    :root{
+      --ink:#111;
+      --muted:#555;
+      --line:#cfd6df;
+      --accent:#1b74e4;
+    }
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      color:var(--ink);
+      background:#f6f8fb;
+    }
+    .sheet{
+      width:210mm; /* A4 */
+      min-height:297mm;
+      margin: 12mm auto;
+      background:#fff;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+      border:1px solid #e9eef4;
+      padding: 14mm 16mm;
+    }
+    header{
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      border-bottom:2px solid var(--line);
+      padding-bottom:8px; margin-bottom:12px;
+    }
+    .title h1{
+      font-size: 18pt; line-height:1.2; margin:0 0 4px 0;
+    }
+    .title p{
+      margin:0; color:var(--muted); font-size:10pt;
+    }
+    .meta{
+      display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-top:6px;
+    }
+    .field{
+      border:1px solid var(--line);
+      padding:6px 8px; border-radius:6px; background:#fbfdff;
+      font-size:10.5pt;
+    }
+    .field label{display:block; font-size:9pt; color:var(--muted); margin-bottom:4px;}
+    .field input[type="text"], .field input[type="date"]{
+      width:100%; border:none; outline:none; font-size:11pt; background:transparent; color:var(--ink);
+    }
+    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;}
+    .chip{
+      display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line);
+      padding:4px 8px; border-radius:999px; font-size:10pt; background:#fff;
+    }
+    .chip input{accent-color:var(--accent);}
+    h2{font-size:13pt; margin:14px 0 6px; padding-top:4px; border-top:1px dashed var(--line);}
+    h3{font-size:11.5pt; margin:10px 0 6px; color:#223a56;}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .row-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+    textarea, .box{
+      width:100%; min-height:34mm; border:1px solid var(--line); border-radius:6px;
+      padding:8px; font-size:11pt; resize:vertical; background:#fff;
+    }
+    .lines{min-height:24mm; background-image: repeating-linear-gradient(transparent, transparent 23px, var(--line) 24px);
+      border:1px solid var(--line); border-radius:6px; padding:8px;}
+    .muted{color:var(--muted); font-size:10pt;}
+    .grid-check{
+      border:1px solid var(--line); border-radius:8px; overflow:hidden;
+    }
+    .grid-check table{width:100%; border-collapse:collapse; font-size:10.5pt;}
+    .grid-check th, .grid-check td{border-bottom:1px solid var(--line); padding:6px 8px; text-align:left;}
+    .grid-check tr:last-child td{border-bottom:none;}
+    .grid-check th{background:#f2f6fb; font-weight:600; font-size:10pt;}
+    input[type="checkbox"]{transform: translateY(1px); accent-color:var(--accent);}
+    .actions{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;
+    }
+    .btn{
+      background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:8px;
+      font-size:11pt; cursor:pointer;
+    }
+    .btn:hover{filter:brightness(.95);}
+    footer{
+      margin-top:12px; padding-top:10px; border-top:2px solid var(--line);
+      display:flex; justify-content:space-between; gap:10px; color:var(--muted); font-size:9.5pt;
+    }
+    .badge{border:1px solid var(--line); border-radius:999px; padding:2px 8px; background:#fbfdff; white-space:nowrap;}
+    .help{font-size:10pt; color:var(--muted);}
+    @media print{
+      body{background:#fff;}
+      .sheet{
+        margin:0; box-shadow:none; border:none; padding: 10mm 12mm;
+        page-break-after: always;
+      }
+      .actions{display:none;}
+    }
+  </style>
+</head>
+<body>
+  <section class="sheet">
+    <header>
+      <div class="title">
+        <h1>Ficha de actividad — <em>Humanidad 2.0</em></h1>
+        <p>Utopía · Distopía · Transhumanismo — Narración filosófica (1º Bachillerato)</p>
+        <div class="chips" aria-label="Conceptos clave">
+          <label class="chip"><input type="checkbox" id="ck-concept-utopia"> Utopía</label>
+          <label class="chip"><input type="checkbox" id="ck-concept-distopia"> Distopía</label>
+          <label class="chip"><input type="checkbox" id="ck-concept-transhumanismo" checked> Transhumanismo</label>
+        </div>
+      </div>
+      <div style="min-width:230px;">
+        <div class="meta">
+          <div class="field">
+            <label>Nombre</label>
+            <input type="text" id="nombre" placeholder="Nombre y apellidos">
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input type="date" id="fecha">
+          </div>
+          <div class="field">
+            <label>Grupo</label>
+            <input type="text" id="grupo" placeholder="1º Bach · Grupo">
+          </div>
+        </div>
+        <div class="chips" style="margin-top:8px;" aria-label="Tipo de relato">
+          <span class="muted" style="margin-right:6px;">Tipo:</span>
+          <label class="chip"><input type="checkbox" id="tipo-utopia"> Utopía</label>
+          <label class="chip"><input type="checkbox" id="tipo-distopia"> Distopía</label>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>1) Activación — Escenarios del futuro (ideas rápidas)</h2>
+      <p class="help">Escribe 1 ventaja y 1 riesgo para cada escenario. Marca si tiende a utopía o a distopía.</p>
+      <div class="row-3">
+        <div>
+          <h3>• Nadie envejece ni muere</h3>
+          <textarea id="esc-nadie-muere" placeholder="Ventaja · Riesgo · ¿Utopía o distopía?"></textarea>
+        </div>
+        <div>
+          <h3>• La IA asigna los trabajos</h3>
+          <textarea id="esc-ia-trabajos" placeholder="Ventaja · Riesgo · ¿Utopía o distopía?"></textarea>
+        </div>
+        <div>
+          <h3>• Hijos con rasgos diseñados</h3>
+          <textarea id="esc-rasgos-disenados" placeholder="Ventaja · Riesgo · ¿Utopía o distopía?"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2) Lectura — 3 ideas clave sobre el transhumanismo</h2>
+      <textarea id="idea1" class="lines" style="min-height:16mm;" placeholder="Idea 1"></textarea>
+      <textarea id="idea2" class="lines" style="min-height:16mm; margin-top:6px;" placeholder="Idea 2"></textarea>
+      <textarea id="idea3" class="lines" style="min-height:16mm; margin-top:6px;" placeholder="Idea 3"></textarea>
+      <p class="help">Puedes referirte a: superación de límites biológicos, inmortalidad, mejora extrema, control de la evolución, riesgos (IA, desigualdad, dignidad, sentido, identidad).</p>
+    </section>
+
+    <section>
+      <h2>3) Comunidad de investigación — Pregunta generadora</h2>
+      <textarea id="pregunta" class="box" style="min-height:18mm" placeholder="Escribe aquí la pregunta elegida para tu relato filosófico"></textarea>
+      <p class="help">Ejemplos: ¿Sigue siendo humano quien vive para siempre? · ¿Es justo que solo algunos puedan mejorarse? · ¿Hay límites morales al progreso?</p>
+    </section>
+
+    <section>
+      <h2>4) Boceto del mundo de tu historia</h2>
+      <div class="row">
+        <div>
+          <h3>Contexto (cuándo/dónde, normas sociales)</h3>
+          <textarea id="contexto"></textarea>
+        </div>
+        <div>
+          <h3>Innovación que lo cambia todo</h3>
+          <textarea id="innovacion" placeholder="Implante emocional, copia mental, edición genética…"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Dilema ético/político central</h3>
+          <textarea id="dilema" placeholder="¿Libertad? ¿Justicia? ¿Dignidad? ¿Identidad personal?"></textarea>
+        </div>
+        <div>
+          <h3>Valores en juego</h3>
+          <textarea id="valores" placeholder="Bienestar, igualdad, autonomía, seguridad, progreso…"></textarea>
+        </div>
+      </div>
+      <h3>Pregunta que quieres dejar al lector</h3>
+      <textarea id="pregunta-lector"></textarea>
+    </section>
+
+    <section>
+      <h2>5) Escritura guiada de la narración</h2>
+      <div class="row">
+        <div>
+          <h3>Inicio (mundo y protagonista)</h3>
+          <textarea id="inicio"></textarea>
+        </div>
+        <div>
+          <h3>Desarrollo (conflicto y debate)</h3>
+          <textarea id="desarrollo"></textarea>
+        </div>
+      </div>
+      <h3>Desenlace / reflexión filosófica</h3>
+      <textarea id="desenlace" style="min-height:40mm;"></textarea>
+    </section>
+
+    <section>
+      <h2>6) Reflexión personal (≈150 palabras)</h2>
+      <textarea id="reflexion" style="min-height:44mm;" placeholder="¿Qué idea de ser humano refleja tu historia? ¿Es deseable o peligrosa? ¿Qué preguntas te deja?"></textarea>
+    </section>
+
+    <section>
+      <h2>7) Revisión entre iguales (peer review)</h2>
+      <div class="row">
+        <div class="field">
+          <label>Revisor/a</label>
+          <input type="text" id="revisor" placeholder="Nombre y grupo">
+        </div>
+        <div class="field">
+          <label>Fecha revisión</label>
+          <input type="date" id="fecha-revision">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Fortaleza del texto (elogio)</h3>
+          <textarea id="elogio" placeholder="Algo que funciona muy bien (claridad, idea potente, estilo…)"></textarea>
+        </div>
+        <div>
+          <h3>Sugerencias de mejora (2 ideas)</h3>
+          <textarea id="mejoras" placeholder="1) …  2) …"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>8) Autoevaluación rápida (CE 7.1 y 8.1)</h2>
+      <div class="grid-check">
+        <table>
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th>✔</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Integro con claridad utopía, distopía y transhumanismo.</td>
+              <td><input type="checkbox" id="auto-1"></td>
+            </tr>
+            <tr>
+              <td>Presento un dilema ético/político comprensible y relevante.</td>
+              <td><input type="checkbox" id="auto-2"></td>
+            </tr>
+            <tr>
+              <td>Relaciono ideas de filosofía con ciencia/tecnología y sociedad.</td>
+              <td><input type="checkbox" id="auto-3"></td>
+            </tr>
+            <tr>
+              <td>Argumento una posición propia (explícita o implícita en la historia).</td>
+              <td><input type="checkbox" id="auto-4"></td>
+            </tr>
+            <tr>
+              <td>Cierro con una reflexión o pregunta filosófica abierta.</td>
+              <td><input type="checkbox" id="auto-5"></td>
+            </tr>
+            <tr>
+              <td>Cuidé la coherencia narrativa y la expresión escrita.</td>
+              <td><input type="checkbox" id="auto-6"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="descargarTxt()">Descargar mi trabajo (.txt)</button>
+        <button class="btn" onclick="window.print()">Imprimir</button>
+        <span class="muted">Consejo: si no marcas 5–6 casillas, revisa tu texto antes de entregar.</span>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        <span class="badge">Criterio 7.1</span>
+        <span class="badge">Criterio 8.1</span>
+      </div>
+      <div>IES · Filosofía 1º Bach · Narración filosófica</div>
+    </footer>
+  </section>
+
+  <script>
+    function marcar(x){return x ? "Sí" : "No";}
+
+    function descargarTxt() {
+      const nombre  = document.getElementById('nombre').value || "";
+      const fecha   = document.getElementById('fecha').value || "";
+      const grupo   = document.getElementById('grupo').value || "";
+
+      const tipoU   = document.getElementById('tipo-utopia').checked;
+      const tipoD   = document.getElementById('tipo-distopia').checked;
+
+      const escenarios1 = document.getElementById('esc-nadie-muere').value || "";
+      const escenarios2 = document.getElementById('esc-ia-trabajos').value || "";
+      const escenarios3 = document.getElementById('esc-rasgos-disenados').value || "";
+
+      const idea1 = document.getElementById('idea1').value || "";
+      const idea2 = document.getElementById('idea2').value || "";
+      const idea3 = document.getElementById('idea3').value || "";
+
+      const pregunta = document.getElementById('pregunta').value || "";
+      const contexto = document.getElementById('contexto').value || "";
+      const innovacion = document.getElementById('innovacion').value || "";
+      const dilema = document.getElementById('dilema').value || "";
+      const valores = document.getElementById('valores').value || "";
+      const preguntaLector = document.getElementById('pregunta-lector').value || "";
+
+      const inicio = document.getElementById('inicio').value || "";
+      const desarrollo = document.getElementById('desarrollo').value || "";
+      const desenlace = document.getElementById('desenlace').value || "";
+      const reflexion = document.getElementById('reflexion').value || "";
+
+      const revisor = document.getElementById('revisor').value || "";
+      const fechaRev = document.getElementById('fecha-revision').value || "";
+      const elogio = document.getElementById('elogio').value || "";
+      const mejoras = document.getElementById('mejoras').value || "";
+
+      const auto1 = document.getElementById('auto-1').checked;
+      const auto2 = document.getElementById('auto-2').checked;
+      const auto3 = document.getElementById('auto-3').checked;
+      const auto4 = document.getElementById('auto-4').checked;
+      const auto5 = document.getElementById('auto-5').checked;
+      const auto6 = document.getElementById('auto-6').checked;
+
+      const conceptos = [
+        `Utopía: ${marcar(document.getElementById('ck-concept-utopia').checked)}`,
+        `Distopía: ${marcar(document.getElementById('ck-concept-distopia').checked)}`,
+        `Transhumanismo: ${marcar(document.getElementById('ck-concept-transhumanismo').checked)}`
+      ].join(" · ");
+
+      const tipoRelato = [
+        `Utopía: ${marcar(tipoU)}`,
+        `Distopía: ${marcar(tipoD)}`
+      ].join(" · ");
+
+      const contenido =
+`Ficha de actividad — Humanidad 2.0: utopía, distopía y transhumanismo
+
+DATOS
+Nombre: ${nombre}
+Fecha: ${fecha}
+Grupo: ${grupo}
+Conceptos marcados: ${conceptos}
+Tipo de relato: ${tipoRelato}
+
+1) Activación — Escenarios del futuro
+- Nadie envejece ni muere:
+${escenarios1}
+
+- La IA asigna los trabajos:
+${escenarios2}
+
+- Hijos con rasgos diseñados:
+${escenarios3}
+
+2) Lectura — 3 ideas clave sobre el transhumanismo
+1) ${idea1}
+2) ${idea2}
+3) ${idea3}
+
+3) Pregunta generadora
+${pregunta}
+
+4) Boceto del mundo de la historia
+Contexto:
+${contexto}
+
+Innovación:
+${innovacion}
+
+Dilema ético/político:
+${dilema}
+
+Valores en juego:
+${valores}
+
+Pregunta al lector:
+${preguntaLector}
+
+5) Narración filosófica
+Inicio:
+${inicio}
+
+Desarrollo:
+${desarrollo}
+
+Desenlace / reflexión:
+${desenlace}
+
+6) Reflexión personal
+${reflexion}
+
+7) Revisión entre iguales
+Revisor/a: ${revisor}   ·   Fecha revisión: ${fechaRev}
+
+Fortaleza del texto (elogio):
+${elogio}
+
+Sugerencias de mejora:
+${mejoras}
+
+8) Autoevaluación (CE 7.1 y 8.1)
+- Integro utopía, distopía y transhumanismo: ${marcar(auto1)}
+- Dilema ético/político claro y relevante: ${marcar(auto2)}
+- Relaciono filosofía—ciencia/tecnología—sociedad: ${marcar(auto3)}
+- Argumento posición propia: ${marcar(auto4)}
+- Cierro con reflexión/pregunta filosófica: ${marcar(auto5)}
+- Coherencia narrativa y expresión cuidada: ${marcar(auto6)}
+`;
+
+      const blob = new Blob([contenido], { type: 'text/plain' });
+      const enlace = document.createElement('a');
+      const fechaHoy = new Date().toISOString().slice(0,10);
+      const nombreArchivo = `Humanidad_2.0_${(nombre || 'alumno').replace(/\s+/g,'_')}_${fechaHoy}.txt`;
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = nombreArchivo;
+      document.body.appendChild(enlace);
+      enlace.click();
+      URL.revokeObjectURL(enlace.href);
+      enlace.remove();
+    }
+  </script>
+</body>
+</html>
