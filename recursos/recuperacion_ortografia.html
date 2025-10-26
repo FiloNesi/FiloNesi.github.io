@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ficha de recuperación de faltas de ortografía</title>
+  <style>
+    :root{
+      --azul:#2563eb; /* palabra correcta */
+      --rojo:#dc2626; /* grafía en falta */
+      --gris:#6b7280;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --borde:#e5e7eb;
+      --accent:#10b981;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;
+      background:var(--bg); color:#111827; line-height:1.5;
+    }
+    .wrap{max-width:900px;margin:32px auto;padding:0 16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+    h1{font-size:clamp(1.3rem,2.8vw,1.9rem);margin:0}
+    .btns{display:flex;flex-wrap:wrap;gap:8px}
+    button, .ghost{
+      border:1px solid var(--borde); background:#fff; color:#111; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600;
+      transition:.2s ease; box-shadow:0 1px 0 rgba(0,0,0,.04)
+    }
+    button:hover{transform:translateY(-1px)}
+    .primary{background:var(--azul);color:#fff;border-color:transparent}
+    .success{background:var(--accent);color:#fff;border-color:transparent}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+
+    .card{background:var(--card); border:1px solid var(--borde); border-radius:14px; padding:16px; margin:12px 0}
+    .grid{display:grid; gap:12px}
+    .g2{grid-template-columns: repeat(2, minmax(0,1fr));}
+    .g3{grid-template-columns: repeat(3, minmax(0,1fr));}
+
+    label{display:block; font-weight:700; font-size:.95rem; margin-bottom:6px}
+    input[type="text"], textarea{
+      width:100%; padding:10px 12px; border:1px solid var(--borde); border-radius:10px; background:#fff; font-size:1rem
+    }
+    textarea{min-height:84px; resize:vertical}
+
+    .ayuda{font-size:.9rem;color:var(--gris)}
+    .pill{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid var(--borde);background:#fff;color:var(--gris);font-size:.82rem}
+    .hr{height:1px;background:var(--borde);margin:12px 0}
+
+    .muestra{
+      border-left:4px solid var(--azul); background:#eef2ff; padding:10px 12px; border-radius:10px; color:#1e3a8a;
+      display:none; margin-top:8px
+    }
+    .tag-ok{color:var(--azul);font-weight:800}
+    .tag-err{color:var(--rojo);font-weight:800}
+
+    .checklist{display:grid;gap:8px}
+    .checklist label{font-weight:500}
+
+    @media (max-width:720px){.g2,.g3{grid-template-columns:1fr}}
+
+    /* Estilos de impresión A4 cómodos */
+    @page { size: A4; margin: 16mm; }
+    @media print{
+      header, .btns, .muestra-toggle{display:none !important}
+      body{background:#fff}
+      .card{break-inside:avoid}
+      textarea{border:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Ficha de recuperación de faltas de ortografía</h1>
+      <div class="btns">
+        <button class="primary" id="btnDescargar">Descargar en .txt</button>
+        <button class="ghost" onclick="window.print()">Imprimir / Guardar PDF</button>
+      </div>
+    </header>
+
+    <section class="card grid g2">
+      <div>
+        <label for="alumno">Nombre del alumno/a</label>
+        <input id="alumno" type="text" placeholder="Nombre y apellidos" />
+      </div>
+      <div>
+        <label for="fecha">Fecha</label>
+        <input id="fecha" type="text" placeholder="26/10/2025" />
+      </div>
+    </section>
+
+    <section class="card grid g3">
+      <div>
+        <label for="pIncorrecta">Palabra incorrecta</label>
+        <input id="pIncorrecta" type="text" placeholder="p. ej., haberiguar" />
+      </div>
+      <div>
+        <label for="pCorrecta">Palabra correcta (<span class="tag-ok">azul</span>)</label>
+        <input id="pCorrecta" type="text" style="color:var(--azul);font-weight:800" placeholder="p. ej., averiguar" />
+      </div>
+      <div>
+        <label for="grafia">Grafía objeto de la falta (<span class="tag-err">rojo</span>)</label>
+        <input id="grafia" type="text" style="color:var(--rojo);font-weight:800" placeholder="p. ej., h" />
+      </div>
+      <div class="g3 ayuda" style="grid-column:1/-1">
+        Escribe la forma correcta <span class="tag-ok">en azul</span> y la grafía en falta <span class="tag-err">en rojo</span> para facilitar la memoria visual.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="muestra-toggle" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span class="pill">1</span>
+        <strong>Significado de la palabra: tres acepciones (si es posible)</strong>
+        <button id="btnEjemplo1" class="ghost" type="button">Ver ejemplo</button>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <div>
+          <label for="acep1">Acepción 1</label>
+          <textarea id="acep1" placeholder="Definición según la RAE…"></textarea>
+        </div>
+        <div>
+          <label for="acep2">Acepción 2</label>
+          <textarea id="acep2" placeholder="Otra acepción…"></textarea>
+        </div>
+        <div>
+          <label for="acep3">Acepción 3</label>
+          <textarea id="acep3" placeholder="Si no hubiera tercera, deja vacío."></textarea>
+        </div>
+      </div>
+      <div id="ej1" class="muestra">
+        <strong>Ejemplo</strong><br />
+        1) Buscar o descubrir la verdad de algo. 2) Obtener información sobre un hecho. 3) Indagar con atención.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="muestra-toggle" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span class="pill">2</span>
+        <strong>Oraciones: una por cada acepción</strong>
+        <button id="btnEjemplo2" class="ghost" type="button">Ver ejemplo</button>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <div>
+          <label for="or1">Oración 1</label>
+          <textarea id="or1" placeholder="Redacta una frase que use la acepción 1…"></textarea>
+        </div>
+        <div>
+          <label for="or2">Oración 2</label>
+          <textarea id="or2" placeholder="Redacta una frase que use la acepción 2…"></textarea>
+        </div>
+        <div>
+          <label for="or3">Oración 3</label>
+          <textarea id="or3" placeholder="Redacta una frase que use la acepción 3…"></textarea>
+        </div>
+      </div>
+      <div id="ej2" class="muestra">
+        <strong>Ejemplo</strong><br />
+        1) Quiero <span class="tag-ok">averiguar</span> quién escribió la carta. 2) La policía <span class="tag-ok">averiguó</span> la causa. 3) Me gustaría <span class="tag-ok">averiguar</span> más sobre mis antepasados.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="muestra-toggle" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span class="pill">3</span>
+        <strong>Norma ortográfica que rige la falta</strong>
+        <button id="btnEjemplo3" class="ghost" type="button">Ver ejemplo</button>
+      </div>
+      <div class="grid">
+        <textarea id="norma" placeholder="Explica la regla: p. ej., “Las palabras terminadas en –bir se escriben con b, excepto hervir, servir y vivir”."></textarea>
+      </div>
+      <div id="ej3" class="muestra">
+        <strong>Ejemplo</strong><br />
+        Las palabras que empiezan por <em>ave-</em> o <em>av-</em> seguidas de vocal se escriben sin <span class="tag-err">h</span> inicial.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="muestra-toggle" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span class="pill">4</span>
+        <strong>Prevención de errores</strong>
+        <button id="btnEjemplo4" class="ghost" type="button">Ver ejemplo</button>
+      </div>
+      <div class="grid g2" style="margin-top:10px">
+        <div>
+          <label for="otras">Otras palabras con la misma norma</label>
+          <textarea id="otras" placeholder="Escribe varias palabras…"></textarea>
+        </div>
+        <div>
+          <label for="homofonas">Palabras homófonas y su significado</label>
+          <textarea id="homofonas" placeholder="p. ej., a ver / haber…"></textarea>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div>
+          <label for="truco">Truco o estrategia personal para recordarlo</label>
+          <textarea id="truco" placeholder="Crea una regla mnemotécnica propia…"></textarea>
+        </div>
+      </div>
+      <div id="ej4" class="muestra">
+        <strong>Ejemplo</strong><br />
+        Misma norma: <em>aventura, avenida, avería</em>. Homófonas: <em>a ver</em> / <em>haber</em>. Truco: “Empieza como <em>aventura</em>: sin h”.
+      </div>
+    </section>
+
+    <section class="card">
+      <strong>Revisión final</strong>
+      <div class="hr"></div>
+      <div class="checklist">
+        <label><input type="checkbox" /> He comprobado el significado en el diccionario.</label>
+        <label><input type="checkbox" /> He redactado correctamente las oraciones.</label>
+        <label><input type="checkbox" /> He identificado la norma ortográfica.</label>
+        <label><input type="checkbox" /> He anotado ejemplos para no repetir el error.</label>
+      </div>
+    </section>
+
+    <footer class="ayuda" style="text-align:center;margin-top:16px">
+      Sugerencia: consulta el <span class="mono">DLE (RAE)</span> para las acepciones. — Plantilla creada para uso educativo.
+    </footer>
+  </div>
+
+  <script>
+    // Mostrar/ocultar ejemplos
+    const toggles = [
+      {btn:'btnEjemplo1', box:'ej1'},
+      {btn:'btnEjemplo2', box:'ej2'},
+      {btn:'btnEjemplo3', box:'ej3'},
+      {btn:'btnEjemplo4', box:'ej4'},
+    ];
+    toggles.forEach(t=>{
+      const b = document.getElementById(t.btn);
+      const bx = document.getElementById(t.box);
+      if(b && bx){
+        b.addEventListener('click',()=>{
+          const visible = getComputedStyle(bx).display !== 'none';
+          bx.style.display = visible ? 'none' : 'block';
+          b.textContent = visible ? 'Ver ejemplo' : 'Ocultar ejemplo';
+        })
+      }
+    })
+
+    // Exportar a .txt
+    document.getElementById('btnDescargar').addEventListener('click', ()=>{
+      const v = id=>document.getElementById(id)?.value?.trim()||'';
+      const L = s=>s? s+"\n" : '';
+      const contenido = [
+        `Alumno/a: ${v('alumno')}`,
+        `Fecha: ${v('fecha')}`,
+        `Palabra incorrecta: ${v('pIncorrecta')}`,
+        `Palabra correcta: ${v('pCorrecta')}`,
+        `Grafía en falta: ${v('grafia')}`,
+        '',
+        '1) Acepciones:',
+        L('  - '+v('acep1'))+L('  - '+v('acep2'))+L('  - '+v('acep3')),
+        '',
+        '2) Oraciones:',
+        L('  1. '+v('or1'))+L('  2. '+v('or2'))+L('  3. '+v('or3')),
+        '',
+        '3) Norma ortográfica:',
+        v('norma'),
+        '',
+        '4) Prevención de errores:',
+        L('  - Otras palabras: '+v('otras'))+L('  - Homófonas: '+v('homofonas'))+L('  - Truco: '+v('truco')),
+      ].join('\n');
+      const blob = new Blob([contenido], {type:'text/plain;charset=utf-8'});
+      const a = document.createElement('a');
+      const nombre = (v('pCorrecta')||'ficha-ortografia').toLowerCase().replace(/\s+/g,'-');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${nombre}.txt`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 2500);
+    });
+  </script>
+</body>
+</html>
