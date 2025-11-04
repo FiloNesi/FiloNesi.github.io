@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Interactiva: Entendiendo los Deseos</title>
+    <style>
+        :root {
+            --primary-color: #005f73;
+            --secondary-color: #0a9396;
+            --background-color: #f4f4f9;
+            --text-color: #333;
+            --light-accent: #e9d8a6;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary-color);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            margin-bottom: 2rem;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-accent);
+            padding-bottom: 0.5rem;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
+        }
+
+        input[type="text"], input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        /* Interactive Elements Styling */
+        .interactive-box {
+            background-color: #f9f9f9;
+            border: 1px dashed var(--secondary-color);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 8px;
+        }
+
+        #word-cloud-container {
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #word-cloud-container span {
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: var(--light-accent);
+            color: var(--text-color);
+        }
+
+        #poll-result {
+            margin-top: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Maslow Pyramid */
+        #maslow-pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pyramid-level {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+        }
+
+        .pyramid-level:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        #level-5 { width: 40%; }
+        #level-4 { width: 55%; }
+        #level-3 { width: 70%; }
+        #level-2 { width: 85%; }
+        #level-1 { width: 100%; border-radius: 0 0 8px 8px; }
+
+        #pyramid-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #eef;
+            border-left: 5px solid var(--primary-color);
+            min-height: 50px;
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin-top: 1rem;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>El motor de nuestras acciones: Entendiendo los Deseos</h1>
+    </header>
+
+    <main>
+        <section id="intro">
+            <h2>1.3.- Deseos: ¿Qué son?</h2>
+            <p>Los deseos son aquellos estados mentales en los que anhelamos o queremos algo, ya sea un objeto, una experiencia o un resultado. En psicología, los deseos se engloban dentro de la <strong>motivación</strong>: son las fuerzas internas que nos mueven a buscar o evitar ciertas cosas.</p>
+            <p>Sentir deseos es totalmente normal y abarca desde necesidades básicas (“tengo hambre, deseo comer”) hasta aspiraciones complejas (“deseo ser aceptado en la universidad”).</p>
+            
+            <div class="interactive-box">
+                <h3>¡Interactúa! Nube de palabras</h3>
+                <p>Escribe una palabra que asocies con "deseo" y añádela a nuestra nube colectiva.</p>
+                <input type="text" id="word-input" placeholder="Ej: Anhelo, Meta, Ganas...">
+                <button onclick="addWordToCloud()">Añadir palabra</button>
+                <div id="word-cloud-container"></div>
+            </div>
+        </section>
+
+        <section id="process">
+            <h2>El Proceso de un Deseo</h2>
+            <p>Todo deseo comienza con alguna representación en la mente de aquello que se quiere, acompañada de una carga emocional que impulsa ese querer. En otras palabras:</p>
+            <ol>
+                <li><strong>Representación Mental:</strong> Primero imaginamos o pensamos en algo (por ejemplo, un trozo de pastel de chocolate).</li>
+                <li><strong>Carga Emocional:</strong> Luego surge una sensación de atracción hacia ello (¡qué rico sería comerlo!).</li>
+                <li><strong>Impulso a la Acción:</strong> Esto nos motiva a actuar (ir a buscar ese pastel).</li>
+            </ol>
+            <p>Por tanto, los deseos están muy vinculados con la sensibilidad y con la emotividad.</p>
+        </section>
+
+        <section id="philosophy">
+            <h2>Perspectivas Filosóficas sobre el Deseo</h2>
+            <p>Desde la filosofía, los deseos han sido un gran tema de reflexión moral: ¿debemos seguir todos nuestros deseos o controlarlos?</p>
+            <ul>
+                <li><strong>Aristóteles:</strong> Distinguía entre deseos elementales y anhelos racionales. Proponía encontrar un <strong>justo medio</strong>, modulando los deseos con la razón.</li>
+                <li><strong>Budismo y Estoicismo:</strong> Advierten que el deseo desmedido puede conducir al <strong>sufrimiento</strong>, por lo que proponen ejercitar el desapego o la templanza.</li>
+                <li><strong>Otras corrientes:</strong> Reconocen que los deseos, en su justa medida, son el motor del <strong>progreso personal</strong>.</li>
+            </ul>
+
+            <div class="interactive-box">
+                <h3>Tu Opinión: ¿Control o Libertad?</h3>
+                <p>Desde tu punto de vista, ¿qué es mejor?</p>
+                <form id="philosophy-poll">
+                    <label><input type="radio" name="poll" value="seguir"> Seguir siempre nuestros deseos.</label><br>
+                    <label><input type="radio" name="poll" value="controlar"> Controlarlos con la razón.</label><br>
+                    <label><input type="radio" name="poll" value="equilibrio"> Encontrar un equilibrio.</label><br>
+                    <button type="button" onclick="showPollResult()" style="margin-top: 10px;">Votar</button>
+                </form>
+                <div id="poll-result"></div>
+            </div>
+        </section>
+
+        <section id="maslow">
+            <h2>La Pirámide de los Deseos: Jerarquía de Maslow</h2>
+            <p>El psicólogo Abraham Maslow organizó los deseos y necesidades humanas en una pirámide. La idea es que los deseos de nivel superior suelen surgir cuando los más básicos están satisfechos.</p>
+            
+            <div class="interactive-box">
+                <h3>Explora la Pirámide</h3>
+                <p>Pasa el ratón por encima de cada nivel para ver su descripción.</p>
+                <div id="maslow-pyramid">
+                    <div class="pyramid-level" id="level-5" data-info="<strong>Autorrealización:</strong> Desarrollar el propio potencial, creatividad, lograr metas personales. La cima de la experiencia humana.">Autorrealización</div>
+                    <div class="pyramid-level" id="level-4" data-info="<strong>Reconocimiento:</strong> Autoestima, éxito, confianza, respeto de los demás. Sentirse valorado y competente.">Reconocimiento</div>
+                    <div class="pyramid-level" id="level-3" data-info="<strong>Afiliación o Sociales:</strong> Amor, amistad, intimidad sexual, pertenencia a un grupo. La necesidad de relaciones sociales.">Afiliación</div>
+                    <div class="pyramid-level" id="level-2" data-info="<strong>Seguridad:</strong> Seguridad física, de empleo, de recursos, de salud, de propiedad privada. Tener refugio y estabilidad.">Seguridad</div>
+                    <div class="pyramid-level" id="level-1" data-info="<strong>Fisiológicas:</strong> Comida, agua, sueño, respiración, homeostasis. Lo más básico para la supervivencia.">Fisiológicas</div>
+                </div>
+                <div id="pyramid-info">
+                    <p>Pasa el ratón sobre un nivel de la pirámide...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="neuroscience">
+            <h2>El Cerebro y el Deseo: La Neurociencia</h2>
+            <p>Comprender los deseos significa adentrarse en los <strong>circuitos de recompensa</strong> del cerebro. Cuando deseamos algo y anticipamos una recompensa, nuestro cerebro libera neurotransmisores asociados al placer y la motivación, principalmente la <strong>dopamina</strong>.</p>
+            <p>La dopamina actúa en vías neuronales que nos animan a repetir conductas beneficiosas. No solo se activa con estímulos físicos (comida), sino también con metas abstractas (conseguir una buena nota, ganar un juego).</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/z4KeSF9rOeQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </section>
+        
+        <section id="summary">
+            <h2>En Resumen</h2>
+            <p>Los deseos son la energía motivadora de nuestra conducta. Representan aquello que valoramos o nos atrae, y nos orientan hacia metas. Son normales y necesarios, pero también requieren gestión.</p>
+            <blockquote>
+                "Parte de nuestra personalidad consiste en cuáles deseos elegimos perseguir, cuáles regulamos o postergamos, y cómo equilibramos nuestros impulsos con nuestras metas a largo plazo."
+            </blockquote>
+            <p>En esto último entra en juego el siguiente componente: la <strong>volición o voluntad</strong>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Contenido adaptado a partir del material proporcionado. Página generada de forma interactiva.</p>
+    </footer>
+
+    <script>
+        // --- Word Cloud Interaction ---
+        function addWordToCloud() {
+            const input = document.getElementById('word-input');
+            const word = input.value.trim();
+            if (word) {
+                const container = document.getElementById('word-cloud-container');
+                const wordSpan = document.createElement('span');
+                wordSpan.textContent = word;
+                
+                // Random styles for cloud effect
+                const fontSize = Math.random() * (24 - 14) + 14; // size between 14px and 24px
+                const colors = ['#ee9b00', '#ca6702', '#9b2226', '#001219', '#005f73'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                wordSpan.style.fontSize = `${fontSize}px`;
+                wordSpan.style.color = randomColor;
+                wordSpan.style.fontWeight = 'bold';
+
+                container.appendChild(wordSpan);
+                input.value = '';
+            }
+        }
+        
+        // Allow adding word with Enter key
+        document.getElementById('word-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                addWordToCloud();
+            }
+        });
+
+
+        // --- Philosophy Poll Interaction ---
+        function showPollResult() {
+            const resultDiv = document.getElementById('poll-result');
+            const selectedOption = document.querySelector('input[name="poll"]:checked');
+
+            if (selectedOption) {
+                let message = '';
+                switch (selectedOption.value) {
+                    case 'seguir':
+                        message = "Interesante. Una vida de pasión, aunque a veces puede ser caótica.";
+                        break;
+                    case 'controlar':
+                        message = "Un enfoque racional y disciplinado, muy en la línea de los estoicos.";
+                        break;
+                    case 'equilibrio':
+                        message = "¡La opción de Aristóteles! Buscando la virtud en el punto medio.";
+                        break;
+                }
+                resultDiv.innerHTML = message;
+            } else {
+                resultDiv.innerHTML = "Por favor, selecciona una opción antes de votar.";
+            }
+        }
+
+        // --- Maslow Pyramid Interaction ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const levels = document.querySelectorAll('.pyramid-level');
+            const infoBox = document.getElementById('pyramid-info');
+            const defaultInfo = infoBox.innerHTML;
+
+            levels.forEach(level => {
+                level.addEventListener('mouseover', () => {
+                    infoBox.innerHTML = level.dataset.info;
+                });
+                
+                level.addEventListener('mouseout', () => {
+                    infoBox.innerHTML = defaultInfo;
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>```
