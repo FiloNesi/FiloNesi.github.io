@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrección Examen Filosofía - Lógica y Argumentación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .student-info input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .student-info input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .pregunta-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .pregunta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .pregunta-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pregunta-score {
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .apartado {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .apartado-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .item-checkbox {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .item-checkbox:hover {
+            background: #f0f0f0;
+        }
+
+        .item-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .item-checkbox label {
+            cursor: pointer;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .item-points {
+            color: #667eea;
+            font-weight: bold;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .resumen-final {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .resumen-final h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .nota-final {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .desglose {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .desglose-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .desglose-item .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .desglose-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+        }
+
+        .feedback-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .feedback-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .feedback-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .acciones, .btn {
+                display: none;
+            }
+        }
+
+        .apartado-score {
+            float: right;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Corrección de Examen - Filosofía 1º Bachillerato</h1>
+            <p>Lógica y Argumentación - 2ª Evaluación</p>
+        </div>
+
+        <div class="student-info">
+            <label for="studentName"><strong>Nombre del estudiante:</strong></label>
+            <input type="text" id="studentName" placeholder="Escribe el nombre del alumno/a aquí...">
+        </div>
+
+        <div class="content">
+            <!-- PREGUNTA 1 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 1: Razonamiento Deductivo</span>
+                    <span class="pregunta-score" id="score-p1">0.0 / 1.0</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Definición (0.4p) <span class="apartado-score" id="score-p1-def">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_def_1" data-points="0.1" data-pregunta="p1" data-apartado="def">
+                        <label for="p1_def_1">Menciona que es un proceso de premisas → conclusión</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_def_2" data-points="0.15" data-pregunta="p1" data-apartado="def">
+                        <label for="p1_def_2">Explica la necesidad lógica (conclusión se sigue necesariamente)</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_def_3" data-points="0.15" data-pregunta="p1" data-apartado="def">
+                        <label for="p1_def_3">Indica que conclusión está contenida en las premisas</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Característica 1: No ampliativo (0.2p) <span class="apartado-score" id="score-p1-c1">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c1_1" data-points="0.1" data-pregunta="p1" data-apartado="c1">
+                        <label for="p1_c1_1">Menciona que no amplía conocimiento / no es ampliativo</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c1_2" data-points="0.1" data-pregunta="p1" data-apartado="c1">
+                        <label for="p1_c1_2">Explica que hace explícito lo implícito</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Característica 2: Garantiza verdad (0.2p) <span class="apartado-score" id="score-p1-c2">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c2_1" data-points="0.1" data-pregunta="p1" data-apartado="c2">
+                        <label for="p1_c2_1">Afirma que garantiza verdad si premisas son verdaderas</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c2_2" data-points="0.1" data-pregunta="p1" data-apartado="c2">
+                        <label for="p1_c2_2">Explica transmisión de verdad de premisas a conclusión</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Característica 3: Validez formal (0.2p) <span class="apartado-score" id="score-p1-c3">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c3_1" data-points="0.1" data-pregunta="p1" data-apartado="c3">
+                        <label for="p1_c3_1">Menciona que se evalúa por validez formal/estructura</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p1_c3_2" data-points="0.1" data-pregunta="p1" data-apartado="c3">
+                        <label for="p1_c3_2">Explica independencia entre validez y verdad del contenido</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 2 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 2: Clasificación Deductivo/Inductivo</span>
+                    <span class="pregunta-score" id="score-p2">0.0 / 1.0</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Apartado A - Mamíferos (0.5p) <span class="apartado-score" id="score-p2-a">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_a_1" data-points="0.1" data-pregunta="p2" data-apartado="a">
+                        <label for="p2_a_1">Identifica correctamente como DEDUCTIVO</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_a_2" data-points="0.1" data-pregunta="p2" data-apartado="a">
+                        <label for="p2_a_2">Menciona que va de general a particular</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_a_3" data-points="0.1" data-pregunta="p2" data-apartado="a">
+                        <label for="p2_a_3">Explica que es un silogismo categórico</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_a_4" data-points="0.1" data-pregunta="p2" data-apartado="a">
+                        <label for="p2_a_4">Indica que la conclusión es necesaria/no puede ser falsa</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_a_5" data-points="0.1" data-pregunta="p2" data-apartado="a">
+                        <label for="p2_a_5">Menciona que no es ampliativo</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Apartado B - Cisnes (0.5p) <span class="apartado-score" id="score-p2-b">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_b_1" data-points="0.1" data-pregunta="p2" data-apartado="b">
+                        <label for="p2_b_1">Identifica correctamente como INDUCTIVO</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_b_2" data-points="0.15" data-pregunta="p2" data-apartado="b">
+                        <label for="p2_b_2">Menciona que va de particular/observaciones a general</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_b_3" data-points="0.15" data-pregunta="p2" data-apartado="b">
+                        <label for="p2_b_3">Explica que la conclusión es probable, no necesaria</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p2_b_4" data-points="0.1" data-pregunta="p2" data-apartado="b">
+                        <label for="p2_b_4">Menciona que es ampliativo (va más allá de premisas)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 3 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 3: Análisis Argumentativo</span>
+                    <span class="pregunta-score" id="score-p3">0.0 / 2.0</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">A) Premisas y conclusión (0.5p) <span class="apartado-score" id="score-p3-a">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_a_1" data-points="0.15" data-pregunta="p3" data-apartado="a">
+                        <label for="p3_a_1">Identifica correctamente Premisa 1</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_a_2" data-points="0.15" data-pregunta="p3" data-apartado="a">
+                        <label for="p3_a_2">Identifica correctamente Premisa 2</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_a_3" data-points="0.2" data-pregunta="p3" data-apartado="a">
+                        <label for="p3_a_3">Identifica correctamente la Conclusión</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">B) Tipos de juicio (0.5p) <span class="apartado-score" id="score-p3-b">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_1" data-points="0.1" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_1">P1: Clasifica correctamente como juicio de hecho</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_2" data-points="0.1" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_2">P1: Justifica adecuadamente (describe realidad, verificable)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_3" data-points="0.1" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_3">P2: Clasifica correctamente como juicio de valor</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_4" data-points="0.1" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_4">P2: Justifica adecuadamente (valoración moral/ética)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_5" data-points="0.05" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_5">Conclusión: Clasifica correctamente</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_b_6" data-points="0.05" data-pregunta="p3" data-apartado="b">
+                        <label for="p3_b_6">Conclusión: Justifica adecuadamente</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">C) Pertinencia (0.5p) <span class="apartado-score" id="score-p3-c">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_c_1" data-points="0.1" data-pregunta="p3" data-apartado="c">
+                        <label for="p3_c_1">Identifica que las premisas NO son pertinentes</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_c_2" data-points="0.2" data-pregunta="p3" data-apartado="c">
+                        <label for="p3_c_2">Explica la falacia de P1 (apelación a experiencia personal)</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_c_3" data-points="0.2" data-pregunta="p3" data-apartado="c">
+                        <label for="p3_c_3">Explica la falacia de P2 (ad hominem)</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">D) Suficiencia (0.5p) <span class="apartado-score" id="score-p3-d">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_d_1" data-points="0.1" data-pregunta="p3" data-apartado="d">
+                        <label for="p3_d_1">Identifica que las premisas NO son suficientes</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_d_2" data-points="0.15" data-pregunta="p3" data-apartado="d">
+                        <label for="p3_d_2">Explica por qué P1 es insuficiente</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_d_3" data-points="0.15" data-pregunta="p3" data-apartado="d">
+                        <label for="p3_d_3">Explica por qué P2 es insuficiente</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p3_d_4" data-points="0.1" data-pregunta="p3" data-apartado="d">
+                        <label for="p3_d_4">Menciona qué evidencia sería necesaria (datos científicos)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 4 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 4: Formalización Lógica</span>
+                    <span class="pregunta-score" id="score-p4">0.0 / 2.0</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">A) p → q (0.5p) <span class="apartado-score" id="score-p4-a">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_a_1" data-points="0.5" data-pregunta="p4" data-apartado="a">
+                        <label for="p4_a_1">✅ Formalización PERFECTA: p → q (todo o nada)</label>
+                        <span class="item-points">0.5p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">B) r ∧ s (0.5p) <span class="apartado-score" id="score-p4-b">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_b_1" data-points="0.5" data-pregunta="p4" data-apartado="b">
+                        <label for="p4_b_1">✅ Formalización PERFECTA: r ∧ s (todo o nada)</label>
+                        <span class="item-points">0.5p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">C) ((r ∧ s) ∧ ¬p) → ¬q (1.0p) <span class="apartado-score" id="score-p4-c">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_1" data-points="0.2" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_1">Identifica correctamente el implicador (→) como conector principal</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_2" data-points="0.15" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_2">Formaliza correctamente el antecedente: (r ∧ s)</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_3" data-points="0.15" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_3">Incluye correctamente la negación: ∧ ¬p</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_4" data-points="0.2" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_4">Formaliza correctamente el consecuente: ¬q</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_5" data-points="0.2" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_5">Usa correctamente los paréntesis</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p4_c_6" data-points="0.1" data-pregunta="p4" data-apartado="c">
+                        <label for="p4_c_6">Conecta correctamente antecedente y consecuente</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 5 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 5: Tabla de Verdad</span>
+                    <span class="pregunta-score" id="score-p5">0.0 / 1.5</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Estructura de la tabla (0.2p) <span class="apartado-score" id="score-p5-est">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_est_1" data-points="0.05" data-pregunta="p5" data-apartado="est">
+                        <label for="p5_est_1">Número correcto de filas (4 filas)</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_est_2" data-points="0.05" data-pregunta="p5" data-apartado="est">
+                        <label for="p5_est_2">Asignación correcta de valores a variable p</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_est_3" data-points="0.05" data-pregunta="p5" data-apartado="est">
+                        <label for="p5_est_3">Asignación correcta de valores a variable q</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_est_4" data-points="0.05" data-pregunta="p5" data-apartado="est">
+                        <label for="p5_est_4">Identifica todas las columnas intermedias necesarias</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Columnas intermedias (0.7p) <span class="apartado-score" id="score-p5-col">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_col_1" data-points="0.2" data-pregunta="p5" data-apartado="col">
+                        <label for="p5_col_1">Columna p ∧ q completamente correcta (VFFF)</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_col_2" data-points="0.2" data-pregunta="p5" data-apartado="col">
+                        <label for="p5_col_2">Columna ¬(p ∧ q) completamente correcta (FVVV)</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_col_3" data-points="0.3" data-pregunta="p5" data-apartado="col">
+                        <label for="p5_col_3">Columna q → p completamente correcta (VVFV)</label>
+                        <span class="item-points">0.3p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Columna final y conclusión (0.6p) <span class="apartado-score" id="score-p5-fin">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_fin_1" data-points="0.4" data-pregunta="p5" data-apartado="fin">
+                        <label for="p5_fin_1">Columna ¬(p ∧ q) ∨ (q → p) completamente correcta (VVVV)</label>
+                        <span class="item-points">0.4p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p5_fin_2" data-points="0.2" data-pregunta="p5" data-apartado="fin">
+                        <label for="p5_fin_2">Identifica correctamente como TAUTOLOGÍA</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 6 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 6: Problema de la Inducción</span>
+                    <span class="pregunta-score" id="score-p6">0.0 / 1.5</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Ejemplo del pavo (0.4p) <span class="apartado-score" id="score-p6-pavo">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_pavo_1" data-points="0.1" data-pregunta="p6" data-apartado="pavo">
+                        <label for="p6_pavo_1">Describe correctamente la observación repetida del pavo</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_pavo_2" data-points="0.1" data-pregunta="p6" data-apartado="pavo">
+                        <label for="p6_pavo_2">Explica la conclusión inductiva del pavo</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_pavo_3" data-points="0.1" data-pregunta="p6" data-apartado="pavo">
+                        <label for="p6_pavo_3">Menciona el desenlace (ruptura de la regularidad)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_pavo_4" data-points="0.1" data-pregunta="p6" data-apartado="pavo">
+                        <label for="p6_pavo_4">Conecta el ejemplo con el problema filosófico</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">David Hume (0.2p) <span class="apartado-score" id="score-p6-hume">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_hume_1" data-points="0.2" data-pregunta="p6" data-apartado="hume">
+                        <label for="p6_hume_1">Menciona explícitamente a David Hume</label>
+                        <span class="item-points">0.2p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Núcleo filosófico (0.5p) <span class="apartado-score" id="score-p6-filos">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_filos_1" data-points="0.25" data-pregunta="p6" data-apartado="filos">
+                        <label for="p6_filos_1">Explica que no hay justificación lógica para inferir futuro del pasado</label>
+                        <span class="item-points">0.25p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_filos_2" data-points="0.15" data-pregunta="p6" data-apartado="filos">
+                        <label for="p6_filos_2">Menciona que suponer uniformidad de la naturaleza es circular</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_filos_3" data-points="0.1" data-pregunta="p6" data-apartado="filos">
+                        <label for="p6_filos_3">Indica que regularidades pasadas no garantizan futuras</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Impacto en ciencia (0.3p) <span class="apartado-score" id="score-p6-ciencia">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_ciencia_1" data-points="0.15" data-pregunta="p6" data-apartado="ciencia">
+                        <label for="p6_ciencia_1">Explica que ciencia se basa en generalizaciones inductivas</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_ciencia_2" data-points="0.1" data-pregunta="p6" data-apartado="ciencia">
+                        <label for="p6_ciencia_2">Indica que leyes científicas son probables, no ciertas</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_ciencia_3" data-points="0.05" data-pregunta="p6" data-apartado="ciencia">
+                        <label for="p6_ciencia_3">Menciona el cuestionamiento de la certeza científica</label>
+                        <span class="item-points">0.05p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Formato (0.1p) <span class="apartado-score" id="score-p6-formato">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p6_formato_1" data-points="0.1" data-pregunta="p6" data-apartado="formato">
+                        <label for="p6_formato_1">Respeta el límite de 150 palabras (±20 tolerancia)</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREGUNTA 7 -->
+            <div class="pregunta-section">
+                <div class="pregunta-header">
+                    <span class="pregunta-title">Pregunta 7: Reflexión Deducción vs Inducción</span>
+                    <span class="pregunta-score" id="score-p7">0.0 / 1.0</span>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Explicación teórica (0.6p) <span class="apartado-score" id="score-p7-teoria">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_teoria_1" data-points="0.15" data-pregunta="p7" data-apartado="teoria">
+                        <label for="p7_teoria_1">Explica por qué deducción no amplía conocimiento</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_teoria_2" data-points="0.15" data-pregunta="p7" data-apartado="teoria">
+                        <label for="p7_teoria_2">Explica por qué inducción sacrifica certeza</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_teoria_3" data-points="0.15" data-pregunta="p7" data-apartado="teoria">
+                        <label for="p7_teoria_3">Argumenta la complementariedad de ambos métodos</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_teoria_4" data-points="0.15" data-pregunta="p7" data-apartado="teoria">
+                        <label for="p7_teoria_4">Menciona cuándo usar cada método (contextos apropiados)</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                </div>
+
+                <div class="apartado">
+                    <div class="apartado-title">Ejemplo concreto (0.4p) <span class="apartado-score" id="score-p7-ejemplo">0.0</span></div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_ejemplo_1" data-points="0.1" data-pregunta="p7" data-apartado="ejemplo">
+                        <label for="p7_ejemplo_1">Proporciona ejemplo real, específico y relevante</label>
+                        <span class="item-points">0.1p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_ejemplo_2" data-points="0.15" data-pregunta="p7" data-apartado="ejemplo">
+                        <label for="p7_ejemplo_2">Identifica correctamente el momento inductivo del ejemplo</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                    <div class="item-checkbox">
+                        <input type="checkbox" id="p7_ejemplo_3" data-points="0.15" data-pregunta="p7" data-apartado="ejemplo">
+                        <label for="p7_ejemplo_3">Identifica correctamente el momento deductivo del ejemplo</label>
+                        <span class="item-points">0.15p</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMEN FINAL -->
+            <div class="resumen-final">
+                <h2>📊 CALIFICACIÓN FINAL</h2>
+                <div class="nota-final" id="notaFinal">0.0</div>
+                <p style="font-size: 18px; margin-bottom: 30px;">sobre 10 puntos</p>
+
+                <div class="desglose">
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 1</div>
+                        <div class="value" id="final-p1">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 2</div>
+                        <div class="value" id="final-p2">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 3</div>
+                        <div class="value" id="final-p3">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 4</div>
+                        <div class="value" id="final-p4">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 5</div>
+                        <div class="value" id="final-p5">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 6</div>
+                        <div class="value" id="final-p6">0.0</div>
+                    </div>
+                    <div class="desglose-item">
+                        <div class="label">Pregunta 7</div>
+                        <div class="value" id="final-p7">0.0</div>
+                    </div>
+                </div>
+
+                <div class="acciones">
+                    <button class="btn btn-reset" onclick="resetearTodo()">🔄 Resetear Todo</button>
+                    <button class="btn btn-export" onclick="exportarResultados()">📄 Exportar Resultados</button>
+                    <button class="btn btn-export" onclick="window.print()">🖨️ Imprimir</button>
+                </div>
+            </div>
+
+            <!-- FEEDBACK -->
+            <div class="feedback-section">
+                <h3>💬 Feedback para el estudiante</h3>
+                <textarea id="feedbackText" placeholder="Escribe aquí las observaciones, fortalezas y recomendaciones para el estudiante..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calcular puntuación
+        function calcularPuntuacion() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            let scores = {
+                p1: 0, p2: 0, p3: 0, p4: 0, p5: 0, p6: 0, p7: 0
+            };
+            
+            // Calcular por pregunta
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const pregunta = checkbox.dataset.pregunta;
+                    const points = parseFloat(checkbox.dataset.points);
+                    scores[pregunta] += points;
+                }
+            });
+
+            // Actualizar displays de preguntas
+            for (let pregunta in scores) {
+                const maxPoints = {
+                    p1: 1.0, p2: 1.0, p3: 2.0, p4: 2.0, p5: 1.5, p6: 1.5, p7: 1.0
+                };
+                document.getElementById(`score-${pregunta}`).textContent = 
+                    `${scores[pregunta].toFixed(1)} / ${maxPoints[pregunta].toFixed(1)}`;
+                document.getElementById(`final-${pregunta}`).textContent = 
+                    scores[pregunta].toFixed(1);
+            }
+
+            // Calcular apartados
+            const apartados = {};
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const pregunta = checkbox.dataset.pregunta;
+                    const apartado = checkbox.dataset.apartado;
+                    const key = `${pregunta}-${apartado}`;
+                    if (!apartados[key]) apartados[key] = 0;
+                    apartados[key] += parseFloat(checkbox.dataset.points);
+                }
+            });
+
+            // Actualizar displays de apartados
+            for (let key in apartados) {
+                const element = document.getElementById(`score-${key}`);
+                if (element) {
+                    element.textContent = apartados[key].toFixed(2);
+                }
+            }
+
+            // Calcular total
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            document.getElementById('notaFinal').textContent = total.toFixed(1);
+
+            // Guardar en localStorage
+            guardarProgreso();
+        }
+
+        // Guardar progreso
+        function guardarProgreso() {
+            const studentName = document.getElementById('studentName').value;
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const estado = {};
+            
+            checkboxes.forEach(checkbox => {
+                estado[checkbox.id] = checkbox.checked;
+            });
+
+            const feedback = document.getElementById('feedbackText').value;
+
+            localStorage.setItem('correccion_actual', JSON.stringify({
+                studentName,
+                estado,
+                feedback,
+                timestamp: new Date().toISOString()
+            }));
+        }
+
+        // Cargar progreso
+        function cargarProgreso() {
+            const saved = localStorage.getItem('correccion_actual');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('studentName').value = data.studentName || '';
+                
+                for (let id in data.estado) {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = data.estado[id];
+                    }
+                }
+
+                document.getElementById('feedbackText').value = data.feedback || '';
+                calcularPuntuacion();
+            }
+        }
+
+        // Resetear todo
+        function resetearTodo() {
+            if (confirm('¿Estás segura de que quieres resetear toda la corrección? Esta acción no se puede deshacer.')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.getElementById('studentName').value = '';
+                document.getElementById('feedbackText').value = '';
+                calcularPuntuacion();
+                localStorage.removeItem('correccion_actual');
+            }
+        }
+
+        // Exportar resultados
+        function exportarResultados() {
+            const studentName = document.getElementById('studentName').value || 'Sin_nombre';
+            const notaFinal = document.getElementById('notaFinal').textContent;
+            const feedback = document.getElementById('feedbackText').value;
+
+            let texto = `CORRECCIÓN DE EXAMEN - FILOSOFÍA 1º BACHILLERATO\n`;
+            texto += `${'='.repeat(80)}\n\n`;
+            texto += `Estudiante: ${studentName}\n`;
+            texto += `Fecha: ${new Date().toLocaleDateString('es-ES')}\n`;
+            texto += `Calificación Final: ${notaFinal} / 10\n\n`;
+            texto += `${'='.repeat(80)}\n\n`;
+
+            // Desglose detallado por preguntas con todos los ítems
+            const preguntas = [
+                {
+                    num: 1,
+                    titulo: 'Pregunta 1: Razonamiento Deductivo',
+                    max: 1.0,
+                    apartados: [
+                        { id: 'def', titulo: 'Definición (0.4p)', items: [
+                            { id: 'p1_def_1', texto: 'Menciona que es un proceso de premisas → conclusión', puntos: 0.1 },
+                            { id: 'p1_def_2', texto: 'Explica la necesidad lógica (conclusión se sigue necesariamente)', puntos: 0.15 },
+                            { id: 'p1_def_3', texto: 'Indica que conclusión está contenida en las premisas', puntos: 0.15 }
+                        ]},
+                        { id: 'c1', titulo: 'Característica 1: No ampliativo (0.2p)', items: [
+                            { id: 'p1_c1_1', texto: 'Menciona que no amplía conocimiento / no es ampliativo', puntos: 0.1 },
+                            { id: 'p1_c1_2', texto: 'Explica que hace explícito lo implícito', puntos: 0.1 }
+                        ]},
+                        { id: 'c2', titulo: 'Característica 2: Garantiza verdad (0.2p)', items: [
+                            { id: 'p1_c2_1', texto: 'Afirma que garantiza verdad si premisas son verdaderas', puntos: 0.1 },
+                            { id: 'p1_c2_2', texto: 'Explica transmisión de verdad de premisas a conclusión', puntos: 0.1 }
+                        ]},
+                        { id: 'c3', titulo: 'Característica 3: Validez formal (0.2p)', items: [
+                            { id: 'p1_c3_1', texto: 'Menciona que se evalúa por validez formal/estructura', puntos: 0.1 },
+                            { id: 'p1_c3_2', texto: 'Explica independencia entre validez y verdad del contenido', puntos: 0.1 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 2,
+                    titulo: 'Pregunta 2: Clasificación Deductivo/Inductivo',
+                    max: 1.0,
+                    apartados: [
+                        { id: 'a', titulo: 'Apartado A - Mamíferos (0.5p)', items: [
+                            { id: 'p2_a_1', texto: 'Identifica correctamente como DEDUCTIVO', puntos: 0.1 },
+                            { id: 'p2_a_2', texto: 'Menciona que va de general a particular', puntos: 0.1 },
+                            { id: 'p2_a_3', texto: 'Explica que es un silogismo categórico', puntos: 0.1 },
+                            { id: 'p2_a_4', texto: 'Indica que la conclusión es necesaria/no puede ser falsa', puntos: 0.1 },
+                            { id: 'p2_a_5', texto: 'Menciona que no es ampliativo', puntos: 0.1 }
+                        ]},
+                        { id: 'b', titulo: 'Apartado B - Cisnes (0.5p)', items: [
+                            { id: 'p2_b_1', texto: 'Identifica correctamente como INDUCTIVO', puntos: 0.1 },
+                            { id: 'p2_b_2', texto: 'Menciona que va de particular/observaciones a general', puntos: 0.15 },
+                            { id: 'p2_b_3', texto: 'Explica que la conclusión es probable, no necesaria', puntos: 0.15 },
+                            { id: 'p2_b_4', texto: 'Menciona que es ampliativo (va más allá de premisas)', puntos: 0.1 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 3,
+                    titulo: 'Pregunta 3: Análisis Argumentativo',
+                    max: 2.0,
+                    apartados: [
+                        { id: 'a', titulo: 'A) Premisas y conclusión (0.5p)', items: [
+                            { id: 'p3_a_1', texto: 'Identifica correctamente Premisa 1', puntos: 0.15 },
+                            { id: 'p3_a_2', texto: 'Identifica correctamente Premisa 2', puntos: 0.15 },
+                            { id: 'p3_a_3', texto: 'Identifica correctamente la Conclusión', puntos: 0.2 }
+                        ]},
+                        { id: 'b', titulo: 'B) Tipos de juicio (0.5p)', items: [
+                            { id: 'p3_b_1', texto: 'P1: Clasifica correctamente como juicio de hecho', puntos: 0.1 },
+                            { id: 'p3_b_2', texto: 'P1: Justifica adecuadamente (describe realidad, verificable)', puntos: 0.1 },
+                            { id: 'p3_b_3', texto: 'P2: Clasifica correctamente como juicio de valor', puntos: 0.1 },
+                            { id: 'p3_b_4', texto: 'P2: Justifica adecuadamente (valoración moral/ética)', puntos: 0.1 },
+                            { id: 'p3_b_5', texto: 'Conclusión: Clasifica correctamente', puntos: 0.05 },
+                            { id: 'p3_b_6', texto: 'Conclusión: Justifica adecuadamente', puntos: 0.05 }
+                        ]},
+                        { id: 'c', titulo: 'C) Pertinencia (0.5p)', items: [
+                            { id: 'p3_c_1', texto: 'Identifica que las premisas NO son pertinentes', puntos: 0.1 },
+                            { id: 'p3_c_2', texto: 'Explica la falacia de P1 (apelación a experiencia personal)', puntos: 0.2 },
+                            { id: 'p3_c_3', texto: 'Explica la falacia de P2 (ad hominem)', puntos: 0.2 }
+                        ]},
+                        { id: 'd', titulo: 'D) Suficiencia (0.5p)', items: [
+                            { id: 'p3_d_1', texto: 'Identifica que las premisas NO son suficientes', puntos: 0.1 },
+                            { id: 'p3_d_2', texto: 'Explica por qué P1 es insuficiente', puntos: 0.15 },
+                            { id: 'p3_d_3', texto: 'Explica por qué P2 es insuficiente', puntos: 0.15 },
+                            { id: 'p3_d_4', texto: 'Menciona qué evidencia sería necesaria (datos científicos)', puntos: 0.1 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 4,
+                    titulo: 'Pregunta 4: Formalización Lógica',
+                    max: 2.0,
+                    apartados: [
+                        { id: 'a', titulo: 'A) p → q (0.5p)', items: [
+                            { id: 'p4_a_1', texto: '✅ Formalización PERFECTA: p → q (todo o nada)', puntos: 0.5 }
+                        ]},
+                        { id: 'b', titulo: 'B) r ∧ s (0.5p)', items: [
+                            { id: 'p4_b_1', texto: '✅ Formalización PERFECTA: r ∧ s (todo o nada)', puntos: 0.5 }
+                        ]},
+                        { id: 'c', titulo: 'C) ((r ∧ s) ∧ ¬p) → ¬q (1.0p)', items: [
+                            { id: 'p4_c_1', texto: 'Identifica correctamente el implicador (→) como conector principal', puntos: 0.2 },
+                            { id: 'p4_c_2', texto: 'Formaliza correctamente el antecedente: (r ∧ s)', puntos: 0.15 },
+                            { id: 'p4_c_3', texto: 'Incluye correctamente la negación: ∧ ¬p', puntos: 0.15 },
+                            { id: 'p4_c_4', texto: 'Formaliza correctamente el consecuente: ¬q', puntos: 0.2 },
+                            { id: 'p4_c_5', texto: 'Usa correctamente los paréntesis', puntos: 0.2 },
+                            { id: 'p4_c_6', texto: 'Conecta correctamente antecedente y consecuente', puntos: 0.1 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 5,
+                    titulo: 'Pregunta 5: Tabla de Verdad',
+                    max: 1.5,
+                    apartados: [
+                        { id: 'est', titulo: 'Estructura de la tabla (0.2p)', items: [
+                            { id: 'p5_est_1', texto: 'Número correcto de filas (4 filas)', puntos: 0.05 },
+                            { id: 'p5_est_2', texto: 'Asignación correcta de valores a variable p', puntos: 0.05 },
+                            { id: 'p5_est_3', texto: 'Asignación correcta de valores a variable q', puntos: 0.05 },
+                            { id: 'p5_est_4', texto: 'Identifica todas las columnas intermedias necesarias', puntos: 0.05 }
+                        ]},
+                        { id: 'col', titulo: 'Columnas intermedias (0.7p)', items: [
+                            { id: 'p5_col_1', texto: 'Columna p ∧ q completamente correcta (VFFF)', puntos: 0.2 },
+                            { id: 'p5_col_2', texto: 'Columna ¬(p ∧ q) completamente correcta (FVVV)', puntos: 0.2 },
+                            { id: 'p5_col_3', texto: 'Columna q → p completamente correcta (VVFV)', puntos: 0.3 }
+                        ]},
+                        { id: 'fin', titulo: 'Columna final y conclusión (0.6p)', items: [
+                            { id: 'p5_fin_1', texto: 'Columna ¬(p ∧ q) ∨ (q → p) completamente correcta (VVVV)', puntos: 0.4 },
+                            { id: 'p5_fin_2', texto: 'Identifica correctamente como TAUTOLOGÍA', puntos: 0.2 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 6,
+                    titulo: 'Pregunta 6: Problema de la Inducción',
+                    max: 1.5,
+                    apartados: [
+                        { id: 'pavo', titulo: 'Ejemplo del pavo (0.4p)', items: [
+                            { id: 'p6_pavo_1', texto: 'Describe correctamente la observación repetida del pavo', puntos: 0.1 },
+                            { id: 'p6_pavo_2', texto: 'Explica la conclusión inductiva del pavo', puntos: 0.1 },
+                            { id: 'p6_pavo_3', texto: 'Menciona el desenlace (ruptura de la regularidad)', puntos: 0.1 },
+                            { id: 'p6_pavo_4', texto: 'Conecta el ejemplo con el problema filosófico', puntos: 0.1 }
+                        ]},
+                        { id: 'hume', titulo: 'David Hume (0.2p)', items: [
+                            { id: 'p6_hume_1', texto: 'Menciona explícitamente a David Hume', puntos: 0.2 }
+                        ]},
+                        { id: 'filos', titulo: 'Núcleo filosófico (0.5p)', items: [
+                            { id: 'p6_filos_1', texto: 'Explica que no hay justificación lógica para inferir futuro del pasado', puntos: 0.25 },
+                            { id: 'p6_filos_2', texto: 'Menciona que suponer uniformidad de la naturaleza es circular', puntos: 0.15 },
+                            { id: 'p6_filos_3', texto: 'Indica que regularidades pasadas no garantizan futuras', puntos: 0.1 }
+                        ]},
+                        { id: 'ciencia', titulo: 'Impacto en ciencia (0.3p)', items: [
+                            { id: 'p6_ciencia_1', texto: 'Explica que ciencia se basa en generalizaciones inductivas', puntos: 0.15 },
+                            { id: 'p6_ciencia_2', texto: 'Indica que leyes científicas son probables, no ciertas', puntos: 0.1 },
+                            { id: 'p6_ciencia_3', texto: 'Menciona el cuestionamiento de la certeza científica', puntos: 0.05 }
+                        ]},
+                        { id: 'formato', titulo: 'Formato (0.1p)', items: [
+                            { id: 'p6_formato_1', texto: 'Respeta el límite de 150 palabras (±20 tolerancia)', puntos: 0.1 }
+                        ]}
+                    ]
+                },
+                {
+                    num: 7,
+                    titulo: 'Pregunta 7: Reflexión Deducción vs Inducción',
+                    max: 1.0,
+                    apartados: [
+                        { id: 'teoria', titulo: 'Explicación teórica (0.6p)', items: [
+                            { id: 'p7_teoria_1', texto: 'Explica por qué deducción no amplía conocimiento', puntos: 0.15 },
+                            { id: 'p7_teoria_2', texto: 'Explica por qué inducción sacrifica certeza', puntos: 0.15 },
+                            { id: 'p7_teoria_3', texto: 'Argumenta la complementariedad de ambos métodos', puntos: 0.15 },
+                            { id: 'p7_teoria_4', texto: 'Menciona cuándo usar cada método (contextos apropiados)', puntos: 0.15 }
+                        ]},
+                        { id: 'ejemplo', titulo: 'Ejemplo concreto (0.4p)', items: [
+                            { id: 'p7_ejemplo_1', texto: 'Proporciona ejemplo real, específico y relevante', puntos: 0.1 },
+                            { id: 'p7_ejemplo_2', texto: 'Identifica correctamente el momento inductivo del ejemplo', puntos: 0.15 },
+                            { id: 'p7_ejemplo_3', texto: 'Identifica correctamente el momento deductivo del ejemplo', puntos: 0.15 }
+                        ]}
+                    ]
+                }
+            ];
+
+            // Generar desglose detallado
+            texto += `DESGLOSE DETALLADO POR PREGUNTAS:\n`;
+            texto += `${'='.repeat(80)}\n\n`;
+
+            preguntas.forEach(pregunta => {
+                const scorePregunta = document.getElementById(`final-p${pregunta.num}`).textContent;
+                texto += `${pregunta.titulo}\n`;
+                texto += `Puntuación: ${scorePregunta} / ${pregunta.max.toFixed(1)}\n`;
+                texto += `${'-'.repeat(80)}\n`;
+
+                pregunta.apartados.forEach(apartado => {
+                    texto += `\n  ${apartado.titulo}\n`;
+                    
+                    apartado.items.forEach(item => {
+                        const checkbox = document.getElementById(item.id);
+                        const marcado = checkbox && checkbox.checked;
+                        const simbolo = marcado ? '✓' : '✗';
+                        const puntosObtenidos = marcado ? item.puntos.toFixed(2) : '0.00';
+                        
+                        texto += `    ${simbolo} [${puntosObtenidos}p] ${item.texto}\n`;
+                    });
+                });
+
+                texto += `\n${'='.repeat(80)}\n\n`;
+            });
+
+            // Resumen de puntuación
+            texto += `RESUMEN DE PUNTUACIÓN:\n`;
+            texto += `${'-'.repeat(80)}\n`;
+            for (let i = 1; i <= 7; i++) {
+                const score = document.getElementById(`final-p${i}`).textContent;
+                const max = { 1: '1.0', 2: '1.0', 3: '2.0', 4: '2.0', 5: '1.5', 6: '1.5', 7: '1.0' }[i];
+                texto += `Pregunta ${i}: ${score} / ${max}\n`;
+            }
+            texto += `${'-'.repeat(80)}\n`;
+            texto += `CALIFICACIÓN FINAL: ${notaFinal} / 10\n`;
+
+            texto += `\n${'='.repeat(80)}\n\n`;
+            texto += `FEEDBACK PARA EL ESTUDIANTE:\n`;
+            texto += `${'-'.repeat(80)}\n`;
+            texto += feedback || '(Sin feedback escrito)';
+            
+            texto += `\n\n${'='.repeat(80)}\n`;
+            texto += `Documento generado el ${new Date().toLocaleString('es-ES')}\n`;
+
+            // Crear y descargar archivo
+            const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Correccion_${studentName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarProgreso();
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', calcularPuntuacion);
+            });
+
+            document.getElementById('studentName').addEventListener('input', guardarProgreso);
+            document.getElementById('feedbackText').addEventListener('input', guardarProgreso);
+        });
+    </script>
+</body>
+</html>
