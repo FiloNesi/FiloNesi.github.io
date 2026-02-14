@@ -1,0 +1,408 @@
+import { useState, useCallback } from "react";
+
+const SECTIONS = [
+  {
+    id: "critica_moral",
+    title: "1. Crítica a la moral occidental y al concepto de Dios",
+    maxPoints: 1.6,
+    items: [
+      {
+        id: "cm1",
+        text: "Identifica que para Nietzsche Dios es una construcción conceptual, una idea, no un ser real (frente a la afirmación agustiniana de Dios como fuente de todo bien y justicia)",
+        weight: 0.4,
+      },
+      {
+        id: "cm2",
+        text: "Explica que la aceptación de esa idea de Dios constituye, según Nietzsche, una forma de esclavitud moral que debe ser superada",
+        weight: 0.4,
+      },
+      {
+        id: "cm3",
+        text: "Señala que Nietzsche considera la moral occidental (heredada del platonismo y el cristianismo) como antinatural, contraria a los instintos y a la vida",
+        weight: 0.4,
+      },
+      {
+        id: "cm4",
+        text: "Contrapone la filosofía vitalista e irracionalista de Nietzsche con la concepción racional-teológica de San Agustín sobre la bondad y la justicia divinas",
+        weight: 0.4,
+      },
+    ],
+  },
+  {
+    id: "moral_esclavos",
+    title: "2. Crítica al cristianismo: moral de los esclavos",
+    maxPoints: 1.6,
+    items: [
+      {
+        id: "me1",
+        text: "Distingue entre moral de señores (valores vitales, fuerza, creatividad) y moral de esclavos (sumisión, obediencia, resentimiento)",
+        weight: 0.4,
+      },
+      {
+        id: "me2",
+        text: "Identifica la moral agustiniana (obediencia a Dios, castigo del pecado, pertenencia a Dios) como expresión de la moral de esclavos",
+        weight: 0.4,
+      },
+      {
+        id: "me3",
+        text: "Explica el resentimiento como mecanismo psicológico: los débiles invierten los valores (bueno = sumiso/obediente, malo = poderoso/autónomo)",
+        weight: 0.4,
+      },
+      {
+        id: "me4",
+        text: "Conecta la idea de que \"nosotros le pertenecemos\" y la aceptación del castigo divino con la renuncia a la autonomía propia de la moral de esclavos",
+        weight: 0.4,
+      },
+    ],
+  },
+  {
+    id: "libertad_trampa",
+    title: "3. La libertad como trampa",
+    maxPoints: 1.6,
+    items: [
+      {
+        id: "lt1",
+        text: "Señala la paradoja del texto: San Agustín presenta el libre arbitrio como un bien, pero condicionado a \"vivir rectamente\" según la voluntad de Dios",
+        weight: 0.4,
+      },
+      {
+        id: "lt2",
+        text: "Explica que para Nietzsche esta libertad es ficticia: solo se es libre si se elige lo que Dios manda, lo cual anula la verdadera libertad",
+        weight: 0.4,
+      },
+      {
+        id: "lt3",
+        text: "Relaciona con la propuesta nietzscheana de vivir como si Dios no existiera, abrazando la libertad de crear nuevos valores",
+        weight: 0.4,
+      },
+      {
+        id: "lt4",
+        text: "Contrapone con la verdadera libertad nietzscheana: la del espíritu libre o el superhombre (Übermensch) que crea sus propios valores sin tutela divina",
+        weight: 0.4,
+      },
+    ],
+  },
+  {
+    id: "dios_muerto",
+    title: "4. \"Dios ha muerto\": negación del Bien objetivo",
+    maxPoints: 1.6,
+    items: [
+      {
+        id: "dm1",
+        text: "Explica el significado filosófico de la \"muerte de Dios\": fin de los valores absolutos y del fundamento trascendente de la moral",
+        weight: 0.4,
+      },
+      {
+        id: "dm2",
+        text: "Contrapone directamente con la tesis agustiniana de que \"todo bien viene de Dios\": para Nietzsche la verdad (absoluta) no existe",
+        weight: 0.4,
+      },
+      {
+        id: "dm3",
+        text: "Señala que las perfecciones que San Agustín atribuye a Dios (bondad, justicia, bien) no son algo objetivo ni universal para Nietzsche, sino construcciones humanas",
+        weight: 0.4,
+      },
+      {
+        id: "dm4",
+        text: "Menciona el nihilismo como consecuencia de la muerte de Dios y la necesidad de superarlo (nihilismo pasivo → activo)",
+        weight: 0.4,
+      },
+    ],
+  },
+  {
+    id: "transmutacion",
+    title: "5. Transmutación de los valores y afirmación de la vida",
+    maxPoints: 1.6,
+    items: [
+      {
+        id: "tv1",
+        text: "Define la transmutación/transvaloración como inversión radical de los valores morales vigentes (cristianos/platónicos)",
+        weight: 0.4,
+      },
+      {
+        id: "tv2",
+        text: "Explica que los valores agustinianos (bondad divina, justicia como castigo, obediencia, vivir rectamente) son precisamente los que deben ser superados",
+        weight: 0.4,
+      },
+      {
+        id: "tv3",
+        text: "Presenta la afirmación de la vida tal como es: voluntad de poder, amor fati, eterno retorno, como nuevos valores frente a la negación cristiana de lo terrenal",
+        weight: 0.4,
+      },
+      {
+        id: "tv4",
+        text: "Vincula la transmutación con la figura del superhombre (Übermensch) como ideal de ser humano que supera la moral cristiana y crea sus propios valores",
+        weight: 0.4,
+      },
+    ],
+  },
+  {
+    id: "vocabulario",
+    title: "6. Vocabulario filosófico preciso",
+    maxPoints: 2.0,
+    items: [
+      {
+        id: "v1",
+        text: "Usa correctamente términos de San Agustín: libre arbitrio, pecado, bien, justicia divina, bondad, Dios como fuente del bien, vivir rectamente",
+        weight: 0.5,
+      },
+      {
+        id: "v2",
+        text: "Usa correctamente términos clave de Nietzsche: voluntad de poder, superhombre/Übermensch, nihilismo, transmutación/transvaloración de los valores",
+        weight: 0.5,
+      },
+      {
+        id: "v3",
+        text: "Emplea correctamente: moral de señores / moral de esclavos, muerte de Dios, resentimiento, filosofía vitalista/irracionalista, eterno retorno, amor fati",
+        weight: 0.5,
+      },
+      {
+        id: "v4",
+        text: "Redacción clara, coherente y con lenguaje filosófico apropiado; elabora un texto justificativo (no mera enumeración) que pone en diálogo a ambos autores",
+        weight: 0.5,
+      },
+    ],
+  },
+];
+
+const GRADE_OPTIONS = [
+  { value: 0, label: "No presente", color: "#ef4444", bg: "#fef2f2" },
+  { value: 0.5, label: "Parcial", color: "#f59e0b", bg: "#fffbeb" },
+  { value: 1, label: "Correcto", color: "#10b981", bg: "#f0fdf4" },
+];
+
+function GradeButton({ option, selected, onClick }) {
+  const isSelected = selected === option.value;
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: "4px 10px",
+        borderRadius: "6px",
+        border: isSelected ? `2px solid ${option.color}` : "2px solid #e5e7eb",
+        background: isSelected ? option.bg : "#fff",
+        color: isSelected ? option.color : "#6b7280",
+        fontWeight: isSelected ? 700 : 500,
+        fontSize: "12px",
+        cursor: "pointer",
+        transition: "all 0.15s ease",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {option.label}
+    </button>
+  );
+}
+
+function ChecklistItem({ item, grade, onGrade }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "12px",
+        padding: "10px 14px",
+        background: grade === 1 ? "#f0fdf4" : grade === 0.5 ? "#fffbeb" : grade === 0 ? "#fef2f2" : "#fafafa",
+        borderRadius: "8px",
+        borderLeft: `3px solid ${grade === 1 ? "#10b981" : grade === 0.5 ? "#f59e0b" : grade === 0 ? "#ef4444" : "#d1d5db"}`,
+        transition: "all 0.2s ease",
+      }}
+    >
+      <div style={{ flex: 1, fontSize: "13.5px", color: "#374151", lineHeight: 1.5 }}>
+        {item.text}
+        <span style={{ color: "#9ca3af", fontSize: "11px", marginLeft: "6px" }}>({item.weight} pt)</span>
+      </div>
+      <div style={{ display: "flex", gap: "4px", flexShrink: 0 }}>
+        {GRADE_OPTIONS.map((opt) => (
+          <GradeButton key={opt.value} option={opt} selected={grade} onClick={() => onGrade(item.id, opt.value)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Section({ section, grades, onGrade, collapsed, onToggle }) {
+  const sectionPoints = section.items.reduce((sum, item) => {
+    const g = grades[item.id];
+    return g !== undefined ? sum + item.weight * g : sum;
+  }, 0);
+  const allGraded = section.items.every((item) => grades[item.id] !== undefined);
+  const pct = allGraded ? (sectionPoints / section.maxPoints) * 100 : null;
+
+  return (
+    <div style={{ background: "#fff", borderRadius: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", overflow: "hidden", border: "1px solid #e5e7eb" }}>
+      <button
+        onClick={onToggle}
+        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(0)", transition: "transform 0.2s", fontSize: "12px", color: "#9ca3af" }}>▼</span>
+          <span style={{ fontWeight: 700, fontSize: "14px", color: "#1f2937" }}>{section.title}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {allGraded && (
+            <div style={{ width: "60px", height: "6px", background: "#e5e7eb", borderRadius: "3px", overflow: "hidden" }}>
+              <div style={{ width: `${pct}%`, height: "100%", background: pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444", borderRadius: "3px", transition: "width 0.3s ease" }} />
+            </div>
+          )}
+          <span style={{ fontWeight: 700, fontSize: "13px", color: allGraded ? (pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444") : "#9ca3af", minWidth: "55px", textAlign: "right" }}>
+            {sectionPoints.toFixed(1)} / {section.maxPoints.toFixed(1)}
+          </span>
+        </div>
+      </button>
+      {!collapsed && (
+        <div style={{ padding: "4px 16px 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
+          {section.items.map((item) => (
+            <ChecklistItem key={item.id} item={item} grade={grades[item.id]} onGrade={onGrade} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function App() {
+  const [grades, setGrades] = useState({});
+  const [collapsed, setCollapsed] = useState({});
+  const [studentName, setStudentName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [copyMsg, setCopyMsg] = useState("");
+
+  const handleGrade = useCallback((itemId, value) => {
+    setGrades((prev) => {
+      if (prev[itemId] === value) {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      }
+      return { ...prev, [itemId]: value };
+    });
+  }, []);
+
+  const toggleSection = useCallback((sectionId) => {
+    setCollapsed((prev) => ({ ...prev, [sectionId]: !prev[sectionId] }));
+  }, []);
+
+  const totalItems = SECTIONS.reduce((s, sec) => s + sec.items.length, 0);
+  const gradedItems = Object.keys(grades).length;
+  const totalPoints = SECTIONS.reduce((sum, sec) => {
+    return sum + sec.items.reduce((s, item) => {
+      const g = grades[item.id];
+      return g !== undefined ? s + item.weight * g : s;
+    }, 0);
+  }, 0);
+  const maxTotal = 10;
+  const allDone = gradedItems === totalItems;
+
+  const getGradeColor = (pts) => {
+    if (pts >= 9) return "#10b981";
+    if (pts >= 7) return "#34d399";
+    if (pts >= 5) return "#f59e0b";
+    if (pts >= 3) return "#f97316";
+    return "#ef4444";
+  };
+
+  const getGradeLabel = (pts) => {
+    if (pts >= 9) return "Sobresaliente";
+    if (pts >= 7) return "Notable";
+    if (pts >= 5) return "Aprobado";
+    if (pts >= 3) return "Insuficiente";
+    return "Muy deficiente";
+  };
+
+  const resetAll = () => { setGrades({}); setNotes(""); setStudentName(""); setCopyMsg(""); };
+
+  const copyResults = () => {
+    let text = `CORRECCIÓN COMENTARIO DE TEXTO\nSan Agustín, Del libre arbitrio II, I, 2 — Diálogo con Nietzsche\n`;
+    if (studentName) text += `Alumno/a: ${studentName}\n`;
+    text += `${"─".repeat(50)}\n\n`;
+    SECTIONS.forEach((sec) => {
+      const secPts = sec.items.reduce((s, item) => { const g = grades[item.id]; return g !== undefined ? s + item.weight * g : s; }, 0);
+      text += `${sec.title}: ${secPts.toFixed(1)} / ${sec.maxPoints.toFixed(1)}\n`;
+      sec.items.forEach((item) => {
+        const g = grades[item.id];
+        const icon = g === 1 ? "✓" : g === 0.5 ? "~" : g === 0 ? "✗" : "?";
+        const pts = g !== undefined ? (item.weight * g).toFixed(1) : "-";
+        text += `  ${icon} ${item.text} [${pts}/${item.weight.toFixed(1)}]\n`;
+      });
+      text += `\n`;
+    });
+    text += `${"─".repeat(50)}\n`;
+    text += `NOTA FINAL: ${totalPoints.toFixed(1)} / ${maxTotal}\n`;
+    if (notes) text += `\nObservaciones: ${notes}\n`;
+    navigator.clipboard.writeText(text).then(() => { setCopyMsg("✓ Copiado"); setTimeout(() => setCopyMsg(""), 2500); });
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)", fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+      <div style={{ maxWidth: "780px", margin: "0 auto", padding: "24px 16px" }}>
+        {/* Header */}
+        <div style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", borderRadius: "16px", padding: "24px", color: "#fff", marginBottom: "20px" }}>
+          <h1 style={{ margin: 0, fontSize: "20px", fontWeight: 800 }}>✏️ Corrección: Comentario de Texto</h1>
+          <p style={{ margin: "6px 0 0", opacity: 0.85, fontSize: "14px" }}>San Agustín, <em>Del libre arbitrio</em> II, I, 2 — Diálogo crítico con Nietzsche</p>
+          <div style={{ marginTop: "14px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "8px", padding: "6px 12px", fontSize: "12px" }}>b) Análisis crítico con Nietzsche — hasta 8 pts</div>
+            <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: "8px", padding: "6px 12px", fontSize: "12px" }}>c) Vocabulario preciso — hasta 2 pts</div>
+          </div>
+          <p style={{ margin: "12px 0 0", opacity: 0.7, fontSize: "11.5px", lineHeight: 1.5 }}>
+            Criterio EVAU: El estudiante debe reconocer el problema, mostrar correctamente el pensamiento de ambos autores y elaborar un breve texto justificativo que los ponga en diálogo.
+          </p>
+        </div>
+
+        {/* Student name */}
+        <div style={{ marginBottom: "16px" }}>
+          <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Nombre del alumno/a..."
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1px solid #d1d5db", fontSize: "14px", background: "#fff", boxSizing: "border-box", outline: "none" }} />
+        </div>
+
+        {/* Progress */}
+        <div style={{ background: "#fff", borderRadius: "12px", padding: "14px 18px", marginBottom: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", border: "1px solid #e5e7eb" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+            <span style={{ fontSize: "13px", color: "#6b7280" }}>Progreso: {gradedItems} / {totalItems} ítems</span>
+            <span style={{ fontSize: "13px", fontWeight: 700, color: getGradeColor(totalPoints) }}>{totalPoints.toFixed(1)} / {maxTotal}</span>
+          </div>
+          <div style={{ height: "8px", background: "#e5e7eb", borderRadius: "4px", overflow: "hidden" }}>
+            <div style={{ width: `${(gradedItems / totalItems) * 100}%`, height: "100%", background: "linear-gradient(90deg, #4f46e5, #7c3aed)", borderRadius: "4px", transition: "width 0.3s ease" }} />
+          </div>
+        </div>
+
+        {/* Sections */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {SECTIONS.map((section) => (
+            <Section key={section.id} section={section} grades={grades} onGrade={handleGrade} collapsed={!!collapsed[section.id]} onToggle={() => toggleSection(section.id)} />
+          ))}
+        </div>
+
+        {/* Notes */}
+        <div style={{ marginTop: "16px" }}>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Observaciones generales sobre el comentario..." rows={3}
+            style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1px solid #d1d5db", fontSize: "13px", background: "#fff", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+        </div>
+
+        {/* Final score */}
+        <div style={{ marginTop: "16px", background: "#fff", borderRadius: "12px", padding: "20px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div>
+            <div style={{ fontSize: "12px", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Nota final</div>
+            <div style={{ fontSize: "36px", fontWeight: 900, color: allDone ? getGradeColor(totalPoints) : "#9ca3af", lineHeight: 1.1 }}>
+              {totalPoints.toFixed(1)}<span style={{ fontSize: "16px", fontWeight: 500, color: "#9ca3af" }}> / 10</span>
+            </div>
+            {allDone && <div style={{ fontSize: "13px", fontWeight: 600, color: getGradeColor(totalPoints), marginTop: "2px" }}>{getGradeLabel(totalPoints)}</div>}
+          </div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+            {copyMsg && <span style={{ fontSize: "12px", color: "#10b981", fontWeight: 600 }}>{copyMsg}</span>}
+            <button onClick={copyResults} disabled={!allDone}
+              style={{ padding: "10px 20px", borderRadius: "8px", border: "none", background: allDone ? "linear-gradient(135deg, #4f46e5, #7c3aed)" : "#d1d5db", color: "#fff", fontWeight: 700, fontSize: "13px", cursor: allDone ? "pointer" : "not-allowed" }}>
+              📋 Copiar resultados
+            </button>
+            <button onClick={resetAll}
+              style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #d1d5db", background: "#fff", color: "#6b7280", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>
+              🔄 Reiniciar
+            </button>
+          </div>
+        </div>
+
+        <p style={{ textAlign: "center", fontSize: "11px", color: "#9ca3af", marginTop: "20px" }}>Historia de la Filosofía · 2º Bachillerato · EVAU Madrid</p>
+      </div>
+    </div>
+  );
+}
