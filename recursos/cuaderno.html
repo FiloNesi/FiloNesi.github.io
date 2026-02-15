@@ -188,6 +188,35 @@
     letter-spacing: -0.3px;
   }
   td.cell-score { text-align: center; padding: 3px 4px; }
+  th.col-obs {
+    min-width: 150px;
+    background: #1e3a5f;
+    border-left: 2px solid #2563eb;
+  }
+  th.col-obs .obs-label { font-size: 11px; font-weight: 700; }
+  td.cell-obs {
+    padding: 3px 6px;
+    border-left: 2px solid #e2e8f0;
+    min-width: 150px;
+  }
+  .obs-input {
+    width: 100%;
+    min-width: 130px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 4px 6px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    outline: none;
+    resize: vertical;
+    min-height: 28px;
+    height: 28px;
+    color: #334155;
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+  .obs-input:focus { border-color: #6366f1; }
+  .obs-input::placeholder { color: #cbd5e1; }
 
   tr:nth-child(even) td { background: #fff; }
   tr:nth-child(odd) td { background: #fafbfd; }
@@ -330,6 +359,7 @@ const TOTAL_MAX = CRITERIA.reduce((s,c)=>s+c.max,0);
 
 let students = ["Alumno 1","Alumno 2","Alumno 3","Alumno 4","Alumno 5","Alumno 6","Alumno 7","Alumno 8","Alumno 9","Alumno 10"];
 let scores = {};
+let observations = {};
 
 function getScore(student, critId) { return scores[student+"::"+critId] ?? ""; }
 function getNumScore(student, critId) { return parseFloat(scores[student+"::"+critId]) || 0; }
@@ -368,6 +398,11 @@ function buildHeader() {
   thT.className = "col-total";
   thT.innerHTML = `<div class="total-label">TOTAL</div><div class="total-max">/${TOTAL_MAX}</div>`;
   row.appendChild(thT);
+  // Observations col
+  const thO = document.createElement("th");
+  thO.className = "col-obs";
+  thO.innerHTML = `<div class="obs-label">Observaciones</div>`;
+  row.appendChild(thO);
 }
 
 function buildHelpPanel() {
@@ -419,6 +454,20 @@ function renderTable() {
     tdTotal.style.background = totalBg(total);
     tdTotal.textContent = total > 0 ? total.toFixed(2) : "—";
     tr.appendChild(tdTotal);
+
+    // Observations cell
+    const tdObs = document.createElement("td");
+    tdObs.className = "cell-obs";
+    const textarea = document.createElement("textarea");
+    textarea.className = "obs-input";
+    textarea.placeholder = "Notas...";
+    textarea.value = observations[student] || "";
+    textarea.setAttribute("data-student", student);
+    textarea.addEventListener("input", function(e){
+      observations[e.target.getAttribute("data-student")] = e.target.value;
+    });
+    tdObs.appendChild(textarea);
+    tr.appendChild(tdObs);
 
     tbody.appendChild(tr);
   });
@@ -483,6 +532,11 @@ function finishEdit(input, oldName) {
     newScores[(sName===oldName?newName:sName)+"::"+cId] = val;
   });
   scores = newScores;
+  // Migrate observations
+  if(observations[oldName] !== undefined) {
+    observations[newName] = observations[oldName];
+    delete observations[oldName];
+  }
   renderTable();
 }
 
@@ -502,6 +556,7 @@ function removeStudent(name) {
     if(!key.startsWith(name+"::")) newScores[key]=val;
   });
   scores = newScores;
+  delete observations[name];
   renderTable();
 }
 
@@ -513,18 +568,20 @@ function toggleHelp() {
 }
 
 function clearAll() {
-  if(confirm("¿Borrar todas las puntuaciones?")) {
+  if(confirm("¿Borrar todas las puntuaciones y observaciones?")) {
     scores = {};
+    observations = {};
     renderTable();
   }
 }
 
 function exportCSV() {
-  const header = ["Alumno/a", ...CRITERIA.map(c=>c.name+" ("+c.max+")"), "TOTAL ("+TOTAL_MAX+")"];
+  const header = ["Alumno/a", ...CRITERIA.map(c=>c.name+" ("+c.max+")"), "TOTAL ("+TOTAL_MAX+")", "Observaciones"];
   const rows = students.map(s=>[
     s,
     ...CRITERIA.map(c=>getNumScore(s,c.id)),
-    getTotal(s).toFixed(2)
+    getTotal(s).toFixed(2),
+    (observations[s]||"").replace(/"/g,'""')
   ]);
   const csv = [header,...rows].map(r=>r.map(c=>'"'+c+'"').join(",")).join("\n");
   const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
