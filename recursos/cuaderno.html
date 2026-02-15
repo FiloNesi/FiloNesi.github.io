@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación del Cuaderno de Filosofía</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: linear-gradient(135deg, #fdfcfb 0%, #f5f0eb 100%);
+    min-height: 100vh;
+    padding: 24px 16px;
+    color: #1e293b;
+  }
+  h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 12px;
+  }
+  .subtitle strong { color: #1e293b; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 20px; }
+
+  /* Buttons */
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-info { background: #eef2ff; color: #6366f1; border: 1px solid #6366f133; }
+  .btn-info:hover { background: #e0e7ff; }
+  .btn-export { background: #ecfdf5; color: #059669; border: 1px solid #05966933; }
+  .btn-export:hover { background: #d1fae5; }
+  .btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #dc262633; }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-primary { background: #eef2ff; color: #4338ca; border: 1px solid #4338ca33; font-weight: 600; }
+  .btn-primary:hover { background: #e0e7ff; }
+  .btn-group { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+  /* Help panel */
+  .help-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+    display: none;
+  }
+  .help-panel.visible { display: block; }
+  .help-panel h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: #4338ca;
+  }
+  .help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px;
+  }
+  .help-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+  .help-item-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .help-item-title span { color: #6366f1; font-weight: 700; }
+  .help-item-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  /* Add student bar */
+  .add-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .add-bar input[type="text"] {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    outline: none;
+    width: 220px;
+    transition: border-color 0.15s;
+  }
+  .add-bar input[type="text"]:focus { border-color: #6366f1; }
+  .student-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  /* Table wrapper */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    background: #fff;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+  }
+  thead tr { background: #1a1a2e; }
+  th {
+    padding: 10px 6px;
+    color: #e0e7ff;
+    font-size: 11px;
+    text-align: center;
+    font-weight: 500;
+    border-bottom: 2px solid #334155;
+    user-select: none;
+  }
+  th.col-student {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background: #1a1a2e;
+    min-width: 160px;
+    text-align: left;
+    border-right: 2px solid #334155;
+  }
+  th.col-total {
+    min-width: 70px;
+    background: #312e81;
+    border-left: 2px solid #4338ca;
+  }
+  th .crit-name { font-size: 10.5px; line-height: 1.2; font-weight: 600; letter-spacing: 0.2px; }
+  th .crit-max { margin-top: 3px; font-size: 10px; color: #a5b4fc; font-weight: 700; }
+  th .total-label { font-size: 11px; font-weight: 700; }
+  th .total-max { font-size: 10px; color: #c7d2fe; margin-top: 2px; }
+  th:hover:not(.col-student):not(.col-total) { background: #2d2d5e; }
+
+  td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12.5px;
+  }
+  td.cell-student {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    border-right: 2px solid #e2e8f0;
+    font-weight: 500;
+  }
+  td.cell-total {
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    border-left: 2px solid #e2e8f0;
+    font-family: 'Crimson Pro', serif;
+    letter-spacing: -0.3px;
+  }
+  td.cell-score { text-align: center; padding: 3px 4px; }
+
+  tr:nth-child(even) td { background: #fff; }
+  tr:nth-child(odd) td { background: #fafbfd; }
+  tr:nth-child(even) td.cell-student { background: #fff; }
+  tr:nth-child(odd) td.cell-student { background: #fafbfd; }
+
+  .student-name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .student-name span {
+    cursor: pointer;
+    flex: 1;
+  }
+  .student-name span:hover { color: #4338ca; }
+  .btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #cbd5e1;
+    font-size: 16px;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .btn-remove:hover { color: #ef4444; }
+
+  .name-edit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    padding: 2px 6px;
+    border: 1px solid #6366f1;
+    border-radius: 4px;
+    width: 100%;
+    outline: none;
+  }
+
+  .score-input {
+    width: 100%;
+    max-width: 54px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 2px;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.15s;
+    -moz-appearance: textfield;
+  }
+  .score-input::-webkit-outer-spin-button,
+  .score-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 12px;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .legend-hint {
+    margin-left: auto;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 12px 8px; }
+    .legend-hint { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container header">
+  <h1>📓 Evaluación del Cuaderno de Filosofía</h1>
+  <p class="subtitle">
+    Bachillerato · Puntuación máxima: <strong id="maxPoints"></strong> puntos
+    <span id="avgSpan"></span>
+  </p>
+  <div class="btn-group">
+    <button class="btn btn-info" onclick="toggleHelp()">ℹ️ Ver criterios</button>
+    <button class="btn btn-export" onclick="exportCSV()">📥 Exportar CSV</button>
+    <button class="btn btn-danger" onclick="clearAll()">🗑 Limpiar todo</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="help-panel" id="helpPanel"></div>
+</div>
+
+<div class="container add-bar">
+  <input type="text" id="newStudentInput" placeholder="Nombre del alumno/a..." onkeydown="if(event.key==='Enter')addStudent()">
+  <button class="btn btn-primary" onclick="addStudent()">+ Añadir alumno/a</button>
+  <span class="student-count" id="studentCount"></span>
+</div>
+
+<div class="container table-wrap">
+  <table>
+    <thead><tr id="headerRow"></tr></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<div class="container legend" id="legend">
+  <span>Leyenda:</span>
+  <span><span class="legend-dot" style="background:#059669"></span>≥ 80%</span>
+  <span><span class="legend-dot" style="background:#d97706"></span>50–79%</span>
+  <span><span class="legend-dot" style="background:#dc2626"></span>&lt; 50%</span>
+  <span class="legend-hint">Clic en el nombre para editarlo · Pasa el ratón sobre las cabeceras para ver descripciones</span>
+</div>
+
+<script>
+const CRITERIA = [
+  { id:"indice", name:"Índice y numeración", max:0.5, desc:"Índice actualizado, páginas numeradas, temas en hoja nueva" },
+  { id:"apuntes", name:"Apuntes de clase", max:1.5, desc:"Ideas clave, definiciones, aclaraciones del profesor y trabajo propio" },
+  { id:"resumenes", name:"Resúmenes y comentarios", max:1.5, desc:"Análisis de lecturas filosóficas, ideas principales destacadas" },
+  { id:"esquemas", name:"Esquemas y mapas conceptuales", max:1, desc:"Esquemas gráficos, relaciones entre conceptos, líneas de tiempo" },
+  { id:"ejercicios", name:"Ejercicios y actividades", max:1, desc:"Ejercicios resueltos paso a paso, enunciados copiados, numerados" },
+  { id:"vocabulario", name:"Vocabulario clave", max:0.5, desc:"Lista de términos filosóficos con definiciones" },
+  { id:"reflexiones", name:"Reflexiones y debates", max:1, desc:"Opiniones propias, conclusiones, aportes cooperativos" },
+  { id:"orden", name:"Orden y presentación", max:1, desc:"Márgenes, interlineado, títulos claros, letra legible" },
+  { id:"limpieza", name:"Limpieza", max:0.5, desc:"Sin tachaduras, correcciones limpias, fotocopias bien pegadas" },
+  { id:"completitud", name:"Completitud", max:1, desc:"No faltan apuntes ni ejercicios, todos los temas registrados" },
+  { id:"profundidad", name:"Profundidad crítica", max:0.5, desc:"Comentarios personales, preguntas, conexiones interdisciplinares" },
+];
+const TOTAL_MAX = CRITERIA.reduce((s,c)=>s+c.max,0);
+
+let students = ["Alumno 1","Alumno 2","Alumno 3","Alumno 4","Alumno 5","Alumno 6","Alumno 7","Alumno 8","Alumno 9","Alumno 10"];
+let scores = {};
+
+function getScore(student, critId) { return scores[student+"::"+critId] ?? ""; }
+function getNumScore(student, critId) { return parseFloat(scores[student+"::"+critId]) || 0; }
+function getTotal(student) { return CRITERIA.reduce((s,c)=>s+getNumScore(student,c.id),0); }
+
+function gradeColor(score, max) {
+  if(max===0) return "#94a3b8";
+  const pct = score/max;
+  if(pct>=0.8) return "#059669";
+  if(pct>=0.5) return "#d97706";
+  if(score>0) return "#dc2626";
+  return "#94a3b8";
+}
+function totalBg(t) { return t>=8?"#ecfdf5":t>=5?"#fefce8":t>0?"#fef2f2":"#f8fafc"; }
+function totalColor(t) { return t>=8?"#065f46":t>=5?"#92400e":t>0?"#991b1b":"#64748b"; }
+
+function buildHeader() {
+  const row = document.getElementById("headerRow");
+  row.innerHTML = "";
+  // Student col
+  const thS = document.createElement("th");
+  thS.className = "col-student";
+  thS.textContent = "Alumno/a";
+  row.appendChild(thS);
+  // Criteria cols
+  CRITERIA.forEach(c => {
+    const th = document.createElement("th");
+    th.style.minWidth = "72px";
+    th.style.cursor = "help";
+    th.title = c.desc;
+    th.innerHTML = `<div class="crit-name">${c.name}</div><div class="crit-max">máx ${c.max}</div>`;
+    row.appendChild(th);
+  });
+  // Total col
+  const thT = document.createElement("th");
+  thT.className = "col-total";
+  thT.innerHTML = `<div class="total-label">TOTAL</div><div class="total-max">/${TOTAL_MAX}</div>`;
+  row.appendChild(thT);
+}
+
+function buildHelpPanel() {
+  const panel = document.getElementById("helpPanel");
+  panel.innerHTML = `<h3>Criterios de evaluación (${CRITERIA.length} ítems = ${TOTAL_MAX} puntos)</h3><div class="help-grid">${CRITERIA.map(c=>`<div class="help-item"><div class="help-item-title">${c.name} <span>(${c.max} pt${c.max!==1?"s":""})</span></div><div class="help-item-desc">${c.desc}</div></div>`).join("")}</div>`;
+}
+
+function renderTable() {
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+  students.forEach((student, idx) => {
+    const tr = document.createElement("tr");
+    // Student name cell
+    const tdName = document.createElement("td");
+    tdName.className = "cell-student";
+    tdName.innerHTML = `<div class="student-name"><span onclick="startEdit(this,'${esc(student)}')" title="Clic para editar nombre">${esc(student)}</span><button class="btn-remove" onclick="removeStudent('${esc(student)}')" title="Eliminar alumno/a">×</button></div>`;
+    tr.appendChild(tdName);
+
+    // Score cells
+    CRITERIA.forEach(c => {
+      const td = document.createElement("td");
+      td.className = "cell-score";
+      const val = getScore(student, c.id);
+      const numVal = parseFloat(val)||0;
+      const col = val!=="" ? gradeColor(numVal, c.max) : "#94a3b8";
+      const input = document.createElement("input");
+      input.type = "number";
+      input.className = "score-input";
+      input.step = "0.25";
+      input.min = "0";
+      input.max = c.max;
+      input.value = val;
+      input.style.border = `1.5px solid ${val!=="" ? col+"55" : "#e2e8f0"}`;
+      input.style.color = val!=="" ? col : "#94a3b8";
+      input.style.background = val!=="" ? col+"0a" : "#fff";
+      input.setAttribute("data-student", student);
+      input.setAttribute("data-crit", c.id);
+      input.addEventListener("input", onScoreChange);
+      input.addEventListener("focus", function(){ this.select(); });
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+
+    // Total cell
+    const total = getTotal(student);
+    const tdTotal = document.createElement("td");
+    tdTotal.className = "cell-total";
+    tdTotal.style.color = totalColor(total);
+    tdTotal.style.background = totalBg(total);
+    tdTotal.textContent = total > 0 ? total.toFixed(2) : "—";
+    tr.appendChild(tdTotal);
+
+    tbody.appendChild(tr);
+  });
+  updateInfo();
+}
+
+function onScoreChange(e) {
+  const student = e.target.getAttribute("data-student");
+  const critId = e.target.getAttribute("data-crit");
+  const crit = CRITERIA.find(c=>c.id===critId);
+  const val = e.target.value;
+  const num = parseFloat(val);
+  if(val==="" || val===undefined) {
+    scores[student+"::"+critId] = "";
+  } else if(!isNaN(num) && num>=0 && num<=crit.max) {
+    scores[student+"::"+critId] = val;
+  }
+  // Update colors for this input
+  const numVal = parseFloat(scores[student+"::"+critId])||0;
+  const hasVal = scores[student+"::"+critId]!=="";
+  const col = hasVal ? gradeColor(numVal, crit.max) : "#94a3b8";
+  e.target.style.border = `1.5px solid ${hasVal ? col+"55" : "#e2e8f0"}`;
+  e.target.style.color = hasVal ? col : "#94a3b8";
+  e.target.style.background = hasVal ? col+"0a" : "#fff";
+  // Update total for this row
+  const row = e.target.closest("tr");
+  const totalCell = row.querySelector(".cell-total");
+  const total = getTotal(student);
+  totalCell.textContent = total > 0 ? total.toFixed(2) : "—";
+  totalCell.style.color = totalColor(total);
+  totalCell.style.background = totalBg(total);
+  updateInfo();
+}
+
+function startEdit(el, name) {
+  const div = el.parentElement;
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "name-edit";
+  input.value = name;
+  input.addEventListener("blur", function(){ finishEdit(this, name); });
+  input.addEventListener("keydown", function(e){
+    if(e.key==="Enter") finishEdit(this, name);
+    if(e.key==="Escape") renderTable();
+  });
+  div.innerHTML = "";
+  div.appendChild(input);
+  input.focus();
+  input.select();
+}
+
+function finishEdit(input, oldName) {
+  const newName = input.value.trim();
+  if(!newName || (newName !== oldName && students.includes(newName))) { renderTable(); return; }
+  const idx = students.indexOf(oldName);
+  if(idx===-1) { renderTable(); return; }
+  students[idx] = newName;
+  // Migrate scores
+  const newScores = {};
+  Object.entries(scores).forEach(([key,val])=>{
+    const [sName, cId] = key.split("::");
+    newScores[(sName===oldName?newName:sName)+"::"+cId] = val;
+  });
+  scores = newScores;
+  renderTable();
+}
+
+function addStudent() {
+  const input = document.getElementById("newStudentInput");
+  const name = input.value.trim() || ("Alumno "+(students.length+1));
+  if(students.includes(name)) return;
+  students.push(name);
+  input.value = "";
+  renderTable();
+}
+
+function removeStudent(name) {
+  students = students.filter(s=>s!==name);
+  const newScores = {};
+  Object.entries(scores).forEach(([key,val])=>{
+    if(!key.startsWith(name+"::")) newScores[key]=val;
+  });
+  scores = newScores;
+  renderTable();
+}
+
+function toggleHelp() {
+  const panel = document.getElementById("helpPanel");
+  panel.classList.toggle("visible");
+  const btn = document.querySelector(".btn-info");
+  btn.textContent = panel.classList.contains("visible") ? "Ocultar criterios" : "ℹ️ Ver criterios";
+}
+
+function clearAll() {
+  if(confirm("¿Borrar todas las puntuaciones?")) {
+    scores = {};
+    renderTable();
+  }
+}
+
+function exportCSV() {
+  const header = ["Alumno/a", ...CRITERIA.map(c=>c.name+" ("+c.max+")"), "TOTAL ("+TOTAL_MAX+")"];
+  const rows = students.map(s=>[
+    s,
+    ...CRITERIA.map(c=>getNumScore(s,c.id)),
+    getTotal(s).toFixed(2)
+  ]);
+  const csv = [header,...rows].map(r=>r.map(c=>'"'+c+'"').join(",")).join("\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "evaluacion_cuaderno_filosofia.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function updateInfo() {
+  document.getElementById("maxPoints").textContent = TOTAL_MAX;
+  document.getElementById("studentCount").textContent = students.length+" alumno"+(students.length!==1?"s":"");
+  const filled = students.filter(s=>CRITERIA.some(c=>getNumScore(s,c.id)>0));
+  const avgSpan = document.getElementById("avgSpan");
+  if(filled.length>0) {
+    const avg = (students.reduce((s,st)=>s+getTotal(st),0)/students.length).toFixed(2);
+    avgSpan.innerHTML = " · Media de clase: <strong>"+avg+"</strong>";
+  } else {
+    avgSpan.innerHTML = "";
+  }
+}
+
+function esc(s) { return s.replace(/'/g,"\\'").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+// Init
+buildHeader();
+buildHelpPanel();
+renderTable();
+</script>
+</body>
+</html>
