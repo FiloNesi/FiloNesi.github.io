@@ -139,12 +139,33 @@ function Section({ section, grades, onGrade, collapsed, onToggle }) {
   );
 }
 
+const BONUS_ITEMS = [
+  { id: "bonus1", text: "Contextualiza históricamente al autor o autores", weight: 0.25 },
+  { id: "bonus2", text: "Señala la importancia del autor en el conjunto de la historia de la filosofía", weight: 0.25 },
+  { id: "bonus3", text: "Identifica y explica correctamente la tesis del texto", weight: 0.25 },
+  { id: "bonus4", text: "Redacta el texto comparando y contrastando ambos autores de forma coherente y cohesionada", weight: 0.25 },
+];
+
 function App() {
   const [grades, setGrades] = useState({});
   const [collapsed, setCollapsed] = useState({});
   const [studentName, setStudentName] = useState("");
   const [notes, setNotes] = useState("");
   const [copyMsg, setCopyMsg] = useState("");
+  const [penalty, setPenalty] = useState(0);
+  const [bonus, setBonus] = useState({});
+
+  const PENALTY_OPTIONS = [
+    { value: 0, label: "Sin penalización" },
+    { value: -0.25, label: "-0,25 pts" },
+    { value: -0.5, label: "-0,50 pts" },
+    { value: -0.75, label: "-0,75 pts" },
+    { value: -1, label: "-1,00 pts" },
+  ];
+
+  const toggleBonus = useCallback((id) => {
+    setBonus((prev) => ({ ...prev, [id]: !prev[id] }));
+  }, []);
 
   const handleGrade = useCallback((itemId, value) => {
     setGrades((prev) => {
@@ -159,34 +180,76 @@ function App() {
 
   const totalItems = SECTIONS.reduce((s, sec) => s + sec.items.length, 0);
   const gradedItems = Object.keys(grades).length;
-  const totalPoints = SECTIONS.reduce((sum, sec) => sum + sec.items.reduce((s, item) => { const g = grades[item.id]; return g !== undefined ? s + item.weight * g : s; }, 0), 0);
+  const rawPoints = SECTIONS.reduce((sum, sec) => sum + sec.items.reduce((s, item) => { const g = grades[item.id]; return g !== undefined ? s + item.weight * g : s; }, 0), 0);
+  const bonusPoints = BONUS_ITEMS.reduce((sum, item) => sum + (bonus[item.id] ? item.weight : 0), 0);
+  const totalPoints = Math.min(10, Math.max(0, rawPoints + bonusPoints + penalty));
   const maxTotal = 10;
   const allDone = gradedItems === totalItems;
 
   const getGradeColor = (pts) => { if (pts >= 9) return "#10b981"; if (pts >= 7) return "#34d399"; if (pts >= 5) return "#f59e0b"; if (pts >= 3) return "#f97316"; return "#ef4444"; };
   const getGradeLabel = (pts) => { if (pts >= 9) return "Sobresaliente"; if (pts >= 7) return "Notable"; if (pts >= 5) return "Aprobado"; if (pts >= 3) return "Insuficiente"; return "Muy deficiente"; };
 
-  const resetAll = () => { setGrades({}); setNotes(""); setStudentName(""); setCopyMsg(""); };
+  const resetAll = () => { setGrades({}); setNotes(""); setStudentName(""); setCopyMsg(""); setPenalty(0); setBonus({}); };
 
-  const copyResults = () => {
-    let text = "CORRECCIÓN COMENTARIO DE TEXTO\nSan Agustín, Del libre arbitrio II, I, 2 — Diálogo con Hannah Arendt\n";
-    if (studentName) text += "Alumno/a: " + studentName + "\n";
-    text += "──────────────────────────────────────────────────\n\n";
+  const downloadResults = () => {
+    const name = studentName || "Alumno/a";
+    const line = "══════════════════════════════════════════════════";
+    const sep  = "──────────────────────────────────────────────────";
+    let t = "";
+    t += line + "\n";
+    t += "  " + name.toUpperCase() + "  —  NOTA FINAL: " + totalPoints.toFixed(2) + " / 10\n";
+    t += line + "\n\n";
+    t += "Comentario de texto: San Agustín, Del libre arbitrio II, I, 2\n";
+    t += "Diálogo crítico con: Hannah Arendt\n";
+    t += sep + "\n\n";
     SECTIONS.forEach((sec) => {
       const secPts = sec.items.reduce((s, item) => { const g = grades[item.id]; return g !== undefined ? s + item.weight * g : s; }, 0);
-      text += sec.title + ": " + secPts.toFixed(1) + " / " + sec.maxPoints.toFixed(1) + "\n";
+      t += sec.title + "  [" + secPts.toFixed(1) + " / " + sec.maxPoints.toFixed(1) + "]\n";
       sec.items.forEach((item) => {
         const g = grades[item.id];
-        const icon = g === 1 ? "✓" : g === 0.5 ? "~" : g === 0 ? "✗" : "?";
-        const pts = g !== undefined ? (item.weight * g).toFixed(1) : "-";
-        text += "  " + icon + " " + item.text + " [" + pts + "/" + item.weight.toFixed(1) + "]\n";
+        const label = g === 1 ? "Correcto" : g === 0.5 ? "Parcial" : g === 0 ? "No presente" : "Sin evaluar";
+        t += "   • " + label + " — " + item.text + "\n";
       });
-      text += "\n";
+      t += "\n";
     });
-    text += "──────────────────────────────────────────────────\n";
-    text += "NOTA FINAL: " + totalPoints.toFixed(1) + " / " + maxTotal + "\n";
-    if (notes) text += "\nObservaciones: " + notes + "\n";
-    navigator.clipboard.writeText(text).then(() => { setCopyMsg("✓ Copiado"); setTimeout(() => setCopyMsg(""), 2500); });
+    t += sep + "\n";
+    t += "PUNTUACIÓN EXTRA";
+    if (bonusPoints > 0) t += "  [+" + bonusPoints.toFixed(2) + "]";
+    t += "\n";
+    BONUS_ITEMS.forEach((item) => {
+      const checked = !!bonus[item.id];
+      t += "   " + (checked ? "✓" : "✗") + " " + item.text + (checked ? " (+" + item.weight.toFixed(2) + ")" : "") + "\n";
+    });
+    t += "\n";
+    t += "PENALIZACIONES\n";
+    if (penalty < 0) {
+      t += "   Ortografía: " + penalty.toFixed(2) + " pts\n";
+    } else {
+      t += "   Sin penalizaciones\n";
+    }
+    t += "\n" + sep + "\n";
+    t += "Subtotal ítems:     " + rawPoints.toFixed(2) + "\n";
+    if (bonusPoints > 0) t += "Puntuación extra:  +" + bonusPoints.toFixed(2) + "\n";
+    if (penalty < 0) t += "Penalización:      " + penalty.toFixed(2) + "\n";
+    t += sep + "\n";
+    if (notes) t += "\nObservaciones: " + notes + "\n\n";
+    t += line + "\n";
+    t += "  " + name.toUpperCase() + "  —  NOTA FINAL: " + totalPoints.toFixed(2) + " / 10";
+    if (allDone) t += "  (" + getGradeLabel(totalPoints) + ")";
+    t += "\n" + line + "\n";
+
+    const blob = new Blob([t], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = name.replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, "").replace(/\s+/g, "_");
+    a.href = url;
+    a.download = "Correccion_Arendt_" + safeName + ".txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setCopyMsg("✓ Archivo descargado");
+    setTimeout(function() { setCopyMsg(""); }, 3000);
   };
 
   return (
@@ -225,9 +288,58 @@ function App() {
         ))}
       </div>
 
+      {/* Bonus */}
+      <div style={{ marginTop: "16px", background: "#fff", borderRadius: "12px", padding: "16px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", border: bonusPoints > 0 ? "1px solid #c4b5fd" : "1px solid #e5e7eb" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+          <span style={{ fontSize: "16px" }}>⭐</span>
+          <span style={{ fontWeight: 700, fontSize: "14px", color: "#1f2937" }}>Puntuación extra</span>
+          <span style={{ fontSize: "11px", color: "#6b7280" }}>(hasta +1,00 pts)</span>
+          {bonusPoints > 0 && <span style={{ fontSize: "12px", fontWeight: 700, color: "#9333ea", background: "#f5f3ff", padding: "2px 8px", borderRadius: "4px" }}>+{bonusPoints.toFixed(2)}</span>}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {BONUS_ITEMS.map((item) => {
+            const checked = !!bonus[item.id];
+            return (
+              <label key={item.id} style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", background: checked ? "#f5f3ff" : "#fafafa", borderLeft: "3px solid " + (checked ? "#9333ea" : "#d1d5db"), transition: "all 0.15s ease" }}>
+                <input type="checkbox" checked={checked} onChange={() => toggleBonus(item.id)} style={{ marginTop: "2px", accentColor: "#9333ea", width: "16px", height: "16px", cursor: "pointer" }} />
+                <div style={{ flex: 1 }}>
+                  <span style={{ fontSize: "13.5px", color: "#374151", lineHeight: 1.5 }}>{item.text}</span>
+                  <span style={{ color: "#9ca3af", fontSize: "11px", marginLeft: "6px" }}>(+{item.weight} pt)</span>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Notes */}
       <div style={{ marginTop: "16px" }}>
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Observaciones generales sobre el comentario..." rows={3} style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1px solid #d1d5db", fontSize: "13px", background: "#fff", resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
+      </div>
+
+      {/* Penalties */}
+      <div style={{ marginTop: "16px", background: "#fff", borderRadius: "12px", padding: "16px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", border: penalty < 0 ? "1px solid #fca5a5" : "1px solid #e5e7eb" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+          <span style={{ fontSize: "16px" }}>⚠️</span>
+          <span style={{ fontWeight: 700, fontSize: "14px", color: "#1f2937" }}>Penalizaciones por ortografía</span>
+          {penalty < 0 && <span style={{ fontSize: "12px", fontWeight: 700, color: "#ef4444", background: "#fef2f2", padding: "2px 8px", borderRadius: "4px" }}>{penalty.toFixed(2)} pts</span>}
+        </div>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          {PENALTY_OPTIONS.map((opt) => {
+            const isSelected = penalty === opt.value;
+            const isNone = opt.value === 0;
+            return (
+              <button key={opt.value} onClick={() => setPenalty(opt.value)} style={{
+                padding: "6px 14px", borderRadius: "8px", fontSize: "13px", fontWeight: isSelected ? 700 : 500, cursor: "pointer", transition: "all 0.15s ease", whiteSpace: "nowrap",
+                border: isSelected ? (isNone ? "2px solid #10b981" : "2px solid #ef4444") : "2px solid #e5e7eb",
+                background: isSelected ? (isNone ? "#f0fdf4" : "#fef2f2") : "#fff",
+                color: isSelected ? (isNone ? "#10b981" : "#ef4444") : "#6b7280",
+              }}>
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Final score */}
@@ -238,10 +350,11 @@ function App() {
             {totalPoints.toFixed(1)}<span style={{ fontSize: "16px", fontWeight: 500, color: "#9ca3af" }}> / 10</span>
           </div>
           {allDone && <div style={{ fontSize: "13px", fontWeight: 600, color: getGradeColor(totalPoints), marginTop: "2px" }}>{getGradeLabel(totalPoints)}</div>}
+          {allDone && (penalty < 0 || bonusPoints > 0) && <div style={{ fontSize: "11px", color: "#6b7280", marginTop: "4px" }}>({rawPoints.toFixed(1)}{bonusPoints > 0 ? " +" + bonusPoints.toFixed(2) + " extra" : ""}{penalty < 0 ? " " + penalty.toFixed(2) + " ortografía" : ""})</div>}
         </div>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
           {copyMsg && <span style={{ fontSize: "12px", color: "#10b981", fontWeight: 600 }}>{copyMsg}</span>}
-          <button onClick={copyResults} disabled={!allDone} style={{ padding: "10px 20px", borderRadius: "8px", border: "none", background: allDone ? "linear-gradient(135deg, #9333ea, #c026d3)" : "#d1d5db", color: "#fff", fontWeight: 700, fontSize: "13px", cursor: allDone ? "pointer" : "not-allowed" }}>📋 Copiar resultados</button>
+          <button onClick={downloadResults} style={{ padding: "10px 20px", borderRadius: "8px", border: "none", background: "linear-gradient(135deg, #9333ea, #c026d3)", color: "#fff", fontWeight: 700, fontSize: "13px", cursor: "pointer" }}>📄 Descargar informe (.txt)</button>
           <button onClick={resetAll} style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #d1d5db", background: "#fff", color: "#6b7280", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>🔄 Reiniciar</button>
         </div>
       </div>
