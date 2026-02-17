@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corrector de Disertaciones · Filosofía 1º Bach.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243356;
+    --navy-light: #344a7a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf7f0;
+    --cream-dark: #f0ead8;
+    --text: #1e1e2e;
+    --text-muted: #5a5a72;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --blue-mid: #1d5fa6;
+    --blue-bg: #dbeafe;
+    --amber: #92600a;
+    --amber-bg: #fef3c7;
+    --red: #991b1b;
+    --red-bg: #fee2e2;
+    --radius: 10px;
+    --shadow: 0 4px 24px rgba(26,39,68,0.10);
+    --shadow-sm: 0 2px 8px rgba(26,39,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    border-bottom: 3px solid var(--gold);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+  }
+  header h1 span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--gold-light);
+    font-style: italic;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── STUDENT PANEL ── */
+  .student-bar {
+    background: var(--navy-mid);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .student-bar label {
+    color: var(--gold-light);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Lora', serif;
+    white-space: nowrap;
+  }
+  .student-bar input {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(201,168,76,0.3);
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    padding: 8px 14px;
+    width: 260px;
+    transition: border-color .2s;
+    outline: none;
+  }
+  .student-bar input:focus { border-color: var(--gold); }
+  .student-bar input::placeholder { color: rgba(255,255,255,0.3); }
+
+  /* score badge */
+  .score-badge {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    min-width: 80px;
+    text-align: right;
+    transition: color .3s;
+  }
+  .score-num.low { color: #f87171; }
+  .score-num.mid { color: #fbbf24; }
+  .score-num.good { color: #86efac; }
+  .score-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── CRITERION CARD ── */
+  .criterion {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1.5px solid var(--cream-dark);
+    transition: box-shadow .2s;
+  }
+  .criterion.selected {
+    border-color: var(--navy-light);
+    box-shadow: 0 4px 28px rgba(26,39,68,0.16);
+  }
+
+  .criterion-head {
+    background: var(--navy);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .criterion-head .num {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .criterion-head h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+    letter-spacing: 0.02em;
+  }
+  .criterion-head .max-pts {
+    font-size: 0.75rem;
+    color: var(--gold-light);
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .criterion-score-pill {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 3px 12px;
+    border-radius: 20px;
+    min-width: 52px;
+    text-align: center;
+    transition: all .2s;
+  }
+  .criterion-score-pill.unset {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ── LEVELS GRID ── */
+  .levels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .level-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    padding: 16px 16px 18px;
+    border-right: 1px solid var(--cream-dark);
+    border-top: 1px solid var(--cream-dark);
+    transition: background .15s, transform .1s;
+    position: relative;
+  }
+  .level-btn:last-child { border-right: none; }
+  .level-btn:hover { filter: brightness(0.97); }
+  .level-btn:active { transform: scale(0.98); }
+
+  .level-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .level-tag .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .exc .level-tag { background: var(--green-bg); color: var(--green); }
+  .exc .level-tag .dot { background: var(--green); }
+  .exc.selected-level { background: #ecfdf5; }
+
+  .not .level-tag { background: var(--blue-bg); color: var(--blue-mid); }
+  .not .level-tag .dot { background: var(--blue-mid); }
+  .not.selected-level { background: #eff6ff; }
+
+  .suf .level-tag { background: var(--amber-bg); color: var(--amber); }
+  .suf .level-tag .dot { background: var(--amber); }
+  .suf.selected-level { background: #fffbeb; }
+
+  .ins .level-tag { background: var(--red-bg); color: var(--red); }
+  .ins .level-tag .dot { background: var(--red); }
+  .ins.selected-level { background: #fff5f5; }
+
+  .level-pts {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .level-desc {
+    font-size: 0.76rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    font-family: 'Lora', serif;
+  }
+
+  /* selected checkmark */
+  .level-btn.selected-level::after {
+    content: '✓';
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.6;
+  }
+  .exc.selected-level::after { color: var(--green); }
+  .not.selected-level::after { color: var(--blue-mid); }
+  .suf.selected-level::after { color: var(--amber); }
+  .ins.selected-level::after { color: var(--red); }
+
+  /* ── OBSERVATIONS ── */
+  .obs-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1.5px solid var(--cream-dark);
+    overflow: hidden;
+  }
+  .obs-head {
+    background: var(--cream-dark);
+    padding: 12px 22px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+  }
+  .obs-card textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-family: 'Lora', serif;
+    font-size: 0.875rem;
+    color: var(--text);
+    padding: 16px 22px;
+    resize: vertical;
+    min-height: 90px;
+    background: #fff;
+    line-height: 1.65;
+  }
+  .obs-card textarea::placeholder { color: #b0b0c0; font-style: italic; }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 20px 28px;
+    background: var(--navy);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .final-label {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .final-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    transition: color .3s;
+    min-width: 72px;
+  }
+  .final-score.low { color: #f87171; }
+  .final-score.mid { color: #fbbf24; }
+  .final-score.good { color: #86efac; }
+  .grade-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    flex: 1;
+  }
+
+  .btn-generate {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 12px 28px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background .2s, transform .1s, box-shadow .2s;
+    box-shadow: 0 2px 12px rgba(201,168,76,0.3);
+  }
+  .btn-generate:hover {
+    background: var(--gold-light);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.45);
+  }
+  .btn-generate:active { transform: scale(0.97); }
+  .btn-generate:disabled {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.4);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-reset {
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-size: 0.85rem;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-reset:hover {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.75);
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  /* progress bar */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 40px 0;
+    background: var(--navy-mid);
+    padding: 8px 40px;
+  }
+  .progress-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width .4s ease;
+    width: 0%;
+  }
+  .progress-text {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  @media (max-width: 680px) {
+    .levels { grid-template-columns: repeat(2, 1fr); }
+    header { padding: 20px 20px 16px; }
+    .student-bar { padding: 12px 20px; }
+    main { padding: 20px 12px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Corrector de Disertaciones
+      <span>Filosofía · 1.º Bachillerato</span>
+    </h1>
+  </div>
+</header>
+
+<div class="student-bar">
+  <label>Alumno/a</label>
+  <input type="text" id="studentName" placeholder="Nombre y apellidos…" autocomplete="off" />
+  <div class="score-badge">
+    <div>
+      <div class="score-label">Puntuación</div>
+      <div class="score-label">acumulada</div>
+    </div>
+    <div class="score-num unset" id="liveScore">—</div>
+  </div>
+</div>
+
+<div class="progress-row">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 de 5 criterios</div>
+</div>
+
+<main id="mainContent">
+  <!-- Criterios se generan con JS -->
+</main>
+
+<script>
+const CRITERIA = [
+  {
+    id: 'intro',
+    num: 1,
+    title: 'Introducción',
+    maxPts: 2,
+    levels: [
+      { key: 'exc', label: 'Excelente', pts: 2,
+        desc: 'Tema presentado con precisión y originalidad. Relevancia filosófica justificada. Tesis clara, argumentable y no trivial. Anticipa con coherencia la estructura.' },
+      { key: 'not', label: 'Notable', pts: 1.5,
+        desc: 'Tema y tesis correctamente presentados. Relevancia justificada, aunque de forma convencional. Avance de la estructura claro pero esquemático.' },
+      { key: 'suf', label: 'Suficiente', pts: 1,
+        desc: 'Hay tesis identificable, aunque imprecisa. Justificación del interés filosófico superficial. Avance vago o incompleto.' },
+      { key: 'ins', label: 'Insuficiente', pts: 0.5,
+        desc: 'No queda claro el tema ni la tesis. Falta justificación filosófica. No se anticipa el desarrollo.' }
+    ]
+  },
+  {
+    id: 'args',
+    num: 2,
+    title: 'Argumentos a favor (2-3)',
+    maxPts: 4,
+    levels: [
+      { key: 'exc', label: 'Excelente', pts: 4,
+        desc: '2-3 argumentos sólidos y diferenciados. Cada uno incluye ejemplo pertinente o referencia a autor/idea trabajados. Razonamiento deductivo o inductivo correcto.' },
+      { key: 'not', label: 'Notable', pts: 3,
+        desc: '2-3 argumentos correctos y diferenciados. Al menos uno con ejemplo o autor. Razonamiento válido, aunque algún argumento poco desarrollado.' },
+      { key: 'suf', label: 'Suficiente', pts: 2,
+        desc: '2 argumentos identificables pero poco desarrollados o con imprecisión lógica. Algún ejemplo o autor aparece de forma superficial.' },
+      { key: 'ins', label: 'Insuficiente', pts: 1,
+        desc: 'Solo un argumento o argumentos confusos. Sin ejemplos ni autores. Se detectan falacias o errores lógicos graves.' }
+    ]
+  },
+  {
+    id: 'contra',
+    num: 3,
+    title: 'Contraargumento y refutación',
+    maxPts: 2.5,
+    levels: [
+      { key: 'exc', label: 'Excelente', pts: 2.5,
+        desc: 'Objeción real y relevante (sin hombre de paja). Refutación sólida y argumentada. Fortalece la tesis en lugar de debilitarla.' },
+      { key: 'not', label: 'Notable', pts: 2,
+        desc: 'Contraargumento pertinente. Refutación correcta pero algo esquemática. No hay falacia del hombre de paja, aunque la objeción podría ser más contundente.' },
+      { key: 'suf', label: 'Suficiente', pts: 1.5,
+        desc: 'Contraargumento superficial o débil. Refutación escasa o poco convincente. Posible confusión entre la objeción real y una versión simplificada.' },
+      { key: 'ins', label: 'Insuficiente', pts: 0.5,
+        desc: 'No hay contraargumento o no se refuta. Objeción trivial o falacia del hombre de paja. No se comprende que una tesis puede ser cuestionada.' }
+    ]
+  },
+  {
+    id: 'conclu',
+    num: 4,
+    title: 'Conclusión',
+    maxPts: 1,
+    levels: [
+      { key: 'exc', label: 'Excelente', pts: 1,
+        desc: 'Retoma la tesis y sintetiza el recorrido. Cierre original que va más allá de repetir la introducción. Puede abrir nuevas preguntas filosóficas.' },
+      { key: 'not', label: 'Notable', pts: 0.75,
+        desc: 'Recoge la tesis y resume los argumentos. Coherente con el desarrollo, aunque algo formularia o repetitiva.' },
+      { key: 'suf', label: 'Suficiente', pts: 0.5,
+        desc: 'Conclusión muy breve o que no recoge bien el hilo. Se limita a repetir la tesis sin sintetizar el desarrollo.' },
+      { key: 'ins', label: 'Insuficiente', pts: 0.25,
+        desc: 'No hay conclusión o es incoherente con el desarrollo. La disertación queda sin cerrar.' }
+    ]
+  },
+  {
+    id: 'vocab',
+    num: 5,
+    title: 'Vocabulario filosófico',
+    maxPts: 0.5,
+    levels: [
+      { key: 'exc', label: 'Excelente', pts: 0.5,
+        desc: 'Usa con precisión el vocabulario trabajado en clase (validez, falacias, premisas, inducción, deducción…). Expresión fluida y formal.' },
+      { key: 'not', label: 'Notable', pts: 0.4,
+        desc: 'Utiliza correctamente la mayoría de los términos filosóficos. Algún uso impreciso, pero sin comprometer la comprensión.' },
+      { key: 'suf', label: 'Suficiente', pts: 0.25,
+        desc: 'Uso limitado o a veces incorrecto del vocabulario específico. Expresión comprensible pero poco precisa.' },
+      { key: 'ins', label: 'Insuficiente', pts: 0.1,
+        desc: 'Ausencia de vocabulario filosófico o uso incorrecto. La expresión dificulta la comprensión del argumento.' }
+    ]
+  }
+];
+
+const state = { selections: {}, studentName: '', observations: '' };
+
+function getScore() {
+  return CRITERIA.reduce((sum, c) => {
+    const sel = state.selections[c.id];
+    if (!sel) return sum;
+    return sum + c.levels.find(l => l.key === sel).pts;
+  }, 0);
+}
+
+function countSelected() {
+  return Object.keys(state.selections).length;
+}
+
+function getGradeLetter(score) {
+  if (score >= 9) return 'Sobresaliente';
+  if (score >= 7) return 'Notable';
+  if (score >= 6) return 'Bien';
+  if (score >= 5) return 'Suficiente';
+  return 'Insuficiente';
+}
+
+function scoreColorClass(score) {
+  if (score >= 7) return 'good';
+  if (score >= 5) return 'mid';
+  return 'low';
+}
+
+function updateUI() {
+  const count = countSelected();
+  const total = CRITERIA.length;
+  const score = getScore();
+
+  // Progress
+  document.getElementById('progressFill').style.width = (count / total * 100) + '%';
+  document.getElementById('progressText').textContent = `${count} de ${total} criterios`;
+
+  // Live score header
+  const liveEl = document.getElementById('liveScore');
+  if (count === 0) {
+    liveEl.textContent = '—';
+    liveEl.className = 'score-num unset';
+  } else {
+    liveEl.textContent = score.toFixed(2).replace('.', ',');
+    liveEl.className = 'score-num ' + scoreColorClass(score);
+  }
+
+  // Final score
+  const finalEl = document.getElementById('finalScore');
+  if (finalEl) {
+    if (count === total) {
+      finalEl.textContent = score.toFixed(2).replace('.', ',');
+      finalEl.className = 'final-score ' + scoreColorClass(score);
+      const gradeEl = document.getElementById('gradeLetter');
+      if (gradeEl) gradeEl.textContent = getGradeLetter(score);
+    } else {
+      finalEl.textContent = '—';
+      finalEl.className = 'final-score';
+    }
+  }
+
+  // Criterion pills
+  CRITERIA.forEach(c => {
+    const pill = document.getElementById('pill-' + c.id);
+    if (!pill) return;
+    const sel = state.selections[c.id];
+    if (sel) {
+      const lvl = c.levels.find(l => l.key === sel);
+      pill.textContent = lvl.pts.toString().replace('.', ',') + ' pts';
+      pill.className = 'criterion-score-pill';
+    } else {
+      pill.textContent = '—';
+      pill.className = 'criterion-score-pill unset';
+    }
+  });
+
+  // Generate button
+  const btn = document.getElementById('btnGenerate');
+  if (btn) btn.disabled = (count < total);
+}
+
+function selectLevel(criterionId, levelKey) {
+  state.selections[criterionId] = levelKey;
+
+  // Update button styles
+  const crit = CRITERIA.find(c => c.id === criterionId);
+  crit.levels.forEach(l => {
+    const btn = document.getElementById(`btn-${criterionId}-${l.key}`);
+    if (btn) {
+      if (l.key === levelKey) btn.classList.add('selected-level');
+      else btn.classList.remove('selected-level');
+    }
+  });
+
+  // Card border
+  const card = document.getElementById('card-' + criterionId);
+  if (card) card.classList.add('selected');
+
+  updateUI();
+}
+
+function generateTxt() {
+  const name = document.getElementById('studentName').value.trim() || 'Sin nombre';
+  const obs = document.getElementById('obsText').value.trim();
+  const score = getScore();
+  const grade = getGradeLetter(score);
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' });
+
+  let lines = [];
+  lines.push('══════════════════════════════════════════════════════');
+  lines.push('  EVALUACIÓN DE DISERTACIÓN FILOSÓFICA');
+  lines.push('  Filosofía · 1.º Bachillerato');
+  lines.push('══════════════════════════════════════════════════════');
+  lines.push('');
+  lines.push(`  Alumno/a : ${name}`);
+  lines.push(`  Fecha    : ${fecha}`);
+  lines.push('');
+  lines.push('──────────────────────────────────────────────────────');
+  lines.push('  DETALLE POR CRITERIOS');
+  lines.push('──────────────────────────────────────────────────────');
+  lines.push('');
+
+  CRITERIA.forEach(c => {
+    const selKey = state.selections[c.id];
+    const lvl = c.levels.find(l => l.key === selKey);
+    lines.push(`  ${c.num}. ${c.title.toUpperCase()}`);
+    lines.push(`     Nivel    : ${lvl.label}`);
+    lines.push(`     Puntos   : ${lvl.pts.toFixed(2)} / ${c.maxPts.toFixed(2)}`);
+    lines.push(`     Criterio : ${lvl.desc}`);
+    lines.push('');
+  });
+
+  lines.push('──────────────────────────────────────────────────────');
+  lines.push(`  PUNTUACIÓN FINAL : ${score.toFixed(2)} / 10`);
+  lines.push(`  CALIFICACIÓN     : ${grade}`);
+  lines.push('──────────────────────────────────────────────────────');
+
+  if (obs) {
+    lines.push('');
+    lines.push('  OBSERVACIONES DEL DOCENTE');
+    lines.push('  ' + obs.split('\n').join('\n  '));
+  }
+
+  lines.push('');
+  lines.push('══════════════════════════════════════════════════════');
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safeName = name.replace(/[^a-zA-ZÀ-ÿ0-9 _-]/g, '').replace(/\s+/g, '_');
+  a.download = `disertacion_${safeName || 'alumno'}_${fecha.replace(/\//g,'-')}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetAll() {
+  state.selections = {};
+  document.getElementById('studentName').value = '';
+  document.getElementById('obsText').value = '';
+
+  CRITERIA.forEach(c => {
+    const card = document.getElementById('card-' + c.id);
+    if (card) card.classList.remove('selected');
+    c.levels.forEach(l => {
+      const btn = document.getElementById(`btn-${c.id}-${l.key}`);
+      if (btn) btn.classList.remove('selected-level');
+    });
+  });
+
+  updateUI();
+}
+
+function render() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '';
+
+  CRITERIA.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'criterion';
+    card.id = 'card-' + c.id;
+
+    // Head
+    card.innerHTML = `
+      <div class="criterion-head">
+        <div class="num">${c.num}</div>
+        <h2>${c.title}</h2>
+        <span class="max-pts">máx. ${c.maxPts.toString().replace('.',',')} pts</span>
+        <div class="criterion-score-pill unset" id="pill-${c.id}">—</div>
+      </div>
+    `;
+
+    // Levels grid
+    const grid = document.createElement('div');
+    grid.className = 'levels';
+
+    c.levels.forEach(lvl => {
+      const btn = document.createElement('button');
+      btn.className = `level-btn ${lvl.key}`;
+      btn.id = `btn-${c.id}-${lvl.key}`;
+      btn.innerHTML = `
+        <div class="level-tag"><span class="dot"></span>${lvl.label}</div>
+        <div class="level-pts">${lvl.pts.toString().replace('.',',')} pts</div>
+        <div class="level-desc">${lvl.desc}</div>
+      `;
+      btn.addEventListener('click', () => selectLevel(c.id, lvl.key));
+      grid.appendChild(btn);
+    });
+
+    card.appendChild(grid);
+    main.appendChild(card);
+  });
+
+  // Observations
+  const obsCard = document.createElement('div');
+  obsCard.className = 'obs-card';
+  obsCard.innerHTML = `
+    <div class="obs-head">Observaciones del docente <span style="font-weight:400;font-style:italic;font-size:.8rem;color:#5a5a72">(opcional)</span></div>
+    <textarea id="obsText" placeholder="Anotaciones sobre la disertación, aspectos a mejorar, comentarios personalizados…"></textarea>
+  `;
+  main.appendChild(obsCard);
+
+  // Bottom bar
+  const bar = document.createElement('div');
+  bar.className = 'bottom-bar';
+  bar.innerHTML = `
+    <div>
+      <div class="final-label">Calificación final</div>
+      <div class="final-score" id="finalScore">—</div>
+    </div>
+    <div class="grade-letter" id="gradeLetter"></div>
+    <button class="btn-reset" onclick="resetAll()">Nueva corrección</button>
+    <button class="btn-generate" id="btnGenerate" onclick="generateTxt()" disabled>
+      ↓ Descargar resultado (.txt)
+    </button>
+  `;
+  main.appendChild(bar);
+
+  // Student name listener
+  document.getElementById('studentName').addEventListener('input', e => {
+    state.studentName = e.target.value;
+  });
+
+  updateUI();
+}
+
+render();
+</script>
+</body>
+</html>
