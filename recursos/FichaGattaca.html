@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gattaca - Ficha de Visionado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-left: 5px solid #764ba2;
+            padding-left: 15px;
+        }
+        
+        .note {
+            background: #f0f7ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #34495e;
+        }
+        
+        .question {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .question-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: block;
+            font-size: 1.05em;
+        }
+        
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            margin-top: 8px;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        textarea.short {
+            min-height: 60px;
+        }
+        
+        textarea.long {
+            min-height: 180px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        td input,
+        td textarea {
+            margin-top: 0;
+        }
+        
+        .student-info {
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #3498db;
+        }
+        
+        .student-info input {
+            background: white;
+        }
+        
+        .export-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-export {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-export:active {
+            transform: translateY(0);
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        
+        .progress-indicator {
+            position: sticky;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            margin-top: 8px;
+            color: #6c757d;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .export-section,
+            .progress-indicator {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Progreso: 0%</div>
+        </div>
+
+        <h1>Niccol, A. (1997). <em>Gattaca</em></h1>
+        <p class="subtitle">Ya has visto la película. Ahora toca hacer lo que hacen los filósofos: <strong>ordenar lo que has observado, buscar las ideas detrás de las imágenes y empezar a argumentar</strong>. Esta ficha te prepara para el comentario de texto que haremos a continuación.</p>
+        
+        <div class="student-info">
+            <div class="question">
+                <label class="question-label">Nombre y apellidos del alumno/a:</label>
+                <input type="text" id="studentName" placeholder="Escribe tu nombre completo">
+            </div>
+            <div class="question">
+                <label class="question-label">Curso y grupo:</label>
+                <input type="text" id="studentGroup" placeholder="Ej: 1º Bachillerato A">
+            </div>
+        </div>
+
+        <h2>PARTE 1 — Comprueba lo que viste</h2>
+        <p class="note">Responde brevemente. Son preguntas de comprensión, no de opinión.</p>
+        
+        <div class="question">
+            <label class="question-label">1. ¿En qué consiste la diferencia entre un "válido" y un "no válido" en la sociedad de <em>Gattaca</em>? ¿Quién establece esa distinción?</label>
+            <textarea id="q1" class="short"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">2. Vincent consigue entrar en el programa espacial suplantando la identidad de Jerome. ¿Qué dice esto sobre la fiabilidad del sistema científico que gobierna esa sociedad?</label>
+            <textarea id="q2" class="short"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">3. El médico que descubre la verdad sobre Vincent decide no delatarlo. ¿Qué razones crees que le llevan a tomar esa decisión?</label>
+            <textarea id="q3" class="short"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">4. Al final de la película, Vincent y su hermano Anton vuelven a competir nadando hacia el horizonte. ¿Qué revela ese momento sobre los límites del determinismo científico? ¿Por qué gana quien gana?</label>
+            <textarea id="q4" class="short"></textarea>
+        </div>
+
+        <h2>PARTE 2 — Conecta la película con los conceptos</h2>
+        <p class="note">Vuelve a los conceptos que leíste antes del visionado. Ahora ponles cara y escena. <strong>Nota:</strong> algunos conceptos aparecen de forma directa en escenas concretas. Otros se muestran por su ausencia: busca momentos en los que deberían haber estado presentes pero no lo estuvieron.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Concepto</th>
+                    <th>¿Dónde aparece en la película? Describe brevemente una escena concreta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Determinismo</strong></td>
+                    <td><textarea id="concept1" class="short"></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Reduccionismo</strong></td>
+                    <td><textarea id="concept2" class="short"></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Eugenesia</strong></td>
+                    <td><textarea id="concept3" class="short"></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Principio de precaución</strong></td>
+                    <td><textarea id="concept4" class="short"></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Ética de la responsabilidad</strong></td>
+                    <td><textarea id="concept5" class="short"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>PARTE 3 — Filosofía de la ciencia: lo que la película pone en cuestión</h2>
+        <p class="note">Estas preguntas son más exigentes. Piensa con calma antes de responder.</p>
+        
+        <div class="question">
+            <label class="question-label">5. El sistema de <em>Gattaca</em> se basa en datos genéticos objetivos y verificables. Sin embargo, ese sistema produce una sociedad injusta. ¿Significa eso que la ciencia objetiva puede generar consecuencias no objetivas? Explica tu razonamiento.</label>
+            <textarea id="q5"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">6. El filósofo Karl Popper decía que una teoría científica solo es válida si puede ser <strong>falsada</strong>, es decir, si existe la posibilidad de que sea refutada por la experiencia. ¿Podría aplicarse este criterio al determinismo genético de <em>Gattaca</em>? ¿La historia de Vincent lo falsifica o no?</label>
+            <textarea id="q6"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">7. La película utiliza un lenguaje visual muy cuidado: espacios asépticos, colores fríos, escaleras como símbolo... ¿Crees que esos elementos estéticos solo embellecen la historia o también transmiten una tesis filosófica sobre la relación entre ciencia y humanidad? Argumenta tu respuesta con un ejemplo visual concreto.</label>
+            <textarea id="q7"></textarea>
+        </div>
+
+        <h2>PARTE 4 — Ética del científico: de la pantalla a la realidad</h2>
+        
+        <div class="question">
+            <label class="question-label">8. Identifica al menos <strong>tres personajes</strong> que tomen decisiones con consecuencias éticas en la película. Rellena la tabla:</label>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Personaje</th>
+                        <th>Decisión que toma</th>
+                        <th>¿Es éticamente responsable? ¿Por qué?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" id="char1" placeholder="Nombre"></td>
+                        <td><textarea id="char1_decision" class="short"></textarea></td>
+                        <td><textarea id="char1_ethical" class="short"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="char2" placeholder="Nombre"></td>
+                        <td><textarea id="char2_decision" class="short"></textarea></td>
+                        <td><textarea id="char2_ethical" class="short"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="char3" placeholder="Nombre"></td>
+                        <td><textarea id="char3_decision" class="short"></textarea></td>
+                        <td><textarea id="char3_ethical" class="short"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">9. Hans Jonas escribió que <em>"el científico ya no puede refugiarse en la neutralidad: saber es poder, y el poder genera responsabilidad"</em>. ¿Qué personaje de <em>Gattaca</em> encarna mejor esta idea, para bien o para mal? Justifica tu elección.</label>
+            <textarea id="q9"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">10. ¿Crees que los científicos que diseñaron el sistema genético de <em>Gattaca</em> eran personas malvadas, o simplemente no se hicieron las preguntas éticas correctas? ¿Cuál es la diferencia filosófica entre ambas opciones?</label>
+            <textarea id="q10"></textarea>
+        </div>
+
+        <h2>PARTE 5 — Revisita tus respuestas iniciales</h2>
+        <p class="note">Recupera la ficha que rellenaste antes de ver la película y relee lo que escribiste. Ahora responde:</p>
+        
+        <div class="question">
+            <label class="question-label">11. ¿Ha cambiado tu opinión sobre alguna de las preguntas que respondiste antes del visionado? ¿Cuál y en qué sentido?</label>
+            <textarea id="q11" class="short"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">12. ¿Qué pregunta de la ficha inicial te parece ahora más complicada de responder de lo que creías? ¿Por qué?</label>
+            <textarea id="q12" class="short"></textarea>
+        </div>
+
+        <h2>PARTE 6 — Prepara tu argumento</h2>
+        <p class="note">Esta última sección es el puente hacia el comentario de texto. Escribe con la mayor precisión que puedas.</p>
+        
+        <div class="question">
+            <label class="question-label">13. Formula en <strong>una sola frase</strong> la tesis que defenderías sobre la responsabilidad ética del científico a partir de lo que has visto en la película.<br><em>"Creo que el científico es responsable de..."</em></label>
+            <textarea id="q13" class="short"></textarea>
+        </div>
+        
+        <div class="question">
+            <label class="question-label">14. Anota <strong>dos argumentos</strong> que sostengan esa tesis y <strong>una objeción</strong> que alguien podría hacerte. Tendrás que responder a esa objeción en el comentario de texto.</label>
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="width: 30%; font-weight: bold;">Argumento 1</td>
+                        <td><textarea id="arg1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Argumento 2</td>
+                        <td><textarea id="arg2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Posible objeción</td>
+                        <td><textarea id="objection"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Mi respuesta a esa objeción</td>
+                        <td><textarea id="response_objection"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Cierre: la pregunta que te llevaste puesta</h2>
+        <p class="note">Al comienzo te pedimos que tuvieras en mente esta pregunta durante el visionado:<br><br>
+        <em>¿Es la sociedad de Gattaca el resultado lógico de aplicar el método científico sin límites éticos, o el problema está en otro lugar?</em><br><br>
+        <strong>Ahora respóndela con argumentos. Mínimo cinco líneas.</strong></p>
+        
+        <div class="question">
+            <textarea id="final_question" class="long"></textarea>
+        </div>
+
+        <div class="export-section">
+            <h2 style="margin-top: 0;">🎬 Exportar respuestas</h2>
+            <div class="warning">
+                <strong>⚠️ Antes de exportar:</strong> Revisa que hayas completado todas las respuestas. El documento TXT generado contendrá todas tus respuestas formateadas para entregar al profesorado.
+            </div>
+            <button class="btn-export" onclick="exportToTxt()">📥 Descargar ficha en formato TXT</button>
+        </div>
+    </div>
+
+    <script>
+        // Calcular y actualizar progreso
+        function updateProgress() {
+            const allInputs = document.querySelectorAll('input[type="text"], textarea');
+            const filled = Array.from(allInputs).filter(input => input.value.trim() !== '').length;
+            const percentage = Math.round((filled / allInputs.length) * 100);
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `Progreso: ${percentage}% (${filled}/${allInputs.length} campos completados)`;
+        }
+
+        // Añadir listeners a todos los campos
+        document.addEventListener('DOMContentLoaded', function() {
+            const allInputs = document.querySelectorAll('input[type="text"], textarea');
+            allInputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+            });
+            updateProgress();
+        });
+
+        function exportToTxt() {
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentGroup = document.getElementById('studentGroup').value.trim();
+            
+            if (!studentName || !studentGroup) {
+                alert('⚠️ Por favor, completa tu nombre y curso antes de exportar.');
+                return;
+            }
+            
+            const date = new Date().toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            let content = `═══════════════════════════════════════════════════════════════
+FICHA DE VISIONADO POSTERIOR - GATTACA (1997)
+═══════════════════════════════════════════════════════════════
+
+Alumno/a: ${studentName}
+Curso: ${studentGroup}
+Fecha de entrega: ${date}
+
+═══════════════════════════════════════════════════════════════
+PARTE 1 — COMPRUEBA LO QUE VISTE
+═══════════════════════════════════════════════════════════════
+
+[1] ¿En qué consiste la diferencia entre un "válido" y un "no válido" 
+en la sociedad de Gattaca? ¿Quién establece esa distinción?
+
+${document.getElementById('q1').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[2] Vincent consigue entrar en el programa espacial suplantando la 
+identidad de Jerome. ¿Qué dice esto sobre la fiabilidad del sistema 
+científico que gobierna esa sociedad?
+
+${document.getElementById('q2').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[3] El médico que descubre la verdad sobre Vincent decide no 
+delatarlo. ¿Qué razones crees que le llevan a tomar esa decisión?
+
+${document.getElementById('q3').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[4] Al final de la película, Vincent y su hermano Anton vuelven a 
+competir nadando hacia el horizonte. ¿Qué revela ese momento sobre 
+los límites del determinismo científico? ¿Por qué gana quien gana?
+
+${document.getElementById('q4').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+PARTE 2 — CONECTA LA PELÍCULA CON LOS CONCEPTOS
+═══════════════════════════════════════════════════════════════
+
+[DETERMINISMO]
+${document.getElementById('concept1').value.trim() || '[SIN RESPUESTA]'}
+
+[REDUCCIONISMO]
+${document.getElementById('concept2').value.trim() || '[SIN RESPUESTA]'}
+
+[EUGENESIA]
+${document.getElementById('concept3').value.trim() || '[SIN RESPUESTA]'}
+
+[PRINCIPIO DE PRECAUCIÓN]
+${document.getElementById('concept4').value.trim() || '[SIN RESPUESTA]'}
+
+[ÉTICA DE LA RESPONSABILIDAD]
+${document.getElementById('concept5').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+PARTE 3 — FILOSOFÍA DE LA CIENCIA
+═══════════════════════════════════════════════════════════════
+
+[5] El sistema de Gattaca se basa en datos genéticos objetivos y 
+verificables. Sin embargo, ese sistema produce una sociedad injusta. 
+¿Significa eso que la ciencia objetiva puede generar consecuencias 
+no objetivas? Explica tu razonamiento.
+
+${document.getElementById('q5').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[6] El filósofo Karl Popper decía que una teoría científica solo es 
+válida si puede ser FALSADA. ¿Podría aplicarse este criterio al 
+determinismo genético de Gattaca? ¿La historia de Vincent lo 
+falsifica o no?
+
+${document.getElementById('q6').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[7] La película utiliza un lenguaje visual muy cuidado: espacios 
+asépticos, colores fríos, escaleras como símbolo... ¿Crees que esos 
+elementos estéticos solo embellecen la historia o también transmiten 
+una tesis filosófica sobre la relación entre ciencia y humanidad?
+
+${document.getElementById('q7').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+PARTE 4 — ÉTICA DEL CIENTÍFICO
+═══════════════════════════════════════════════════════════════
+
+[8] PERSONAJES Y DECISIONES ÉTICAS
+
+Personaje 1: ${document.getElementById('char1').value.trim() || '[NO ESPECIFICADO]'}
+Decisión: ${document.getElementById('char1_decision').value.trim() || '[SIN RESPUESTA]'}
+Responsabilidad ética: ${document.getElementById('char1_ethical').value.trim() || '[SIN RESPUESTA]'}
+
+Personaje 2: ${document.getElementById('char2').value.trim() || '[NO ESPECIFICADO]'}
+Decisión: ${document.getElementById('char2_decision').value.trim() || '[SIN RESPUESTA]'}
+Responsabilidad ética: ${document.getElementById('char2_ethical').value.trim() || '[SIN RESPUESTA]'}
+
+Personaje 3: ${document.getElementById('char3').value.trim() || '[NO ESPECIFICADO]'}
+Decisión: ${document.getElementById('char3_decision').value.trim() || '[SIN RESPUESTA]'}
+Responsabilidad ética: ${document.getElementById('char3_ethical').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[9] Hans Jonas: "el científico ya no puede refugiarse en la 
+neutralidad: saber es poder, y el poder genera responsabilidad". 
+¿Qué personaje de Gattaca encarna mejor esta idea?
+
+${document.getElementById('q9').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[10] ¿Crees que los científicos que diseñaron el sistema genético 
+de Gattaca eran personas malvadas, o simplemente no se hicieron las 
+preguntas éticas correctas? ¿Cuál es la diferencia filosófica?
+
+${document.getElementById('q10').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+PARTE 5 — REVISITA TUS RESPUESTAS INICIALES
+═══════════════════════════════════════════════════════════════
+
+[11] ¿Ha cambiado tu opinión sobre alguna pregunta del cuestionario 
+previo? ¿Cuál y en qué sentido?
+
+${document.getElementById('q11').value.trim() || '[SIN RESPUESTA]'}
+
+───────────────────────────────────────────────────────────────
+
+[12] ¿Qué pregunta de la ficha inicial te parece ahora más 
+complicada de lo que creías? ¿Por qué?
+
+${document.getElementById('q12').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+PARTE 6 — PREPARA TU ARGUMENTO
+═══════════════════════════════════════════════════════════════
+
+[13] TESIS sobre la responsabilidad ética del científico:
+
+"Creo que el científico es responsable de... ${document.getElementById('q13').value.trim() || '[SIN RESPUESTA]'}"
+
+───────────────────────────────────────────────────────────────
+
+[14] ARGUMENTACIÓN
+
+▸ ARGUMENTO 1:
+${document.getElementById('arg1').value.trim() || '[SIN RESPUESTA]'}
+
+▸ ARGUMENTO 2:
+${document.getElementById('arg2').value.trim() || '[SIN RESPUESTA]'}
+
+▸ POSIBLE OBJECIÓN:
+${document.getElementById('objection').value.trim() || '[SIN RESPUESTA]'}
+
+▸ MI RESPUESTA A ESA OBJECIÓN:
+${document.getElementById('response_objection').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+CIERRE: LA PREGUNTA FINAL
+═══════════════════════════════════════════════════════════════
+
+¿Es la sociedad de Gattaca el resultado lógico de aplicar el 
+método científico sin límites éticos, o el problema está en 
+otro lugar?
+
+${document.getElementById('final_question').value.trim() || '[SIN RESPUESTA]'}
+
+═══════════════════════════════════════════════════════════════
+FIN DE LA FICHA
+═══════════════════════════════════════════════════════════════
+`;
+            
+            // Crear blob y descargar
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Nombre del archivo sanitizado
+            const safeName = studentName.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, '').replace(/\s+/g, '_');
+            a.download = `Gattaca_${safeName}_${studentGroup.replace(/\s+/g, '_')}.txt`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Ficha exportada correctamente. Revisa tu carpeta de descargas.');
+        }
+    </script>
+</body>
+</html>
