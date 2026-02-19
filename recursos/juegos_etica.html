@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teoría de Juegos en el Aula · Bachillerato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --cream: #f5f0e8;
+    --warm: #f0e6cc;
+    --amber: #e8a020;
+    --rust: #c94a20;
+    --teal: #1a7a6e;
+    --gold: #d4a432;
+    --light-teal: #e8f4f2;
+    --light-rust: #fdf0ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '♟';
+    position: absolute;
+    right: -1rem;
+    top: -2rem;
+    font-size: 18rem;
+    opacity: 0.04;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.8rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    max-width: 700px;
+  }
+  .hero h1 span { color: var(--amber); }
+  .hero-sub {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0.75;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .hero-tags {
+    margin-top: 1.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tag {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--cream);
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+  }
+
+  /* ── NAV ── */
+  .nav-bar {
+    background: var(--warm);
+    border-bottom: 2px solid var(--ink);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-bar::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.9rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    opacity: 0.55;
+  }
+  .nav-btn:hover { opacity: 1; }
+  .nav-btn.active {
+    opacity: 1;
+    border-bottom-color: var(--rust);
+    color: var(--rust);
+    font-weight: 700;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    animation: fadeIn 0.35s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .section-intro {
+    font-size: 0.95rem;
+    opacity: 0.7;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    max-width: 680px;
+  }
+
+  /* ── ACTIVITY CARD ── */
+  .activity-card {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.8rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .activity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    border-bottom: 2px solid var(--ink);
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-header:hover { background: var(--warm); }
+  .card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--amber);
+    line-height: 1;
+    min-width: 2.2rem;
+  }
+  .card-meta { flex: 1; }
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .card-subtitle {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    font-family: 'DM Mono', monospace;
+  }
+  .card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .badge {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    font-weight: 500;
+  }
+  .badge-time { background: #fef3c7; color: #92400e; }
+  .badge-group { background: #dbeafe; color: #1e40af; }
+  .badge-level { background: #dcfce7; color: #166534; }
+  .badge-phil { background: #ede9fe; color: #5b21b6; }
+  .card-toggle {
+    font-size: 1.4rem;
+    opacity: 0.35;
+    transition: transform 0.3s;
+  }
+  .card-toggle.open { transform: rotate(90deg); opacity: 0.7; }
+
+  .card-body {
+    display: none;
+    padding: 1.4rem 1.6rem 1.8rem;
+  }
+  .card-body.open { display: block; animation: fadeIn 0.25s ease; }
+
+  /* ── INSIDE CARD ── */
+  .section-block {
+    margin-bottom: 1.4rem;
+  }
+  .block-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .block-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #333;
+  }
+
+  .steps-list {
+    list-style: none;
+    counter-reset: steps;
+  }
+  .steps-list li {
+    counter-increment: steps;
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #333;
+  }
+  .steps-list li::before {
+    content: counter(steps);
+    background: var(--ink);
+    color: var(--cream);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .q-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .q-list li {
+    background: var(--light-teal);
+    border-left: 3px solid var(--teal);
+    padding: 0.6rem 0.9rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.87rem;
+    line-height: 1.5;
+    color: #1a3a36;
+  }
+  .q-list li::before { content: '💬 '; }
+
+  .phil-box {
+    background: var(--light-rust);
+    border: 1.5px solid var(--rust);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.87rem;
+    line-height: 1.6;
+    color: #5a1810;
+  }
+  .phil-box strong { color: var(--rust); }
+
+  /* ── MATRIX ── */
+  .matrix-wrap {
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  .matrix-table {
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 340px;
+  }
+  .matrix-table th, .matrix-table td {
+    border: 2px solid var(--ink);
+    padding: 0.6rem 1rem;
+    text-align: center;
+  }
+  .matrix-table thead th {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  .matrix-table tbody th {
+    background: var(--warm);
+    font-weight: 700;
+  }
+  .matrix-table .highlight { background: #fef9ec; font-weight: 700; color: var(--rust); }
+
+  /* ── SIMULATOR ── */
+  .simulator {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .sim-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .sim-players {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  .player-panel {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .player-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .player-btn {
+    display: block;
+    width: 100%;
+    padding: 0.55rem 1rem;
+    margin-bottom: 0.5rem;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.05);
+    color: var(--cream);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.83rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .player-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.5); }
+  .player-btn.selected-coop { background: rgba(26,122,110,0.55); border-color: #1a7a6e; }
+  .player-btn.selected-defect { background: rgba(201,74,32,0.55); border-color: #c94a20; }
+
+  .sim-result {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.65);
+    font-style: italic;
+  }
+  .sim-result.has-result {
+    font-style: normal;
+    color: var(--cream);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .result-bad { color: #f87171; }
+  .result-good { color: #6ee7b7; }
+  .result-mid { color: #fcd34d; }
+
+  .sim-play-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--amber);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+  }
+  .sim-play-btn:hover { background: var(--gold); }
+
+  /* ── OVERVIEW ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .ov-card {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 1.3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .ov-card::after {
+    content: attr(data-icon);
+    position: absolute;
+    bottom: -0.5rem;
+    right: 0.5rem;
+    font-size: 3.5rem;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .ov-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+  .ov-card p {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+  .ov-accent {
+    width: 3rem;
+    height: 3px;
+    background: var(--amber);
+    margin-bottom: 0.8rem;
+    border-radius: 2px;
+  }
+
+  .concept-pill-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+  .concept-pill {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── RUBRIC ── */
+  .rubric-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+  .rubric-table th {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .rubric-table td {
+    border: 1px solid rgba(0,0,0,0.12);
+    padding: 0.7rem 1rem;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .rubric-table tr:nth-child(even) td { background: var(--warm); }
+
+  .tip-strip {
+    background: #fefce8;
+    border: 1.5px solid var(--gold);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #713f12;
+    margin-top: 1.2rem;
+  }
+  .tip-strip strong { font-weight: 700; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .sim-players { grid-template-columns: 1fr; }
+    .card-badges { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Filosofía · Bachillerato · Guía Docente</div>
+  <h1>Teoría de Juegos<br><span>en el Aula</span></h1>
+  <p class="hero-sub">Cinco actividades listas para usar. Sin fórmulas, sin matemáticas — solo dilemas, debate y pensamiento crítico.</p>
+  <div class="hero-tags">
+    <span class="tag">1º y 2º Bachillerato</span>
+    <span class="tag">Ética y Filosofía</span>
+    <span class="tag">Aprendizaje activo</span>
+    <span class="tag">Sin requisitos previos</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar" role="tablist">
+  <button class="nav-btn active" onclick="showSection('overview')" role="tab">¿Qué es?</button>
+  <button class="nav-btn" onclick="showSection('activities')" role="tab">Actividades</button>
+  <button class="nav-btn" onclick="showSection('simulator')" role="tab">Simulador</button>
+  <button class="nav-btn" onclick="showSection('evaluation')" role="tab">Evaluación</button>
+</div>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<div class="section active" id="overview">
+  <div class="section-title">¿Qué es la Teoría de Juegos?</div>
+  <p class="section-intro">Una herramienta para entender cómo deciden los seres humanos cuando sus elecciones dependen de lo que hacen los demás. Perfecta para conectar con Hobbes, Rousseau, Kant y la ética contemporánea.</p>
+
+  <div class="overview-grid">
+    <div class="ov-card" data-icon="🤝">
+      <div class="ov-accent"></div>
+      <h3>Cooperación vs. Traición</h3>
+      <p>¿Por qué cooperamos aunque traicionar nos daría más beneficio inmediato? La gran pregunta filosófica detrás de cada juego.</p>
+    </div>
+    <div class="ov-card" data-icon="⚖️">
+      <div class="ov-accent"></div>
+      <h3>Racionalidad y Ética</h3>
+      <p>¿Es racional ser justo? ¿Coinciden la razón y la moral? Kant y Hume tienen respuestas muy distintas.</p>
+    </div>
+    <div class="ov-card" data-icon="🏛️">
+      <div class="ov-accent"></div>
+      <h3>Contrato Social</h3>
+      <p>Hobbes, Locke y Rousseau como diseñadores de «reglas del juego». El Estado como solución a un dilema eterno.</p>
+    </div>
+    <div class="ov-card" data-icon="🌍">
+      <div class="ov-accent"></div>
+      <h3>Actualidad</h3>
+      <p>Cambio climático, redes sociales, pandemia... Los mismos dilemas, escala global.</p>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:1.2rem; margin-bottom:0.8rem;">Conceptos clave (sin jerga)</div>
+  <div class="concept-pill-wrap">
+    <span class="concept-pill">Dilema del Prisionero</span>
+    <span class="concept-pill">Equilibrio de Nash</span>
+    <span class="concept-pill">Juego de la Caza del Ciervo</span>
+    <span class="concept-pill">Juego del Gallina</span>
+    <span class="concept-pill">Tit-for-Tat</span>
+    <span class="concept-pill">Bien común vs. interés individual</span>
+    <span class="concept-pill">Tragedia de los Comunes</span>
+  </div>
+
+  <div class="tip-strip">
+    <strong>💡 Consejo pedagógico:</strong> No hace falta explicar la teoría antes. Empieza con la actividad, deja que los alumnos jueguen y descubran los conceptos por sí mismos. La teoría viene después, como nombre para lo que ya experimentaron.
+  </div>
+</div>
+
+<!-- ═══════════ ACTIVITIES ═══════════ -->
+<div class="section" id="activities">
+  <div class="section-title">Actividades</div>
+  <p class="section-intro">Haz clic en cualquier actividad para ver la guía completa, los pasos y las preguntas de debate.</p>
+
+  <!-- ACTIVITY 1 -->
+  <div class="activity-card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-num">01</span>
+      <div class="card-meta">
+        <div class="card-title">El Dilema del Prisionero</div>
+        <div class="card-subtitle">La actividad clásica · punto de partida ideal</div>
+        <div class="card-badges" style="margin-top:0.4rem">
+          <span class="badge badge-time">⏱ 20 min</span>
+          <span class="badge badge-group">👥 Parejas</span>
+          <span class="badge badge-level">Básico</span>
+          <span class="badge badge-phil">Hobbes · Kant</span>
+        </div>
+      </div>
+      <span class="card-toggle">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="section-block">
+        <div class="block-label">Escenario para el aula</div>
+        <div class="block-text">Dos compañeros de clase han sido pillados copiando en un examen. La profesora los separa y les dice a cada uno: <em>"Si me dices que el otro copió y él no lo dice, tú no tienes consecuencias y él suspende el trimestre. Si los dos os acusáis mutuamente, los dos bajáis nota. Si ninguno habla, solo perdéis un punto."</em></div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Tabla de resultados</div>
+        <div class="matrix-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Alumno B: Calla</th>
+                <th>Alumno B: Delata</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Alumno A: Calla</th>
+                <td>–1 punto / –1 punto</td>
+                <td class="highlight">A suspende / B libre</td>
+              </tr>
+              <tr>
+                <th>Alumno A: Delata</th>
+                <td class="highlight">A libre / B suspende</td>
+                <td>–3 puntos / –3 puntos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Pasos</div>
+        <ol class="steps-list">
+          <li>Forma parejas. Cada pareja recibe una ficha con el escenario.</li>
+          <li>Cada alumno escribe su decisión en un papel (sin hablar con el compañero).</li>
+          <li>Revelan simultáneamente. Anota los resultados en la pizarra.</li>
+          <li>Repite 3 rondas. ¿Cambia la estrategia cuando hay «historial»?</li>
+          <li>Puesta en común: ¿Qué ha pasado? ¿Fue lógico? ¿Fue justo?</li>
+        </ol>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Preguntas de debate</div>
+        <ul class="q-list">
+          <li>¿Qué habría hecho Kant? ¿Y un utilitarista?</li>
+          <li>Si hubierais podido hablar antes, ¿habríais cooperado? ¿Por qué los estados a veces no cumplen los acuerdos?</li>
+          <li>¿Este dilema aparece en la vida real? Piensa en un ejemplo tuyo.</li>
+        </ul>
+      </div>
+
+      <div class="phil-box">
+        <strong>Conexión filosófica:</strong> Hobbes argumentaba que sin un Estado que fuerce la cooperación, caemos en el "delata siempre". Kant respondería que el imperativo categórico nos da la solución: actúa solo según aquella máxima que puedas querer que sea ley universal. Si todos delataran, el acuerdo no tendría sentido → delatarías una norma que te destruye a ti mismo.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 2 -->
+  <div class="activity-card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-num">02</span>
+      <div class="card-meta">
+        <div class="card-title">La Caza del Ciervo</div>
+        <div class="card-subtitle">Confianza y contrato social · Rousseau en acción</div>
+        <div class="card-badges" style="margin-top:0.4rem">
+          <span class="badge badge-time">⏱ 25 min</span>
+          <span class="badge badge-group">👥 Grupos de 4-5</span>
+          <span class="badge badge-level">Básico</span>
+          <span class="badge badge-phil">Rousseau · Rawls</span>
+        </div>
+      </div>
+      <span class="card-toggle">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="section-block">
+        <div class="block-label">Escenario</div>
+        <div class="block-text">Un grupo de cazadores puede atrapar un gran ciervo trabajando juntos (30 puntos para todos), o ir por su cuenta a cazar conejos (5 puntos solo). Si alguien abandona el grupo para cazar un conejo, el ciervo escapa y todos los demás se quedan con 0. <em>¿Cooperáis o vais por cuenta propia?</em></div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Dinámica</div>
+        <ol class="steps-list">
+          <li>Grupos de 4-5. El objetivo es maximizar los puntos del grupo, pero cada uno decide individualmente.</li>
+          <li>Ronda 1: sin comunicación. Decisión secreta.</li>
+          <li>Ronda 2: 2 minutos para hablar y hacer promesas (no vinculantes).</li>
+          <li>Ronda 3: se puede castigar a quien traicione (resta puntos propios para restarle más al traidor).</li>
+          <li>Comparad los resultados de las tres rondas.</li>
+        </ol>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Preguntas de debate</div>
+        <ul class="q-list">
+          <li>¿Qué condición hizo que la cooperación fuera posible o imposible?</li>
+          <li>¿La posibilidad de castigo cambió vuestro comportamiento? ¿Eso es bueno o malo?</li>
+          <li>¿En qué se parece esto a cómo funciona un Estado según Rousseau?</li>
+        </ul>
+      </div>
+
+      <div class="phil-box">
+        <strong>Conexión filosófica:</strong> Rousseau creía que los humanos son naturalmente cooperativos, pero la sociedad los corrompe. Este juego ilustra cómo la confianza y la reciprocidad son la base del contrato social: elegimos «cazar el ciervo juntos» cuando creemos que los demás también lo harán.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 3 -->
+  <div class="activity-card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-num">03</span>
+      <div class="card-meta">
+        <div class="card-title">El Juego del Ultimátum</div>
+        <div class="card-subtitle">¿Qué es la justicia? ¿Somos racionales?</div>
+        <div class="card-badges" style="margin-top:0.4rem">
+          <span class="badge badge-time">⏱ 15 min</span>
+          <span class="badge badge-group">👥 Parejas</span>
+          <span class="badge badge-level">Básico</span>
+          <span class="badge badge-phil">Rawls · Hume</span>
+        </div>
+      </div>
+      <span class="card-toggle">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="section-block">
+        <div class="block-label">Reglas</div>
+        <div class="block-text">El «Proponente» tiene 10 puntos ficticios para repartir entre él y el «Receptor». Propone cómo dividirlos. Si el Receptor acepta, los dos se quedan con lo propuesto. Si rechaza, los dos se quedan con 0. La racionalidad pura dice: acepta cualquier oferta mayor que 0. ¿Qué pasa en realidad?</div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Pasos</div>
+        <ol class="steps-list">
+          <li>Asigna roles en cada pareja (sin que el receptor sepa quién propone).</li>
+          <li>El proponente escribe su oferta en papel y la pasa.</li>
+          <li>El receptor decide aceptar o rechazar. Anota los resultados de toda la clase.</li>
+          <li>Votación: ¿Cuál es la oferta «mínima justa»? ¿5/5, 7/3, 8/2?</li>
+        </ol>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Preguntas de debate</div>
+        <ul class="q-list">
+          <li>¿Por qué rechazamos ofertas «irracionales»? ¿Qué nos dice eso sobre la naturaleza humana?</li>
+          <li>¿Cambiaría tu respuesta si no supieras qué papel ibas a tener? (Rawls: el velo de ignorancia)</li>
+          <li>¿Es la equidad un instinto o un aprendizaje cultural?</li>
+        </ul>
+      </div>
+
+      <div class="phil-box">
+        <strong>Conexión filosófica:</strong> Rawls propuso diseñar la sociedad «detrás del velo de ignorancia»: sin saber qué posición ocuparías. En este juego, si no supieras si serías proponente o receptor, ¿qué oferta elegirías? Casi todo el mundo dice 50/50 — eso es la justicia como equidad.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 4 -->
+  <div class="activity-card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-num">04</span>
+      <div class="card-meta">
+        <div class="card-title">La Tragedia de los Comunes</div>
+        <div class="card-subtitle">Bien común, ecología y ética ambiental</div>
+        <div class="card-badges" style="margin-top:0.4rem">
+          <span class="badge badge-time">⏱ 30 min</span>
+          <span class="badge badge-group">👥 Grupos de 6+</span>
+          <span class="badge badge-level">Medio</span>
+          <span class="badge badge-phil">Mill · Ética ambiental</span>
+        </div>
+      </div>
+      <span class="card-toggle">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="section-block">
+        <div class="block-label">Escenario</div>
+        <div class="block-text">Hay un lago comunitario con 20 peces. Cada ronda, cada jugador puede pescar 0, 1, 2 o 3 peces. Al final de cada ronda, los peces restantes se duplican (hasta un máximo de 20). Si el lago llega a 0 antes de la ronda 5, el juego termina para todos. ¿Cuántas rondas aguantáis?</div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Materiales necesarios</div>
+        <div class="block-text">Fichas de colores (azules = peces) en el centro de la mesa. Cada jugador anota en papel cuánto pesca y lo retira.</div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Variaciones</div>
+        <ul class="q-list">
+          <li>Variación A: sin comunicación. ¿Cuántas rondas aguanta el lago?</li>
+          <li>Variación B: con 1 minuto de debate antes de cada ronda.</li>
+          <li>Variación C: se introduce un «guardabosques» que puede multar a quien pesque más de 1.</li>
+        </ul>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Preguntas de debate</div>
+        <ul class="q-list">
+          <li>¿Qué condición salvó el lago? ¿Comunicación, normas, autoridad?</li>
+          <li>¿Esto explica el cambio climático? ¿Por qué los estados no llegan a acuerdos?</li>
+          <li>¿Qué solución daría un utilitarista? ¿Y alguien que sigue la ética de la virtud?</li>
+        </ul>
+      </div>
+
+      <div class="phil-box">
+        <strong>Conexión filosófica:</strong> Garrett Hardin (1968) describió este patrón: los recursos compartidos se agotan cuando cada individuo actúa racionalmente en su propio interés. La solución no es solo tecnológica — es ética. Es la pregunta central del siglo XXI.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 5 -->
+  <div class="activity-card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-num">05</span>
+      <div class="card-meta">
+        <div class="card-title">Ojo por Ojo (Tit-for-Tat)</div>
+        <div class="card-subtitle">¿Cuál es la mejor estrategia moral a largo plazo?</div>
+        <div class="card-badges" style="margin-top:0.4rem">
+          <span class="badge badge-time">⏱ 35 min</span>
+          <span class="badge badge-group">👥 Toda la clase</span>
+          <span class="badge badge-level">Avanzado</span>
+          <span class="badge badge-phil">Ética evolutiva · Hare</span>
+        </div>
+      </div>
+      <span class="card-toggle">▶</span>
+    </div>
+    <div class="card-body">
+      <div class="section-block">
+        <div class="block-label">Cómo funciona</div>
+        <div class="block-text">Cada alumno adopta una <strong>estrategia fija</strong> para las siguientes 6 rondas del Dilema del Prisionero. Las estrategias posibles: (A) Siempre coopera, (B) Siempre traiciona, (C) Aleatorio, (D) Tit-for-Tat: empieza cooperando, luego repite lo que hizo el otro en la ronda anterior.</div>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Torneo</div>
+        <ol class="steps-list">
+          <li>Cada alumno elige su estrategia en secreto y la escribe en una tarjeta.</li>
+          <li>Todos juegan contra todos durante 6 rondas. Apunta los puntos totales.</li>
+          <li>Al final, ¿qué estrategia acumuló más puntos?</li>
+          <li>Debate: ¿es «Tit-for-Tat» la estrategia moral óptima? ¿O simplemente la más eficaz?</li>
+        </ol>
+      </div>
+
+      <div class="section-block">
+        <div class="block-label">Preguntas de debate</div>
+        <ul class="q-list">
+          <li>¿Eficaz = moral? ¿O pueden divergir?</li>
+          <li>¿Merece perdonarse al traidor si luego coopera? ¿Cuántas traiciones hay que tolerar?</li>
+          <li>¿En qué se parece esto a la política internacional?</li>
+        </ul>
+      </div>
+
+      <div class="phil-box">
+        <strong>Conexión filosófica:</strong> El biólogo Robert Axelrod descubrió que Tit-for-Tat gana sistemáticamente en torneos computacionales. Es una fórmula que combina bondad (empieza cooperando), reciprocidad, castigo y perdón. ¿Es esto lo que los filósofos llaman virtud?
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SIMULATOR ═══════════ -->
+<div class="section" id="simulator">
+  <div class="section-title">Simulador de Clase</div>
+  <p class="section-intro">Usa esto en la pizarra o en proyector para demostrar el Dilema del Prisionero en tiempo real. Dos alumnos eligen simultáneamente sin verse.</p>
+
+  <div class="simulator">
+    <div class="sim-title">▶ Dilema del Prisionero · Ronda en vivo</div>
+
+    <div class="sim-players">
+      <div class="player-panel">
+        <div class="player-name">Alumno A</div>
+        <button class="player-btn" id="a-coop" onclick="selectA('coop')">🤝 Cooperar (Callar)</button>
+        <button class="player-btn" id="a-defect" onclick="selectA('defect')">🗡 Traicionar (Delatar)</button>
+      </div>
+      <div class="player-panel">
+        <div class="player-name">Alumno B</div>
+        <button class="player-btn" id="b-coop" onclick="selectB('coop')">🤝 Cooperar (Callar)</button>
+        <button class="player-btn" id="b-defect" onclick="selectB('defect')">🗡 Traicionar (Delatar)</button>
+      </div>
+    </div>
+
+    <button class="sim-play-btn" onclick="revealResult()">Revelar resultado →</button>
+
+    <div class="sim-result" id="sim-result">
+      Espera a que ambos jugadores elijan su acción...
+    </div>
+  </div>
+
+  <div class="tip-strip" style="margin-top:1.5rem">
+    <strong>💡 Uso en clase:</strong> Pide a dos voluntarios que salgan a la pizarra de espaldas el uno al otro. Cada uno elige en su pantalla de móvil o en papel. Tú controlas el proyector y pulsas «Revelar» cuando ambos han decidido. El efecto dramático refuerza mucho el aprendizaje.
+  </div>
+</div>
+
+<!-- ═══════════ EVALUATION ═══════════ -->
+<div class="section" id="evaluation">
+  <div class="section-title">Rúbrica de Evaluación</div>
+  <p class="section-intro">Para valorar la participación en las actividades y la reflexión escrita posterior.</p>
+
+  <div class="matrix-wrap">
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th>Excelente (9-10)</th>
+          <th>Bien (7-8)</th>
+          <th>Suficiente (5-6)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Comprensión del dilema</strong></td>
+          <td>Identifica la tensión entre interés individual y colectivo con precisión</td>
+          <td>Comprende la lógica básica del juego y sus consecuencias</td>
+          <td>Entiende las reglas pero no conecta con el conflicto de intereses</td>
+        </tr>
+        <tr>
+          <td><strong>Conexión filosófica</strong></td>
+          <td>Vincula el juego con al menos dos autores con argumentos propios</td>
+          <td>Menciona un autor y su posición correctamente</td>
+          <td>Nombra autores sin desarrollar la conexión</td>
+        </tr>
+        <tr>
+          <td><strong>Argumentación oral</strong></td>
+          <td>Defiende su posición con argumentos, responde objeciones y considera otras perspectivas</td>
+          <td>Argumenta con claridad, aunque sin profundidad ante las réplicas</td>
+          <td>Participa pero sus intervenciones son descriptivas, no argumentativas</td>
+        </tr>
+        <tr>
+          <td><strong>Reflexión escrita</strong></td>
+          <td>Usa vocabulario filosófico preciso y muestra pensamiento propio</td>
+          <td>Redacción correcta con algún término técnico</td>
+          <td>Redacción básica, sin vocabulario específico</td>
+        </tr>
+        <tr>
+          <td><strong>Aplicación a la realidad</strong></td>
+          <td>Propone ejemplos propios y originales con análisis detallado</td>
+          <td>Usa ejemplos conocidos con cierto análisis</td>
+          <td>Menciona ejemplos sin analizarlos</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip-strip">
+    <strong>📝 Tarea de reflexión sugerida:</strong> "Elige uno de los dilemas que hemos jugado hoy. Explica qué decisión tomaste, por qué, y si un filósofo que hemos estudiado habría decidido lo mismo. ¿Cambiarías tu elección si pudieras repetirlo? (150-200 palabras)"
+  </div>
+
+  <div class="tip-strip" style="margin-top:0.8rem; background:#f0fdf4; border-color:#16a34a; color:#14532d;">
+    <strong>🔍 Anti-copia:</strong> Pide a los alumnos que incluyan en su reflexión la frase exacta que dijo su compañero de pareja durante el juego. Imposible de generar con IA.
+  </div>
+</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const btns = document.querySelectorAll('.nav-btn');
+    const map = { overview: 0, activities: 1, simulator: 2, evaluation: 3 };
+    btns[map[id]].classList.add('active');
+  }
+
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const toggle = header.querySelector('.card-toggle');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    toggle.classList.toggle('open', !isOpen);
+  }
+
+  // Simulator
+  let choiceA = null, choiceB = null;
+
+  function selectA(choice) {
+    choiceA = choice;
+    document.getElementById('a-coop').className = 'player-btn' + (choice === 'coop' ? ' selected-coop' : '');
+    document.getElementById('a-defect').className = 'player-btn' + (choice === 'defect' ? ' selected-defect' : '');
+    resetResult();
+  }
+
+  function selectB(choice) {
+    choiceB = choice;
+    document.getElementById('b-coop').className = 'player-btn' + (choice === 'coop' ? ' selected-coop' : '');
+    document.getElementById('b-defect').className = 'player-btn' + (choice === 'defect' ? ' selected-defect' : '');
+    resetResult();
+  }
+
+  function resetResult() {
+    const r = document.getElementById('sim-result');
+    r.className = 'sim-result';
+    r.innerHTML = 'Espera a que ambos jugadores elijan su acción...';
+  }
+
+  function revealResult() {
+    const r = document.getElementById('sim-result');
+    if (!choiceA || !choiceB) {
+      r.innerHTML = '⚠️ Ambos jugadores deben elegir antes de revelar.';
+      r.className = 'sim-result has-result';
+      return;
+    }
+    let html = '';
+    if (choiceA === 'coop' && choiceB === 'coop') {
+      html = '<span class="result-good">✅ Ambos cooperan → A pierde 1 pto · B pierde 1 pto<br><small style="opacity:0.75">Resultado colectivamente óptimo, individualmente no el mejor</small></span>';
+    } else if (choiceA === 'defect' && choiceB === 'defect') {
+      html = '<span class="result-bad">💥 Ambos traicionan → A pierde 3 ptos · B pierde 3 ptos<br><small style="opacity:0.75">El peor resultado colectivo. Equilibrio de Nash: nadie quiere cambiar solo, aunque a todos les va peor.</small></span>';
+    } else if (choiceA === 'defect' && choiceB === 'coop') {
+      html = '<span class="result-mid">⚡ A traiciona, B coopera → A sin consecuencias · B suspende el trimestre<br><small style="opacity:0.75">A se beneficia a costa de B. ¿Es esto racional? ¿Es ético?</small></span>';
+    } else {
+      html = '<span class="result-mid">⚡ A coopera, B traiciona → A suspende el trimestre · B sin consecuencias<br><small style="opacity:0.75">B se beneficia a costa de A. ¿Es esto racional? ¿Es ético?</small></span>';
+    }
+    r.innerHTML = html;
+    r.className = 'sim-result has-result';
+    choiceA = null; choiceB = null;
+    document.querySelectorAll('.player-btn').forEach(b => b.className = 'player-btn');
+  }
+</script>
+</body>
+</html>
