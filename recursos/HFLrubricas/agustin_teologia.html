@@ -1,821 +1,746 @@
-import { useState } from "react";
-import { Download, RotateCcw, Check, X } from "lucide-react";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corrección EVAU: San Agustín — Dios</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
 
-const criteriosImprescindibles = [
-  {
-    bloque: "1. Finalidad del ser humano",
-    puntosBloque: 0.30,
-    items: [
-      { id: "imp1a", texto: "Dios como fin último al que tiende el ser humano", puntos: 0.10 },
-      { id: "imp1b", texto: "Visión de Dios como destino final de los bienaventurados en la otra vida", puntos: 0.10 },
-      { id: "imp1c", texto: "Necesidad de la gracia divina para alcanzar dicho fin", puntos: 0.10 },
-    ],
-  },
-  {
-    bloque: "2. Vía de la interioridad (prueba principal)",
-    puntosBloque: 0.50,
-    items: [
-      { id: "imp2a", texto: "Camino de la interioridad: orientar la mirada a la profundidad del alma", puntos: 0.15 },
-      { id: "imp2b", texto: "Al volverse sobre sí misma, el alma encuentra una verdad que la supera", puntos: 0.15 },
-      { id: "imp2c", texto: "Esa verdad no puede tener su origen en el alma; su origen es Dios", puntos: 0.10 },
-      { id: "imp2d", texto: "Referencia al «conócete a ti mismo» socrático: reconocerse como imagen del Creador", puntos: 0.10 },
-    ],
-  },
-  {
-    bloque: "3. Otras pruebas de la existencia de Dios",
-    puntosBloque: 0.40,
-    items: [
-      { id: "imp3a", texto: "Perfección/orden del mundo: existencia de un ser supremo ordenador", puntos: 0.10 },
-      { id: "imp3b", texto: "Consensus gentium: la mayoría de los seres humanos reconoce un ser supremo", puntos: 0.10 },
-      { id: "imp3c", texto: "Grados del bien: distintos niveles del bien exigen la existencia de un bien supremo", puntos: 0.10 },
-      { id: "imp3d", texto: "Las pruebas confirman racionalmente lo ya creído y admitido por la fe", puntos: 0.10 },
-    ],
-  },
-  {
-    bloque: "4. Carácter de las pruebas y enfoque agustiniano",
-    puntosBloque: 0.30,
-    items: [
-      { id: "imp4a", texto: "No son demostraciones teóricas (a diferencia de Tomás de Aquino)", puntos: 0.10 },
-      { id: "imp4b", texto: "Reflexión desde la experiencia personal: itinerario hacia Dios (admiración del mundo → interior del alma → Dios)", puntos: 0.10 },
-      { id: "imp4c", texto: "Propósito: acallar la inquietud del corazón y proporcionar la felicidad (goce de Dios)", puntos: 0.10 },
-    ],
-  },
-  {
-    bloque: "5. Atributos de Dios — Esencia divina",
-    puntosBloque: 0.25,
-    items: [
-      { id: "imp5a", texto: "Carácter inefable de la esencia divina (no se puede expresar plenamente con palabras)", puntos: 0.10 },
-      { id: "imp5b", texto: "Tres atributos esenciales de Dios: ser, verdad y bien", puntos: 0.10 },
-      { id: "imp5c", texto: "Cada atributo se asocia a una persona de la Trinidad", puntos: 0.05 },
-    ],
-  },
-  {
-    bloque: "6. Atributos de las tres personas de la Trinidad",
-    puntosBloque: 0.25,
-    items: [
-      { id: "imp6a", texto: "Dios Padre → atributo del ser: esencia pura, sin accidentes ni cambio («Yo soy el que soy»)", puntos: 0.10 },
-      { id: "imp6b", texto: "Dios Hijo → atributo de la verdad: verbo o palabra encarnada, verdad suprema", puntos: 0.08 },
-      { id: "imp6c", texto: "Dios Espíritu Santo → atributo del bien: vida, amor y donación de vida", puntos: 0.07 },
-    ],
-  },
-];
+  <script type="text/babel">
+    const { useState } = React;
 
-const criteriosComplementarios = [
-  { id: "comp1", texto: "Vigencia actual del pensamiento de San Agustín", puntos: 0.05 },
-  { id: "comp2", texto: "Contextualización histórica adecuada (s. IV-V, patrística, cristianismo)", puntos: 0.05 },
-  { id: "comp3", texto: "Diferencia con Plotino: alma general (neoplatonismo) vs. alma individual (Agustín)", puntos: 0.05 },
-  { id: "comp4", texto: "Influencia del neoplatonismo en la vía de la interioridad", puntos: 0.05 },
-  { id: "comp5", texto: "Referencia bíblica al Éxodo: «Yo soy el que soy»", puntos: 0.05 },
-  { id: "comp6", texto: "Presencia de los atributos divinos en el alma humana (imagen y semejanza)", puntos: 0.05 },
-  { id: "comp7", texto: "El alma humana es, conoce y da vida al cuerpo (reflejo de la Trinidad)", puntos: 0.05 },
-  { id: "comp8", texto: "Conflicto interior como rasgo de la persona individual en San Agustín", puntos: 0.05 },
-  { id: "comp9", texto: "Relación fe-razón: la razón confirma lo que la fe ya acepta", puntos: 0.05 },
-  { id: "comp10", texto: "Admiración por el orden del mundo como inicio del itinerario hacia Dios", puntos: 0.05 },
-];
+    /* ═══ ICONOS SVG inline (sin dependencia de lucide-react) ═══ */
+    const IconDownload = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    );
+    const IconReset = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    );
 
-const vocabularioConfig = {
-  niveles: [
-    { id: "vocab_exc", label: "Excelente (8+ términos)", puntos: 0.25 },
-    { id: "vocab_ade", label: "Adecuado (5-7 términos)", puntos: 0.15 },
-    { id: "vocab_lim", label: "Limitado (3-4 términos)", puntos: 0.10 },
-    { id: "vocab_esc", label: "Escaso o impreciso", puntos: 0.05 },
-  ],
-  cohesion: [
-    { id: "coh_buena", label: "Buena cohesión", puntos: 0.08 },
-    { id: "coh_acep", label: "Aceptable", puntos: 0.05 },
-    { id: "coh_def", label: "Deficiente", puntos: 0.02 },
-  ],
-  coherencia: [
-    { id: "coher_buena", label: "Buena coherencia", puntos: 0.09 },
-    { id: "coher_acep", label: "Aceptable", puntos: 0.05 },
-    { id: "coher_def", label: "Deficiente", puntos: 0.02 },
-  ],
-  estructura: [
-    { id: "est_intro", texto: "Estructura intro-desarrollo-conclusión clara", puntos: 0.03 },
-    { id: "est_ideas", texto: "Distingue ideas principales de secundarias", puntos: 0.03 },
-    { id: "est_prog", texto: "Progresión lógica del argumento", puntos: 0.02 },
-  ],
-};
+    /* ═══ DATOS ═══ */
+    const criteriosImprescindibles = [
+      {
+        bloque: "1. Finalidad del ser humano",
+        puntosBloque: 0.30,
+        items: [
+          { id: "imp1a", texto: "Dios como fin último al que tiende el ser humano", puntos: 0.10 },
+          { id: "imp1b", texto: "Visión de Dios como destino final de los bienaventurados en la otra vida", puntos: 0.10 },
+          { id: "imp1c", texto: "Necesidad de la gracia divina para alcanzar dicho fin", puntos: 0.10 },
+        ],
+      },
+      {
+        bloque: "2. Vía de la interioridad (prueba principal)",
+        puntosBloque: 0.50,
+        items: [
+          { id: "imp2a", texto: "Camino de la interioridad: orientar la mirada a la profundidad del alma", puntos: 0.15 },
+          { id: "imp2b", texto: "Al volverse sobre sí misma, el alma encuentra una verdad que la supera", puntos: 0.15 },
+          { id: "imp2c", texto: "Esa verdad no puede tener su origen en el alma; su origen es Dios", puntos: 0.10 },
+          { id: "imp2d", texto: "Referencia al «conócete a ti mismo» socrático: reconocerse como imagen del Creador", puntos: 0.10 },
+        ],
+      },
+      {
+        bloque: "3. Otras pruebas de la existencia de Dios",
+        puntosBloque: 0.40,
+        items: [
+          { id: "imp3a", texto: "Perfección/orden del mundo: existencia de un ser supremo ordenador", puntos: 0.10 },
+          { id: "imp3b", texto: "Consensus gentium: la mayoría de los seres humanos reconoce un ser supremo", puntos: 0.10 },
+          { id: "imp3c", texto: "Grados del bien: distintos niveles del bien exigen la existencia de un bien supremo", puntos: 0.10 },
+          { id: "imp3d", texto: "Las pruebas confirman racionalmente lo ya creído y admitido por la fe", puntos: 0.10 },
+        ],
+      },
+      {
+        bloque: "4. Carácter de las pruebas y enfoque agustiniano",
+        puntosBloque: 0.30,
+        items: [
+          { id: "imp4a", texto: "No son demostraciones teóricas (a diferencia de Tomás de Aquino)", puntos: 0.10 },
+          { id: "imp4b", texto: "Reflexión desde la experiencia personal: itinerario hacia Dios (admiración del mundo → interior del alma → Dios)", puntos: 0.10 },
+          { id: "imp4c", texto: "Propósito: acallar la inquietud del corazón y proporcionar la felicidad (goce de Dios)", puntos: 0.10 },
+        ],
+      },
+      {
+        bloque: "5. Atributos de Dios — Esencia divina",
+        puntosBloque: 0.25,
+        items: [
+          { id: "imp5a", texto: "Carácter inefable de la esencia divina (no se puede expresar plenamente con palabras)", puntos: 0.10 },
+          { id: "imp5b", texto: "Tres atributos esenciales de Dios: ser, verdad y bien", puntos: 0.10 },
+          { id: "imp5c", texto: "Cada atributo se asocia a una persona de la Trinidad", puntos: 0.05 },
+        ],
+      },
+      {
+        bloque: "6. Atributos de las tres personas de la Trinidad",
+        puntosBloque: 0.25,
+        items: [
+          { id: "imp6a", texto: "Dios Padre → atributo del ser: esencia pura, sin accidentes ni cambio («Yo soy el que soy»)", puntos: 0.10 },
+          { id: "imp6b", texto: "Dios Hijo → atributo de la verdad: verbo o palabra encarnada, verdad suprema", puntos: 0.08 },
+          { id: "imp6c", texto: "Dios Espíritu Santo → atributo del bien: vida, amor y donación de vida", puntos: 0.07 },
+        ],
+      },
+    ];
 
-const penalizaciones = {
-  conceptuales: [
-    { id: "pen_c1", texto: "Confundir las pruebas de San Agustín con las cinco vías de Tomás de Aquino", puntos: -0.20 },
-    { id: "pen_c2", texto: "Atribuir incorrectamente los atributos (ser, verdad, bien) a las personas de la Trinidad", puntos: -0.15 },
-    { id: "pen_c3", texto: "Afirmar que San Agustín demuestra a Dios de forma puramente racional/teórica", puntos: -0.15 },
-    { id: "pen_c4", texto: "Confundir la posición de San Agustín con la de Plotino sobre el alma", puntos: -0.10 },
-    { id: "pen_c5", texto: "Omitir completamente el papel de la fe en las pruebas agustinianas", puntos: -0.10 },
-  ],
-  redaccion: [
-    { id: "pen_r1", texto: "Faltas de ortografía reiteradas", puntos: -0.05 },
-    { id: "pen_r2", texto: "Uso incorrecto o ausencia de conectores", puntos: -0.03 },
-    { id: "pen_r3", texto: "Frases confusas o mal construidas", puntos: -0.03 },
-    { id: "pen_r4", texto: "Repetición excesiva de ideas sin desarrollo", puntos: -0.02 },
-  ],
-};
+    const criteriosComplementarios = [
+      { id: "comp1", texto: "Vigencia actual del pensamiento de San Agustín", puntos: 0.05 },
+      { id: "comp2", texto: "Contextualización histórica adecuada (s. IV-V, patrística, cristianismo)", puntos: 0.05 },
+      { id: "comp3", texto: "Diferencia con Plotino: alma general (neoplatonismo) vs. alma individual (Agustín)", puntos: 0.05 },
+      { id: "comp4", texto: "Influencia del neoplatonismo en la vía de la interioridad", puntos: 0.05 },
+      { id: "comp5", texto: "Referencia bíblica al Éxodo: «Yo soy el que soy»", puntos: 0.05 },
+      { id: "comp6", texto: "Presencia de los atributos divinos en el alma humana (imagen y semejanza)", puntos: 0.05 },
+      { id: "comp7", texto: "El alma humana es, conoce y da vida al cuerpo (reflejo de la Trinidad)", puntos: 0.05 },
+      { id: "comp8", texto: "Conflicto interior como rasgo de la persona individual en San Agustín", puntos: 0.05 },
+      { id: "comp9", texto: "Relación fe-razón: la razón confirma lo que la fe ya acepta", puntos: 0.05 },
+      { id: "comp10", texto: "Admiración por el orden del mundo como inicio del itinerario hacia Dios", puntos: 0.05 },
+    ];
 
-const vocabularioTerminos = {
-  basico: [
-    "Interioridad", "Gracia divina", "Trinidad", "Atributos de Dios",
-    "Inefable", "Esencia", "Ser supremo", "Verdad", "Bien",
-    "Bienaventurados", "Fe", "Alma",
-  ],
-  complementario: [
-    "Consensus gentium", "Grados del bien", "Neoplatonismo", "Plotino",
-    "Accidentes", "Verbo / Palabra", "Esencia pura", "Imagen y semejanza",
-    "Éxodo", "Itinerario hacia Dios", "Conflicto interior",
-    "Donación de vida", "Tomás de Aquino", "Goce de Dios",
-  ],
-};
+    const vocabularioConfig = {
+      niveles: [
+        { id: "vocab_exc", label: "Excelente (8+ términos)", puntos: 0.25 },
+        { id: "vocab_ade", label: "Adecuado (5-7 términos)", puntos: 0.15 },
+        { id: "vocab_lim", label: "Limitado (3-4 términos)", puntos: 0.10 },
+        { id: "vocab_esc", label: "Escaso o impreciso", puntos: 0.05 },
+      ],
+      cohesion: [
+        { id: "coh_buena", label: "Buena cohesión", puntos: 0.08 },
+        { id: "coh_acep", label: "Aceptable", puntos: 0.05 },
+        { id: "coh_def", label: "Deficiente", puntos: 0.02 },
+      ],
+      coherencia: [
+        { id: "coher_buena", label: "Buena coherencia", puntos: 0.09 },
+        { id: "coher_acep", label: "Aceptable", puntos: 0.05 },
+        { id: "coher_def", label: "Deficiente", puntos: 0.02 },
+      ],
+      estructura: [
+        { id: "est_intro", texto: "Estructura intro-desarrollo-conclusión clara", puntos: 0.03 },
+        { id: "est_ideas", texto: "Distingue ideas principales de secundarias", puntos: 0.03 },
+        { id: "est_prog", texto: "Progresión lógica del argumento", puntos: 0.02 },
+      ],
+    };
 
-export default function CorreccionSanAgustinDios() {
-  const [studentName, setStudentName] = useState("");
-  const [scores, setScores] = useState({});
-  const [vocabNivel, setVocabNivel] = useState(null);
-  const [cohesionNivel, setCohesionNivel] = useState(null);
-  const [coherenciaNivel, setCoherenciaNivel] = useState(null);
-  const [estructuraScores, setEstructuraScores] = useState({});
-  const [penalizacionesActivas, setPenalizacionesActivas] = useState({});
-  const [vocabularioUsado, setVocabularioUsado] = useState({});
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    imprescindibles: true,
-    complementarios: true,
-    vocabularioRedaccion: true,
-    penalizacionesSec: true,
-    vocabTecnico: true,
-  });
+    const penalizaciones = {
+      conceptuales: [
+        { id: "pen_c1", texto: "Confundir las pruebas de San Agustín con las cinco vías de Tomás de Aquino", puntos: -0.20 },
+        { id: "pen_c2", texto: "Atribuir incorrectamente los atributos (ser, verdad, bien) a las personas de la Trinidad", puntos: -0.15 },
+        { id: "pen_c3", texto: "Afirmar que San Agustín demuestra a Dios de forma puramente racional/teórica", puntos: -0.15 },
+        { id: "pen_c4", texto: "Confundir la posición de San Agustín con la de Plotino sobre el alma", puntos: -0.10 },
+        { id: "pen_c5", texto: "Omitir completamente el papel de la fe en las pruebas agustinianas", puntos: -0.10 },
+      ],
+      redaccion: [
+        { id: "pen_r1", texto: "Faltas de ortografía reiteradas", puntos: -0.05 },
+        { id: "pen_r2", texto: "Uso incorrecto o ausencia de conectores", puntos: -0.03 },
+        { id: "pen_r3", texto: "Frases confusas o mal construidas", puntos: -0.03 },
+        { id: "pen_r4", texto: "Repetición excesiva de ideas sin desarrollo", puntos: -0.02 },
+      ],
+    };
 
-  const toggleSection = (sec) =>
-    setExpandedSections((p) => ({ ...p, [sec]: !p[sec] }));
+    const vocabularioTerminos = {
+      basico: [
+        "Interioridad", "Gracia divina", "Trinidad", "Atributos de Dios",
+        "Inefable", "Esencia", "Ser supremo", "Verdad", "Bien",
+        "Bienaventurados", "Fe", "Alma",
+      ],
+      complementario: [
+        "Consensus gentium", "Grados del bien", "Neoplatonismo", "Plotino",
+        "Accidentes", "Verbo / Palabra", "Esencia pura", "Imagen y semejanza",
+        "Éxodo", "Itinerario hacia Dios", "Conflicto interior",
+        "Donación de vida", "Tomás de Aquino", "Goce de Dios",
+      ],
+    };
 
-  const toggleScore = (id, puntos) => {
-    setScores((prev) => {
-      const copy = { ...prev };
-      if (copy[id]) delete copy[id];
-      else copy[id] = puntos;
-      return copy;
-    });
-  };
-
-  const togglePenalizacion = (id, puntos) => {
-    setPenalizacionesActivas((prev) => {
-      const copy = { ...prev };
-      if (copy[id]) delete copy[id];
-      else copy[id] = puntos;
-      return copy;
-    });
-  };
-
-  const toggleVocab = (term) => {
-    setVocabularioUsado((prev) => {
-      const copy = { ...prev };
-      if (copy[term]) delete copy[term];
-      else copy[term] = true;
-      return copy;
-    });
-  };
-
-  const toggleEstructura = (id, puntos) => {
-    setEstructuraScores((prev) => {
-      const copy = { ...prev };
-      if (copy[id]) delete copy[id];
-      else copy[id] = puntos;
-      return copy;
-    });
-  };
-
-  // Cálculos
-  const puntosImprescindibles = Object.values(scores).reduce(
-    (s, v) => s + (v > 0 ? v : 0),
-    0
-  );
-  const puntosComplementarios = Object.entries(scores)
-    .filter(([k]) => k.startsWith("comp"))
-    .reduce((s, [, v]) => s + v, 0);
-  const puntosImprescindiblesSolo = Object.entries(scores)
-    .filter(([k]) => k.startsWith("imp"))
-    .reduce((s, [, v]) => s + v, 0);
-
-  const puntosVocabNivel =
-    vocabNivel !== null
-      ? vocabularioConfig.niveles.find((n) => n.id === vocabNivel)?.puntos || 0
-      : 0;
-  const puntosCohesion =
-    cohesionNivel !== null
-      ? vocabularioConfig.cohesion.find((n) => n.id === cohesionNivel)?.puntos || 0
-      : 0;
-  const puntosCoherencia =
-    coherenciaNivel !== null
-      ? vocabularioConfig.coherencia.find((n) => n.id === coherenciaNivel)?.puntos || 0
-      : 0;
-  const puntosEstructura = Object.values(estructuraScores).reduce(
-    (s, v) => s + v,
-    0
-  );
-  const puntosVocabRedaccion =
-    puntosVocabNivel + puntosCohesion + puntosCoherencia + puntosEstructura;
-
-  const totalPenalizaciones = Object.values(penalizacionesActivas).reduce(
-    (s, v) => s + v,
-    0
-  );
-
-  const totalBruto =
-    puntosImprescindiblesSolo +
-    puntosComplementarios +
-    puntosVocabRedaccion +
-    totalPenalizaciones;
-  const totalFinal = Math.min(3.0, Math.max(0, totalBruto));
-
-  const vocabCount = Object.keys(vocabularioUsado).length;
-
-  const resetAll = () => {
-    setStudentName("");
-    setScores({});
-    setVocabNivel(null);
-    setCohesionNivel(null);
-    setCoherenciaNivel(null);
-    setEstructuraScores({});
-    setPenalizacionesActivas({});
-    setVocabularioUsado({});
-    setShowResetConfirm(false);
-  };
-
-  const exportTXT = () => {
-    const fecha = new Date().toLocaleDateString("es-ES");
-    const nombre = studentName.trim() || "Estudiante";
-    let txt = "";
-    txt += "═══════════════════════════════════════════════════════\n";
-    txt += "  CORRECCIÓN EVAU — SAN AGUSTÍN: DIOS (EXISTENCIA,\n";
-    txt += "  ATRIBUTOS Y FINALIDAD DEL SER HUMANO)\n";
-    txt += "═══════════════════════════════════════════════════════\n";
-    txt += `  Estudiante: ${nombre}\n`;
-    txt += `  Fecha: ${fecha}\n`;
-    txt += `  NOTA FINAL: ${totalFinal.toFixed(2)} / 3,00\n`;
-    txt += "═══════════════════════════════════════════════════════\n\n";
-
-    txt += "── DESGLOSE POR CATEGORÍAS ──\n";
-    txt += `  • Contenidos imprescindibles: ${puntosImprescindiblesSolo.toFixed(2)} / 2,00\n`;
-    txt += `  • Contenidos complementarios: ${puntosComplementarios.toFixed(2)} / 0,50\n`;
-    txt += `  • Vocabulario y redacción:     ${puntosVocabRedaccion.toFixed(2)} / 0,50\n`;
-    txt += `  • Penalizaciones:              ${totalPenalizaciones.toFixed(2)}\n\n`;
-
-    txt += "── CONTENIDOS IMPRESCINDIBLES ──\n";
-    criteriosImprescindibles.forEach((bloque) => {
-      txt += `\n  ${bloque.bloque} (${bloque.puntosBloque.toFixed(2)} pts)\n`;
-      bloque.items.forEach((it) => {
-        const sel = scores[it.id];
-        txt += sel
-          ? `    ✓ ${it.texto} (+${it.puntos.toFixed(2)})\n`
-          : `    ○ ${it.texto}\n`;
+    /* ═══ COMPONENTE PRINCIPAL ═══ */
+    function CorreccionSanAgustinDios() {
+      const [studentName, setStudentName] = useState("");
+      const [scores, setScores] = useState({});
+      const [vocabNivel, setVocabNivel] = useState(null);
+      const [cohesionNivel, setCohesionNivel] = useState(null);
+      const [coherenciaNivel, setCoherenciaNivel] = useState(null);
+      const [estructuraScores, setEstructuraScores] = useState({});
+      const [penalizacionesActivas, setPenalizacionesActivas] = useState({});
+      const [vocabularioUsado, setVocabularioUsado] = useState({});
+      const [showResetConfirm, setShowResetConfirm] = useState(false);
+      const [expandedSections, setExpandedSections] = useState({
+        imprescindibles: true,
+        complementarios: true,
+        vocabularioRedaccion: true,
+        penalizacionesSec: true,
+        vocabTecnico: true,
       });
-    });
 
-    txt += "\n── CONTENIDOS COMPLEMENTARIOS ──\n";
-    criteriosComplementarios.forEach((it) => {
-      const sel = scores[it.id];
-      txt += sel
-        ? `  ✓ ${it.texto} (+${it.puntos.toFixed(2)})\n`
-        : `  ○ ${it.texto}\n`;
-    });
+      const toggleSection = (sec) =>
+        setExpandedSections((p) => ({ ...p, [sec]: !p[sec] }));
 
-    txt += "\n── VOCABULARIO Y REDACCIÓN ──\n";
-    if (vocabNivel) {
-      const nv = vocabularioConfig.niveles.find((n) => n.id === vocabNivel);
-      txt += `  Vocabulario técnico: ${nv.label} (+${nv.puntos.toFixed(2)})\n`;
-    }
-    if (cohesionNivel) {
-      const nv = vocabularioConfig.cohesion.find((n) => n.id === cohesionNivel);
-      txt += `  Cohesión: ${nv.label} (+${nv.puntos.toFixed(2)})\n`;
-    }
-    if (coherenciaNivel) {
-      const nv = vocabularioConfig.coherencia.find(
-        (n) => n.id === coherenciaNivel
-      );
-      txt += `  Coherencia: ${nv.label} (+${nv.puntos.toFixed(2)})\n`;
-    }
-    vocabularioConfig.estructura.forEach((it) => {
-      if (estructuraScores[it.id])
-        txt += `  ✓ ${it.texto} (+${it.puntos.toFixed(2)})\n`;
-    });
+      const toggleScore = (id, puntos) => {
+        setScores((prev) => {
+          const copy = { ...prev };
+          if (copy[id]) delete copy[id];
+          else copy[id] = puntos;
+          return copy;
+        });
+      };
 
-    txt += "\n── VOCABULARIO TÉCNICO DETECTADO ──\n";
-    const usados = Object.keys(vocabularioUsado);
-    const noUsadosB = vocabularioTerminos.basico.filter(
-      (t) => !vocabularioUsado[t]
-    );
-    const noUsadosC = vocabularioTerminos.complementario.filter(
-      (t) => !vocabularioUsado[t]
-    );
-    txt += `  Términos detectados (${usados.length}): ${usados.join(", ") || "Ninguno"}\n`;
-    txt += `  Básicos NO utilizados: ${noUsadosB.join(", ") || "Todos presentes"}\n`;
-    txt += `  Complementarios NO utilizados: ${noUsadosC.join(", ") || "Todos presentes"}\n`;
+      const togglePenalizacion = (id, puntos) => {
+        setPenalizacionesActivas((prev) => {
+          const copy = { ...prev };
+          if (copy[id]) delete copy[id];
+          else copy[id] = puntos;
+          return copy;
+        });
+      };
 
-    if (Object.keys(penalizacionesActivas).length > 0) {
-      txt += "\n── PENALIZACIONES APLICADAS ──\n";
-      [...penalizaciones.conceptuales, ...penalizaciones.redaccion].forEach(
-        (p) => {
-          if (penalizacionesActivas[p.id])
-            txt += `  ✗ ${p.texto} (${p.puntos.toFixed(2)})\n`;
+      const toggleVocab = (term) => {
+        setVocabularioUsado((prev) => {
+          const copy = { ...prev };
+          if (copy[term]) delete copy[term];
+          else copy[term] = true;
+          return copy;
+        });
+      };
+
+      const toggleEstructura = (id, puntos) => {
+        setEstructuraScores((prev) => {
+          const copy = { ...prev };
+          if (copy[id]) delete copy[id];
+          else copy[id] = puntos;
+          return copy;
+        });
+      };
+
+      /* ── Cálculos ── */
+      const puntosImprescindiblesSolo = Object.entries(scores)
+        .filter(([k]) => k.startsWith("imp"))
+        .reduce((s, [, v]) => s + v, 0);
+
+      const puntosComplementarios = Object.entries(scores)
+        .filter(([k]) => k.startsWith("comp"))
+        .reduce((s, [, v]) => s + v, 0);
+
+      const puntosVocabNivel =
+        vocabNivel !== null
+          ? vocabularioConfig.niveles.find((n) => n.id === vocabNivel)?.puntos || 0
+          : 0;
+      const puntosCohesion =
+        cohesionNivel !== null
+          ? vocabularioConfig.cohesion.find((n) => n.id === cohesionNivel)?.puntos || 0
+          : 0;
+      const puntosCoherencia =
+        coherenciaNivel !== null
+          ? vocabularioConfig.coherencia.find((n) => n.id === coherenciaNivel)?.puntos || 0
+          : 0;
+      const puntosEstructura = Object.values(estructuraScores).reduce((s, v) => s + v, 0);
+      const puntosVocabRedaccion =
+        puntosVocabNivel + puntosCohesion + puntosCoherencia + puntosEstructura;
+
+      const totalPenalizaciones = Object.values(penalizacionesActivas).reduce((s, v) => s + v, 0);
+
+      const totalBruto =
+        puntosImprescindiblesSolo + puntosComplementarios + puntosVocabRedaccion + totalPenalizaciones;
+      const totalFinal = Math.min(3.0, Math.max(0, totalBruto));
+
+      const vocabCount = Object.keys(vocabularioUsado).length;
+
+      const resetAll = () => {
+        setStudentName("");
+        setScores({});
+        setVocabNivel(null);
+        setCohesionNivel(null);
+        setCoherenciaNivel(null);
+        setEstructuraScores({});
+        setPenalizacionesActivas({});
+        setVocabularioUsado({});
+        setShowResetConfirm(false);
+      };
+
+      /* ── Exportar TXT ── */
+      const exportTXT = () => {
+        const fecha = new Date().toLocaleDateString("es-ES");
+        const nombre = studentName.trim() || "Estudiante";
+        let txt = "";
+        txt += "═══════════════════════════════════════════════════════\n";
+        txt += "  CORRECCIÓN EVAU — SAN AGUSTÍN: DIOS (EXISTENCIA,\n";
+        txt += "  ATRIBUTOS Y FINALIDAD DEL SER HUMANO)\n";
+        txt += "═══════════════════════════════════════════════════════\n";
+        txt += "  Estudiante: " + nombre + "\n";
+        txt += "  Fecha: " + fecha + "\n";
+        txt += "  NOTA FINAL: " + totalFinal.toFixed(2) + " / 3,00\n";
+        txt += "═══════════════════════════════════════════════════════\n\n";
+
+        txt += "── DESGLOSE POR CATEGORÍAS ──\n";
+        txt += "  • Contenidos imprescindibles: " + puntosImprescindiblesSolo.toFixed(2) + " / 2,00\n";
+        txt += "  • Contenidos complementarios: " + puntosComplementarios.toFixed(2) + " / 0,50\n";
+        txt += "  • Vocabulario y redacción:     " + puntosVocabRedaccion.toFixed(2) + " / 0,50\n";
+        txt += "  • Penalizaciones:              " + totalPenalizaciones.toFixed(2) + "\n\n";
+
+        txt += "── CONTENIDOS IMPRESCINDIBLES ──\n";
+        criteriosImprescindibles.forEach((bloque) => {
+          txt += "\n  " + bloque.bloque + " (" + bloque.puntosBloque.toFixed(2) + " pts)\n";
+          bloque.items.forEach((it) => {
+            const sel = scores[it.id];
+            txt += sel
+              ? "    ✓ " + it.texto + " (+" + it.puntos.toFixed(2) + ")\n"
+              : "    ○ " + it.texto + "\n";
+          });
+        });
+
+        txt += "\n── CONTENIDOS COMPLEMENTARIOS ──\n";
+        criteriosComplementarios.forEach((it) => {
+          const sel = scores[it.id];
+          txt += sel
+            ? "  ✓ " + it.texto + " (+" + it.puntos.toFixed(2) + ")\n"
+            : "  ○ " + it.texto + "\n";
+        });
+
+        txt += "\n── VOCABULARIO Y REDACCIÓN ──\n";
+        if (vocabNivel) {
+          const nv = vocabularioConfig.niveles.find((n) => n.id === vocabNivel);
+          txt += "  Vocabulario técnico: " + nv.label + " (+" + nv.puntos.toFixed(2) + ")\n";
         }
-      );
-    }
+        if (cohesionNivel) {
+          const nv = vocabularioConfig.cohesion.find((n) => n.id === cohesionNivel);
+          txt += "  Cohesión: " + nv.label + " (+" + nv.puntos.toFixed(2) + ")\n";
+        }
+        if (coherenciaNivel) {
+          const nv = vocabularioConfig.coherencia.find((n) => n.id === coherenciaNivel);
+          txt += "  Coherencia: " + nv.label + " (+" + nv.puntos.toFixed(2) + ")\n";
+        }
+        vocabularioConfig.estructura.forEach((it) => {
+          if (estructuraScores[it.id])
+            txt += "  ✓ " + it.texto + " (+" + it.puntos.toFixed(2) + ")\n";
+        });
 
-    txt += "\n── OBSERVACIONES ──\n";
-    txt += "  \n  \n  \n";
-    txt += "\n═══════════════════════════════════════════════════════\n";
-    txt += "  Generado con Corrector EVAU Filosofía\n";
-    txt += "═══════════════════════════════════════════════════════\n";
+        txt += "\n── VOCABULARIO TÉCNICO DETECTADO ──\n";
+        const usados = Object.keys(vocabularioUsado);
+        const noUsadosB = vocabularioTerminos.basico.filter((t) => !vocabularioUsado[t]);
+        const noUsadosC = vocabularioTerminos.complementario.filter((t) => !vocabularioUsado[t]);
+        txt += "  Términos detectados (" + usados.length + "): " + (usados.join(", ") || "Ninguno") + "\n";
+        txt += "  Básicos NO utilizados: " + (noUsadosB.join(", ") || "Todos presentes") + "\n";
+        txt += "  Complementarios NO utilizados: " + (noUsadosC.join(", ") || "Todos presentes") + "\n";
 
-    const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const safeName = nombre.replace(/\s+/g, "_");
-    a.href = url;
-    a.download = `${safeName}_SanAgustin_Dios.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+        if (Object.keys(penalizacionesActivas).length > 0) {
+          txt += "\n── PENALIZACIONES APLICADAS ──\n";
+          [...penalizaciones.conceptuales, ...penalizaciones.redaccion].forEach((p) => {
+            if (penalizacionesActivas[p.id])
+              txt += "  ✗ " + p.texto + " (" + p.puntos.toFixed(2) + ")\n";
+          });
+        }
 
-  // ─── Render helpers ───
-  const SectionHeader = ({ title, sectionKey, icon, color }) => (
-    <button
-      onClick={() => toggleSection(sectionKey)}
-      className={`w-full flex items-center justify-between px-5 py-3 rounded-xl font-bold text-white text-left ${color}`}
-    >
-      <span className="flex items-center gap-2">
-        <span>{icon}</span>
-        <span>{title}</span>
-      </span>
-      <span className="text-xl">{expandedSections[sectionKey] ? "▾" : "▸"}</span>
-    </button>
-  );
+        txt += "\n── OBSERVACIONES ──\n";
+        txt += "  \n  \n  \n";
+        txt += "\n═══════════════════════════════════════════════════════\n";
+        txt += "  Generado con Corrector EVAU Filosofía\n";
+        txt += "═══════════════════════════════════════════════════════\n";
 
-  const CriterioBtn = ({ id, texto, puntos, selected, onClick, negative }) => (
-    <button
-      onClick={onClick}
-      className={`w-full text-left p-3 rounded-lg border-2 transition-all flex items-start gap-3 ${
-        selected
-          ? negative
-            ? "bg-red-50 border-red-400"
-            : "bg-green-50 border-green-400"
-          : "bg-gray-50 border-gray-200 hover:border-gray-300"
-      }`}
-    >
-      <span
-        className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded flex items-center justify-center text-xs font-bold ${
-          selected
-            ? negative
-              ? "bg-red-500 text-white"
-              : "bg-green-500 text-white"
-            : "bg-white border border-gray-300"
-        }`}
-      >
-        {selected ? (negative ? "✗" : "✓") : ""}
-      </span>
-      <span className="flex-1 text-sm leading-snug">{texto}</span>
-      <span
-        className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
-          negative
-            ? "bg-red-100 text-red-700"
-            : "bg-green-100 text-green-700"
-        }`}
-      >
-        {negative ? "" : "+"}
-        {puntos.toFixed(2)} pts
-      </span>
-    </button>
-  );
+        const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const safeName = nombre.replace(/\s+/g, "_");
+        a.href = url;
+        a.download = safeName + "_SanAgustin_Dios.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      };
 
-  const RadioGroup = ({ items, selected, onSelect, maxPts }) => (
-    <div className="space-y-2">
-      {items.map((it) => (
+      /* ── Render helpers ── */
+      const SectionHeader = ({ title, sectionKey, icon, color }) => (
         <button
-          key={it.id}
-          onClick={() => onSelect(selected === it.id ? null : it.id)}
-          className={`w-full text-left p-3 rounded-lg border-2 transition-all flex items-center gap-3 ${
-            selected === it.id
-              ? "bg-green-50 border-green-400"
-              : "bg-gray-50 border-gray-200 hover:border-gray-300"
-          }`}
+          onClick={() => toggleSection(sectionKey)}
+          className={"w-full flex items-center justify-between px-5 py-3 rounded-xl font-bold text-white text-left " + color}
+        >
+          <span className="flex items-center gap-2">
+            <span>{icon}</span>
+            <span>{title}</span>
+          </span>
+          <span className="text-xl">{expandedSections[sectionKey] ? "▾" : "▸"}</span>
+        </button>
+      );
+
+      const CriterioBtn = ({ id, texto, puntos, selected, onClick, negative }) => (
+        <button
+          onClick={onClick}
+          className={"w-full text-left p-3 rounded-lg border-2 transition-all flex items-start gap-3 " +
+            (selected
+              ? negative
+                ? "bg-red-50 border-red-400"
+                : "bg-green-50 border-green-400"
+              : "bg-gray-50 border-gray-200 hover:border-gray-300")}
         >
           <span
-            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-              selected === it.id ? "border-green-500" : "border-gray-300"
-            }`}
+            className={"mt-0.5 flex-shrink-0 w-5 h-5 rounded flex items-center justify-center text-xs font-bold " +
+              (selected
+                ? negative
+                  ? "bg-red-500 text-white"
+                  : "bg-green-500 text-white"
+                : "bg-white border border-gray-300")}
           >
-            {selected === it.id && (
-              <span className="w-2 h-2 rounded-full bg-green-500" />
-            )}
+            {selected ? (negative ? "✗" : "✓") : ""}
           </span>
-          <span className="flex-1 text-sm">{it.label}</span>
-          <span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
-            +{it.puntos.toFixed(2)} pts
+          <span className="flex-1 text-sm leading-snug">{texto}</span>
+          <span
+            className={"flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full " +
+              (negative ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}
+          >
+            {negative ? "" : "+"}{puntos.toFixed(2)} pts
           </span>
         </button>
-      ))}
-    </div>
-  );
+      );
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
-      <div className="max-w-4xl mx-auto space-y-5">
-        {/* ═══ HEADER ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 p-5 text-white">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              Corrección EVAU: San Agustín
-            </h1>
-            <p className="text-indigo-200 mt-1 text-sm">
-              Dios: existencia, atributos y finalidad del ser humano • EVAU
-              Madrid 2026
-            </p>
-          </div>
-          <div className="p-5 space-y-4">
-            <input
-              type="text"
-              value={studentName}
-              onChange={(e) => setStudentName(e.target.value)}
-              placeholder="Nombre Apellido del estudiante..."
-              className="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none"
-            />
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
-                  Puntuación total
-                </span>
-                <div className="text-4xl font-extrabold text-indigo-700">
-                  {totalFinal.toFixed(2)}{" "}
-                  <span className="text-lg text-gray-400 font-normal">
-                    / 3,00
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={exportTXT}
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
-                >
-                  <Download size={16} /> Exportar TXT
-                </button>
-                <button
-                  onClick={() => setShowResetConfirm(true)}
-                  className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
-                >
-                  <RotateCcw size={16} /> Reiniciar
-                </button>
-              </div>
-            </div>
-          </div>
+      const RadioGroup = ({ items, selected, onSelect }) => (
+        <div className="space-y-2">
+          {items.map((it) => (
+            <button
+              key={it.id}
+              onClick={() => onSelect(selected === it.id ? null : it.id)}
+              className={"w-full text-left p-3 rounded-lg border-2 transition-all flex items-center gap-3 " +
+                (selected === it.id
+                  ? "bg-green-50 border-green-400"
+                  : "bg-gray-50 border-gray-200 hover:border-gray-300")}
+            >
+              <span
+                className={"w-4 h-4 rounded-full border-2 flex items-center justify-center " +
+                  (selected === it.id ? "border-green-500" : "border-gray-300")}
+              >
+                {selected === it.id && (
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                )}
+              </span>
+              <span className="flex-1 text-sm">{it.label}</span>
+              <span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                +{it.puntos.toFixed(2)} pts
+              </span>
+            </button>
+          ))}
         </div>
+      );
 
-        {/* ═══ CONTENIDOS IMPRESCINDIBLES ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <SectionHeader
-            title="CONTENIDOS IMPRESCINDIBLES (2,00 pts)"
-            sectionKey="imprescindibles"
-            icon="📋"
-            color="bg-gradient-to-r from-indigo-600 to-indigo-700"
-          />
-          {expandedSections.imprescindibles && (
-            <div className="p-5 space-y-5">
-              {criteriosImprescindibles.map((bloque) => (
-                <div key={bloque.bloque}>
-                  <h3 className="font-bold text-gray-700 mb-2 text-sm flex items-center justify-between">
-                    <span>{bloque.bloque}</span>
-                    <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-xs">
-                      {bloque.puntosBloque.toFixed(2)} pts
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-6">
+          <div className="max-w-4xl mx-auto space-y-5">
+
+            {/* ═══ HEADER ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 p-5 text-white">
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+                  Corrección EVAU: San Agustín
+                </h1>
+                <p className="text-indigo-200 mt-1 text-sm">
+                  Dios: existencia, atributos y finalidad del ser humano • EVAU Madrid 2026
+                </p>
+              </div>
+              <div className="p-5 space-y-4">
+                <input
+                  type="text"
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                  placeholder="Nombre Apellido del estudiante..."
+                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none"
+                />
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-center sm:text-left">
+                    <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+                      Puntuación total
                     </span>
-                  </h3>
-                  <div className="space-y-2">
-                    {bloque.items.map((it) => (
-                      <CriterioBtn
-                        key={it.id}
-                        {...it}
-                        selected={!!scores[it.id]}
-                        onClick={() => toggleScore(it.id, it.puntos)}
-                      />
-                    ))}
+                    <div className="text-4xl font-extrabold text-indigo-700">
+                      {totalFinal.toFixed(2)}{" "}
+                      <span className="text-lg text-gray-400 font-normal">/ 3,00</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={exportTXT}
+                      className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                    >
+                      <IconDownload /> Exportar TXT
+                    </button>
+                    <button
+                      onClick={() => setShowResetConfirm(true)}
+                      className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                    >
+                      <IconReset /> Reiniciar
+                    </button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* ═══ CONTENIDOS COMPLEMENTARIOS ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <SectionHeader
-            title="CONTENIDOS COMPLEMENTARIOS (0,50 pts)"
-            sectionKey="complementarios"
-            icon="⭐"
-            color="bg-gradient-to-r from-purple-600 to-purple-700"
-          />
-          {expandedSections.complementarios && (
-            <div className="p-5 space-y-2">
-              {criteriosComplementarios.map((it) => (
-                <CriterioBtn
-                  key={it.id}
-                  {...it}
-                  selected={!!scores[it.id]}
-                  onClick={() => toggleScore(it.id, it.puntos)}
-                />
-              ))}
+            {/* ═══ CONTENIDOS IMPRESCINDIBLES ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <SectionHeader
+                title="CONTENIDOS IMPRESCINDIBLES (2,00 pts)"
+                sectionKey="imprescindibles"
+                icon="📋"
+                color="bg-gradient-to-r from-indigo-600 to-indigo-700"
+              />
+              {expandedSections.imprescindibles && (
+                <div className="p-5 space-y-5">
+                  {criteriosImprescindibles.map((bloque) => (
+                    <div key={bloque.bloque}>
+                      <h3 className="font-bold text-gray-700 mb-2 text-sm flex items-center justify-between">
+                        <span>{bloque.bloque}</span>
+                        <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-xs">
+                          {bloque.puntosBloque.toFixed(2)} pts
+                        </span>
+                      </h3>
+                      <div className="space-y-2">
+                        {bloque.items.map((it) => (
+                          <CriterioBtn
+                            key={it.id}
+                            id={it.id}
+                            texto={it.texto}
+                            puntos={it.puntos}
+                            selected={!!scores[it.id]}
+                            onClick={() => toggleScore(it.id, it.puntos)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* ═══ VOCABULARIO Y REDACCIÓN ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <SectionHeader
-            title="VOCABULARIO Y REDACCIÓN (0,50 pts)"
-            sectionKey="vocabularioRedaccion"
-            icon="✍️"
-            color="bg-gradient-to-r from-teal-600 to-teal-700"
-          />
-          {expandedSections.vocabularioRedaccion && (
-            <div className="p-5 space-y-5">
-              {/* Vocabulario técnico */}
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Vocabulario técnico (0,25 pts)
-                </h4>
-                <RadioGroup
-                  items={vocabularioConfig.niveles}
-                  selected={vocabNivel}
-                  onSelect={setVocabNivel}
-                />
-              </div>
-              {/* Cohesión */}
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Cohesión (0,08 pts)
-                </h4>
-                <RadioGroup
-                  items={vocabularioConfig.cohesion}
-                  selected={cohesionNivel}
-                  onSelect={setCohesionNivel}
-                />
-              </div>
-              {/* Coherencia */}
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Coherencia general (0,09 pts)
-                </h4>
-                <RadioGroup
-                  items={vocabularioConfig.coherencia}
-                  selected={coherenciaNivel}
-                  onSelect={setCoherenciaNivel}
-                />
-              </div>
-              {/* Estructura */}
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Estructura y progresión (0,08 pts)
-                </h4>
-                <div className="space-y-2">
-                  {vocabularioConfig.estructura.map((it) => (
+            {/* ═══ CONTENIDOS COMPLEMENTARIOS ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <SectionHeader
+                title="CONTENIDOS COMPLEMENTARIOS (0,50 pts)"
+                sectionKey="complementarios"
+                icon="⭐"
+                color="bg-gradient-to-r from-purple-600 to-purple-700"
+              />
+              {expandedSections.complementarios && (
+                <div className="p-5 space-y-2">
+                  {criteriosComplementarios.map((it) => (
                     <CriterioBtn
                       key={it.id}
                       id={it.id}
                       texto={it.texto}
                       puntos={it.puntos}
-                      selected={!!estructuraScores[it.id]}
-                      onClick={() => toggleEstructura(it.id, it.puntos)}
+                      selected={!!scores[it.id]}
+                      onClick={() => toggleScore(it.id, it.puntos)}
                     />
                   ))}
                 </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ═══ PENALIZACIONES ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <SectionHeader
-            title="PENALIZACIONES"
-            sectionKey="penalizacionesSec"
-            icon="⚠️"
-            color="bg-gradient-to-r from-red-600 to-red-700"
-          />
-          {expandedSections.penalizacionesSec && (
-            <div className="p-5 space-y-5">
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Errores conceptuales graves
-                </h4>
-                <div className="space-y-2">
-                  {penalizaciones.conceptuales.map((p) => (
-                    <CriterioBtn
-                      key={p.id}
-                      {...p}
-                      negative
-                      selected={!!penalizacionesActivas[p.id]}
-                      onClick={() => togglePenalizacion(p.id, p.puntos)}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-700 text-sm mb-2">
-                  Problemas de redacción / ortografía
-                </h4>
-                <div className="space-y-2">
-                  {penalizaciones.redaccion.map((p) => (
-                    <CriterioBtn
-                      key={p.id}
-                      {...p}
-                      negative
-                      selected={!!penalizacionesActivas[p.id]}
-                      onClick={() => togglePenalizacion(p.id, p.puntos)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ═══ RESUMEN POR CATEGORÍAS ═══ */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            {
-              label: "Imprescindibles",
-              value: puntosImprescindiblesSolo,
-              max: 2.0,
-              color: "bg-indigo-50 text-indigo-700 border-indigo-200",
-            },
-            {
-              label: "Complementarios",
-              value: puntosComplementarios,
-              max: 0.5,
-              color: "bg-purple-50 text-purple-700 border-purple-200",
-            },
-            {
-              label: "Vocab. y redacción",
-              value: puntosVocabRedaccion,
-              max: 0.5,
-              color: "bg-teal-50 text-teal-700 border-teal-200",
-            },
-            {
-              label: "Penalizaciones",
-              value: totalPenalizaciones,
-              max: null,
-              color: "bg-red-50 text-red-700 border-red-200",
-            },
-          ].map((cat) => (
-            <div
-              key={cat.label}
-              className={`rounded-xl border-2 p-3 text-center ${cat.color}`}
-            >
-              <div className="text-xs font-semibold uppercase tracking-wide opacity-70">
-                {cat.label}
-              </div>
-              <div className="text-2xl font-extrabold mt-1">
-                {cat.value.toFixed(2)}
-              </div>
-              {cat.max !== null && (
-                <div className="text-xs opacity-60">/ {cat.max.toFixed(2)}</div>
               )}
             </div>
-          ))}
-        </div>
 
-        {/* ═══ GUÍA RÁPIDA ═══ */}
-        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5">
-          <h3 className="font-bold text-amber-800 mb-2 flex items-center gap-2">
-            📖 Guía rápida de corrección
-          </h3>
-          <ul className="text-sm text-amber-900 space-y-1.5 list-disc pl-5">
-            <li>
-              Verifica que el alumno distingue la <strong>vía de la interioridad</strong> como prueba principal y menciona las restantes (orden del mundo, consensus gentium, grados del bien).
-            </li>
-            <li>
-              Comprueba la correcta atribución de los <strong>atributos divinos a cada persona de la Trinidad</strong> (Padre → ser, Hijo → verdad, Espíritu Santo → bien).
-            </li>
-            <li>
-              Es clave que se explique que las pruebas agustinianas <strong>no son demostraciones teóricas</strong>, sino confirmaciones racionales de lo aceptado por la fe.
-            </li>
-            <li>
-              Valora la mención de la <strong>finalidad del ser humano</strong>: Dios como fin último y la necesidad de la gracia divina.
-            </li>
-            <li>
-              Marca los términos técnicos en la sección de vocabulario para obtener un recuento objetivo antes de asignar el nivel.
-            </li>
-            <li>
-              Las penalizaciones se aplican solo ante errores claros y graves; no penalizar omisiones leves.
-            </li>
-          </ul>
-        </div>
-
-        {/* ═══ VOCABULARIO TÉCNICO ═══ */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <SectionHeader
-            title="VOCABULARIO TÉCNICO"
-            sectionKey="vocabTecnico"
-            icon="🔤"
-            color="bg-gradient-to-r from-sky-600 to-sky-700"
-          />
-          {expandedSections.vocabTecnico && (
-            <div className="p-5 space-y-4">
-              <div className="text-center">
-                <span className="text-5xl font-extrabold text-sky-700">
-                  {vocabCount}
-                </span>
-                <span className="text-gray-400 text-lg ml-1">
-                  / {vocabularioTerminos.basico.length + vocabularioTerminos.complementario.length} términos
-                </span>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Básico */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wide text-blue-600 mb-2 flex items-center gap-1">
-                    <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                      Básico
-                    </span>
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {vocabularioTerminos.basico.map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => toggleVocab(t)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          vocabularioUsado[t]
-                            ? "bg-blue-100 border-blue-400 text-blue-800"
-                            : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        {vocabularioUsado[t] && "✓ "}
-                        {t}
-                      </button>
-                    ))}
+            {/* ═══ VOCABULARIO Y REDACCIÓN ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <SectionHeader
+                title="VOCABULARIO Y REDACCIÓN (0,50 pts)"
+                sectionKey="vocabularioRedaccion"
+                icon="✍️"
+                color="bg-gradient-to-r from-teal-600 to-teal-700"
+              />
+              {expandedSections.vocabularioRedaccion && (
+                <div className="p-5 space-y-5">
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Vocabulario técnico (0,25 pts)</h4>
+                    <RadioGroup items={vocabularioConfig.niveles} selected={vocabNivel} onSelect={setVocabNivel} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Cohesión (0,08 pts)</h4>
+                    <RadioGroup items={vocabularioConfig.cohesion} selected={cohesionNivel} onSelect={setCohesionNivel} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Coherencia general (0,09 pts)</h4>
+                    <RadioGroup items={vocabularioConfig.coherencia} selected={coherenciaNivel} onSelect={setCoherenciaNivel} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Estructura y progresión (0,08 pts)</h4>
+                    <div className="space-y-2">
+                      {vocabularioConfig.estructura.map((it) => (
+                        <CriterioBtn
+                          key={it.id}
+                          id={it.id}
+                          texto={it.texto}
+                          puntos={it.puntos}
+                          selected={!!estructuraScores[it.id]}
+                          onClick={() => toggleEstructura(it.id, it.puntos)}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-                {/* Complementario */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wide text-green-600 mb-2 flex items-center gap-1">
-                    <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                      Complementario
-                    </span>
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {vocabularioTerminos.complementario.map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => toggleVocab(t)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          vocabularioUsado[t]
-                            ? "bg-green-100 border-green-400 text-green-800"
-                            : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        {vocabularioUsado[t] && "✓ "}
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-sky-50 border border-sky-200 rounded-xl p-3 text-xs text-sky-800">
-                <strong>Criterios de puntuación:</strong> Excelente (8+
-                términos) = 0,25 pts · Adecuado (5-7) = 0,15 pts · Limitado
-                (3-4) = 0,10 pts · Escaso = 0,05 pts
-              </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* ═══ MODAL REINICIO ═══ */}
-        {showResetConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4">
-              <h3 className="text-xl font-bold text-gray-800">
-                ¿Reiniciar corrección?
+            {/* ═══ PENALIZACIONES ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <SectionHeader
+                title="PENALIZACIONES"
+                sectionKey="penalizacionesSec"
+                icon="⚠️"
+                color="bg-gradient-to-r from-red-600 to-red-700"
+              />
+              {expandedSections.penalizacionesSec && (
+                <div className="p-5 space-y-5">
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Errores conceptuales graves</h4>
+                    <div className="space-y-2">
+                      {penalizaciones.conceptuales.map((p) => (
+                        <CriterioBtn
+                          key={p.id}
+                          id={p.id}
+                          texto={p.texto}
+                          puntos={p.puntos}
+                          negative={true}
+                          selected={!!penalizacionesActivas[p.id]}
+                          onClick={() => togglePenalizacion(p.id, p.puntos)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-700 text-sm mb-2">Problemas de redacción / ortografía</h4>
+                    <div className="space-y-2">
+                      {penalizaciones.redaccion.map((p) => (
+                        <CriterioBtn
+                          key={p.id}
+                          id={p.id}
+                          texto={p.texto}
+                          puntos={p.puntos}
+                          negative={true}
+                          selected={!!penalizacionesActivas[p.id]}
+                          onClick={() => togglePenalizacion(p.id, p.puntos)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ═══ RESUMEN POR CATEGORÍAS ═══ */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { label: "Imprescindibles", value: puntosImprescindiblesSolo, max: 2.0, color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+                { label: "Complementarios", value: puntosComplementarios, max: 0.5, color: "bg-purple-50 text-purple-700 border-purple-200" },
+                { label: "Vocab. y redacción", value: puntosVocabRedaccion, max: 0.5, color: "bg-teal-50 text-teal-700 border-teal-200" },
+                { label: "Penalizaciones", value: totalPenalizaciones, max: null, color: "bg-red-50 text-red-700 border-red-200" },
+              ].map((cat) => (
+                <div key={cat.label} className={"rounded-xl border-2 p-3 text-center " + cat.color}>
+                  <div className="text-xs font-semibold uppercase tracking-wide opacity-70">{cat.label}</div>
+                  <div className="text-2xl font-extrabold mt-1">{cat.value.toFixed(2)}</div>
+                  {cat.max !== null && <div className="text-xs opacity-60">/ {cat.max.toFixed(2)}</div>}
+                </div>
+              ))}
+            </div>
+
+            {/* ═══ GUÍA RÁPIDA ═══ */}
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5">
+              <h3 className="font-bold text-amber-800 mb-2 flex items-center gap-2">
+                📖 Guía rápida de corrección
               </h3>
-              <p className="text-sm text-gray-600">
-                Se perderán todos los datos: puntuaciones, penalizaciones,
-                vocabulario y nombre del estudiante.
-              </p>
-              <div className="flex gap-3 justify-end">
-                <button
-                  onClick={() => setShowResetConfirm(false)}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={resetAll}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors"
-                >
-                  Sí, reiniciar
-                </button>
-              </div>
+              <ul className="text-sm text-amber-900 space-y-1.5 list-disc pl-5">
+                <li>Verifica que el alumno distingue la <strong>vía de la interioridad</strong> como prueba principal y menciona las restantes (orden del mundo, consensus gentium, grados del bien).</li>
+                <li>Comprueba la correcta atribución de los <strong>atributos divinos a cada persona de la Trinidad</strong> (Padre → ser, Hijo → verdad, Espíritu Santo → bien).</li>
+                <li>Es clave que se explique que las pruebas agustinianas <strong>no son demostraciones teóricas</strong>, sino confirmaciones racionales de lo aceptado por la fe.</li>
+                <li>Valora la mención de la <strong>finalidad del ser humano</strong>: Dios como fin último y la necesidad de la gracia divina.</li>
+                <li>Marca los términos técnicos en la sección de vocabulario para obtener un recuento objetivo antes de asignar el nivel.</li>
+                <li>Las penalizaciones se aplican solo ante errores claros y graves; no penalizar omisiones leves.</li>
+              </ul>
             </div>
+
+            {/* ═══ VOCABULARIO TÉCNICO ═══ */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <SectionHeader
+                title="VOCABULARIO TÉCNICO"
+                sectionKey="vocabTecnico"
+                icon="🔤"
+                color="bg-gradient-to-r from-sky-600 to-sky-700"
+              />
+              {expandedSections.vocabTecnico && (
+                <div className="p-5 space-y-4">
+                  <div className="text-center">
+                    <span className="text-5xl font-extrabold text-sky-700">{vocabCount}</span>
+                    <span className="text-gray-400 text-lg ml-1">
+                      / {vocabularioTerminos.basico.length + vocabularioTerminos.complementario.length} términos
+                    </span>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">
+                        <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Básico</span>
+                      </h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {vocabularioTerminos.basico.map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => toggleVocab(t)}
+                            className={"px-3 py-1.5 rounded-full text-xs font-medium border transition-all " +
+                              (vocabularioUsado[t]
+                                ? "bg-blue-100 border-blue-400 text-blue-800"
+                                : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300")}
+                          >
+                            {vocabularioUsado[t] && "✓ "}{t}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wide text-green-600 mb-2">
+                        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Complementario</span>
+                      </h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {vocabularioTerminos.complementario.map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => toggleVocab(t)}
+                            className={"px-3 py-1.5 rounded-full text-xs font-medium border transition-all " +
+                              (vocabularioUsado[t]
+                                ? "bg-green-100 border-green-400 text-green-800"
+                                : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300")}
+                          >
+                            {vocabularioUsado[t] && "✓ "}{t}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-sky-50 border border-sky-200 rounded-xl p-3 text-xs text-sky-800">
+                    <strong>Criterios de puntuación:</strong> Excelente (8+ términos) = 0,25 pts · Adecuado (5-7) = 0,15 pts · Limitado (3-4) = 0,10 pts · Escaso = 0,05 pts
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ═══ MODAL REINICIO ═══ */}
+            {showResetConfirm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4">
+                  <h3 className="text-xl font-bold text-gray-800">¿Reiniciar corrección?</h3>
+                  <p className="text-sm text-gray-600">
+                    Se perderán todos los datos: puntuaciones, penalizaciones, vocabulario y nombre del estudiante.
+                  </p>
+                  <div className="flex gap-3 justify-end">
+                    <button
+                      onClick={() => setShowResetConfirm(false)}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={resetAll}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors"
+                    >
+                      Sí, reiniciar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
-  );
-}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<CorreccionSanAgustinDios />);
+  </script>
+</body>
+</html>
