@@ -1,1 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrección EVAU - Santo Tomás | Realidad y Conocimiento</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --parchment: #f8f5f0;
+            --gold: #c4973b;
+            --gold-light: #f0e4cc;
+            --burgundy: #6b2737;
+            --sage: #4a7c59;
+            --sage-light: #e8f0ea;
+            --azure: #2d5f8a;
+            --azure-light: #e3eef5;
+            --warm-gray: #6b6560;
+            --error: #a63d40;
+            --error-light: #fae8e8;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--parchment);
+            color: var(--ink);
+            margin: 0;
+            min-height: 100vh;
+        }
+        h1, h2, h3, .font-display { font-family: 'Playfair Display', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .bg-texture {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4973b' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .score-badge {
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a84a 100%);
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, var(--ink) 0%, #16213e 50%, var(--burgundy) 100%);
+        }
+        .item-btn { transition: all 0.15s ease; }
+        .item-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .section-card {
+            background: white;
+            border: 1px solid #e8e4df;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-overlay {
+            background: rgba(26,26,46,0.6);
+            backdrop-filter: blur(4px);
+        }
+        @media print { body { background: white; } }
+    </style>
+</head>
+<body class="bg-texture">
+    <div id="root"></div>
 
+    <script type="text/babel">
+    const { useState, useMemo, useCallback } = React;
+
+    /* ─── ICONS ─── */
+    const Icons = {
+        Check: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        ),
+        X: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        ),
+        Download: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ),
+        RotateCcw: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 105.64-11.36L1 10"/></svg>
+        ),
+        ChevronDown: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        ),
+        BookOpen: ({size=18}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        ),
+    };
+
+    /* ─── DATA ─── */
+    const CONTENIDOS_IMPRESCINDIBLES = [
+        {
+            id: 'bloque1',
+            titulo: 'Base aristotélica y contexto filosófico',
+            puntos: 0.40,
+            items: [
+                { id: 'b1_1', texto: 'Base aristotélica de la metafísica tomista (teleología, cuatro causas, hilemorfismo, movimiento)', pts: 0.15 },
+                { id: 'b1_2', texto: 'Reconoce influencias de Platón, San Agustín y filosofía árabe (Avicena)', pts: 0.10 },
+                { id: 'b1_3', texto: 'Ruptura parcial con la tradición platónico-agustiniana al adoptar el aristotelismo', pts: 0.15 },
+            ]
+        },
+        {
+            id: 'bloque2',
+            titulo: 'Distinción esencia-existencia (innovación principal)',
+            puntos: 0.50,
+            items: [
+                { id: 'b2_1', texto: 'Introduce la distinción esencia-existencia para justificar la creación desde la nada', pts: 0.15 },
+                { id: 'b2_2', texto: 'Seres contingentes (pueden no existir) vs. ser necesario (Dios, no puede no existir)', pts: 0.15 },
+                { id: 'b2_3', texto: 'Esencia como potencia / existencia como acto: la esencia necesita ser actualizada', pts: 0.10 },
+                { id: 'b2_4', texto: 'Dios: ser cuya esencia consiste en existir; ser simple frente a seres compuestos', pts: 0.10 },
+            ]
+        },
+        {
+            id: 'bloque3',
+            titulo: 'Concepto de esencia y jerarquía de seres',
+            puntos: 0.30,
+            items: [
+                { id: 'b3_1', texto: 'Para Sto. Tomás la esencia incluye materia (a diferencia de Aristóteles, que la identifica solo con la forma)', pts: 0.10 },
+                { id: 'b3_2', texto: 'Sustancias inmateriales (ángeles): su esencia se identifica exclusivamente con la forma', pts: 0.10 },
+                { id: 'b3_3', texto: 'Idea de participación (influencia platónica): los seres contingentes participan de la existencia de Dios', pts: 0.10 },
+            ]
+        },
+        {
+            id: 'bloque4',
+            titulo: 'Origen del conocimiento',
+            puntos: 0.30,
+            items: [
+                { id: 'b4_1', texto: 'Todo conocimiento comienza por los sentidos (continuidad con Aristóteles)', pts: 0.10 },
+                { id: 'b4_2', texto: 'Rechazo de ideas innatas: el alma es tabula rasa al nacer', pts: 0.10 },
+                { id: 'b4_3', texto: 'El entendimiento (facultad inmaterial) está unido a un cuerpo material con órganos sensoriales', pts: 0.10 },
+            ]
+        },
+        {
+            id: 'bloque5',
+            titulo: 'Proceso de conocimiento y abstracción',
+            puntos: 0.30,
+            items: [
+                { id: 'b5_1', texto: 'Síntesis necesaria de datos sensibles con la actividad del alma (no hay intuición intelectual pura)', pts: 0.05 },
+                { id: 'b5_2', texto: 'Phantasma: imagen concreta y particular obtenida de la percepción', pts: 0.05 },
+                { id: 'b5_3', texto: 'Entendimiento agente: abstrae la forma universal (species intelligibilis) de las imágenes sensibles', pts: 0.05 },
+                { id: 'b5_4', texto: 'Entendimiento paciente: produce el concepto universal (verbum mentis / species expressa)', pts: 0.05 },
+                { id: 'b5_5', texto: 'El objeto del verdadero conocimiento es lo universal, aunque parta de lo sensible', pts: 0.05 },
+                { id: 'b5_6', texto: 'Método a posteriori: incluso el conocimiento de Dios parte de la experiencia sensible (cinco vías)', pts: 0.05 },
+            ]
+        },
+        {
+            id: 'bloque6',
+            titulo: 'Conocimiento por analogía y relación fe-razón',
+            puntos: 0.20,
+            items: [
+                { id: 'b6_1', texto: 'Sustancias inmateriales (ángeles, Dios) solo cognoscibles por analogía', pts: 0.05 },
+                { id: 'b6_2', texto: 'Fe y razón como dos fuentes de conocimiento autónomas e independientes', pts: 0.05 },
+                { id: 'b6_3', texto: 'No hay contradicción entre fe y razón; colaboran mutuamente', pts: 0.05 },
+                { id: 'b6_4', texto: 'Preámbulos de la fe: contenidos accesibles tanto por fe como por razón', pts: 0.05 },
+            ]
+        },
+    ];
+
+    const CONTENIDOS_COMPLEMENTARIOS = [
+        { id: 'cc_1', texto: 'Vigencia actual del pensamiento de Santo Tomás', pts: 0.05 },
+        { id: 'cc_2', texto: 'Contextualización histórica adecuada (s. XIII, escolástica, recepción de Aristóteles)', pts: 0.05 },
+        { id: 'cc_3', texto: 'Mención a las cinco vías como aplicación del método a posteriori', pts: 0.05 },
+        { id: 'cc_4', texto: 'Relación con la teología natural y la filosofía cristiana', pts: 0.05 },
+        { id: 'cc_5', texto: 'Comparación explícita con la epistemología platónica (reminiscencia, ideas innatas)', pts: 0.05 },
+        { id: 'cc_6', texto: 'Referencia a Avicena como precedente de la distinción esencia-existencia', pts: 0.05 },
+        { id: 'cc_7', texto: 'Conexión con la concepción teleológica de la naturaleza', pts: 0.05 },
+        { id: 'cc_8', texto: 'Mención al papel de la fe como corrector de errores de la razón', pts: 0.05 },
+        { id: 'cc_9', texto: 'Relación entre la jerarquía de seres y la prueba cosmológica', pts: 0.05 },
+        { id: 'cc_10', texto: 'Referencia al problema del sentido de la existencia y el acceso por la fe', pts: 0.05 },
+    ];
+
+    const VOCABULARIO_GRUPOS = {
+        tecnico: {
+            niveles: [
+                { id: 'vt_exc', texto: 'Excelente (8+ términos)', pts: 0.25 },
+                { id: 'vt_ade', texto: 'Adecuado (5-7 términos)', pts: 0.15 },
+                { id: 'vt_lim', texto: 'Limitado (3-4 términos)', pts: 0.10 },
+                { id: 'vt_esc', texto: 'Escaso o impreciso', pts: 0.05 },
+            ]
+        },
+        cohesion: {
+            niveles: [
+                { id: 'co_bue', texto: 'Buena cohesión', pts: 0.08 },
+                { id: 'co_ace', texto: 'Aceptable', pts: 0.05 },
+                { id: 'co_def', texto: 'Deficiente', pts: 0.02 },
+            ]
+        },
+        coherencia: {
+            niveles: [
+                { id: 'ch_bue', texto: 'Buena coherencia', pts: 0.09 },
+                { id: 'ch_ace', texto: 'Aceptable', pts: 0.05 },
+                { id: 'ch_def', texto: 'Deficiente', pts: 0.02 },
+            ]
+        },
+    };
+
+    const ESTRUCTURA_ITEMS = [
+        { id: 'est_intro', texto: 'Estructura intro-desarrollo-conclusión clara', pts: 0.03 },
+        { id: 'est_ideas', texto: 'Distingue ideas principales de secundarias', pts: 0.03 },
+        { id: 'est_prog', texto: 'Progresión lógica del argumento', pts: 0.02 },
+    ];
+
+    const PENALIZACIONES_CONCEPTUALES = [
+        { id: 'pc_1', texto: 'Confunde esencia con existencia o invierte su relación', pts: -0.20 },
+        { id: 'pc_2', texto: 'Atribuye a Sto. Tomás la existencia de ideas innatas', pts: -0.20 },
+        { id: 'pc_3', texto: 'Confunde entendimiento agente con entendimiento paciente', pts: -0.15 },
+        { id: 'pc_4', texto: 'Identifica la metafísica tomista como puramente platónica (omite Aristóteles)', pts: -0.15 },
+        { id: 'pc_5', texto: 'Afirma que Sto. Tomás rechaza la posibilidad de conocer a Dios por razón', pts: -0.15 },
+        { id: 'pc_6', texto: 'Confunde ser necesario con ser contingente', pts: -0.15 },
+        { id: 'pc_7', texto: 'Atribuye a Sto. Tomás un método a priori para demostrar la existencia de Dios', pts: -0.10 },
+        { id: 'pc_8', texto: 'Afirma que fe y razón son contradictorias según Sto. Tomás', pts: -0.10 },
+    ];
+
+    const PENALIZACIONES_REDACCION = [
+        { id: 'pr_1', texto: 'Errores ortográficos graves o reiterados', pts: -0.05 },
+        { id: 'pr_2', texto: 'Errores de puntuación que dificultan la lectura', pts: -0.03 },
+        { id: 'pr_3', texto: 'Redacción confusa o incoherente en pasajes clave', pts: -0.05 },
+        { id: 'pr_4', texto: 'Uso incorrecto del vocabulario técnico (no solo ausencia)', pts: -0.04 },
+        { id: 'pr_5', texto: 'Respuesta excesivamente breve o incompleta', pts: -0.05 },
+    ];
+
+    const VOCAB_BASICO = [
+        'Esencia', 'Existencia', 'Contingente', 'Necesario', 'Hilemorfismo',
+        'Abstracción', 'Tabula rasa', 'Entendimiento agente', 'Entendimiento paciente',
+        'Acto / Potencia', 'Sustancia', 'Fe y razón'
+    ];
+
+    const VOCAB_COMPLEMENTARIO = [
+        'Phantasma', 'Species intelligibilis', 'Verbum mentis', 'Species expressa',
+        'Analogía', 'Preámbulos de la fe', 'Teleología', 'Cuatro causas',
+        'Participación', 'Creación ex nihilo', 'Avicena', 'Ser simple / compuesto',
+        'Teología natural', 'A posteriori'
+    ];
+
+    /* ─── MAIN APP ─── */
+    function App() {
+        const [studentName, setStudentName] = useState('');
+        const [scores, setScores] = useState({});
+        const [penalties, setPenalties] = useState({});
+        const [vocabUsado, setVocabUsado] = useState({});
+        const [showResetConfirm, setShowResetConfirm] = useState(false);
+        const [expandedSections, setExpandedSections] = useState({
+            imprescindibles: true, complementarios: true, vocabulario_redaccion: true,
+            penalizaciones: true, vocab_panel: true
+        });
+
+        const toggleSection = (key) => setExpandedSections(prev => ({...prev, [key]: !prev[key]}));
+
+        const toggleScore = useCallback((id, pts) => {
+            setScores(prev => {
+                const next = {...prev};
+                if (next[id]) { delete next[id]; }
+                else { next[id] = pts; }
+                return next;
+            });
+        }, []);
+
+        const toggleExclusive = useCallback((groupIds, selectedId, pts) => {
+            setScores(prev => {
+                const next = {...prev};
+                groupIds.forEach(gid => { delete next[gid]; });
+                if (!prev[selectedId]) { next[selectedId] = pts; }
+                return next;
+            });
+        }, []);
+
+        const togglePenalty = useCallback((id, pts) => {
+            setPenalties(prev => {
+                const next = {...prev};
+                if (next[id]) { delete next[id]; }
+                else { next[id] = pts; }
+                return next;
+            });
+        }, []);
+
+        const toggleVocab = useCallback((term) => {
+            setVocabUsado(prev => {
+                const next = {...prev};
+                if (next[term]) { delete next[term]; }
+                else { next[term] = true; }
+                return next;
+            });
+        }, []);
+
+        /* ─── CÁLCULOS ─── */
+        const totals = useMemo(() => {
+            let imprescindibles = 0;
+            CONTENIDOS_IMPRESCINDIBLES.forEach(bloque => {
+                bloque.items.forEach(item => { if (scores[item.id]) imprescindibles += item.pts; });
+            });
+
+            let complementarios = 0;
+            CONTENIDOS_COMPLEMENTARIOS.forEach(item => { if (scores[item.id]) complementarios += item.pts; });
+            complementarios = Math.min(0.5, complementarios);
+
+            let vocRedaccion = 0;
+            [...VOCABULARIO_GRUPOS.tecnico.niveles, ...VOCABULARIO_GRUPOS.cohesion.niveles,
+             ...VOCABULARIO_GRUPOS.coherencia.niveles, ...ESTRUCTURA_ITEMS].forEach(item => {
+                if (scores[item.id]) vocRedaccion += item.pts;
+            });
+
+            let penTotal = 0;
+            [...PENALIZACIONES_CONCEPTUALES, ...PENALIZACIONES_REDACCION].forEach(item => {
+                if (penalties[item.id]) penTotal += item.pts;
+            });
+
+            const raw = imprescindibles + complementarios + vocRedaccion + penTotal;
+            const total = Math.max(0, Math.min(3.0, raw));
+
+            return { imprescindibles, complementarios, vocRedaccion, penTotal, total };
+        }, [scores, penalties]);
+
+        const vocabCount = Object.keys(vocabUsado).length;
+
+        /* ─── RESET ─── */
+        const handleReset = () => {
+            setScores({}); setPenalties({}); setVocabUsado({});
+            setStudentName(''); setShowResetConfirm(false);
+        };
+
+        /* ─── EXPORT TXT ─── */
+        const exportTxt = () => {
+            const fecha = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' });
+            const hora = new Date().toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+
+            let txt = `════════════════════════════════════════════════════════\n`;
+            txt += `  CORRECCIÓN EVAU — SANTO TOMÁS DE AQUINO\n`;
+            txt += `  Problema de la realidad y el conocimiento\n`;
+            txt += `  EVAU Madrid 2026\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            txt += `  Estudiante: ${studentName || '(sin nombre)'}\n`;
+            txt += `  Fecha: ${fecha}  Hora: ${hora}\n`;
+            txt += `  NOTA FINAL: ${totals.total.toFixed(2)} / 3,00\n\n`;
+            txt += `────────────────────────────────────────────────────────\n`;
+            txt += `  RESUMEN POR CATEGORÍAS\n`;
+            txt += `────────────────────────────────────────────────────────\n`;
+            txt += `  Contenidos imprescindibles:  ${totals.imprescindibles.toFixed(2)} / 2,00\n`;
+            txt += `  Contenidos complementarios:  ${totals.complementarios.toFixed(2)} / 0,50\n`;
+            txt += `  Vocabulario y redacción:     ${totals.vocRedaccion.toFixed(2)} / 0,50\n`;
+            txt += `  Penalizaciones:              ${totals.penTotal.toFixed(2)}\n\n`;
+
+            // Imprescindibles
+            txt += `════════════════════════════════════════════════════════\n`;
+            txt += `  CONTENIDOS IMPRESCINDIBLES (${totals.imprescindibles.toFixed(2)} / 2,00)\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            CONTENIDOS_IMPRESCINDIBLES.forEach(bloque => {
+                txt += `  ▸ ${bloque.titulo} (${bloque.puntos.toFixed(2)} pts)\n`;
+                bloque.items.forEach(item => {
+                    const mark = scores[item.id] ? '✓' : '○';
+                    txt += `    ${mark} [${item.pts.toFixed(2)}] ${item.texto}\n`;
+                });
+                txt += `\n`;
+            });
+
+            // Complementarios
+            txt += `════════════════════════════════════════════════════════\n`;
+            txt += `  CONTENIDOS COMPLEMENTARIOS (${totals.complementarios.toFixed(2)} / 0,50)\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            CONTENIDOS_COMPLEMENTARIOS.forEach(item => {
+                const mark = scores[item.id] ? '✓' : '○';
+                txt += `  ${mark} [${item.pts.toFixed(2)}] ${item.texto}\n`;
+            });
+
+            // Vocabulario y redacción
+            txt += `\n════════════════════════════════════════════════════════\n`;
+            txt += `  VOCABULARIO Y REDACCIÓN (${totals.vocRedaccion.toFixed(2)} / 0,50)\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            txt += `  Vocabulario técnico:\n`;
+            VOCABULARIO_GRUPOS.tecnico.niveles.forEach(n => {
+                txt += `    ${scores[n.id] ? '✓' : '○'} ${n.texto}: ${n.pts.toFixed(2)}\n`;
+            });
+            txt += `\n  Cohesión:\n`;
+            VOCABULARIO_GRUPOS.cohesion.niveles.forEach(n => {
+                txt += `    ${scores[n.id] ? '✓' : '○'} ${n.texto}: ${n.pts.toFixed(2)}\n`;
+            });
+            txt += `\n  Coherencia:\n`;
+            VOCABULARIO_GRUPOS.coherencia.niveles.forEach(n => {
+                txt += `    ${scores[n.id] ? '✓' : '○'} ${n.texto}: ${n.pts.toFixed(2)}\n`;
+            });
+            txt += `\n  Estructura:\n`;
+            ESTRUCTURA_ITEMS.forEach(item => {
+                txt += `    ${scores[item.id] ? '✓' : '○'} ${item.texto}: ${item.pts.toFixed(2)}\n`;
+            });
+
+            // Penalizaciones
+            txt += `\n════════════════════════════════════════════════════════\n`;
+            txt += `  PENALIZACIONES (${totals.penTotal.toFixed(2)})\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            const penApplied = [...PENALIZACIONES_CONCEPTUALES, ...PENALIZACIONES_REDACCION].filter(p => penalties[p.id]);
+            if (penApplied.length === 0) {
+                txt += `  (Sin penalizaciones aplicadas)\n`;
+            } else {
+                penApplied.forEach(p => { txt += `  ✗ [${p.pts.toFixed(2)}] ${p.texto}\n`; });
+            }
+
+            // Vocabulario técnico
+            txt += `\n════════════════════════════════════════════════════════\n`;
+            txt += `  VOCABULARIO TÉCNICO DETECTADO (${vocabCount} términos)\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            const allTerms = [...VOCAB_BASICO, ...VOCAB_COMPLEMENTARIO];
+            const used = allTerms.filter(t => vocabUsado[t]);
+            const notUsed = allTerms.filter(t => !vocabUsado[t]);
+            txt += `  Utilizados: ${used.length > 0 ? used.join(', ') : '(ninguno)'}\n`;
+            txt += `  No utilizados: ${notUsed.length > 0 ? notUsed.join(', ') : '(todos utilizados)'}\n`;
+
+            txt += `\n════════════════════════════════════════════════════════\n`;
+            txt += `  OBSERVACIONES\n`;
+            txt += `════════════════════════════════════════════════════════\n\n`;
+            txt += `  \n  \n  \n`;
+            txt += `\n────────────────────────────────────────────────────────\n`;
+            txt += `  Generado con Corrección EVAU — Santo Tomás\n`;
+
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const safeName = (studentName || 'SinNombre').replace(/\s+/g, '_');
+            a.href = url;
+            a.download = `${safeName}_StoTomas_Realidad_Conocimiento.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        /* ─── COMPONENTS ─── */
+        const ScoreItem = ({ id, texto, pts, isSelected, onToggle, type='positive' }) => {
+            const selected = isSelected;
+            const isNeg = type === 'negative';
+            let classes = 'item-btn w-full text-left p-3 rounded-lg border-2 flex items-start gap-3 transition-all ';
+            if (selected && isNeg) classes += 'bg-red-50 border-red-400 text-red-900';
+            else if (selected) classes += 'bg-emerald-50 border-emerald-400 text-emerald-900';
+            else classes += 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100';
+
+            return (
+                <button className={classes} onClick={onToggle}>
+                    <span className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded flex items-center justify-center ${
+                        selected && isNeg ? 'bg-red-500 text-white' : selected ? 'bg-emerald-500 text-white' : 'border-2 border-gray-300'
+                    }`}>
+                        {selected && isNeg && <Icons.X size={14}/>}
+                        {selected && !isNeg && <Icons.Check size={14}/>}
+                    </span>
+                    <span className="flex-1 text-sm leading-snug">{texto}</span>
+                    <span className={`flex-shrink-0 text-xs font-bold mono px-2 py-0.5 rounded-full ${
+                        isNeg ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'
+                    }`}>
+                        {isNeg ? '' : '+'}{pts.toFixed(2)}
+                    </span>
+                </button>
+            );
+        };
+
+        const SectionHeader = ({ title, subtitle, color, expanded, onToggle, pts, ptsMax }) => (
+            <button onClick={onToggle} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-t-xl transition-colors">
+                <div className="flex items-center gap-3">
+                    <span className={`w-2 h-8 rounded-full ${color}`}></span>
+                    <div className="text-left">
+                        <h2 className="font-display text-lg font-bold text-gray-900">{title}</h2>
+                        {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    {ptsMax !== undefined && (
+                        <span className="mono text-sm font-semibold bg-gray-100 px-2 py-1 rounded">
+                            {(pts||0).toFixed(2)} / {ptsMax.toFixed(2)}
+                        </span>
+                    )}
+                    <span className={`transition-transform ${expanded ? 'rotate-180' : ''}`}>
+                        <Icons.ChevronDown />
+                    </span>
+                </div>
+            </button>
+        );
+
+        const getScoreColor = (score) => {
+            if (score >= 2.5) return 'text-emerald-400';
+            if (score >= 1.5) return 'text-amber-400';
+            return 'text-red-400';
+        };
+
+        return (
+            <div className="min-h-screen pb-16">
+                {/* ─── HEADER ─── */}
+                <header className="header-gradient text-white">
+                    <div className="max-w-5xl mx-auto px-4 py-8">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                            <div>
+                                <p className="text-amber-300 text-xs font-semibold tracking-widest uppercase mb-2">Corrección EVAU</p>
+                                <h1 className="font-display text-3xl md:text-4xl font-extrabold leading-tight">
+                                    Santo Tomás de Aquino
+                                </h1>
+                                <p className="text-blue-200 mt-2 text-sm">
+                                    Problema de la realidad y el conocimiento&ensp;•&ensp;EVAU Madrid 2026
+                                </p>
+                                <div className="mt-4">
+                                    <input
+                                        type="text"
+                                        value={studentName}
+                                        onChange={e => setStudentName(e.target.value)}
+                                        placeholder="Nombre y apellidos del estudiante..."
+                                        className="w-full md:w-96 px-4 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-blue-200/60 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:bg-white/15 text-sm"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="score-badge rounded-2xl px-6 py-4 text-center shadow-lg min-w-[160px]">
+                                    <p className="text-amber-100 text-xs font-semibold tracking-wider uppercase mb-1">Nota final</p>
+                                    <p className={`mono text-4xl font-bold ${getScoreColor(totals.total)}`} style={{color: 'white'}}>
+                                        {totals.total.toFixed(2)}
+                                    </p>
+                                    <p className="text-amber-100/80 text-xs mt-1">/ 3,00 puntos</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={exportTxt}
+                                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition shadow-md">
+                                        <Icons.Download size={16}/> Exportar TXT
+                                    </button>
+                                    <button onClick={() => setShowResetConfirm(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-red-600/80 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition shadow-md">
+                                        <Icons.RotateCcw size={16}/> Reiniciar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main className="max-w-5xl mx-auto px-4 mt-8 space-y-6">
+                    {/* ─── CONTENIDOS IMPRESCINDIBLES ─── */}
+                    <div className="section-card overflow-hidden">
+                        <SectionHeader
+                            title="Contenidos imprescindibles"
+                            subtitle="Contenido mínimo exigible del tema"
+                            color="bg-emerald-500"
+                            expanded={expandedSections.imprescindibles}
+                            onToggle={() => toggleSection('imprescindibles')}
+                            pts={totals.imprescindibles}
+                            ptsMax={2.0}
+                        />
+                        {expandedSections.imprescindibles && (
+                            <div className="px-4 pb-4 space-y-5 fade-in">
+                                {CONTENIDOS_IMPRESCINDIBLES.map(bloque => (
+                                    <div key={bloque.id}>
+                                        <div className="flex items-center gap-2 mb-2 px-1">
+                                            <h3 className="text-sm font-bold text-gray-700">{bloque.titulo}</h3>
+                                            <span className="mono text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
+                                                {bloque.puntos.toFixed(2)} pts
+                                            </span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {bloque.items.map(item => (
+                                                <ScoreItem
+                                                    key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                                    isSelected={!!scores[item.id]}
+                                                    onToggle={() => toggleScore(item.id, item.pts)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ─── CONTENIDOS COMPLEMENTARIOS ─── */}
+                    <div className="section-card overflow-hidden">
+                        <SectionHeader
+                            title="Contenidos complementarios"
+                            subtitle="Contenido extra que enriquece la respuesta"
+                            color="bg-blue-500"
+                            expanded={expandedSections.complementarios}
+                            onToggle={() => toggleSection('complementarios')}
+                            pts={totals.complementarios}
+                            ptsMax={0.5}
+                        />
+                        {expandedSections.complementarios && (
+                            <div className="px-4 pb-4 space-y-2 fade-in">
+                                {CONTENIDOS_COMPLEMENTARIOS.map(item => (
+                                    <ScoreItem
+                                        key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                        isSelected={!!scores[item.id]}
+                                        onToggle={() => toggleScore(item.id, item.pts)}
+                                    />
+                                ))}
+                                <p className="text-xs text-gray-400 italic px-1 pt-1">Máximo acumulable: 0,50 pts. Los dos primeros ítems son obligatorios en una buena respuesta.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ─── VOCABULARIO Y REDACCIÓN ─── */}
+                    <div className="section-card overflow-hidden">
+                        <SectionHeader
+                            title="Vocabulario y redacción"
+                            subtitle="Calidad de la expresión y uso del vocabulario técnico"
+                            color="bg-violet-500"
+                            expanded={expandedSections.vocabulario_redaccion}
+                            onToggle={() => toggleSection('vocabulario_redaccion')}
+                            pts={totals.vocRedaccion}
+                            ptsMax={0.5}
+                        />
+                        {expandedSections.vocabulario_redaccion && (
+                            <div className="px-4 pb-4 space-y-5 fade-in">
+                                {/* Vocabulario técnico */}
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-700 mb-2 px-1">Vocabulario técnico <span className="mono text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-1">0,25 pts</span></h3>
+                                    <p className="text-xs text-gray-400 italic mb-2 px-1">Niveles excluyentes: solo se puede seleccionar uno</p>
+                                    <div className="space-y-2">
+                                        {VOCABULARIO_GRUPOS.tecnico.niveles.map(nivel => (
+                                            <ScoreItem
+                                                key={nivel.id} id={nivel.id} texto={nivel.texto} pts={nivel.pts}
+                                                isSelected={!!scores[nivel.id]}
+                                                onToggle={() => toggleExclusive(
+                                                    VOCABULARIO_GRUPOS.tecnico.niveles.map(n => n.id),
+                                                    nivel.id, nivel.pts
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                {/* Cohesión */}
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-700 mb-2 px-1">Cohesión <span className="mono text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-1">0,08 pts</span></h3>
+                                    <p className="text-xs text-gray-400 italic mb-2 px-1">Niveles excluyentes</p>
+                                    <div className="space-y-2">
+                                        {VOCABULARIO_GRUPOS.cohesion.niveles.map(nivel => (
+                                            <ScoreItem
+                                                key={nivel.id} id={nivel.id} texto={nivel.texto} pts={nivel.pts}
+                                                isSelected={!!scores[nivel.id]}
+                                                onToggle={() => toggleExclusive(
+                                                    VOCABULARIO_GRUPOS.cohesion.niveles.map(n => n.id),
+                                                    nivel.id, nivel.pts
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                {/* Coherencia */}
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-700 mb-2 px-1">Coherencia general <span className="mono text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-1">0,09 pts</span></h3>
+                                    <p className="text-xs text-gray-400 italic mb-2 px-1">Niveles excluyentes</p>
+                                    <div className="space-y-2">
+                                        {VOCABULARIO_GRUPOS.coherencia.niveles.map(nivel => (
+                                            <ScoreItem
+                                                key={nivel.id} id={nivel.id} texto={nivel.texto} pts={nivel.pts}
+                                                isSelected={!!scores[nivel.id]}
+                                                onToggle={() => toggleExclusive(
+                                                    VOCABULARIO_GRUPOS.coherencia.niveles.map(n => n.id),
+                                                    nivel.id, nivel.pts
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                {/* Estructura */}
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-700 mb-2 px-1">Estructura y progresión <span className="mono text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-1">0,08 pts</span></h3>
+                                    <p className="text-xs text-gray-400 italic mb-2 px-1">Ítems acumulables</p>
+                                    <div className="space-y-2">
+                                        {ESTRUCTURA_ITEMS.map(item => (
+                                            <ScoreItem
+                                                key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                                isSelected={!!scores[item.id]}
+                                                onToggle={() => toggleScore(item.id, item.pts)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ─── PENALIZACIONES ─── */}
+                    <div className="section-card overflow-hidden">
+                        <SectionHeader
+                            title="Penalizaciones"
+                            subtitle="Errores conceptuales y problemas de redacción"
+                            color="bg-red-500"
+                            expanded={expandedSections.penalizaciones}
+                            onToggle={() => toggleSection('penalizaciones')}
+                            pts={totals.penTotal}
+                        />
+                        {expandedSections.penalizaciones && (
+                            <div className="px-4 pb-4 space-y-5 fade-in">
+                                <div>
+                                    <h3 className="text-sm font-bold text-red-700 mb-2 px-1">Errores conceptuales graves</h3>
+                                    <div className="space-y-2">
+                                        {PENALIZACIONES_CONCEPTUALES.map(item => (
+                                            <ScoreItem
+                                                key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                                isSelected={!!penalties[item.id]}
+                                                onToggle={() => togglePenalty(item.id, item.pts)}
+                                                type="negative"
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-red-700 mb-2 px-1">Problemas de redacción y ortografía</h3>
+                                    <div className="space-y-2">
+                                        {PENALIZACIONES_REDACCION.map(item => (
+                                            <ScoreItem
+                                                key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                                isSelected={!!penalties[item.id]}
+                                                onToggle={() => togglePenalty(item.id, item.pts)}
+                                                type="negative"
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ─── RESUMEN POR CATEGORÍAS ─── */}
+                    <div>
+                        <h2 className="font-display text-xl font-bold text-gray-800 mb-3">Resumen por categorías</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                                { label: 'Imprescindibles', val: totals.imprescindibles, max: 2.0, color: 'emerald' },
+                                { label: 'Complementarios', val: totals.complementarios, max: 0.5, color: 'blue' },
+                                { label: 'Vocab. y redacción', val: totals.vocRedaccion, max: 0.5, color: 'violet' },
+                                { label: 'Penalizaciones', val: totals.penTotal, max: null, color: 'red' },
+                            ].map(cat => (
+                                <div key={cat.label} className="section-card p-4 text-center">
+                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{cat.label}</p>
+                                    <p className={`mono text-2xl font-bold text-${cat.color}-600`}>
+                                        {cat.val.toFixed(2)}
+                                    </p>
+                                    {cat.max !== null && (
+                                        <p className="text-xs text-gray-400 mt-0.5">/ {cat.max.toFixed(2)}</p>
+                                    )}
+                                    {cat.max !== null && (
+                                        <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                            <div className={`h-full bg-${cat.color}-500 rounded-full transition-all`}
+                                                 style={{width: `${Math.min(100, (cat.val / cat.max) * 100)}%`}}/>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ─── GUÍA RÁPIDA ─── */}
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                        <div className="flex items-start gap-3">
+                            <span className="text-amber-600 mt-0.5"><Icons.BookOpen size={20}/></span>
+                            <div>
+                                <h3 className="font-display text-lg font-bold text-amber-900 mb-2">Guía rápida de corrección</h3>
+                                <div className="text-sm text-amber-800 space-y-2">
+                                    <p>
+                                        <strong>1.</strong> Escribe el nombre del estudiante en el campo superior.
+                                    </p>
+                                    <p>
+                                        <strong>2.</strong> Marca los <strong>contenidos imprescindibles</strong> presentes en la respuesta. Los bloques más importantes son la <em>distinción esencia-existencia</em> (0,50 pts) y el <em>proceso de abstracción</em> (0,30 pts).
+                                    </p>
+                                    <p>
+                                        <strong>3.</strong> Señala los <strong>contenidos complementarios</strong> que enriquezcan la respuesta. Vigencia y contextualización histórica son especialmente valorados.
+                                    </p>
+                                    <p>
+                                        <strong>4.</strong> Evalúa <strong>vocabulario y redacción</strong>: selecciona el nivel de vocabulario técnico, cohesión y coherencia (un solo nivel por grupo), y marca los ítems de estructura que correspondan.
+                                    </p>
+                                    <p>
+                                        <strong>5.</strong> Aplica <strong>penalizaciones</strong> si hay errores conceptuales graves (ej: confundir esencia con existencia, atribuir ideas innatas) o problemas de redacción.
+                                    </p>
+                                    <p>
+                                        <strong>6.</strong> Usa el panel de <strong>vocabulario técnico</strong> para registrar los términos detectados en la respuesta.
+                                    </p>
+                                    <p>
+                                        <strong>7.</strong> Exporta el resultado con el botón <strong>Exportar TXT</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ─── VOCABULARIO TÉCNICO ─── */}
+                    <div className="section-card overflow-hidden">
+                        <SectionHeader
+                            title="Vocabulario técnico"
+                            subtitle="Registro de términos detectados en la respuesta"
+                            color="bg-amber-500"
+                            expanded={expandedSections.vocab_panel}
+                            onToggle={() => toggleSection('vocab_panel')}
+                        />
+                        {expandedSections.vocab_panel && (
+                            <div className="px-4 pb-5 fade-in">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 text-center">
+                                        <p className="mono text-3xl font-bold text-amber-700">{vocabCount}</p>
+                                        <p className="text-xs text-amber-600 font-semibold">términos detectados</p>
+                                    </div>
+                                    <div className="text-xs text-gray-500 space-y-1">
+                                        <p>Excelente: 8+ términos (0,25 pts)</p>
+                                        <p>Adecuado: 5-7 términos (0,15 pts)</p>
+                                        <p>Limitado: 3-4 términos (0,10 pts)</p>
+                                        <p>Escaso: &lt;3 términos (0,05 pts)</p>
+                                    </div>
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                                            <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-semibold">Básico</span>
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {VOCAB_BASICO.map(term => (
+                                                <button key={term} onClick={() => toggleVocab(term)}
+                                                    className={`item-btn text-sm px-3 py-1.5 rounded-lg border-2 font-medium transition ${
+                                                        vocabUsado[term]
+                                                        ? 'bg-blue-50 border-blue-400 text-blue-800'
+                                                        : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                                                    }`}>
+                                                    {vocabUsado[term] && <span className="mr-1">✓</span>}{term}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                                            <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-semibold">Complementario</span>
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {VOCAB_COMPLEMENTARIO.map(term => (
+                                                <button key={term} onClick={() => toggleVocab(term)}
+                                                    className={`item-btn text-sm px-3 py-1.5 rounded-lg border-2 font-medium transition ${
+                                                        vocabUsado[term]
+                                                        ? 'bg-emerald-50 border-emerald-400 text-emerald-800'
+                                                        : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                                                    }`}>
+                                                    {vocabUsado[term] && <span className="mr-1">✓</span>}{term}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </main>
+
+                {/* ─── MODAL REINICIO ─── */}
+                {showResetConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center modal-overlay fade-in" onClick={() => setShowResetConfirm(false)}>
+                        <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm mx-4 border border-gray-200" onClick={e => e.stopPropagation()}>
+                            <h3 className="font-display text-xl font-bold text-gray-900 mb-2">¿Reiniciar corrección?</h3>
+                            <p className="text-sm text-gray-600 mb-5">
+                                Se perderán todos los datos: puntuaciones, penalizaciones, vocabulario y nombre del estudiante.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button onClick={() => setShowResetConfirm(false)}
+                                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold transition">
+                                    Cancelar
+                                </button>
+                                <button onClick={handleReset}
+                                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition">
+                                    Sí, reiniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
