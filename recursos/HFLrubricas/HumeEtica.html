@@ -1,1 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrección EVAU - David Hume | Ética y emotivismo moral</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=DM+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'DM Sans', sans-serif; background: #f8f7f4; }
+        h1, h2, h3, .font-display { font-family: 'Source Serif 4', serif; }
+        .score-big { font-family: 'DM Sans', sans-serif; font-variant-numeric: tabular-nums; }
+        .item-btn { transition: all 0.15s ease; }
+        .item-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .modal-overlay { animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-card { animation: slideUp 0.3s ease; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+    const { useState, useMemo, useCallback } = React;
 
+    /* ───── ICONOS SVG ───── */
+    const Icons = {
+        Check: ({size = 20}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        ),
+        X: ({size = 20}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        ),
+        Download: ({size = 20}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ),
+        RotateCcw: ({size = 20}) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        ),
+    };
+
+    /* ───── DATOS DEL EXAMEN ───── */
+    const AUTOR = "David Hume";
+    const TEMA = "Ética: emotivismo moral";
+    const TEMA_FILE = "Hume_Etica_Emotivismo";
+
+    const CONTENIDOS_IMPRESCINDIBLES = [
+        {
+            titulo: "1. Emotivismo moral y crítica al racionalismo ético",
+            puntos: 0.40,
+            items: [
+                { id: "c1a", texto: "La moral no descansa sobre la razón, sino sobre el sentimiento", pts: 0.15 },
+                { id: "c1b", texto: "El emotivismo moral confía en los sentimientos como fundamento de la conducta humana", pts: 0.15 },
+                { id: "c1c", texto: "Ante un dilema moral, no realizamos una operación racional: nos mueve el sentimiento", pts: 0.10 },
+            ]
+        },
+        {
+            titulo: "2. Falacia naturalista: del ser al deber ser",
+            puntos: 0.35,
+            items: [
+                { id: "c2a", texto: "La moralidad no se ocupa del ámbito del ser, sino del deber ser: prescribe, no describe", pts: 0.15 },
+                { id: "c2b", texto: "De la observación de hechos no se puede deducir un juicio moral (paso ilegítimo del ser al deber ser)", pts: 0.15 },
+                { id: "c2c", texto: "La falacia naturalista consiste en igualar «lo bueno» con una propiedad natural (lo deseado, lo placentero, etc.)", pts: 0.05 },
+            ]
+        },
+        {
+            titulo: "3. No hay impresión de lo bueno: subjetividad moral",
+            puntos: 0.30,
+            items: [
+                { id: "c3a", texto: "«Lo bueno» no es ninguna cualidad objetiva accesible a través de la razón", pts: 0.10 },
+                { id: "c3b", texto: "Detrás de los juicios morales están los sentimientos de agrado o desagrado del observador", pts: 0.10 },
+                { id: "c3c", texto: "La sensación de aprobación o rechazo se encuentra en nosotros, no en el objeto analizado", pts: 0.10 },
+            ]
+        },
+        {
+            titulo: "4. Contra el relativismo: naturaleza humana común y utilidad",
+            puntos: 0.45,
+            items: [
+                { id: "c4a", texto: "La naturaleza humana es común y constante: los sentimientos se derivan de ella", pts: 0.10 },
+                { id: "c4b", texto: "Lo bueno despierta agrado universal como instinto o sentimiento compartido por todos", pts: 0.10 },
+                { id: "c4c", texto: "La aprobación o reprobación general de un hecho lo convierte en bueno o malo: es un producto social, resultado de una convención", pts: 0.10 },
+                { id: "c4d", texto: "La utilidad es un factor clave: las conductas socialmente beneficiosas son juzgadas como buenas", pts: 0.10 },
+                { id: "c4e", texto: "Las conductas perniciosas para la sociedad serán moralmente reprobables (ejemplo: el robo)", pts: 0.05 },
+            ]
+        },
+        {
+            titulo: "5. Pasiones frente a razón",
+            puntos: 0.25,
+            items: [
+                { id: "c5a", texto: "Las pasiones se sitúan por encima de la razón como rectoras de la voluntad", pts: 0.10 },
+                { id: "c5b", texto: "A veces confundimos las pasiones tranquilas con la razón", pts: 0.10 },
+                { id: "c5c", texto: "El hombre no es una máquina calculadora, sino que es movido por las emociones", pts: 0.05 },
+            ]
+        },
+        {
+            titulo: "6. Simpatía y empatía",
+            puntos: 0.25,
+            items: [
+                { id: "c6a", texto: "El sentimiento de simpatía: propensión natural a sentir empatía por los demás", pts: 0.10 },
+                { id: "c6b", texto: "Se opone a la visión pesimista del hombre de Hobbes", pts: 0.05 },
+                { id: "c6c", texto: "Nos ponemos en el lugar de los otros; implica uniformidad en las inclinaciones de quienes viven en comunidad", pts: 0.10 },
+            ]
+        },
+    ];
+
+    const CONTENIDOS_COMPLEMENTARIOS = [
+        { id: "cc1", texto: "Vigencia actual del pensamiento de Hume", pts: 0.05 },
+        { id: "cc2", texto: "Contextualización histórica adecuada (Ilustración, empirismo británico)", pts: 0.05 },
+        { id: "cc3", texto: "Referencia a la obra Investigaciones sobre los principios de la moral", pts: 0.05 },
+        { id: "cc4", texto: "Conexión con el empirismo epistemológico de Hume (impresiones e ideas)", pts: 0.10 },
+        { id: "cc5", texto: "Comparación con racionalismo moral (Kant, Sócrates, Platón)", pts: 0.10 },
+        { id: "cc6", texto: "Relación con el utilitarismo posterior (Bentham, Mill)", pts: 0.05 },
+        { id: "cc7", texto: "Vinculación con debates éticos contemporáneos (neuroética, psicología moral)", pts: 0.05 },
+        { id: "cc8", texto: "Mención de la influencia en la ética analítica del siglo XX (Ayer, Stevenson)", pts: 0.05 },
+    ];
+
+    const VOCABULARIO_TECNICO = [
+        { id: "vt1", texto: "Emotivismo moral", pts: 0.25, grupo: "exclusivo", name: "vocab_nivel", value: "excelente", label: "Excelente (8+ términos): 0,25 pts" },
+    ];
+
+    const VOCAB_NIVELES = [
+        { id: "vn1", label: "Excelente (8+ términos)", pts: 0.25 },
+        { id: "vn2", label: "Adecuado (5-7 términos)", pts: 0.15 },
+        { id: "vn3", label: "Limitado (3-4 términos)", pts: 0.10 },
+        { id: "vn4", label: "Escaso o impreciso", pts: 0.05 },
+    ];
+
+    const COHESION_NIVELES = [
+        { id: "co1", label: "Buena cohesión", pts: 0.08 },
+        { id: "co2", label: "Aceptable", pts: 0.05 },
+        { id: "co3", label: "Deficiente", pts: 0.02 },
+    ];
+
+    const COHERENCIA_NIVELES = [
+        { id: "ch1", label: "Buena coherencia", pts: 0.09 },
+        { id: "ch2", label: "Aceptable", pts: 0.05 },
+        { id: "ch3", label: "Deficiente", pts: 0.02 },
+    ];
+
+    const ESTRUCTURA_ITEMS = [
+        { id: "es1", texto: "Estructura intro-desarrollo-conclusión clara", pts: 0.03 },
+        { id: "es2", texto: "Distingue ideas principales de secundarias", pts: 0.03 },
+        { id: "es3", texto: "Progresión lógica del argumento", pts: 0.02 },
+    ];
+
+    const PENALIZACIONES_CONCEPTUALES = [
+        { id: "pc1", texto: "Confundir emotivismo con relativismo moral", pts: -0.20 },
+        { id: "pc2", texto: "Atribuir a Hume una ética racionalista", pts: -0.20 },
+        { id: "pc3", texto: "Confundir la falacia naturalista con otra falacia lógica", pts: -0.15 },
+        { id: "pc4", texto: "Afirmar que para Hume lo bueno es una cualidad objetiva", pts: -0.15 },
+        { id: "pc5", texto: "Invertir la relación pasión-razón (decir que la razón gobierna las pasiones)", pts: -0.15 },
+        { id: "pc6", texto: "Confundir la simpatía humeana con la compasión cristiana o con una virtud racional", pts: -0.10 },
+        { id: "pc7", texto: "Atribuir a Hume la visión pesimista de Hobbes sobre la naturaleza humana", pts: -0.10 },
+        { id: "pc8", texto: "Negar el papel de la utilidad en la moral de Hume", pts: -0.10 },
+    ];
+
+    const PENALIZACIONES_REDACCION = [
+        { id: "pr1", texto: "Faltas de ortografía reiteradas (3+)", pts: -0.05 },
+        { id: "pr2", texto: "Algunas faltas de ortografía (1-2)", pts: -0.02 },
+        { id: "pr3", texto: "Redacción confusa que dificulta la comprensión", pts: -0.05 },
+        { id: "pr4", texto: "Ausencia total de signos de puntuación adecuados", pts: -0.03 },
+        { id: "pr5", texto: "Respuesta excesivamente breve (menos de medio folio)", pts: -0.05 },
+    ];
+
+    const VOCABULARIO_BASICO = [
+        "Emotivismo moral", "Falacia naturalista", "Ser / Deber ser",
+        "Sentimiento", "Impresión", "Pasiones", "Simpatía",
+        "Utilidad", "Aprobación moral", "Naturaleza humana",
+        "Agrado / Desagrado", "Razón"
+    ];
+
+    const VOCABULARIO_COMPLEMENTARIO = [
+        "Racionalismo ético", "Relativismo moral", "Convención social",
+        "Instinto moral", "Empatía", "Producto social",
+        "Prescribir / Describir", "Pasiones tranquilas", "Voluntad",
+        "Reprobación moral", "Hobbes", "Conducta moral",
+        "Investigaciones sobre los principios de la moral", "Sentimiento universal"
+    ];
+
+    /* ───── COMPONENTE PRINCIPAL ───── */
+    function App() {
+        const [studentName, setStudentName] = useState("");
+        const [scores, setScores] = useState({});
+        const [vocabNivel, setVocabNivel] = useState(null);
+        const [cohesionNivel, setCohesionNivel] = useState(null);
+        const [coherenciaNivel, setCoherenciaNivel] = useState(null);
+        const [vocabularioUsado, setVocabularioUsado] = useState({});
+        const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+        const toggleScore = useCallback((id) => {
+            setScores(prev => ({ ...prev, [id]: !prev[id] }));
+        }, []);
+
+        const toggleVocab = useCallback((term) => {
+            setVocabularioUsado(prev => ({ ...prev, [term]: !prev[term] }));
+        }, []);
+
+        const handleExclusivo = useCallback((setter, current, value) => {
+            setter(current === value ? null : value);
+        }, []);
+
+        /* ── Cálculo de puntuación ── */
+        const calculos = useMemo(() => {
+            let contenidosImp = 0;
+            CONTENIDOS_IMPRESCINDIBLES.forEach(bloque => {
+                bloque.items.forEach(item => {
+                    if (scores[item.id]) contenidosImp += item.pts;
+                });
+            });
+
+            let complementarios = 0;
+            CONTENIDOS_COMPLEMENTARIOS.forEach(item => {
+                if (scores[item.id]) complementarios += item.pts;
+            });
+            complementarios = Math.min(0.5, complementarios);
+
+            let vocabulario = 0;
+            if (vocabNivel !== null) vocabulario += VOCAB_NIVELES[vocabNivel].pts;
+            if (cohesionNivel !== null) vocabulario += COHESION_NIVELES[cohesionNivel].pts;
+            if (coherenciaNivel !== null) vocabulario += COHERENCIA_NIVELES[coherenciaNivel].pts;
+            ESTRUCTURA_ITEMS.forEach(item => {
+                if (scores[item.id]) vocabulario += item.pts;
+            });
+
+            let penalizaciones = 0;
+            [...PENALIZACIONES_CONCEPTUALES, ...PENALIZACIONES_REDACCION].forEach(item => {
+                if (scores[item.id]) penalizaciones += item.pts;
+            });
+
+            const total = Math.max(0, Math.min(3.0, contenidosImp + complementarios + vocabulario + penalizaciones));
+
+            return { contenidosImp, complementarios, vocabulario, penalizaciones, total };
+        }, [scores, vocabNivel, cohesionNivel, coherenciaNivel]);
+
+        const vocabCount = useMemo(() => {
+            return Object.values(vocabularioUsado).filter(Boolean).length;
+        }, [vocabularioUsado]);
+
+        /* ── Reiniciar ── */
+        const handleReset = () => {
+            setStudentName("");
+            setScores({});
+            setVocabNivel(null);
+            setCohesionNivel(null);
+            setCoherenciaNivel(null);
+            setVocabularioUsado({});
+            setShowResetConfirm(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        /* ── Exportar TXT ── */
+        const exportTXT = () => {
+            const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const hora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            let txt = "";
+            txt += "═══════════════════════════════════════════════════════\n";
+            txt += `  CORRECCIÓN EVAU – ${AUTOR}: ${TEMA}\n`;
+            txt += "═══════════════════════════════════════════════════════\n";
+            txt += `  Estudiante: ${studentName || "(sin nombre)"}\n`;
+            txt += `  Fecha: ${fecha} a las ${hora}\n`;
+            txt += `  NOTA FINAL: ${calculos.total.toFixed(2)} / 3,00\n`;
+            txt += "═══════════════════════════════════════════════════════\n\n";
+
+            txt += "───────────────────────────────────────────────────────\n";
+            txt += "  RESUMEN POR CATEGORÍAS\n";
+            txt += "───────────────────────────────────────────────────────\n";
+            txt += `  Contenidos imprescindibles:  ${calculos.contenidosImp.toFixed(2)} / 2,00\n`;
+            txt += `  Contenidos complementarios:  ${calculos.complementarios.toFixed(2)} / 0,50\n`;
+            txt += `  Vocabulario y redacción:     ${calculos.vocabulario.toFixed(2)} / 0,50\n`;
+            txt += `  Penalizaciones:              ${calculos.penalizaciones.toFixed(2)}\n`;
+            txt += "───────────────────────────────────────────────────────\n\n";
+
+            // Contenidos imprescindibles
+            txt += "▸ CONTENIDOS IMPRESCINDIBLES (2,00 pts)\n\n";
+            CONTENIDOS_IMPRESCINDIBLES.forEach(bloque => {
+                txt += `  ${bloque.titulo}\n`;
+                bloque.items.forEach(item => {
+                    const mark = scores[item.id] ? "✓" : "○";
+                    txt += `    ${mark} [${item.pts.toFixed(2)}] ${item.texto}\n`;
+                });
+                txt += "\n";
+            });
+
+            // Complementarios
+            txt += "▸ CONTENIDOS COMPLEMENTARIOS (máx. 0,50 pts)\n\n";
+            CONTENIDOS_COMPLEMENTARIOS.forEach(item => {
+                const mark = scores[item.id] ? "✓" : "○";
+                txt += `  ${mark} [+${item.pts.toFixed(2)}] ${item.texto}\n`;
+            });
+            txt += "\n";
+
+            // Vocabulario y redacción
+            txt += "▸ VOCABULARIO Y REDACCIÓN (0,50 pts)\n\n";
+            txt += "  Vocabulario técnico: ";
+            txt += vocabNivel !== null ? `${VOCAB_NIVELES[vocabNivel].label} (+${VOCAB_NIVELES[vocabNivel].pts.toFixed(2)})` : "(no evaluado)";
+            txt += "\n";
+            txt += "  Cohesión: ";
+            txt += cohesionNivel !== null ? `${COHESION_NIVELES[cohesionNivel].label} (+${COHESION_NIVELES[cohesionNivel].pts.toFixed(2)})` : "(no evaluado)";
+            txt += "\n";
+            txt += "  Coherencia: ";
+            txt += coherenciaNivel !== null ? `${COHERENCIA_NIVELES[coherenciaNivel].label} (+${COHERENCIA_NIVELES[coherenciaNivel].pts.toFixed(2)})` : "(no evaluado)";
+            txt += "\n";
+            txt += "  Estructura:\n";
+            ESTRUCTURA_ITEMS.forEach(item => {
+                const mark = scores[item.id] ? "✓" : "○";
+                txt += `    ${mark} [+${item.pts.toFixed(2)}] ${item.texto}\n`;
+            });
+            txt += "\n";
+
+            // Penalizaciones
+            txt += "▸ PENALIZACIONES\n\n";
+            const penActivas = [...PENALIZACIONES_CONCEPTUALES, ...PENALIZACIONES_REDACCION].filter(p => scores[p.id]);
+            if (penActivas.length === 0) {
+                txt += "  (Ninguna penalización aplicada)\n";
+            } else {
+                penActivas.forEach(item => {
+                    txt += `  ✗ [${item.pts.toFixed(2)}] ${item.texto}\n`;
+                });
+            }
+            txt += "\n";
+
+            // Vocabulario técnico detectado
+            const vocabUsados = [...VOCABULARIO_BASICO, ...VOCABULARIO_COMPLEMENTARIO].filter(t => vocabularioUsado[t]);
+            const vocabNoUsados = [...VOCABULARIO_BASICO, ...VOCABULARIO_COMPLEMENTARIO].filter(t => !vocabularioUsado[t]);
+            txt += "▸ VOCABULARIO TÉCNICO DETECTADO\n\n";
+            txt += `  Términos utilizados (${vocabUsados.length}):\n`;
+            if (vocabUsados.length > 0) {
+                txt += "  " + vocabUsados.join(", ") + "\n";
+            } else {
+                txt += "  (ninguno)\n";
+            }
+            txt += `\n  Términos NO utilizados (${vocabNoUsados.length}):\n`;
+            if (vocabNoUsados.length > 0) {
+                txt += "  " + vocabNoUsados.join(", ") + "\n";
+            }
+            txt += "\n";
+
+            // Criterios no presentes
+            txt += "▸ CRITERIOS NO PRESENTES\n\n";
+            CONTENIDOS_IMPRESCINDIBLES.forEach(bloque => {
+                const noPresentes = bloque.items.filter(i => !scores[i.id]);
+                if (noPresentes.length > 0) {
+                    txt += `  ${bloque.titulo}\n`;
+                    noPresentes.forEach(item => {
+                        txt += `    ○ [${item.pts.toFixed(2)}] ${item.texto}\n`;
+                    });
+                    txt += "\n";
+                }
+            });
+
+            txt += "───────────────────────────────────────────────────────\n";
+            txt += "  OBSERVACIONES DEL CORRECTOR\n";
+            txt += "───────────────────────────────────────────────────────\n\n";
+            txt += "  \n\n\n";
+            txt += "═══════════════════════════════════════════════════════\n";
+            txt += "  Generado con Corrección EVAU — Filosofía\n";
+            txt += "═══════════════════════════════════════════════════════\n";
+
+            const fileName = studentName.trim()
+                ? `${studentName.trim().replace(/\s+/g, '_')}_${TEMA_FILE}.txt`
+                : `Correccion_${TEMA_FILE}.txt`;
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        /* ── Componente: Item clicable ── */
+        const CriterioItem = ({ id, texto, pts, selected, onClick, tipo = "positivo" }) => {
+            const isNeg = tipo === "negativo";
+            let bg, border, textColor, icon;
+            if (selected && isNeg) {
+                bg = "bg-red-50"; border = "border-red-400"; textColor = "text-red-800";
+                icon = <span className="text-red-600"><Icons.X size={18}/></span>;
+            } else if (selected) {
+                bg = "bg-emerald-50"; border = "border-emerald-400"; textColor = "text-emerald-800";
+                icon = <span className="text-emerald-600"><Icons.Check size={18}/></span>;
+            } else {
+                bg = "bg-gray-50 hover:bg-gray-100"; border = "border-gray-200"; textColor = "text-gray-700";
+                icon = <span className="w-4 h-4 border-2 border-gray-300 rounded inline-block"></span>;
+            }
+
+            return (
+                <button onClick={onClick} className={`item-btn w-full text-left p-3 rounded-lg border-2 ${bg} ${border} ${textColor} flex items-start gap-3`}>
+                    <span className="mt-0.5 flex-shrink-0">{icon}</span>
+                    <span className="flex-1 text-sm leading-relaxed">{texto}</span>
+                    <span className={`flex-shrink-0 text-xs font-bold px-2 py-1 rounded-full ${isNeg ? (selected ? 'bg-red-200 text-red-800' : 'bg-gray-200 text-gray-600') : (selected ? 'bg-emerald-200 text-emerald-800' : 'bg-gray-200 text-gray-600')}`}>
+                        {isNeg ? "" : "+"}{pts.toFixed(2)}
+                    </span>
+                </button>
+            );
+        };
+
+        /* ── Componente: Nivel excluyente ── */
+        const NivelExcluyente = ({ niveles, seleccionado, onSelect }) => (
+            <div className="space-y-2">
+                {niveles.map((nivel, idx) => {
+                    const isSelected = seleccionado === idx;
+                    return (
+                        <button key={nivel.id} onClick={() => onSelect(idx)}
+                            className={`item-btn w-full text-left p-3 rounded-lg border-2 flex items-center gap-3 ${isSelected ? 'bg-indigo-50 border-indigo-400 text-indigo-800' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}>
+                            <span className="mt-0.5 flex-shrink-0">
+                                {isSelected ? <span className="text-indigo-600"><Icons.Check size={18}/></span> : <span className="w-4 h-4 border-2 border-gray-300 rounded-full inline-block"></span>}
+                            </span>
+                            <span className="flex-1 text-sm">{nivel.label}</span>
+                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${isSelected ? 'bg-indigo-200 text-indigo-800' : 'bg-gray-200 text-gray-600'}`}>
+                                +{nivel.pts.toFixed(2)}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+        );
+
+        /* ── Componente: Botón de vocabulario ── */
+        const VocabButton = ({ term, isUsed, onClick, isBasico = true }) => (
+            <button onClick={onClick}
+                className={`item-btn px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${isUsed
+                    ? (isBasico ? 'bg-blue-100 border-blue-400 text-blue-800' : 'bg-emerald-100 border-emerald-400 text-emerald-800')
+                    : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                {isUsed && <span className="inline-block mr-1">✓</span>}
+                {term}
+            </button>
+        );
+
+        /* ── Nota color ── */
+        const getScoreColor = (score) => {
+            if (score >= 2.5) return "text-emerald-600";
+            if (score >= 1.5) return "text-amber-600";
+            return "text-red-600";
+        };
+
+        const getScoreBg = (score) => {
+            if (score >= 2.5) return "from-emerald-500 to-emerald-600";
+            if (score >= 1.5) return "from-amber-500 to-amber-600";
+            return "from-red-500 to-red-600";
+        };
+
+        /* ═══════ RENDER ═══════ */
+        return (
+            <div className="min-h-screen pb-16">
+                {/* ── HEADER ── */}
+                <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+                    <div className="max-w-5xl mx-auto px-4 py-4">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div>
+                                <h1 className="font-display text-2xl font-bold text-gray-900">Corrección EVAU: {AUTOR}</h1>
+                                <p className="text-gray-500 text-sm mt-0.5">{TEMA} • EVAU Madrid 2026</p>
+                            </div>
+                            <div className={`score-big text-4xl font-bold bg-gradient-to-r ${getScoreBg(calculos.total)} bg-clip-text text-transparent`}>
+                                {calculos.total.toFixed(2)} <span className="text-lg text-gray-400">/ 3,00</span>
+                            </div>
+                        </div>
+                        <div className="mt-3 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                            <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)}
+                                placeholder="Nombre Apellido del estudiante..."
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400" />
+                            <div className="flex gap-2">
+                                <button onClick={exportTXT} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors">
+                                    <Icons.Download size={16}/> Exportar TXT
+                                </button>
+                                <button onClick={() => setShowResetConfirm(true)} className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                                    <Icons.RotateCcw size={16}/> Reiniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main className="max-w-5xl mx-auto px-4 py-6 space-y-6">
+                    {/* ── CONTENIDOS IMPRESCINDIBLES ── */}
+                    <section className="section-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="bg-emerald-600 px-5 py-3">
+                            <h2 className="font-display text-lg font-bold text-white flex items-center justify-between">
+                                Contenidos imprescindibles
+                                <span className="text-emerald-100 text-sm font-normal">{calculos.contenidosImp.toFixed(2)} / 2,00 pts</span>
+                            </h2>
+                        </div>
+                        <div className="p-5 space-y-5">
+                            {CONTENIDOS_IMPRESCINDIBLES.map(bloque => (
+                                <div key={bloque.titulo}>
+                                    <h3 className="font-display font-semibold text-gray-800 text-sm mb-2 flex items-center justify-between">
+                                        {bloque.titulo}
+                                        <span className="text-xs text-gray-400 font-normal">{bloque.puntos.toFixed(2)} pts</span>
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {bloque.items.map(item => (
+                                            <CriterioItem key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                                selected={!!scores[item.id]} onClick={() => toggleScore(item.id)} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── CONTENIDOS COMPLEMENTARIOS ── */}
+                    <section className="section-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="bg-sky-600 px-5 py-3">
+                            <h2 className="font-display text-lg font-bold text-white flex items-center justify-between">
+                                Contenidos complementarios
+                                <span className="text-sky-100 text-sm font-normal">{calculos.complementarios.toFixed(2)} / 0,50 pts</span>
+                            </h2>
+                        </div>
+                        <div className="p-5 space-y-2">
+                            {CONTENIDOS_COMPLEMENTARIOS.map(item => (
+                                <CriterioItem key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                    selected={!!scores[item.id]} onClick={() => toggleScore(item.id)} />
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── VOCABULARIO Y REDACCIÓN ── */}
+                    <section className="section-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="bg-violet-600 px-5 py-3">
+                            <h2 className="font-display text-lg font-bold text-white flex items-center justify-between">
+                                Vocabulario y redacción
+                                <span className="text-violet-100 text-sm font-normal">{calculos.vocabulario.toFixed(2)} / 0,50 pts</span>
+                            </h2>
+                        </div>
+                        <div className="p-5 space-y-6">
+                            {/* Vocabulario técnico */}
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Vocabulario técnico <span className="text-gray-400 font-normal">(0,25 pts — excluyente)</span></h3>
+                                <NivelExcluyente niveles={VOCAB_NIVELES} seleccionado={vocabNivel} onSelect={(idx) => handleExclusivo(setVocabNivel, vocabNivel, idx)} />
+                            </div>
+                            {/* Cohesión */}
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Cohesión <span className="text-gray-400 font-normal">(0,08 pts — excluyente)</span></h3>
+                                <NivelExcluyente niveles={COHESION_NIVELES} seleccionado={cohesionNivel} onSelect={(idx) => handleExclusivo(setCohesionNivel, cohesionNivel, idx)} />
+                            </div>
+                            {/* Coherencia */}
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Coherencia general <span className="text-gray-400 font-normal">(0,09 pts — excluyente)</span></h3>
+                                <NivelExcluyente niveles={COHERENCIA_NIVELES} seleccionado={coherenciaNivel} onSelect={(idx) => handleExclusivo(setCoherenciaNivel, coherenciaNivel, idx)} />
+                            </div>
+                            {/* Estructura */}
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Estructura y progresión <span className="text-gray-400 font-normal">(0,08 pts — acumulable)</span></h3>
+                                <div className="space-y-2">
+                                    {ESTRUCTURA_ITEMS.map(item => (
+                                        <CriterioItem key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                            selected={!!scores[item.id]} onClick={() => toggleScore(item.id)} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ── PENALIZACIONES ── */}
+                    <section className="section-card bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden">
+                        <div className="bg-red-600 px-5 py-3">
+                            <h2 className="font-display text-lg font-bold text-white flex items-center justify-between">
+                                Penalizaciones
+                                <span className="text-red-100 text-sm font-normal">{calculos.penalizaciones.toFixed(2)} pts</span>
+                            </h2>
+                        </div>
+                        <div className="p-5 space-y-5">
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Errores conceptuales graves</h3>
+                                <div className="space-y-2">
+                                    {PENALIZACIONES_CONCEPTUALES.map(item => (
+                                        <CriterioItem key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                            selected={!!scores[item.id]} onClick={() => toggleScore(item.id)} tipo="negativo" />
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="font-display font-semibold text-gray-800 text-sm mb-2">Problemas de redacción / ortografía</h3>
+                                <div className="space-y-2">
+                                    {PENALIZACIONES_REDACCION.map(item => (
+                                        <CriterioItem key={item.id} id={item.id} texto={item.texto} pts={item.pts}
+                                            selected={!!scores[item.id]} onClick={() => toggleScore(item.id)} tipo="negativo" />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ── RESUMEN POR CATEGORÍAS ── */}
+                    <section className="section-card">
+                        <h2 className="font-display text-lg font-bold text-gray-800 mb-3">Resumen por categorías</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                                { label: "Contenidos impresc.", valor: calculos.contenidosImp, max: 2.0, borderCls: "border-emerald-200", textCls: "text-emerald-600" },
+                                { label: "Complementarios", valor: calculos.complementarios, max: 0.5, borderCls: "border-sky-200", textCls: "text-sky-600" },
+                                { label: "Vocab. y redacción", valor: calculos.vocabulario, max: 0.5, borderCls: "border-violet-200", textCls: "text-violet-600" },
+                                { label: "Penalizaciones", valor: calculos.penalizaciones, max: null, borderCls: "border-red-200", textCls: "text-red-600" },
+                            ].map(cat => (
+                                <div key={cat.label} className={`bg-white rounded-xl border-2 ${cat.borderCls} p-4 text-center`}>
+                                    <div className={`text-2xl font-bold ${cat.textCls} score-big`}>{cat.valor.toFixed(2)}</div>
+                                    {cat.max !== null && <div className="text-xs text-gray-400">/ {cat.max.toFixed(2)}</div>}
+                                    <div className="text-xs text-gray-600 mt-1 font-medium">{cat.label}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── GUÍA RÁPIDA ── */}
+                    <section className="section-card bg-amber-50 border border-amber-200 rounded-xl p-5">
+                        <h2 className="font-display text-lg font-bold text-amber-800 mb-2">📋 Guía rápida de corrección</h2>
+                        <div className="text-sm text-amber-900 space-y-2">
+                            <p><strong>1.</strong> Introduce el nombre del estudiante en la cabecera.</p>
+                            <p><strong>2.</strong> Lee la respuesta del alumno y marca los <strong>contenidos imprescindibles</strong> presentes. Presta especial atención a: la distinción entre emotivismo y relativismo, la correcta exposición de la falacia naturalista (ser/deber ser) y la relación pasión-razón.</p>
+                            <p><strong>3.</strong> Señala los <strong>contenidos complementarios</strong>: contextualización histórica (empirismo británico, Ilustración) y vigencia actual del pensamiento de Hume.</p>
+                            <p><strong>4.</strong> Marca los términos técnicos en la sección de <strong>vocabulario</strong> y selecciona el nivel correspondiente.</p>
+                            <p><strong>5.</strong> Evalúa <strong>cohesión, coherencia y estructura</strong> de la redacción.</p>
+                            <p><strong>6.</strong> Aplica <strong>penalizaciones</strong> si corresponde (errores como confundir emotivismo con relativismo o invertir la relación pasión-razón).</p>
+                            <p><strong>7.</strong> Exporta el informe a TXT para el alumno.</p>
+                        </div>
+                    </section>
+
+                    {/* ── VOCABULARIO TÉCNICO ── */}
+                    <section className="section-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="bg-gray-800 px-5 py-3">
+                            <h2 className="font-display text-lg font-bold text-white flex items-center justify-between">
+                                Vocabulario técnico
+                                <span className="bg-white text-gray-800 text-lg font-bold px-3 py-0.5 rounded-full score-big">{vocabCount}</span>
+                            </h2>
+                        </div>
+                        <div className="p-5 space-y-5">
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">BÁSICO</span>
+                                    <span className="text-xs text-gray-400">{VOCABULARIO_BASICO.length} términos</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {VOCABULARIO_BASICO.map(term => (
+                                        <VocabButton key={term} term={term} isUsed={!!vocabularioUsado[term]}
+                                            onClick={() => toggleVocab(term)} isBasico={true} />
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">COMPLEMENTARIO</span>
+                                    <span className="text-xs text-gray-400">{VOCABULARIO_COMPLEMENTARIO.length} términos</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {VOCABULARIO_COMPLEMENTARIO.map(term => (
+                                        <VocabButton key={term} term={term} isUsed={!!vocabularioUsado[term]}
+                                            onClick={() => toggleVocab(term)} isBasico={false} />
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-sm text-indigo-800">
+                                <strong>Criterios de puntuación:</strong> Excelente (8+ términos) = 0,25 pts · Adecuado (5-7) = 0,15 pts · Limitado (3-4) = 0,10 pts · Escaso = 0,05 pts. Usa el contador de arriba como referencia para seleccionar el nivel en la sección «Vocabulario y redacción».
+                            </div>
+                        </div>
+                    </section>
+                </main>
+
+                {/* ── MODAL REINICIO ── */}
+                {showResetConfirm && (
+                    <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+                            <h3 className="font-display text-xl font-bold text-gray-900 mb-2">¿Reiniciar corrección?</h3>
+                            <p className="text-gray-600 text-sm mb-6">Se perderán todos los datos: puntuaciones, penalizaciones, vocabulario y nombre del estudiante.</p>
+                            <div className="flex gap-3 justify-end">
+                                <button onClick={() => setShowResetConfirm(false)}
+                                    className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors">
+                                    Cancelar
+                                </button>
+                                <button onClick={handleReset}
+                                    className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                                    Sí, reiniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
