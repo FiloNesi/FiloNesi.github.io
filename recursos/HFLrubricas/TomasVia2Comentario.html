@@ -1,0 +1,1079 @@
+import React, { useState } from 'react';
+import { Download, RotateCcw, Check, X } from 'lucide-react';
+
+export default function CorreccionTomasSegundaVia() {
+  const [studentName, setStudentName] = useState('');
+  const [scores, setScores] = useState({});
+  const [penalties, setPenalties] = useState({});
+  const [vocabularioUsado, setVocabularioUsado] = useState({});
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+  // Contar términos utilizados
+  const countVocabulario = () => {
+    return Object.values(vocabularioUsado).filter(Boolean).length;
+  };
+
+  // Calcular automáticamente el nivel de vocabulario según términos marcados
+  React.useEffect(() => {
+    const count = countVocabulario();
+    
+    // Determinar qué nivel corresponde
+    let targetKey = null;
+    let targetPoints = 0;
+    
+    if (count >= 6) {
+      targetKey = 'vocabulario_terminologia_excelente';
+      targetPoints = 0.5;
+    } else if (count >= 4) {
+      targetKey = 'vocabulario_terminologia_notable';
+      targetPoints = 0.35;
+    } else if (count >= 3) {
+      targetKey = 'vocabulario_terminologia_suficiente';
+      targetPoints = 0.25;
+    } else if (count >= 1) {
+      targetKey = 'vocabulario_terminologia_insuficiente';
+      targetPoints = 0.15;
+    }
+    
+    // Solo actualizar si ha cambiado
+    setScores(prev => {
+      const currentVocabKey = Object.keys(prev).find(k => k.startsWith('vocabulario_terminologia_'));
+      
+      // Si ya está correctamente asignado, no hacer nada
+      if (currentVocabKey === targetKey) {
+        return prev;
+      }
+      
+      const newScores = { ...prev };
+      
+      // Limpiar puntuaciones anteriores de vocabulario
+      Object.keys(newScores).forEach(k => {
+        if (k.startsWith('vocabulario_terminologia_')) {
+          delete newScores[k];
+        }
+      });
+      
+      // Asignar nuevo nivel si corresponde
+      if (targetKey) {
+        newScores[targetKey] = targetPoints;
+      }
+      
+      return newScores;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vocabularioUsado]);
+
+  // Vocabulario técnico esperado
+  const vocabularioTecnico = {
+    basico: [
+      { id: 'causaeficiente', term: 'Causa eficiente', category: 'básico' },
+      { id: 'efecto', term: 'Efecto', category: 'básico' },
+      { id: 'causaprimera', term: 'Causa primera', category: 'básico' },
+      { id: 'seriecausal', term: 'Serie causal / Serie de causas', category: 'básico' },
+      { id: 'regresioninfinita', term: 'Regresión infinita / Regreso al infinito', category: 'básico' },
+      { id: 'mundosensible', term: 'Mundo sensible', category: 'básico' },
+      { id: 'ordenamiento', term: 'Orden / Ordenamiento', category: 'básico' },
+      { id: 'causaintermedia', term: 'Causa intermedia', category: 'básico' }
+    ],
+    complementario: [
+      { id: 'cincovias', term: 'Cinco Vías', category: 'complementario' },
+      { id: 'argumentocosmologico', term: 'Argumento cosmológico', category: 'complementario' },
+      { id: 'primermotor', term: 'Primer Motor Inmóvil', category: 'complementario' },
+      { id: 'aristoteles', term: 'Aristóteles / Aristotélico', category: 'complementario' },
+      { id: 'contingente', term: 'Contingente / Contingencia', category: 'complementario' },
+      { id: 'necesario', term: 'Ser necesario', category: 'complementario' },
+      { id: 'razonfe', term: 'Razón y fe', category: 'complementario' },
+      { id: 'teologianatural', term: 'Teología natural / racional', category: 'complementario' },
+      { id: 'sumateo', term: 'Suma Teológica', category: 'complementario' },
+      { id: 'subordinacion', term: 'Subordinación de causas', category: 'complementario' },
+      { id: 'causasesenciales', term: 'Causas esencialmente ordenadas', category: 'complementario' },
+      { id: 'principiocausalidad', term: 'Principio de causalidad', category: 'complementario' }
+    ]
+  };
+
+  // Estructura de criterios de evaluación
+  const criterios = {
+    tesis: {
+      title: "A) IDENTIFICAR LA TESIS (1,0 pt)",
+      maxPoints: 1.0,
+      items: {
+        ordenamiento: {
+          title: "1. Orden causal en el mundo sensible (0,2 pts)",
+          subitems: {
+            ordenexiste: { text: "Existe un orden determinado de causas eficientes en lo sensible", points: 0.1 },
+            nodescubierto: { text: "Constatación empírica del orden causal", points: 0.1 }
+          }
+        },
+        imposibilidad: {
+          title: "2. Imposibilidad de ser causa de sí mismo (0,25 pts)",
+          subitems: {
+            autocontradiccion: { text: "Nada puede ser causa eficiente de sí mismo", points: 0.15 },
+            anterior: { text: "Sería anterior a sí mismo, lo cual es imposible", points: 0.1 }
+          }
+        },
+        regresion: {
+          title: "3. Imposibilidad de regresión infinita (0,35 pts)",
+          subitems: {
+            noinfinita: { text: "La serie de causas eficientes no puede prolongarse indefinidamente", points: 0.1 },
+            estructura: { text: "En causas subordinadas: primera → intermedia(s) → última", points: 0.1 },
+            eliminacion: { text: "Sin causa primera, no habría ni intermedia ni última", points: 0.15 }
+          }
+        },
+        conclusion: {
+          title: "4. Necesidad de una causa primera (0,2 pts)",
+          subitems: {
+            necesaria: { text: "Es necesario que exista una causa eficiente primera", points: 0.1 },
+            dios: { text: "A esta causa primera todos llaman Dios", points: 0.1 }
+          }
+        }
+      }
+    },
+    dialogo: {
+      title: "B) DIÁLOGO CON OTRO AUTOR/CORRIENTE (1,0 pt)",
+      maxPoints: 1.0,
+      items: {
+        aristoteles: {
+          title: "1. Comparación con Aristóteles (Primer Motor)",
+          subitems: {
+            conexion: { text: "Conexión: Tomás adapta el Primer Motor aristotélico", points: 0.3 },
+            detalle: { text: "Desarrollo: Aristóteles demuestra Motor Inmóvil desde el movimiento", points: 0.25 },
+            diferencia: { text: "Diferencia: Tomás cristianiza y aplica a causalidad eficiente", points: 0.25 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.2 }
+          }
+        },
+        hume: {
+          title: "2. Comparación con Hume (crítica a causalidad)",
+          subitems: {
+            contraste: { text: "Contraste: Hume niega conocimiento de conexión necesaria causal", points: 0.3 },
+            detalle: { text: "Desarrollo: Para Hume, causalidad es hábito, no necesidad objetiva", points: 0.25 },
+            implicacion: { text: "Implicación: Hume socava la premisa causal de la Segunda Vía", points: 0.25 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.2 }
+          }
+        },
+        kant: {
+          title: "3. Comparación con Kant (crítica a pruebas cosmológicas)",
+          subitems: {
+            contraste: { text: "Contraste: Kant rechaza validez de argumentos cosmológicos", points: 0.3 },
+            detalle: { text: "Desarrollo: Causalidad solo válida en mundo fenoménico, no noúmeno", points: 0.25 },
+            implicacion: { text: "Implicación: No podemos conocer a Dios como causa primera", points: 0.25 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.2 }
+          }
+        },
+        leibniz: {
+          title: "4. Comparación con Leibniz (principio razón suficiente)",
+          subitems: {
+            conexion: { text: "Conexión: Leibniz defiende principio de razón suficiente similar", points: 0.3 },
+            detalle: { text: "Desarrollo: Todo debe tener una razón o causa de su existencia", points: 0.25 },
+            diferencia: { text: "Diferencia: Leibniz usa razón suficiente, Tomás causalidad eficiente", points: 0.25 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.2 }
+          }
+        },
+        cosmologicos: {
+          title: "5. Comparación con argumentos cosmológicos modernos (Kalam, Craig)",
+          subitems: {
+            conexion: { text: "Conexión: Argumentos cosmológicos actuales retoman estructura tomista", points: 0.3 },
+            detalle: { text: "Desarrollo: Kalam argumenta causa primera del universo", points: 0.25 },
+            actualidad: { text: "Actualidad: Debate con cosmología científica (Big Bang)", points: 0.25 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.2 }
+          }
+        },
+        otrosautores: {
+          title: "6. Otro autor/corriente relevante",
+          subitems: {
+            identificacion: { text: "Identifica otro autor/corriente pertinente", points: 0.3 },
+            desarrollo: { text: "Desarrolla el contraste o diálogo adecuadamente", points: 0.4 },
+            precision: { text: "Precisión terminológica y rigor argumental", points: 0.3 }
+          }
+        }
+      }
+    },
+    vocabulario: {
+      title: "C) VOCABULARIO PRECISO (0,5 pts)",
+      maxPoints: 0.5,
+      items: {
+        terminologia: {
+          title: "Vocabulario técnico filosófico (0,5 pts)",
+          subitems: {
+            excelente: { text: "Excelente (6+ términos técnicos correctos)", points: 0.5 },
+            notable: { text: "Notable (4-5 términos técnicos correctos)", points: 0.35 },
+            suficiente: { text: "Suficiente (3 términos técnicos correctos)", points: 0.25 },
+            insuficiente: { text: "Insuficiente (1-2 términos)", points: 0.15 }
+          }
+        }
+      }
+    },
+    complementario: {
+      title: "CONTENIDO COMPLEMENTARIO (puntuación extra)",
+      maxPoints: 0.3,
+      items: {
+        extras: {
+          title: "Elementos complementarios valorables",
+          subitems: {
+            contextualizacion: { text: "Contextualiza al autor y la obra (época, contexto histórico-filosófico)", points: 0.15 },
+            vigencia: { text: "Señala la vigencia o relevancia actual del autor/problema filosófico", points: 0.15 }
+          }
+        }
+      }
+    },
+    penalizaciones: {
+      title: "PENALIZACIONES (hasta -0,5 pt)",
+      maxPoints: -0.5,
+      items: {
+        errores: {
+          title: "Errores conceptuales y formales",
+          subitems: {
+            confundevias: { text: "Confunde la Segunda Vía con otras vías (movimiento, contingencia)", points: -0.2 },
+            malinterpreta: { text: "Malinterpreta la tesis (dice que Tomás acepta regresión infinita)", points: 0.25 },
+            circularidad: { text: "No identifica el rechazo a la circularidad causal", points: -0.15 },
+            superficial: { text: "Diálogo superficial sin desarrollo argumental", points: -0.15 },
+            norelacion: { text: "No establece relación con el texto (cita autor sin conexión)", points: -0.2 },
+            ahistorico: { text: "Anacronismo (compara sin contextualizar épocas)", points: -0.1 },
+            ortografia: { text: "Errores ortográficos graves o reiterados", points: -0.05 }
+          }
+        }
+      }
+    }
+  };
+
+  // Calcular puntuación total
+  const calculateTotal = () => {
+    let total = 0;
+    Object.values(scores).forEach(value => {
+      if (typeof value === 'number') total += value;
+    });
+    Object.values(penalties).forEach(value => {
+      if (typeof value === 'number') total += value;
+    });
+    return Math.max(0, Math.min(2.5, total));
+  };
+
+  // Calcular puntuación de tesis
+  const calculateTesisScore = () => {
+    let total = 0;
+    Object.keys(scores).forEach(key => {
+      if (key.startsWith('tesis_')) {
+        total += scores[key] || 0;
+      }
+    });
+    return Math.min(criterios.tesis.maxPoints, total);
+  };
+
+  // Calcular puntuación de diálogo
+  const calculateDialogoScore = () => {
+    let total = 0;
+    Object.keys(scores).forEach(key => {
+      if (key.startsWith('dialogo_')) {
+        total += scores[key] || 0;
+      }
+    });
+    return Math.min(criterios.dialogo.maxPoints, total);
+  };
+
+  // Calcular puntuación de vocabulario
+  const calculateVocabularioScore = () => {
+    let total = 0;
+    Object.keys(scores).forEach(key => {
+      if (key.startsWith('vocabulario_')) {
+        total += scores[key] || 0;
+      }
+    });
+    return Math.min(criterios.vocabulario.maxPoints, total);
+  };
+
+  // Calcular puntuación complementaria
+  const calculateComplementarioScore = () => {
+    let total = 0;
+    Object.keys(scores).forEach(key => {
+      if (key.startsWith('complementario_')) {
+        total += scores[key] || 0;
+      }
+    });
+    return Math.min(criterios.complementario.maxPoints, total);
+  };
+
+  // Calcular penalizaciones
+  const calculatePenalties = () => {
+    let total = 0;
+    Object.values(penalties).forEach(value => {
+      if (typeof value === 'number') total += value;
+    });
+    return Math.max(criterios.penalizaciones.maxPoints, total);
+  };
+
+  // Toggle puntuación
+  const toggleScore = (section, item, subitem) => {
+    const key = `${section}_${item}_${subitem}`;
+    const points = criterios[section].items[item].subitems[subitem].points;
+    
+    // Para vocabulario, deseleccionar otras opciones del mismo apartado
+    if (section === 'vocabulario') {
+      const newScores = { ...scores };
+      Object.keys(newScores).forEach(k => {
+        if (k.startsWith(`vocabulario_${item}_`)) {
+          delete newScores[k];
+        }
+      });
+      if (!scores[key]) {
+        newScores[key] = points;
+      }
+      setScores(newScores);
+      return;
+    }
+    
+    // Para diálogo, permitir solo un autor pero múltiples subitems de ese autor
+    if (section === 'dialogo') {
+      const newScores = { ...scores };
+      
+      // Verificar si ya hay otro autor seleccionado
+      const currentAuthor = Object.keys(newScores).find(k => k.startsWith('dialogo_'));
+      const currentAuthorKey = currentAuthor ? currentAuthor.split('_')[1] : null;
+      
+      // Si se está seleccionando un autor diferente, limpiar todo
+      if (currentAuthorKey && currentAuthorKey !== item) {
+        Object.keys(newScores).forEach(k => {
+          if (k.startsWith('dialogo_')) {
+            delete newScores[k];
+          }
+        });
+      }
+      
+      // Toggle del subitem específico
+      if (newScores[key]) {
+        delete newScores[key];
+      } else {
+        newScores[key] = points;
+      }
+      
+      setScores(newScores);
+      return;
+    }
+    
+    // Toggle normal para tesis y complementario
+    setScores(prev => ({
+      ...prev,
+      [key]: prev[key] ? undefined : points
+    }));
+  };
+
+  // Toggle penalización
+  const togglePenalty = (item, subitem) => {
+    const key = `${item}_${subitem}`;
+    const points = criterios.penalizaciones.items[item].subitems[subitem].points;
+    setPenalties(prev => ({
+      ...prev,
+      [key]: prev[key] ? undefined : points
+    }));
+  };
+
+  // Toggle vocabulario
+  const toggleVocabulario = (vocabId) => {
+    setVocabularioUsado(prev => ({
+      ...prev,
+      [vocabId]: !prev[vocabId]
+    }));
+  };
+
+  // Descargar informe
+  const downloadReport = () => {
+    const total = calculateTotal();
+    const tesisScore = calculateTesisScore();
+    const dialogoScore = calculateDialogoScore();
+    const vocabularioScore = calculateVocabularioScore();
+    const complementarioScore = calculateComplementarioScore();
+    const penaltiesTotal = calculatePenalties();
+    const vocabCount = countVocabulario();
+
+    let report = `INFORME DE CORRECCIÓN - SANTO TOMÁS DE AQUINO
+Texto: Segunda Vía - Causalidad eficiente (Suma Teológica I, q.2, art.2)
+=================================================================
+
+ESTUDIANTE: ${studentName || 'Sin nombre'}
+FECHA: ${new Date().toLocaleDateString('es-ES')}
+
+=================================================================
+PUNTUACIÓN FINAL: ${total.toFixed(2)} / 2,5 puntos
+=================================================================
+
+DESGLOSE POR APARTADOS:
+-----------------------------------------------------------------
+
+A) IDENTIFICAR LA TESIS DEL TEXTO: ${tesisScore.toFixed(2)} / 1,0 pt
+`;
+
+    // Detallar tesis
+    Object.keys(criterios.tesis.items).forEach(itemKey => {
+      const item = criterios.tesis.items[itemKey];
+      report += `\n${item.title}\n`;
+      Object.keys(item.subitems).forEach(subitemKey => {
+        const subitem = item.subitems[subitemKey];
+        const key = `tesis_${itemKey}_${subitemKey}`;
+        const marked = scores[key] ? '✓' : '✗';
+        const pts = scores[key] ? `+${subitem.points.toFixed(2)}` : '0.00';
+        report += `  ${marked} ${subitem.text} [${pts}]\n`;
+      });
+    });
+
+    report += `\nB) DIÁLOGO CON OTRO AUTOR/CORRIENTE: ${dialogoScore.toFixed(2)} / 1,0 pt
+`;
+
+    // Detallar diálogo
+    Object.keys(criterios.dialogo.items).forEach(itemKey => {
+      const item = criterios.dialogo.items[itemKey];
+      const hasAnySelected = Object.keys(item.subitems).some(sk => 
+        scores[`dialogo_${itemKey}_${sk}`]
+      );
+      
+      if (hasAnySelected) {
+        report += `\n${item.title}\n`;
+        Object.keys(item.subitems).forEach(subitemKey => {
+          const subitem = item.subitems[subitemKey];
+          const key = `dialogo_${itemKey}_${subitemKey}`;
+          const marked = scores[key] ? '✓' : '✗';
+          const pts = scores[key] ? `+${subitem.points.toFixed(2)}` : '0.00';
+          report += `  ${marked} ${subitem.text} [${pts}]\n`;
+        });
+      }
+    });
+
+    report += `\nC) VOCABULARIO TÉCNICO PRECISO: ${vocabularioScore.toFixed(2)} / 0,5 pt
+`;
+
+    // Detallar vocabulario seleccionado
+    report += `\nNivel de vocabulario asignado:\n`;
+    Object.keys(criterios.vocabulario.items.terminologia.subitems).forEach(subitemKey => {
+      const subitem = criterios.vocabulario.items.terminologia.subitems[subitemKey];
+      const key = `vocabulario_terminologia_${subitemKey}`;
+      const marked = scores[key] ? '✓' : '✗';
+      const pts = scores[key] ? `+${subitem.points.toFixed(2)}` : '0.00';
+      report += `  ${marked} ${subitem.text} [${pts}]\n`;
+    });
+
+    report += `\nTérminos técnicos utilizados (${vocabCount} términos marcados):\n`;
+    
+    report += `\nBÁSICOS:\n`;
+    vocabularioTecnico.basico.forEach(vocab => {
+      if (vocabularioUsado[vocab.id]) {
+        report += `  ✓ ${vocab.term}\n`;
+      }
+    });
+    
+    report += `\nCOMPLEMENTARIOS:\n`;
+    vocabularioTecnico.complementario.forEach(vocab => {
+      if (vocabularioUsado[vocab.id]) {
+        report += `  ✓ ${vocab.term}\n`;
+      }
+    });
+
+    if (complementarioScore > 0) {
+      report += `\n-----------------------------------------------------------------
+CONTENIDO COMPLEMENTARIO (EXTRA): +${complementarioScore.toFixed(2)} pts
+`;
+      Object.keys(criterios.complementario.items).forEach(itemKey => {
+        const item = criterios.complementario.items[itemKey];
+        Object.keys(item.subitems).forEach(subitemKey => {
+          const subitem = item.subitems[subitemKey];
+          const key = `complementario_${itemKey}_${subitemKey}`;
+          if (scores[key]) {
+            report += `  ✓ ${subitem.text} [+${subitem.points.toFixed(2)}]\n`;
+          }
+        });
+      });
+    }
+
+    if (penaltiesTotal < 0) {
+      report += `\n-----------------------------------------------------------------
+PENALIZACIONES: ${penaltiesTotal.toFixed(2)} pts
+`;
+      Object.keys(criterios.penalizaciones.items).forEach(itemKey => {
+        const item = criterios.penalizaciones.items[itemKey];
+        Object.keys(item.subitems).forEach(subitemKey => {
+          const subitem = item.subitems[subitemKey];
+          const key = `${itemKey}_${subitemKey}`;
+          if (penalties[key]) {
+            report += `  ✗ ${subitem.text} [${subitem.points.toFixed(2)}]\n`;
+          }
+        });
+      });
+    }
+
+    report += `\n=================================================================
+OBSERVACIONES:
+
+- La puntuación en "Diálogo" se otorga por desarrollar UN autor/corriente.
+- El vocabulario se evalúa según cantidad de términos técnicos correctos.
+- El contenido complementario suma puntos extra sobre los 2,5 puntos base.
+- Consultar rúbrica completa para detalles sobre cada criterio.
+
+=================================================================
+Fin del informe
+`;
+
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ComentarioC_Tomas2Via_${studentName || 'estudiante'}_${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  };
+
+  // Reiniciar
+  const handleReset = () => {
+    setShowResetConfirm(true);
+  };
+
+  const confirmReset = () => {
+    setScores({});
+    setPenalties({});
+    setVocabularioUsado({});
+    setStudentName('');
+    setShowResetConfirm(false);
+  };
+
+  const cancelReset = () => {
+    setShowResetConfirm(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
+      <div className="max-w-6xl mx-auto p-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6 border-t-4 border-orange-600">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Corrección EVAU 2026 - Santo Tomás de Aquino
+              </h1>
+              <h2 className="text-lg text-gray-600 mb-4">
+                Segunda Vía: Causalidad eficiente (Suma Teológica I, q.2, art.2)
+              </h2>
+              
+              {/* Texto */}
+              <div className="bg-orange-50 border-l-4 border-orange-600 p-4 rounded-r-lg mb-4">
+                <p className="text-sm text-gray-800 italic leading-relaxed">
+                  "La segunda vía se basa en causalidad eficiente. Hallamos que en este mundo de lo sensible hay 
+                  un orden determinado entre las causas eficientes; pero no hallamos que cosa alguna sea su propia causa, 
+                  pues en tal caso habría de ser anterior a sí misma, y esto es imposible. Ahora bien, tampoco se puede 
+                  prolongar indefinidamente la serie de las causas eficientes, porque siempre que hay causas eficientes 
+                  subordinadas, la primera es causa de la intermedia, sea una o muchas, y ésta causa de la última; y 
+                  puesto que, suprimida una causa, se suprime su efecto, si no existiese una que sea la primera, tampoco 
+                  existiría la intermedia ni la última. Si, pues, se prolongase indefinidamente la serie de causas eficientes, 
+                  no habría causa eficiente primera, y, por tanto, ni efecto último ni causa eficiente intermedia, cosa 
+                  falsa a todas luces. Por consiguiente, es necesario que exista una causa eficiente primera, a la que 
+                  todos llaman Dios."
+                </p>
+                <p className="text-xs text-gray-600 mt-2 text-right">
+                  — Santo Tomás de Aquino, <em>Suma Teológica</em>, I, q. 2, art. 2
+                </p>
+              </div>
+
+              <input
+                type="text"
+                placeholder="Nombre del estudiante"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none text-lg"
+              />
+            </div>
+          </div>
+
+          {/* Puntuación total */}
+          <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-lg p-6 mt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-orange-100 text-sm font-medium mb-1">PUNTUACIÓN TOTAL</p>
+                <p className="text-5xl font-bold">{calculateTotal().toFixed(2)}</p>
+                <p className="text-orange-100 text-sm mt-1">sobre 2,5 puntos</p>
+              </div>
+              <div className="text-right space-y-2">
+                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                  <p className="text-xs text-orange-100">Tesis</p>
+                  <p className="text-2xl font-bold">{calculateTesisScore().toFixed(2)} / 1,0</p>
+                </div>
+                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                  <p className="text-xs text-orange-100">Diálogo</p>
+                  <p className="text-2xl font-bold">{calculateDialogoScore().toFixed(2)} / 1,0</p>
+                </div>
+                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                  <p className="text-xs text-orange-100">Vocabulario</p>
+                  <p className="text-2xl font-bold">{calculateVocabularioScore().toFixed(2)} / 0,5</p>
+                </div>
+                {calculateComplementarioScore() > 0 && (
+                  <div className="bg-green-500 bg-opacity-30 rounded-lg px-4 py-2">
+                    <p className="text-xs text-green-100">Extra</p>
+                    <p className="text-2xl font-bold">+{calculateComplementarioScore().toFixed(2)}</p>
+                  </div>
+                )}
+                {calculatePenalties() < 0 && (
+                  <div className="bg-red-500 bg-opacity-30 rounded-lg px-4 py-2">
+                    <p className="text-xs text-red-100">Penalizaciones</p>
+                    <p className="text-2xl font-bold">{calculatePenalties().toFixed(2)}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Botones de acción */}
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={downloadReport}
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md"
+            >
+              <Download size={20} />
+              Descargar Informe
+            </button>
+            <button
+              onClick={handleReset}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md"
+            >
+              <RotateCcw size={20} />
+              Reiniciar Corrección
+            </button>
+          </div>
+        </div>
+
+        {/* A) IDENTIFICAR LA TESIS */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {criterios.tesis.title}
+            </h3>
+            <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-bold text-lg">
+              {calculateTesisScore().toFixed(2)} / {criterios.tesis.maxPoints.toFixed(1)}
+            </div>
+          </div>
+
+          {Object.keys(criterios.tesis.items).map(itemKey => {
+            const item = criterios.tesis.items[itemKey];
+            return (
+              <div key={itemKey} className="mb-6">
+                <h4 className="font-semibold text-gray-700 mb-3 text-lg bg-gray-50 p-3 rounded-lg">
+                  {item.title}
+                </h4>
+                <div className="space-y-2 pl-4">
+                  {Object.keys(item.subitems).map(subitemKey => {
+                    const subitem = item.subitems[subitemKey];
+                    const scoreKey = `tesis_${itemKey}_${subitemKey}`;
+                    const isSelected = scores[scoreKey];
+                    
+                    return (
+                      <button
+                        key={subitemKey}
+                        onClick={() => toggleScore('tesis', itemKey, subitemKey)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'bg-orange-50 border-orange-400 shadow-md'
+                            : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className={`mt-0.5 ${isSelected ? 'text-orange-600' : 'text-gray-400'}`}>
+                              {isSelected ? (
+                                <Check size={20} />
+                              ) : (
+                                <div className="w-5 h-5 border-2 border-current rounded" />
+                              )}
+                            </div>
+                            <span className={`text-sm ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                              {subitem.text}
+                            </span>
+                          </div>
+                          <span className={`text-sm font-bold ${isSelected ? 'text-orange-700' : 'text-gray-400'}`}>
+                            +{subitem.points.toFixed(2)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* B) DIÁLOGO CON OTRO AUTOR */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {criterios.dialogo.title}
+            </h3>
+            <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-lg font-bold text-lg">
+              {calculateDialogoScore().toFixed(2)} / {criterios.dialogo.maxPoints.toFixed(1)}
+            </div>
+          </div>
+
+          <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-6">
+            <p className="text-sm text-yellow-800">
+              <strong>⚠️ Importante:</strong> Selecciona UN solo autor/corriente y marca todos los aspectos desarrollados. 
+              Si cambias de autor, los puntos del autor anterior se eliminarán automáticamente.
+            </p>
+          </div>
+
+          {Object.keys(criterios.dialogo.items).map(itemKey => {
+            const item = criterios.dialogo.items[itemKey];
+            const isAutorSelected = Object.keys(item.subitems).some(sk => 
+              scores[`dialogo_${itemKey}_${sk}`]
+            );
+            
+            return (
+              <div key={itemKey} className="mb-6">
+                <h4 className={`font-semibold text-gray-700 mb-3 text-lg p-3 rounded-lg ${
+                  isAutorSelected ? 'bg-purple-50 border-2 border-purple-400' : 'bg-gray-50'
+                }`}>
+                  {item.title}
+                </h4>
+                <div className="space-y-2 pl-4">
+                  {Object.keys(item.subitems).map(subitemKey => {
+                    const subitem = item.subitems[subitemKey];
+                    const scoreKey = `dialogo_${itemKey}_${subitemKey}`;
+                    const isSelected = scores[scoreKey];
+                    
+                    return (
+                      <button
+                        key={subitemKey}
+                        onClick={() => toggleScore('dialogo', itemKey, subitemKey)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'bg-purple-50 border-purple-400 shadow-md'
+                            : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className={`mt-0.5 ${isSelected ? 'text-purple-600' : 'text-gray-400'}`}>
+                              {isSelected ? (
+                                <Check size={20} />
+                              ) : (
+                                <div className="w-5 h-5 border-2 border-current rounded" />
+                              )}
+                            </div>
+                            <span className={`text-sm ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                              {subitem.text}
+                            </span>
+                          </div>
+                          <span className={`text-sm font-bold ${isSelected ? 'text-purple-700' : 'text-gray-400'}`}>
+                            +{subitem.points.toFixed(2)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* C) VOCABULARIO */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {criterios.vocabulario.title}
+            </h3>
+            <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold text-lg">
+              {calculateVocabularioScore().toFixed(2)} / {criterios.vocabulario.maxPoints.toFixed(1)}
+            </div>
+          </div>
+
+          {/* Nivel de vocabulario asignado automáticamente */}
+          <div className="mb-6">
+            <h4 className="font-semibold text-gray-700 mb-3 text-lg">
+              Nivel de vocabulario técnico (asignación automática)
+            </h4>
+            <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border-2 border-green-400">
+              {Object.keys(criterios.vocabulario.items.terminologia.subitems).map(subitemKey => {
+                const subitem = criterios.vocabulario.items.terminologia.subitems[subitemKey];
+                const scoreKey = `vocabulario_terminologia_${subitemKey}`;
+                const isSelected = scores[scoreKey];
+                
+                if (!isSelected) return null;
+                
+                return (
+                  <div key={subitemKey} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Check size={24} className="text-green-600" />
+                      <span className="text-lg font-bold text-gray-900">
+                        {subitem.text}
+                      </span>
+                    </div>
+                    <span className="text-2xl font-bold text-green-700">
+                      +{subitem.points.toFixed(2)} pts
+                    </span>
+                  </div>
+                );
+              })}
+              {!Object.keys(scores).some(k => k.startsWith('vocabulario_terminologia_')) && (
+                <div className="text-center text-gray-500 italic">
+                  Marca términos técnicos abajo para asignar nivel automáticamente
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Contador de términos */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-800 font-medium">
+                Términos técnicos marcados en el comentario:
+              </span>
+              <span className="text-2xl font-bold text-blue-900">
+                {countVocabulario()} términos
+              </span>
+            </div>
+          </div>
+
+          {/* Listado de vocabulario */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Términos básicos */}
+            <div>
+              <h5 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">BÁSICO</span>
+                Terminología fundamental
+              </h5>
+              <div className="space-y-2">
+                {vocabularioTecnico.basico.map(vocab => (
+                  <button
+                    key={vocab.id}
+                    onClick={() => toggleVocabulario(vocab.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border transition-all ${
+                      vocabularioUsado[vocab.id]
+                        ? 'bg-blue-50 border-blue-400 shadow-sm'
+                        : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`${
+                        vocabularioUsado[vocab.id] ? 'text-blue-600' : 'text-gray-400'
+                      }`}>
+                        {vocabularioUsado[vocab.id] ? (
+                          <Check size={18} />
+                        ) : (
+                          <div className="w-[18px] h-[18px] border-2 border-current rounded" />
+                        )}
+                      </div>
+                      <span className={`text-sm ${
+                        vocabularioUsado[vocab.id] ? 'text-gray-900 font-medium' : 'text-gray-600'
+                      }`}>
+                        {vocab.term}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Términos complementarios */}
+            <div>
+              <h5 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">COMPLEMENTARIO</span>
+                Terminología avanzada
+              </h5>
+              <div className="space-y-2">
+                {vocabularioTecnico.complementario.map(vocab => (
+                  <button
+                    key={vocab.id}
+                    onClick={() => toggleVocabulario(vocab.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border transition-all ${
+                      vocabularioUsado[vocab.id]
+                        ? 'bg-green-50 border-green-400 shadow-sm'
+                        : 'bg-gray-50 border-gray-200 hover:border-green-300 hover:bg-green-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`${
+                        vocabularioUsado[vocab.id] ? 'text-green-600' : 'text-gray-400'
+                      }`}>
+                        {vocabularioUsado[vocab.id] ? (
+                          <Check size={18} />
+                        ) : (
+                          <div className="w-[18px] h-[18px] border-2 border-current rounded" />
+                        )}
+                      </div>
+                      <span className={`text-sm ${
+                        vocabularioUsado[vocab.id] ? 'text-gray-900 font-medium' : 'text-gray-600'
+                      }`}>
+                        {vocab.term}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 mt-6">
+            <p className="text-sm text-purple-800">
+              <strong>✨ Asignación automática:</strong> El nivel se asigna automáticamente según los términos marcados: 
+              6+ términos = Excelente (0,5 pts) | 4-5 términos = Notable (0,35 pts) | 
+              3 términos = Suficiente (0,25 pts) | 1-2 términos = Insuficiente (0,15 pts)
+            </p>
+            <p className="text-xs text-purple-700 mt-2">
+              Total disponible: 8 términos básicos + 12 términos complementarios = 20 términos
+            </p>
+          </div>
+        </div>
+
+        {/* CONTENIDO COMPLEMENTARIO */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {criterios.complementario.title}
+            </h3>
+            <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold text-lg">
+              +{calculateComplementarioScore().toFixed(2)} pts
+            </div>
+          </div>
+
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200 mb-6">
+            <p className="text-sm text-green-800">
+              <strong>ℹ️ Información:</strong> Estos criterios otorgan puntuación extra sobre los 2,5 puntos base. 
+              Valoran la capacidad del estudiante de contextualizar históricamente y reflexionar sobre la vigencia actual.
+            </p>
+          </div>
+
+          {Object.keys(criterios.complementario.items).map(itemKey => {
+            const item = criterios.complementario.items[itemKey];
+            return (
+              <div key={itemKey} className="mb-6">
+                <h4 className="font-semibold text-gray-700 mb-3 text-lg bg-gray-50 p-3 rounded-lg">
+                  {item.title}
+                </h4>
+                <div className="space-y-2 pl-4">
+                  {Object.keys(item.subitems).map(subitemKey => {
+                    const subitem = item.subitems[subitemKey];
+                    const scoreKey = `complementario_${itemKey}_${subitemKey}`;
+                    const isSelected = scores[scoreKey];
+                    
+                    return (
+                      <button
+                        key={subitemKey}
+                        onClick={() => toggleScore('complementario', itemKey, subitemKey)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'bg-green-50 border-green-400 shadow-md'
+                            : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className={`mt-0.5 ${isSelected ? 'text-green-600' : 'text-gray-400'}`}>
+                              {isSelected ? (
+                                <Check size={20} />
+                              ) : (
+                                <div className="w-5 h-5 border-2 border-current rounded" />
+                              )}
+                            </div>
+                            <span className={`text-sm ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                              {subitem.text}
+                            </span>
+                          </div>
+                          <span className={`text-sm font-bold ${isSelected ? 'text-green-700' : 'text-gray-400'}`}>
+                            +{subitem.points.toFixed(2)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* PENALIZACIONES */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {criterios.penalizaciones.title}
+            </h3>
+            <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg font-bold text-lg">
+              {calculatePenalties().toFixed(2)} pts
+            </div>
+          </div>
+
+          {Object.keys(criterios.penalizaciones.items).map(itemKey => {
+            const item = criterios.penalizaciones.items[itemKey];
+            return (
+              <div key={itemKey} className="mb-6">
+                <h4 className="font-semibold text-gray-700 mb-3 text-lg bg-gray-50 p-3 rounded-lg">
+                  {item.title}
+                </h4>
+                <div className="space-y-2 pl-4">
+                  {Object.keys(item.subitems).map(subitemKey => {
+                    const subitem = item.subitems[subitemKey];
+                    const penaltyKey = `${itemKey}_${subitemKey}`;
+                    const isSelected = penalties[penaltyKey];
+                    
+                    return (
+                      <button
+                        key={subitemKey}
+                        onClick={() => togglePenalty(itemKey, subitemKey)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
+                          isSelected
+                            ? 'bg-red-50 border-red-400 shadow-md'
+                            : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className={`mt-0.5 ${isSelected ? 'text-red-600' : 'text-gray-400'}`}>
+                              {isSelected ? (
+                                <X size={20} />
+                              ) : (
+                                <div className="w-5 h-5 border-2 border-current rounded" />
+                              )}
+                            </div>
+                            <span className={`text-sm ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                              {subitem.text}
+                            </span>
+                          </div>
+                          <span className={`text-sm font-bold ${isSelected ? 'text-red-700' : 'text-gray-400'}`}>
+                            {subitem.points.toFixed(2)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Modal de confirmación de reinicio */}
+        {showResetConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                ¿Reiniciar corrección?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Se perderán todos los datos: puntuaciones, penalizaciones, vocabulario y nombre del estudiante.
+              </p>
+              <div className="flex gap-4 justify-end">
+                <button
+                  type="button"
+                  onClick={cancelReset}
+                  className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmReset}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Sí, reiniciar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
