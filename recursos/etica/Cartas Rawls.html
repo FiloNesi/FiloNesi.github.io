@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rawls: El Velo de la Ignorancia 6.0 - Professional Edition</title>
+    <style>
+        :root {
+            --primary: #1e272e; --accent: #5758bb; --success: #05c46b;
+            --danger: #ff3f34; --warning: #ffc048; --info: #0fbcf9; --bg: #f1f2f6;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; font-size: 1.2rem; }
+
+        /* --- Pantallas de Inicio --- */
+        .full-overlay { position: fixed; inset: 0; background: var(--primary); color: white; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        .setup-box { max-width: 800px; }
+        .step-card { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; text-align: left; margin: 20px 0; font-size: 1.4rem; }
+        
+        /* --- Layout --- */
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; padding-bottom: 100px; }
+        header { background: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 30px; }
+
+        .card-mini { 
+            aspect-ratio: 1/1; border-radius: 25px; display: flex; justify-content: center; align-items: center; 
+            font-size: 3rem; font-weight: 900; color: white; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .card-mini.voted { filter: grayscale(1); opacity: 0.2; transform: scale(0.9); }
+
+        /* --- Sidebar Checklist --- */
+        #sidebar { width: 420px; background: white; border-left: 3px solid #ddd; display: flex; flex-direction: column; padding: 25px; }
+        #checklist { overflow-y: auto; flex-grow: 1; list-style: none; padding: 0; }
+        .check-tag { 
+            padding: 15px; margin-bottom: 10px; border-radius: 12px; color: white; 
+            font-weight: bold; cursor: pointer; display: flex; align-items: center;
+            transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .check-tag:hover { transform: translateX(-5px); filter: brightness(1.1); }
+
+        /* --- Modales --- */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 35px; width: 90%; max-width: 950px; text-align: center; max-height: 85vh; overflow-y: auto; border: 5px solid #eee; }
+        
+        .impact-box { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 25px 0; text-align: left; background: #f9f9f9; padding: 25px; border-radius: 20px; border: 2px solid #eee; }
+
+        .btn { padding: 18px 35px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.3rem; transition: 0.2s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .banner { position: fixed; bottom: 0; left: 0; width: calc(100% - 420px); height: 80px; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.4rem; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+
+        /* --- Rawls Face --- */
+        .rawls-head { width: 120px; height: 120px; background: #ffe0bd; border-radius: 50%; margin: 0 auto 15px; border: 3px solid #333; position: relative; font-size: 4rem; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+<div id="setup-screen" class="full-overlay">
+    <div class="setup-box">
+        <h1 style="font-size: 3.5rem; color: var(--warning);">🏛️ Configuración del Aula</h1>
+        <p style="font-size: 1.8rem;">Indica el número de alumnos para generar las cartas:</p>
+        <input type="number" id="student-count" min="15" max="30" value="20" style="font-size: 3rem; width: 120px; text-align: center; border-radius: 15px; border: none; padding: 10px; margin: 20px;">
+        <br>
+        <button class="btn btn-primary" style="font-size: 2rem; background: var(--success);" onclick="showInstructions()">SIGUIENTE</button>
+    </div>
+</div>
+
+<div id="instructions-screen" class="full-overlay" style="display:none;">
+    <div class="setup-box">
+        <h1 style="font-size: 3rem; color: var(--info);">¿Cómo vamos a jugar?</h1>
+        <div class="step-card">
+            <p><strong>1. El Velo:</strong> Cada alumno elegirá un número. Ese será su rol social, pero permanecerá oculto bajo "el velo de la ignorancia".</p>
+            <p><strong>2. La Asamblea:</strong> Debatiremos leyes para nuestra sociedad. Como no sabéis quiénes sois, debéis buscar leyes que sean justas para cualquiera.</p>
+            <p><strong>3. El Despertar:</strong> Al final, revelaremos las identidades. Veréis si las leyes que habéis aprobado os han beneficiado o perjudicado.</p>
+        </div>
+        <button class="btn btn-primary" style="font-size: 2rem; background: var(--warning); color: black;" onclick="startApp()">¡ENTRAR EN LA ASAMBLEA!</button>
+    </div>
+</div>
+
+<main>
+    <header><h2 id="phase-title" style="font-size: 2.2rem; margin:0;">Fase 1: Asamblea Legislativa</h2></header>
+    <div id="grid-container"></div>
+    <div id="summary-screen" style="display:none; padding:40px;">
+        <h2 style="font-size: 3rem;">📜 La Nueva Constitución</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; text-align: left;">
+            <div id="sum-app" style="background:#e8f5e9; padding:30px; border-radius:25px; border: 2px solid var(--success);"><h3>✅ LEYES APROBADAS</h3></div>
+            <div id="sum-rej" style="background:#ffebee; padding:30px; border-radius:25px; border: 2px solid var(--danger);"><h3>❌ LEYES RECHAZADAS</h3></div>
+        </div>
+        <center><button class="btn btn-primary" style="margin-top:40px; font-size: 2rem;" onclick="startPhase2()">✨ LEVANTAR EL VELO ✨</button></center>
+    </div>
+    <div id="footer-hint" class="banner">💡 Selecciona un número para debatir una propuesta de ley.</div>
+</main>
+
+<aside id="sidebar">
+    <h3 style="font-size: 1.8rem; margin-top:0;">📝 Registro de Leyes</h3>
+    <p style="font-size: 0.9rem; color: #666;">(Haz clic en una ley para recordar su detalle)</p>
+    <ul id="checklist"></ul>
+    <button id="finish-btn" class="btn btn-primary" style="display:none; width:100%;" onclick="showSummary()">CERRAR VOTACIONES</button>
+    <button id="close-game-btn" class="btn btn-primary" style="display:none; background: var(--success);" onclick="showFinalMessage()">FINALIZAR DINÁMICA</button>
+</aside>
+
+<div class="overlay" id="modal-medida">
+    <div class="modal-content">
+        <span id="m-icon" style="font-size: 5rem; display:block;"></span>
+        <h2 id="m-title" style="font-size: 2.5rem; margin: 10px 0;"></h2>
+        <p id="m-desc" style="font-size: 1.5rem; line-height: 1.5; background: #f0f2f5; padding: 25px; border-radius: 20px;"></p>
+        <div class="impact-box">
+            <div style="color:var(--success)"><strong>💚 Posible beneficio para:</strong><br><span id="m-pro" style="font-size:1.1rem;"></span></div>
+            <div style="color:var(--danger)"><strong>💔 Posible perjuicio para:</strong><br><span id="m-con" style="font-size:1.1rem;"></span></div>
+        </div>
+        <div id="vote-btns">
+            <button class="btn" style="background:var(--danger); color:white" onclick="vote(false)">RECHAZAR</button>
+            <button class="btn" style="background:var(--success); color:white; margin-left:20px;" onclick="vote(true)">APROBAR</button>
+        </div>
+        <button id="close-view-btn" class="btn btn-primary" style="display:none;" onclick="closeModals()">CERRAR CONSULTA</button>
+    </div>
+</div>
+
+<div class="overlay" id="modal-rol">
+    <div class="modal-content">
+        <h2 id="r-name" style="font-size: 3rem; color: var(--accent); margin-bottom:10px;"></h2>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 20px; margin-bottom: 25px;">
+            <p id="r-desc" style="font-size: 1.4rem; line-height: 1.4; color: #444;"></p>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; text-align:left;">
+            <div style="background:#e8f5e9; padding:20px; border-radius:20px; border:1px solid var(--success);"><strong>✅ MEJORAS LOGRADAS</strong><div id="r-ben" style="font-size:1rem; margin-top:10px;"></div></div>
+            <div style="background:#ffebee; padding:20px; border-radius:20px; border:1px solid var(--danger);"><strong>❌ DAÑOS SUFRIDOS</strong><div id="r-harm" style="font-size:1rem; margin-top:10px;"></div></div>
+            <div style="background:#fff3e0; padding:20px; border-radius:20px; border:1px solid var(--warning);"><strong>⚠️ LO QUE PUDO SER</strong><div id="r-miss" style="font-size:1rem; margin-top:10px;"></div></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:30px" onclick="closeModals()">VOLVER AL MAPA</button>
+    </div>
+</div>
+
+<div class="overlay" id="modal-final">
+    <div class="modal-content" style="border: 8px solid var(--primary);">
+        <div class="rawls-head">👴🏻</div>
+        <h2 style="font-size: 2.5rem;">Reflexión Final de John Rawls</h2>
+        <p style="font-size: 1.6rem; line-height: 1.6; text-align: left; padding: 20px;">
+            "Habéis actuado bajo el <strong>Velo de la Ignorancia</strong>. Al no saber quiénes erais, vuestra razón os ha llevado a proteger al más desfavorecido, pues <em>vosotros mismos podríais haber sido esa persona</em>. <br><br>
+            Esta es la esencia de la justicia: un sistema que todos aceptaríamos sin importar la lotería genética o social en la que nos toque nacer."
+        </p>
+        <button class="btn btn-primary" onclick="location.reload()">REINICIAR EXPERIMENTO</button>
+    </div>
+</div>
+
+<script>
+    const allMeasures = [
+        { id: 1, i: "💰", t: "Renta Básica Universal", d: "Se garantiza un ingreso mensual de 700€ a todo ciudadano mayor de 18 años, sin condiciones. Se financia con un impuesto del 15% adicional a las rentas que superen los 100.000€ anuales.", pro: "Personas sin empleo, estudiantes de familias humildes, artistas y cuidadores no remunerados.", con: "Altos ejecutivos, inversores y grandes herederos que verán reducida su liquidez.", b:[3,4,6,8,11,18,20,21,24,26,29], h:[1,16] },
+        { id: 2, i: "⚖️", t: "Paridad de Género Blindada", d: "Obligatoriedad por ley de que el 50% de los consejos de administración de empresas con más de 50 empleados sean mujeres. Las empresas que no cumplan perderán toda ayuda pública.", pro: "Mujeres profesionales, madres que quieren reincorporarse y jóvenes universitarias.", con: "Hombres con alta cualificación en sectores tradicionalmente masculinos que verán frenado su ascenso.", b:[10,7,22,28], h:[2] },
+        { id: 3, i: "🏥", t: "Sanidad Pública Exclusiva", d: "Se prohíbe la sanidad privada con ánimo de lucro. Todos los recursos, médicos y tecnología se nacionalizan para asegurar que un millonario y un desempleado reciban exactamente el mismo trato.", pro: "Enfermos crónicos, ancianos con pensiones mínimas y personas con discapacidades graves.", con: "Personas de clase alta que pierden el derecho a pagar por rapidez, comodidad y exclusividad.", b:[3,9,15,18,24], h:[1,2,27] },
+        { id: 4, i: "🏠", t: "Vivienda por Derecho", d: "Cualquier vivienda propiedad de una entidad bancaria que lleve más de 2 años vacía será expropiada por el Estado para crear un parque público de alquiler social (precio máximo: 200€).", pro: "Familias desahuciadas, jóvenes que quieren independizarse e inmigrantes sin avales.", con: "Accionistas de bancos, fondos de inversión inmobiliaria y propietarios de múltiples inmuebles.", b:[4,8,11,18,21,30], h:[1,19] },
+        { id: 5, i: "🗣️", t: "Inmersión Lingüística Total", d: "Para acceder a cualquier puesto en la administración pública o sanidad, es obligatorio dominar el idioma regional local. No se harán excepciones por falta de personal.", pro: "Nativos de la región, defensores de la identidad cultural y profesorado local.", con: "Médicos o funcionarios que vienen de otras provincias e inmigrantes que dominan solo el idioma estatal.", b:[12,19,30], h:[5,8,25] },
+        { id: 6, i: "🎁", t: "Impuesto de Sucesiones al 90%", d: "A partir de un millón de euros, el Estado se queda con el 90% de cualquier herencia. El dinero se destina íntegramente a crear becas de estudio para los hijos de los trabajadores más pobres.", pro: "Hijos de familias obreras, personas con talento pero sin recursos y sistema público de becas.", con: "Grandes familias aristocráticas y empresarios familiares que no podrán traspasar el negocio intacto.", b:[6,9,20,24,28], h:[1,2,19] },
+        { id: 7, i: "🏳️‍⚧️", t: "Ley de Identidad Total", d: "Cualquier persona mayor de 14 años puede cambiar su género legalmente con una simple declaración, sin informes psiquiátricos ni tratamientos hormonales previos obligatorios.", pro: "Colectivo Trans, personas no binarias y jóvenes que buscan reconocimiento de su identidad.", con: "Sectores conservadores y ciertos sectores del feminismo tradicional que temen por los espacios segregados.", b:[7,10,28], h:[12] },
+        { id: 8, i: "🚫", t: "Fronteras Blindadas", d: "Expulsión inmediata de cualquier extranjero que cometa un delito leve y fin de todas las ayudas sociales a personas que no lleven 5 años cotizados en el país.", pro: "Ciudadanos nacionales con miedo a la inseguridad o que creen que los servicios están saturados.", con: "Refugiados políticos, inmigrantes en situación de precariedad y trabajadores temporeros.", b:[17,19,30], h:[4,5,8,11,26] },
+        { id: 9, i: "🎓", t: "Universidad de Élite", d: "La universidad pública dejará de ser gratuita para todos. Solo los alumnos con notas superiores a 9,5 tendrán beca. El resto deberá pagar 10.000€ por curso para financiar la investigación.", pro: "Estudiantes extremadamente brillantes y familias ricas que pueden costear la exclusividad.", con: "Estudiantes de clase media y baja que no llegan a la excelencia pero quieren formarse.", b:[1,2,27], h:[6,11,20,28,29] },
+        { id: 10, i: "🍼", t: "Crianza Igualitaria Forzosa", d: "Permiso de paternidad de 8 meses, obligatorio e intransferible para ambos progenitores. Si el padre no lo usa, se pierde (la madre no puede usar los meses del padre).", pro: "Mujeres (elimina el 'riesgo' de contratación frente al hombre) y desarrollo del bebé.", con: "Pequeñas empresas y autónomos que dependen críticamente de un trabajador específico.", b:[10,7,22,28], h:[16,13] },
+        { id: 11, i: "✊", t: "Reparación Histórica", d: "Indemnización económica directa a descendientes documentados de víctimas de la esclavitud o del colonialismo, financiada con un recargo en el impuesto sobre el patrimonio.", pro: "Minorías raciales que sufren pobreza estructural heredada de siglos de opresión.", con: "Clase media nativa que siente que no debe pagar por los errores de sus antepasados.", b:[11,8,26], h:[2,12,30] },
+        { id: 12, i: "⛪", t: "Laicismo Radical", d: "Retirada de todas las subvenciones públicas a colegios religiosos. Prohibición de símbolos religiosos (cruces, velos, kipás) en edificios públicos y escuelas.", pro: "Ateos, agnósticos y defensores de la separación total entre Iglesia y Estado.", con: "Familias creyentes, comunidades musulmanas, católicas o judías que lo ven como un ataque.", b:[14,7,28], h:[12,25] },
+        { id: 13, i: "⛽", t: "Peaje Climático", d: "Prohibición de circular con coches de combustión en todo el país. El precio del diesel subirá un 100% mañana mismo para forzar la transición al coche eléctrico.", pro: "Generaciones futuras, habitantes de ciudades con contaminación y empresas de energía renovable.", con: "Camioneros, autónomos con furgonetas viejas y personas rurales que necesitan el coche para todo.", b:[14,23,29], h:[13,16,18,25] },
+        { id: 14, i: "🗳️", t: "Sufragio desde los 16", d: "Se reduce la edad mínima para votar en elecciones generales a los 16 años, considerando que tienen madurez para decidir sobre el futuro climático y económico.", pro: "Jóvenes estudiantes, movimientos estudiantiles y partidos con agendas de futuro.", con: "Población anciana que teme que decisiones emocionales pongan en riesgo sus pensiones.", b:[6,7,14,28,29], h:[15,30] },
+        { id: 15, i: "💻", t: "Administración 100% Digital", d: "Se cierran todas las oficinas de atención presencial del Estado. Cualquier trámite (jubilación, médico, denuncias) debe hacerse exclusivamente por App o Web.", pro: "Nativos digitales, perfiles tecnológicos y el Estado (ahorro masivo de costes).", con: "Ancianos, personas sin internet en el mundo rural y personas con discapacidades cognitivas.", b:[2,20,27], h:[15,18,25] },
+        { id: 16, i: "🕓", t: "Semana Laboral de 4 Días", d: "La jornada laboral máxima será de 32 horas semanales sin reducción de sueldo. El Estado multará a las empresas que obliguen a hacer horas extras.", pro: "Padres de familia, personas con hobbies, cuidadores y trabajadores con estrés laboral.", con: "Dueños de bares, fábricas de producción continua y pequeñas tiendas familiares.", b:[10,3,20,24,29], h:[16,13,1] },
+        { id: 17, i: "🤝", t: "Justicia Restaurativa", d: "Se cierran las prisiones convencionales para delitos no violentos. El infractor trabajará para pagar el daño a la víctima y vivirá en centros de reinserción abierta.", pro: "Personas en exclusión social que cometieron hurtos por necesidad y buscan una salida.", con: "Víctimas de robos que sienten que el castigo es insuficiente y temen la reincidencia.", b:[4,11,19], h:[17,30] },
+        { id: 18, i: "💧", t: "Privatización del Agua", d: "La gestión del agua pasa a empresas privadas que pueden subir los precios según la escasez. Se busca que el precio alto obligue a los ciudadanos a no derrochar ni una gota.", pro: "Accionistas de empresas hídricas y ecologistas que creen que solo el precio frena el gasto.", con: "Familias pobres y jubilados que podrían sufrir cortes por no poder pagar el recibo.", b:[1], h:[18,3,15,25] },
+        { id: 19, i: "📜", t: "Derecho al Olvido Penal", d: "Cualquier antecedente penal leve desaparecerá del registro en solo 6 meses si no hay reincidencia, permitiendo trabajar en cualquier sector sin estigma.", pro: "Jóvenes que cometieron errores puntuales y personas que buscan una segunda oportunidad real.", con: "Comerciantes y vecinos que quieren saber si alguien tiene antecedentes por robo.", b:[4,8,20,26], h:[17,19] },
+        { id: 20, i: "🧠", t: "Inclusión Neurodivergente", d: "Toda empresa de más de 20 trabajadores debe reservar un 5% de sus plazas a personas con Autismo, TDAH o Dislexia, adaptando el entorno a sus necesidades.", pro: "Personas neurodivergentes cualificadas que son rechazadas en entrevistas de trabajo estándar.", con: "Empresas con procesos rígidos y candidatos sin discapacidad que compiten por menos plazas.", b:[20,9,24,28], h:[16,2] },
+        { id: 21, i: "🐶", t: "Protección Animal Total", d: "Prohibición de la ganadería industrial y de la venta de carne de bajo coste. Solo se permitirá carne ecológica a precios muy altos para garantizar el bienestar animal.", pro: "Activistas ambientales, vegetarianos y defensores de los derechos de los animales.", con: "Familias trabajadoras que no podrán permitirse comer carne y ganaderos industriales.", b:[23,14], h:[18,13,25] },
+        { id: 22, i: "🤖", t: "Impuesto al Algoritmo", d: "Cada vez que una empresa sustituya un puesto humano por una IA o un robot, deberá seguir pagando la seguridad social de ese trabajador al Estado de forma indefinida.", pro: "Obreros industriales, administrativos y sindicatos que temen el desempleo tecnológico.", con: "Empresas tecnológicas, inversores en I+D y startups que buscan eficiencia.", b:[29,11,18], h:[1,2,27] },
+        { id: 23, i: "🌿", t: "Legalización del Cannabis", d: "Venta libre de marihuana en farmacias y estancos controlada por el Estado. Los beneficios irán destinados directamente a la prevención de adicciones y salud pública.", pro: "Enfermos crónicos, jóvenes que buscan libertad individual y el presupuesto estatal.", con: "Asociaciones de padres, sectores religiosos y contrarios al consumo de drogas.", b:[3,7,26], h:[12,17] },
+        { id: 24, i: "🧠", t: "Salud Mental Gratuita", d: "Derecho por ley a una sesión semanal de terapia psicológica gratuita para cualquier ciudadano que la solicite, financiada con impuestos al tabaco y alcohol.", pro: "Personas con ansiedad, depresión, jóvenes con problemas de autoestima y familias con estrés.", con: "Consumidores de alcohol/tabaco y el sector privado de la psicología que perderá clientes.", b:[24,10,3,20,18], h:[1,16] },
+        { id: 25, i: "🚜", t: "Blindaje Rural", d: "Subvención mensual de 500€ a cualquier persona que decida vivir en un pueblo de menos de 200 habitantes para evitar la despoblación de la nación.", pro: "Ganaderos, agricultores, personas que buscan una vida tranquila y jóvenes rurales.", con: "Habitantes de grandes ciudades que sienten que sus impuestos subvencionan un modo de vida ajeno.", b:[25,13,15], h:[2,1] },
+        { id: 26, i: "🎥", t: "Vigilancia Predictiva", d: "Instalación de cámaras inteligentes con reconocimiento facial en cada esquina de la ciudad para detectar delitos antes de que ocurran mediante patrones de conducta.", pro: "Ciudadanos que han sido víctimas de delitos y personas que priorizan la seguridad ante todo.", con: "Minorías estigmatizadas, defensores de la privacidad y grupos sociales perseguidos.", b:[17,19,30], h:[11,8,4,26] },
+        { id: 27, i: "🧬", t: "Edición Genética", d: "Se permite legalmente que los padres elijan o modifiquen rasgos genéticos de sus embriones para eliminar enfermedades hereditarias o mejorar capacidades cognitivas.", pro: "Científicos, familias con enfermedades graves y personas ricas que buscan hijos 'perfectos'.", con: "Grupos religiosos y defensores de la igualdad (temen una nueva división entre humanos editados y no).", b:[1,27,3], h:[9,20] },
+        { id: 28, i: "🏫", t: "Educación en Diversidad", d: "Asignatura obligatoria desde los 6 años sobre diversidad sexual, nuevas masculinidades y deconstrucción de prejuicios, sin derecho a veto por parte de los padres.", pro: "Mujeres, colectivo LGTBI+, niños que sufren acoso y educadores progresistas.", con: "Familias religiosas y conservadoras que reclaman el derecho a educar a sus hijos según sus valores.", b:[10,7,28,24], h:[12] },
+        { id: 29, i: "🚄", t: "Transporte Público Gratuito", d: "Eliminación total del precio en trenes, autobuses y metros. Se financia prohibiendo los vuelos nacionales de corta distancia para proteger el planeta.", pro: "Estudiantes, trabajadores con sueldos bajos y activistas por el clima.", con: "Aerolíneas locales, viajeros de negocios que valoran la rapidez y usuarios del coche privado.", b:[6,14,29,18,23], h:[1,13] },
+        { id: 30, i: "🌍", t: "Ciudadanía Universal", d: "Cualquier persona del mundo que pise nuestro territorio tiene derecho inmediato a votar y a recibir todas las ayudas sociales, eliminando el concepto de 'extranjero'.", pro: "Refugiados, inmigrantes sin papeles y defensores de un mundo sin fronteras.", con: "Sectores nacionalistas que temen la pérdida de la identidad cultural y el colapso económico.", b:[8,4,26], h:[11,19,30] }
+    ];
+
+    const allRoles = [
+        { id: 1, n: "El Gran Inversor", d: "Posees acciones en 50 empresas mundiales y varias propiedades de lujo. Tu mayor miedo es que los impuestos reduzcan tu capacidad de inversión y de mantener tu estatus exclusivo." },
+        { id: 2, n: "Director de Recursos Humanos", d: "Hombre de 45 años, soltero. Has trabajado 80 horas a la semana para llegar a la cima. Crees fervientemente en la meritocracia y te molestan las cuotas obligatorias." },
+        { id: 3, n: "Padre de un Niño con Cáncer", d: "Tu hijo necesita un tratamiento experimental que cuesta 5.000€ al mes. Sin una sanidad pública potente y gratuita, tu hijo no tiene ninguna posibilidad de sobrevivir." },
+        { id: 4, n: "Persona Sin Hogar", d: "Perdiste tu empleo durante la última crisis y acabaste en la calle. No tienes una dirección donde recibir correspondencia, lo que te impide acceder a casi cualquier ayuda oficial." },
+        { id: 5, n: "Médico Extranjero", d: "Eres un cirujano brillante, pero vienes de otro país. Dominas el idioma estatal, pero no el regional local, lo que te impide trabajar en los hospitales de la zona donde vives." },
+        { id: 6, n: "Hija de una Limpiadora", d: "Eres la primera de tu familia que podría ir a la universidad. Sacas muy buenas notas, pero tus padres no pueden pagar ni las tasas ni el alquiler de una habitación en la ciudad." },
+        { id: 7, n: "Adolescente Trans", d: "Te sientes profundamente infeliz con tu género asignado. En tu casa no te apoyan y necesitas que el Estado te proteja y reconozca tu identidad sin obligarte a pasar por psiquiatras." },
+        { id: 8, n: "Solicitante de Asilo", d: "Huyes de una guerra civil donde lo perdiste todo. Has llegado sin documentos y temes que si te deportan, tu vida corra peligro inmediato. Necesitas refugio y trabajo." },
+        { id: 9, n: "Joven con Parálisis Cerebral", d: "Te desplazas en silla de ruedas y necesitas un asistente personal para tareas básicas. Tu gran deseo es poder estudiar y trabajar como cualquier otra persona de tu edad." },
+        { id: 10, n: "Madre Soltera con Gemelos", d: "Trabajas en una tienda y todo tu sueldo se va en pagar la guardería. Sientes que el sistema laboral te castiga por ser madre y que nunca podrás ascender en tu carrera." },
+        { id: 11, n: "Joven Racializado de Extrarradio", d: "Vives en un barrio con 40% de paro. La policía te para constantemente por tu aspecto y sientes que la sociedad ya ha decidido que eres un delincuente antes de conocerte." },
+        { id: 12, n: "Líder de una Comunidad Religiosa", d: "Tu fe es la base de tu vida. Crees que el Estado se ha vuelto demasiado laico y que se están atacando los valores morales que mantienen unida a tu comunidad." },
+        { id: 13, n: "Transportista Autónomo", d: "Tienes una furgoneta vieja que es tu única herramienta de trabajo. Si suben el diesel o prohíben circular por la ciudad, tu negocio quebrará y no podrás pagar tu hipoteca." },
+        { id: 14, n: "Estudiante Activista de 16 años", d: "Estás muy preocupado por el cambio climático. Sientes que los adultos están tomando decisiones que destruirán tu futuro y te frustra no poder votar para impedirlo." },
+        { id: 15, n: "Viuda de 85 años", d: "Vives sola en un cuarto piso sin ascensor. No tienes ordenador ni sabes usar un smartphone. Te sientes invisible en un mundo donde todo es digital y automático." },
+        { id: 16, n: "Dueño de una Cafetería Pequeña", d: "Tienes tres empleados a los que consideras familia. Los márgenes de beneficio son mínimos y cualquier subida de impuestos o reducción de jornada podría obligarte a cerrar." },
+        { id: 17, n: "Víctima de un Atraco Violento", d: "Hace un año te asaltaron en la calle y desde entonces tienes miedo de salir de noche. Quieres que el Estado garantice que las calles son seguras y que los delincuentes paguen." },
+        { id: 18, n: "Pensionista con el Mínimo", d: "Trabajaste toda la vida en el campo pero cotizaste poco. Tu pensión es de 400€. Cada mes debes elegir entre comer bien o poner la calefacción en invierno." },
+        { id: 19, n: "Pequeño Propietario de Barrio", d: "Tienes un local comercial que te costó años pagar. Te preocupa que el barrio se degrade, que haya ocupaciones ilegales o que el valor de tu propiedad caiga en picado." },
+        { id: 20, n: "Adulto con Autismo (Asperger)", d: "Eres un programador excelente, pero en las entrevistas de trabajo fracasas porque no entiendes el lenguaje no verbal. Necesitas un entorno laboral que valore tu talento real." },
+        { id: 21, n: "Okupa por Necesidad", d: "Vives con tu pareja y un bebé en un piso propiedad de un fondo buitre que lleva vacío 5 años. No quieres robar, pero no tenéis ingresos suficientes para un alquiler normal." },
+        { id: 22, n: "Mujer con Ambición Ejecutiva", d: "Eres brillante, pero ves cómo tus compañeros hombres ascienden más rápido mientras a ti te preguntan en las entrevistas si piensas tener hijos pronto." },
+        { id: 23, n: "Activista Vegano", d: "Consideras que el maltrato animal en las granjas industriales es la mayor injusticia de nuestro tiempo. Estás dispuesto a pagar más por la comida si eso garantiza el fin del sufrimiento." },
+        { id: 24, n: "Persona con Depresión Grave", d: "Tu enfermedad te impide levantarte muchos días. Necesitas terapia semanal, pero la seguridad social te da cita cada 3 meses y no puedes pagar un psicólogo privado." },
+        { id: 25, n: "Ganadero en un Pueblo Remoto", d: "Vives en la 'España vaciada'. Los servicios cierran, no hay internet y sientes que los políticos en las ciudades legislan sin tener ni idea de cómo es la vida en el campo." },
+        { id: 26, n: "Inmigrante Sin Papeles", d: "Trabajas recogiendo fruta 10 horas al día por un sueldo miserable. No tienes derecho a médico ni a quejarte por miedo a que te expulsen del país." },
+        { id: 27, n: "Investigador Genético", d: "Crees que la ciencia puede erradicar el sufrimiento humano eliminando enfermedades antes de nacer. Te frustran las trabas éticas que frenan el progreso tecnológico." },
+        { id: 28, n: "Maestra de Primaria", d: "Ves a diario cómo el bullying y el odio crecen en el patio. Crees que la educación en valores y diversidad es la única forma de salvar a la próxima generación." },
+        { id: 29, n: "Obrero de una Fábrica Automotriz", d: "Llevas 20 años en la cadena de montaje. Ves cómo cada vez hay más brazos robóticos y temes que antes de jubilarte te sustituyan por una máquina." },
+        { id: 30, n: "Ciudadano Nacionalista", d: "Amas tu país y tus tradiciones. Sientes que la globalización y la inmigración masiva están borrando lo que hace única a tu comunidad y quieres protegerlo." }
+    ];
+
+    let students = []; let measures = []; let votes = {}; let phase = 1; let currentId = null;
+
+    function showInstructions() {
+        const count = parseInt(document.getElementById('student-count').value);
+        if(count < 15 || count > 30) return alert("Elige entre 15 y 30 alumnos.");
+        students = allRoles.slice(0, count);
+        measures = allMeasures.slice(0, count);
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('instructions-screen').style.display = 'flex';
+    }
+
+    function startApp() {
+        document.getElementById('instructions-screen').style.display = 'none';
+        initGrid();
+    }
+
+    function initGrid() {
+        const grid = document.getElementById('grid-container'); grid.innerHTML = '';
+        measures.forEach((m, idx) => {
+            const div = document.createElement('div');
+            div.className = 'card-mini';
+            div.style.background = `hsl(${(idx * 360) / measures.length}, 65%, 45%)`;
+            div.id = `c-${m.id}`; div.innerText = m.id;
+            div.onclick = () => openMeasure(m.id);
+            grid.appendChild(div);
+        });
+    }
+
+    function openMeasure(id, viewOnly = false) {
+        currentId = id; const m = allMeasures.find(x => x.id === id);
+        document.getElementById('m-icon').innerText = m.i;
+        document.getElementById('m-title').innerText = m.t;
+        document.getElementById('m-desc').innerText = m.d;
+        document.getElementById('m-pro').innerText = m.pro;
+        document.getElementById('m-con').innerText = m.con;
+        
+        document.getElementById('vote-btns').style.display = viewOnly ? 'none' : 'block';
+        document.getElementById('close-view-btn').style.display = viewOnly ? 'inline-block' : 'none';
+        
+        document.getElementById('modal-medida').style.display = 'flex';
+    }
+
+    function vote(approved) {
+        votes[currentId] = approved;
+        document.getElementById(`c-${currentId}`).classList.add('voted');
+        const m = allMeasures.find(x=>x.id===currentId);
+        const li = document.createElement('li');
+        li.className = 'check-tag';
+        li.style.background = approved ? 'var(--success)' : 'var(--danger)';
+        li.innerHTML = `<span>${m.i} ${m.t}</span>`;
+        li.onclick = () => openMeasure(m.id, true);
+        document.getElementById('checklist').prepend(li);
+        closeModals();
+        if(Object.keys(votes).length === measures.length) document.getElementById('finish-btn').style.display = 'block';
+    }
+
+    function showSummary() {
+        document.getElementById('grid-container').style.display = 'none';
+        document.getElementById('summary-screen').style.display = 'block';
+        document.getElementById('phase-title').innerText = "Fase 2: El Resultado Político";
+        const sApp = document.getElementById('sum-app'); const sRej = document.getElementById('sum-rej');
+        measures.forEach(m => {
+            const d = document.createElement('div'); d.style.padding = "8px 0";
+            d.innerHTML = `${m.i} <strong>${m.t}</strong>`;
+            votes[m.id] ? sApp.appendChild(d) : sRej.appendChild(d);
+        });
+    }
+
+    function startPhase2() {
+        phase = 2; document.getElementById('summary-screen').style.display = 'none';
+        document.getElementById('grid-container').style.display = 'grid';
+        document.getElementById('phase-title').innerText = "Fase 3: El Velo se Levanta";
+        document.getElementById('footer-hint').innerText = "🔎 Haz clic en tu número elegido para descubrir quién eres.";
+        document.getElementById('close-game-btn').style.display = 'block';
+        measures.forEach(m => {
+            const el = document.getElementById(`c-${m.id}`); el.classList.remove('voted');
+            el.onclick = () => openRol(m.id);
+        });
+    }
+
+    function openRol(id) {
+        const r = students.find(x => x.id === id);
+        document.getElementById('r-name').innerText = r.n;
+        document.getElementById('r-desc').innerText = r.d;
+        const b = document.getElementById('r-ben'); const h = document.getElementById('r-harm'); const mD = document.getElementById('r-miss');
+        b.innerHTML = ''; h.innerHTML = ''; mD.innerHTML = '';
+        measures.forEach(m => {
+            const txt = `<div style="margin-bottom:5px;">${m.i} ${m.t}</div>`;
+            if(votes[m.id]) {
+                if(m.b.includes(r.id)) b.innerHTML += txt;
+                if(m.h.includes(r.id)) h.innerHTML += txt;
+            } else { if(m.b.includes(r.id)) mD.innerHTML += txt; }
+        });
+        [b, h, mD].forEach(d => { if(!d.innerHTML) d.innerHTML = "<small>Ninguna afectación</small>"; });
+        document.getElementById('modal-rol').style.display = 'flex';
+    }
+
+    function showFinalMessage() { document.getElementById('modal-final').style.display = 'flex'; }
+    function closeModals() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
+</script>
+</body>
+</html>
