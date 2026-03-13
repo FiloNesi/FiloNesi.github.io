@@ -1,1 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La ética y sus principales teorías</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c1b18;
+    --ink-mid: #4a4840;
+    --ink-light: #8a8880;
+    --paper: #f8f6f0;
+    --paper-warm: #f0ece0;
+    --rule: #d4cfc0;
+    --accent: #2a4a3e;
+    --accent-soft: #e8f0ec;
+    --amber: #b06a10;
+    --amber-soft: #f5ead8;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding: 3rem 2rem 2rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .kicker {
+    font-family: 'Source Serif 4', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .kicker::before, .kicker::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--rule);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+
+  .lead {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-mid);
+    max-width: 600px;
+    border-left: 3px solid var(--ink);
+    padding-left: 1.2rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  /* ── SECTION HEADS ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 3rem 0 0.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .section-intro {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    margin-bottom: 1.5rem;
+    max-width: 580px;
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .content-block {
+    margin: 2rem 0;
+  }
+
+  .content-block p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    margin-bottom: 1rem;
+    max-width: 660px;
+  }
+
+  /* ── FORMULA BOX ── */
+  .formula-box {
+    background: var(--ink);
+    color: #f8f6f0;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .formula-box .label {
+    font-family: 'Source Serif 4', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-right: 0.5rem;
+  }
+  .formula-pill {
+    background: rgba(255,255,255,0.12);
+    border: 0.5px solid rgba(255,255,255,0.25);
+    border-radius: 3px;
+    padding: 4px 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-style: italic;
+  }
+  .formula-eq {
+    font-size: 20px;
+    opacity: 0.4;
+  }
+
+  /* ── THEORY GRID ── */
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1.5rem 0 2.5rem;
+  }
+  .theory-card {
+    background: var(--paper);
+    padding: 1.2rem 1.25rem;
+    transition: background 0.2s;
+  }
+  .theory-card:hover { background: var(--paper-warm); }
+  .theory-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .theory-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+
+  /* ── ACTIVITY CARDS ── */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .activity-card {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    background: #fff;
+  }
+  .activity-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(28,27,24,0.1);
+    border-color: var(--ink-mid);
+  }
+
+  .card-header {
+    padding: 1.25rem 1.4rem 1rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .card-num {
+    font-family: 'Source Serif 4', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .card-subtitle {
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-mid);
+  }
+
+  .card-body {
+    padding: 1rem 1.4rem;
+  }
+  .card-desc {
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+  .tag-green  { background: var(--accent-soft); color: var(--accent); }
+  .tag-amber  { background: var(--amber-soft);  color: var(--amber); }
+  .tag-ink    { background: #e8e7e3; color: var(--ink-mid); }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+    padding: 0.75rem 1.4rem;
+    border-top: 0.5px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.15s;
+  }
+  .activity-card:hover .card-cta { background: var(--paper-warm); }
+  .cta-arrow { font-size: 16px; transition: transform 0.2s; }
+  .activity-card:hover .cta-arrow { transform: translateX(4px); }
+
+  /* ── DIVIDER ── */
+  .ornament {
+    text-align: center;
+    color: var(--ink-light);
+    font-size: 18px;
+    letter-spacing: 0.5em;
+    margin: 3rem 0;
+    opacity: 0.4;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  footer span {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink-light);
+    letter-spacing: 0.05em;
+  }
+  footer .sig {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-mid);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  header   { animation: fadeUp 0.6s ease both; }
+  .content-block { animation: fadeUp 0.6s 0.1s ease both; }
+  .theory-grid   { animation: fadeUp 0.6s 0.2s ease both; }
+  .activity-grid { animation: fadeUp 0.6s 0.3s ease both; }
+
+  @media (max-width: 560px) {
+    .activity-grid { grid-template-columns: 1fr; }
+    header, main, footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+    h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">1.º Bachillerato &nbsp;·&nbsp; Filosofía &nbsp;·&nbsp; Unidad 4</div>
+  <h1>La ética y sus<br>principales teorías</h1>
+  <p class="lead">El ser humano es el único ser de naturaleza moral: su conciencia y su libertad lo convierten en responsable de sus actos.</p>
+</header>
+
+<main>
+
+  <!-- BLOQUE CONCEPTUAL -->
+  <div class="content-block">
+    <h2 class="section-title">Fundamentos de la acción moral</h2>
+    <p class="section-intro">A diferencia de los animales, cuya conducta está guiada por el instinto, el ser humano posee una inteligencia consciente y una voluntad libre que hacen posible —y necesaria— la reflexión ética.</p>
+
+    <p>El comportamiento humano es <em>abierto</em> porque la inteligencia ofrece un abanico de posibilidades que va mucho más allá del instinto, y es <em>libre</em> porque la voluntad puede elegir entre todas ellas. Esta doble condición funda la responsabilidad moral.</p>
+
+    <p>La conducta animal es <strong>amoral</strong>: ni moral ni inmoral, simplemente ajena a la dimensión ética. La conducta humana, en cambio, es siempre <strong>moral o inmoral</strong>, pues el agente libre y consciente no puede sustraerse a la valoración ética de sus actos.</p>
+  </div>
+
+  <div class="formula-box">
+    <span class="label">La fórmula de la responsabilidad</span>
+    <span class="formula-pill">Conciencia</span>
+    <span class="formula-eq">+</span>
+    <span class="formula-pill">Libertad</span>
+    <span class="formula-eq">=</span>
+    <span class="formula-pill">Responsabilidad</span>
+  </div>
+
+  <!-- TEORÍAS -->
+  <div class="content-block">
+    <h2 class="section-title">Principales teorías éticas</h2>
+    <p class="section-intro">A lo largo de la historia, la filosofía ha propuesto distintas respuestas a la pregunta: ¿qué debo hacer?</p>
+  </div>
+
+  <div class="theory-grid">
+    <div class="theory-card">
+      <div class="theory-name">Ética aristotélica</div>
+      <div class="theory-desc">La virtud como hábito. El bien supremo es la eudaimonía: la vida virtuosa y plena.</div>
+    </div>
+    <div class="theory-card">
+      <div class="theory-name">Ética kantiana</div>
+      <div class="theory-desc">El deber como fundamento. Actúa solo según la máxima que puedas querer que sea ley universal.</div>
+    </div>
+    <div class="theory-card">
+      <div class="theory-name">Utilitarismo</div>
+      <div class="theory-desc">La mayor felicidad para el mayor número. Las consecuencias determinan la bondad de la acción.</div>
+    </div>
+    <div class="theory-card">
+      <div class="theory-name">Emotivismo</div>
+      <div class="theory-desc">Los juicios morales expresan emociones, no verdades objetivas. Hume: la razón es esclava de las pasiones.</div>
+    </div>
+  </div>
+
+  <div class="ornament">— ✦ —</div>
+
+  <!-- ACTIVIDADES -->
+  <div class="content-block">
+    <h2 class="section-title">Actividades interactivas</h2>
+    <p class="section-intro">Dos ejercicios para aplicar y consolidar los conceptos fundamentales de la unidad.</p>
+  </div>
+
+  <div class="activity-grid">
+
+    <a class="activity-card" href="actividad1_clasificador_conductas.html" target="_blank">
+      <div class="card-header">
+        <div class="card-num">Actividad 1</div>
+        <div class="card-title">Clasifica la conducta</div>
+        <div class="card-subtitle">Amoral, moral e inmoral</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Arrastra ocho situaciones cotidianas a su categoría correcta. El feedback inmediato explica por qué cada conducta es —o no— objeto de valoración moral.</p>
+        <div class="card-tags">
+          <span class="tag tag-green">Arrastrar y soltar</span>
+          <span class="tag tag-ink">8 casos</span>
+          <span class="tag tag-ink">Autocorrección</span>
+        </div>
+      </div>
+      <div class="card-cta">
+        Abrir actividad <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="activity-card" href="actividad2_analizador_responsabilidad.html" target="_blank">
+      <div class="card-header">
+        <div class="card-num">Actividad 2</div>
+        <div class="card-title">¿Hay responsabilidad moral?</div>
+        <div class="card-subtitle">Conciencia · Libertad · Responsabilidad</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Analiza cinco casos de complejidad creciente evaluando por separado la presencia de conciencia y de libertad antes de emitir un juicio sobre la responsabilidad del agente.</p>
+        <div class="card-tags">
+          <span class="tag tag-amber">Análisis por dimensiones</span>
+          <span class="tag tag-ink">5 dilemas</span>
+          <span class="tag tag-ink">Casos con matices</span>
+        </div>
+      </div>
+      <div class="card-cta">
+        Abrir actividad <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  <span>Filosofía · 1.º Bachillerato</span>
+  <span class="sig">FiloNesi</span>
+</footer>
+
+</body>
+</html>
