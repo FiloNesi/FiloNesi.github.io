@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 3 — Juicio ético</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c1b18;
+    --ink-mid: #4a4840;
+    --ink-light: #8a8880;
+    --paper: #f8f6f0;
+    --paper-warm: #f0ece0;
+    --rule: #d4cfc0;
+    --accent: #2a4a3e;
+    --accent-soft: #e8f0ec;
+    --amber: #b06a10;
+    --amber-soft: #f5ead8;
+    --danger: #8b2020;
+    --danger-soft: #f9eaea;
+    --blue: #1a3a5c;
+    --blue-soft: #e8f0f8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 4rem;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding: 2.5rem 2rem 1.75rem;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeUp 0.5s ease both;
+  }
+  .kicker {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .kicker::before, .kicker::after { content: ''; flex: 1; height: 0.5px; background: var(--rule); }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+  .lead {
+    font-size: 15px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-mid);
+    border-left: 3px solid var(--ink);
+    padding-left: 1rem;
+    max-width: 560px;
+  }
+
+  /* ── INSTRUCCIONES ── */
+  .instrucciones {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .instr-box {
+    background: #fff;
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+  .instr-box strong { font-weight: 400; color: var(--ink); }
+  .steps { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  .step { display: flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 160px; }
+  .step-num {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step p { font-size: 13px; color: var(--ink-mid); }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── CASO ── */
+  .caso-wrap {
+    margin-top: 2rem;
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+
+  .caso-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 0;
+  }
+  .caso-tab {
+    padding: 0.6rem 1.5rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--ink-light);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s;
+  }
+  .caso-tab:hover { color: var(--ink); }
+  .caso-tab.active { color: var(--ink); font-weight: 400; border-bottom-color: var(--ink); }
+
+  .caso-panel { display: none; }
+  .caso-panel.active { display: block; }
+
+  .caso-card {
+    background: #fff;
+    border: 0.5px solid var(--rule);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  .caso-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.25rem 1.5rem;
+  }
+  .caso-letra {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 6px;
+  }
+  .caso-enunciado {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .caso-body { padding: 1.5rem; }
+
+  /* ── PERSONAJES ── */
+  .personajes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .personaje-card {
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+  }
+  .p-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .p-desc {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* ── DIMENSIONES ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.6rem;
+  }
+
+  .dimension-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .dimension {
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    background: var(--paper);
+  }
+  .dim-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .dim-question {
+    font-size: 12px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-mid);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .dim-options { display: flex; flex-direction: column; gap: 5px; }
+  .dim-opt {
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 0.5px solid var(--rule);
+    cursor: pointer;
+    background: #fff;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    line-height: 1.4;
+  }
+  .dim-opt:hover { background: var(--paper-warm); border-color: var(--ink-mid); }
+  .dim-opt.selected-green { background: var(--accent-soft); color: var(--accent); border-color: #1d9e75; }
+  .dim-opt.selected-amber { background: var(--amber-soft); color: var(--amber); border-color: #b06a10; }
+  .dim-opt.selected-red   { background: var(--danger-soft); color: var(--danger); border-color: #c03030; }
+
+  /* ── REFLEXIÓN LIBRE ── */
+  .reflexion-wrap { margin-bottom: 1.25rem; }
+  .reflexion-wrap textarea {
+    width: 100%;
+    min-height: 90px;
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+    line-height: 1.6;
+  }
+  .reflexion-wrap textarea:focus { border-color: var(--ink-mid); }
+  .reflexion-wrap textarea::placeholder { color: var(--ink-light); font-style: italic; }
+
+  /* ── VEREDICTO ── */
+  .veredicto-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .veredicto-block label {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .veredicto-block select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink);
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+  }
+  .veredicto-block select:focus { border-color: var(--ink-mid); }
+
+  /* ── BTN ── */
+  .btn-row { display: flex; gap: 10px; align-items: center; }
+  .btn-juzgar {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 5px;
+    padding: 9px 22px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 300;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: opacity 0.15s;
+  }
+  .btn-juzgar:hover { opacity: 0.85; }
+  .btn-reset {
+    background: transparent; border: none;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px; font-weight: 300;
+    color: var(--ink-light); cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ── RESULTADO ── */
+  .resultado { margin-top: 1.25rem; display: none; }
+  .resultado.visible { display: block; animation: fadeUp 0.35s ease both; }
+
+  .resultado-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .veredicto-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .chip {
+    font-size: 12px;
+    font-weight: 400;
+    padding: 4px 14px;
+    border-radius: 3px;
+  }
+  .chip-culpable { background: var(--danger-soft); color: var(--danger); }
+  .chip-victima  { background: var(--accent-soft); color: var(--accent); }
+  .chip-ambos    { background: var(--amber-soft);  color: var(--amber); }
+
+  .reflexion-filosofica {
+    background: var(--paper-warm);
+    border-left: 3px solid var(--ink);
+    border-radius: 0 6px 6px 0;
+    padding: 1rem 1.25rem;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+  .reflexion-filosofica strong { font-weight: 400; color: var(--ink); }
+
+  .tension-list { margin-top: 0.75rem; }
+  .tension-item {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 13px; font-weight: 300; color: var(--ink-mid);
+    margin-bottom: 5px; line-height: 1.5;
+  }
+  .tension-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-mid); flex-shrink: 0; margin-top: 7px;
+  }
+
+  .pregunta-debate {
+    margin-top: 1rem;
+    background: var(--blue-soft);
+    border-radius: 6px;
+    padding: 0.85rem 1.1rem;
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--blue);
+    line-height: 1.6;
+  }
+  .pregunta-debate::before {
+    content: '↳ Para el debate: ';
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--ink);
+    max-width: 800px;
+    margin: 3rem auto 0;
+    padding: 1.25rem 2rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+  }
+  footer span { font-size: 12px; font-weight: 300; color: var(--ink-light); letter-spacing: 0.05em; }
+  footer .sig { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: var(--ink-mid); }
+
+  /* ── ANIM ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 540px) {
+    header, .instrucciones, main { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .personajes, .dimension-grid, .veredicto-row { grid-template-columns: 1fr; }
+    h1 { font-size: 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Actividad 3 &nbsp;·&nbsp; Juicio ético &nbsp;·&nbsp; 1.º Bachillerato</div>
+  <h1>Juzga: ¿quién es culpable<br>y quién la víctima?</h1>
+  <p class="lead">La ética no siempre ofrece respuestas simples. Reflexiona con cuidado antes de emitir un juicio moral.</p>
+</header>
+
+<div class="instrucciones">
+  <div class="instr-box">
+    <strong>Cómo trabajar esta actividad:</strong> para cada caso, analiza las dimensiones éticas relevantes, redacta una breve reflexión propia y emite tu veredicto argumentado. No existe una única respuesta correcta, pero sí argumentos más sólidos que otros.
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span><p>Analiza las dimensiones éticas del caso</p></div>
+      <div class="step"><span class="step-num">2</span><p>Escribe tu reflexión personal</p></div>
+      <div class="step"><span class="step-num">3</span><p>Emite tu veredicto y pulsa «Juzgar»</p></div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <div class="caso-wrap">
+
+    <div class="caso-tabs">
+      <button class="caso-tab active" onclick="switchTab(0)">Caso a) El robo</button>
+      <button class="caso-tab" onclick="switchTab(1)">Caso b) La pancarta</button>
+    </div>
+
+    <!-- ════ CASO A ════ -->
+    <div class="caso-panel active" id="panel-0">
+      <div class="caso-card">
+        <div class="caso-header">
+          <div class="caso-letra">Caso a</div>
+          <div class="caso-enunciado">Una persona se pasea con joyas por un barrio muy pobre y una persona sin techo se las roba.</div>
+        </div>
+        <div class="caso-body">
+
+          <div class="section-label" style="margin-bottom:0.6rem">Personajes del caso</div>
+          <div class="personajes">
+            <div class="personaje-card">
+              <div class="p-name">La persona con joyas</div>
+              <div class="p-desc">Propietaria legítima de los bienes. Hace uso de su propiedad en un espacio público.</div>
+            </div>
+            <div class="personaje-card">
+              <div class="p-name">La persona sin techo</div>
+              <div class="p-desc">Desposeída. Toma los bienes ajenos sin consentimiento. Actúa por causas que desconocemos.</div>
+            </div>
+          </div>
+
+          <div class="section-label">Analiza las dimensiones éticas</div>
+          <div class="dimension-grid">
+            <div class="dimension">
+              <div class="dim-title">Responsabilidad del ladrón</div>
+              <div class="dim-question">¿El robo es un acto libre y consciente? ¿La pobreza lo justifica o lo atenúa?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_ladron','culpa_total')">Culpa total: robar es siempre una acción libre e inmoral</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_ladron','culpa_atenuada')">Culpa atenuada: la situación extrema reduce la responsabilidad</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_ladron','sin_culpa')">Sin culpa: la necesidad extrema suspende la norma moral</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">Responsabilidad de quien lleva joyas</div>
+              <div class="dim-question">¿Provoca o facilita el daño? ¿Tiene responsabilidad moral por su conducta?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_joyero','ninguna')">Ninguna: tiene derecho a llevar sus bienes donde quiera</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_joyero','moral_leve')">Responsabilidad moral leve: imprudencia ante la desigualdad</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','resp_joyero','compartida')">Responsabilidad compartida: la ostentación ante la miseria es un acto moral</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">Desigualdad social</div>
+              <div class="dim-question">¿Cambia el contexto de pobreza extrema la valoración moral del acto?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'a','desigualdad','no_relevante')">No es relevante: la moral no depende del contexto social</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','desigualdad','atenua')">Atenúa la culpa: el hambre extrema reduce la libertad real</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','desigualdad','cuestiona')">Cuestiona el orden: la injusticia estructural también es un hecho moral</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">Derechos en tensión</div>
+              <div class="dim-question">¿Qué derechos entran en conflicto en este caso?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'a','derechos','propiedad')">Prevalece el derecho a la propiedad privada</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','derechos','supervivencia')">Prevalece el derecho a la supervivencia digna</button>
+                <button class="dim-opt" onclick="selectDim(this,'a','derechos','tension')">Ambos derechos son legítimos: hay tensión irresoluble</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-label">Tu reflexión personal</div>
+          <div class="reflexion-wrap">
+            <textarea id="reflexion-a" placeholder="Escribe aquí tu argumentación ética. ¿Qué teoría moral aplicarías? ¿Qué haría un aristotélico, un kantiano o un utilitarista?"></textarea>
+          </div>
+
+          <div class="section-label">Tu veredicto</div>
+          <div class="veredicto-row">
+            <div class="veredicto-block">
+              <label>¿Quién es culpable?</label>
+              <select id="culpable-a">
+                <option value="">— elige —</option>
+                <option value="ladron">La persona sin techo (ladrón)</option>
+                <option value="joyero">La persona con joyas</option>
+                <option value="ambos">Ambos tienen parte de culpa</option>
+                <option value="sistema">El sistema social injusto</option>
+                <option value="ninguno">Ninguno (acto amoral)</option>
+              </select>
+            </div>
+            <div class="veredicto-block">
+              <label>¿Quién es la víctima?</label>
+              <select id="victima-a">
+                <option value="">— elige —</option>
+                <option value="joyero">La persona con joyas (robo)</option>
+                <option value="ladron">La persona sin techo (pobreza)</option>
+                <option value="ambos">Ambos son víctimas a su modo</option>
+                <option value="sociedad">La sociedad en su conjunto</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-juzgar" onclick="juzgar('a')">Emitir juicio ético →</button>
+            <button class="btn-reset" onclick="resetCaso('a')">Reiniciar</button>
+          </div>
+
+          <div class="resultado" id="resultado-a"></div>
+
+        </div>
+      </div>
+    </div><!-- /panel-0 -->
+
+    <!-- ════ CASO B ════ -->
+    <div class="caso-panel" id="panel-1">
+      <div class="caso-card">
+        <div class="caso-header">
+          <div class="caso-letra">Caso b</div>
+          <div class="caso-enunciado">Una persona defiende en una pancarta unas ideas políticas que aborrezco y entonces otra persona que es mi mejor amiga le arrebata la pancarta y se pelea con él.</div>
+        </div>
+        <div class="caso-body">
+
+          <div class="section-label" style="margin-bottom:0.6rem">Personajes del caso</div>
+          <div class="personajes">
+            <div class="personaje-card">
+              <div class="p-name">Quien porta la pancarta</div>
+              <div class="p-desc">Ejerce su derecho a la libertad de expresión y de manifestación en un espacio público.</div>
+            </div>
+            <div class="personaje-card">
+              <div class="p-name">La mejor amiga</div>
+              <div class="p-desc">Actúa movida por sus convicciones —y quizá por lealtad—. Usa la fuerza para silenciar una idea.</div>
+            </div>
+          </div>
+
+          <div class="section-label">Analiza las dimensiones éticas</div>
+          <div class="dimension-grid">
+            <div class="dimension">
+              <div class="dim-title">Libertad de expresión</div>
+              <div class="dim-question">¿El hecho de que las ideas me parezcan aborreci­bles cambia el derecho a defenderlas?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'b','libertad','absoluta')">La libertad de expresión es casi absoluta, incluso para ideas repugnantes</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','libertad','con_limites')">Tiene límites: incitar al odio o la violencia la invalida</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','libertad','relativa')">Depende del contenido: no todas las ideas merecen igual protección</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">Acción de la amiga</div>
+              <div class="dim-question">¿La amistad o la convicción moral justifican el uso de la fuerza para silenciar?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'b','amiga','injustificable')">Injustificable: nadie puede usar la fuerza para silenciar ideas</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','amiga','comprensible')">Comprensible pero incorrecta: la emoción atenúa la culpa</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','amiga','justificada')">Justificada si las ideas son suficientemente dañinas</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">Emociones y razón</div>
+              <div class="dim-question">¿El aborrecimiento de las ideas —mío y de mi amiga— es un dato moralmente relevante?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'b','emocion','no_relevante')">No: las emociones no justifican actos violentos</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','emocion','atenuan')">Sí, atenúan: la indignación moral es una respuesta humana legítima</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','emocion','guia')">Las emociones morales son una guía válida de la acción (emotivismo)</button>
+              </div>
+            </div>
+            <div class="dimension">
+              <div class="dim-title">El papel del narrador</div>
+              <div class="dim-question">Yo aborrezco las ideas y la que actúa es mi amiga. ¿Afecta esto a mi juicio?</div>
+              <div class="dim-options">
+                <button class="dim-opt" onclick="selectDim(this,'b','narrador','neutro')">No: debo juzgar con imparcialidad, al margen de mis afectos</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','narrador','parcial')">Sí: mis vínculos y convicciones condicionan inevitablemente el juicio</button>
+                <button class="dim-opt" onclick="selectDim(this,'b','narrador','reflexivo')">Debo reconocer mi parcialidad y hacer un esfuerzo de distancia crítica</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-label">Tu reflexión personal</div>
+          <div class="reflexion-wrap">
+            <textarea id="reflexion-b" placeholder="¿Cómo valoras la acción de tu amiga? ¿Qué dice Kant sobre actuar por principio frente a actuar por afecto? ¿Cambia algo que las ideas te parezcan abominables?"></textarea>
+          </div>
+
+          <div class="section-label">Tu veredicto</div>
+          <div class="veredicto-row">
+            <div class="veredicto-block">
+              <label>¿Quién es culpable?</label>
+              <select id="culpable-b">
+                <option value="">— elige —</option>
+                <option value="amiga">La amiga (agresión y censura)</option>
+                <option value="pancarta">Quien porta la pancarta (ideas dañinas)</option>
+                <option value="ambos">Ambos tienen responsabilidad moral</option>
+                <option value="ninguno">Ninguno (conflicto de valores legítimos)</option>
+              </select>
+            </div>
+            <div class="veredicto-block">
+              <label>¿Quién es la víctima?</label>
+              <select id="victima-b">
+                <option value="">— elige —</option>
+                <option value="pancarta">Quien porta la pancarta (agredido, silenciado)</option>
+                <option value="amiga">La amiga (actuó por convicción)</option>
+                <option value="sociedad">La sociedad (ataque a la libertad de expresión)</option>
+                <option value="ambos">Ambos, de formas distintas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-juzgar" onclick="juzgar('b')">Emitir juicio ético →</button>
+            <button class="btn-reset" onclick="resetCaso('b')">Reiniciar</button>
+          </div>
+
+          <div class="resultado" id="resultado-b"></div>
+
+        </div>
+      </div>
+    </div><!-- /panel-1 -->
+
+  </div><!-- /caso-wrap -->
+</main>
+
+<footer>
+  <span>Filosofía · 1.º Bachillerato · La ética y sus teorías</span>
+  <span class="sig">FiloNesi</span>
+</footer>
+
+<script>
+const state = { a: {}, b: {} };
+
+function switchTab(i) {
+  document.querySelectorAll('.caso-tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  document.querySelectorAll('.caso-panel').forEach((p,j) => p.classList.toggle('active', i===j));
+}
+
+function selectDim(btn, caso, dim, val) {
+  const parent = btn.closest('.dim-options');
+  parent.querySelectorAll('.dim-opt').forEach(b => b.className = 'dim-opt');
+  const color = ['culpa_total','injustificable','no_relevante','neutro','ninguna','propiedad','absoluta'].includes(val) ? 'selected-green'
+              : ['culpa_atenuada','comprensible','atenuan','parcial','moral_leve','tension','con_limites'].includes(val) ? 'selected-amber'
+              : 'selected-red';
+  btn.classList.add(color);
+  state[caso][dim] = val;
+}
+
+const reflexionesA = {
+  ladron: {
+    chips: [{ label: 'Culpable: persona sin techo', cls: 'chip-culpable' }, { label: 'Víctima directa: persona con joyas', cls: 'chip-victima' }],
+    texto: `Desde un punto de vista <strong>kantiano</strong>, el robo es inmoral con independencia de las circunstancias: nadie puede usar a otro como medio. La necesidad no justifica el acto. Sin embargo, el <strong>utilitarismo</strong> y la ética de la virtud aristotélica invitan a mirar el contexto: ¿hay verdadera libertad cuando se actúa desde la miseria extrema? La responsabilidad puede ser completa en términos jurídicos y estar atenuada en términos morales.`,
+    tension: ['La pobreza extrema reduce la libertad real del agente, aunque no la elimina.', 'Robar es siempre una acción moral (no amoral), pero el grado de culpa puede variar.', 'El orden social injusto es también un hecho moral que merece análisis.'],
+    debate: '¿Hay diferencia moral entre robar por codicia y robar por hambre? ¿Qué diría Kant? ¿Y un utilitarista?'
+  },
+  joyero: {
+    chips: [{ label: 'Culpable: persona con joyas', cls: 'chip-culpable' }, { label: 'Víctima directa: persona con joyas', cls: 'chip-victima' }],
+    texto: `Este veredicto es filosóficamente problemático. Si bien quien porta joyas tiene responsabilidad <strong>moral</strong> por su conducta pública en un contexto de desigualdad extrema, jurídica y moralmente la víctima del delito es ella. Culpar a la víctima del robo confunde responsabilidad moral difusa con culpabilidad directa. La <strong>ética aristotélica</strong> señalaría que la prudencia exige sensibilidad ante el contexto, pero eso no convierte la ostentación en un crimen.`,
+    tension: ['Responsabilidad moral no equivale a culpabilidad penal.', 'La imprudencia puede ser un reproche moral sin ser causa del delito.', 'Culpar a la víctima puede enmascarar la acción del agresor.'],
+    debate: '¿Es lo mismo «tener responsabilidad moral» en un acto que «ser culpable» de él? ¿Pueden coexistir ambas cosas?'
+  },
+  ambos: {
+    chips: [{ label: 'Culpa compartida', cls: 'chip-ambos' }, { label: 'Víctima: persona con joyas', cls: 'chip-victima' }],
+    texto: `Este veredicto reconoce que la ética no opera en el vacío social. La <strong>ética de la virtud</strong> señalaría que quien ostenta riqueza ante la miseria actúa con imprudencia y sin empatía. El <strong>utilitarismo</strong> añadiría que la distribución desigual de recursos genera contextos que aumentan el daño social. Pero la culpa principal del acto delictivo recae sobre quien roba: la causalidad moral no se distribuye equitativamente.`,
+    tension: ['La desigualdad social es un hecho moral, no solo económico.', 'Compartir culpa no significa repartirla a partes iguales.', 'La responsabilidad del sistema no exime la responsabilidad individual.'],
+    debate: '¿Pueden existir «víctimas culpables»? ¿En qué medida el contexto social forma parte del análisis ético?'
+  },
+  sistema: {
+    chips: [{ label: 'Culpable: sistema social', cls: 'chip-culpable' }, { label: 'Ambos son víctimas del sistema', cls: 'chip-victima' }],
+    texto: `Este veredicto adopta una perspectiva <strong>estructural</strong> propia de la ética social: el verdadero culpable es el sistema económico que permite la coexistencia de lujo extremo y miseria. Pensadores como <strong>Rawls</strong> argumentarían que una sociedad justa no debería producir este tipo de situaciones. Sin embargo, disolver toda responsabilidad individual en la estructura social borra la condición de agentes morales libres de los implicados.`,
+    tension: ['La injusticia estructural es un hecho moral que la ética no puede ignorar.', 'Señalar al sistema no elimina la responsabilidad individual del agente.', 'Este veredicto desplaza el análisis de lo individual a lo político-social.'],
+    debate: '¿Puede una estructura social injusta ser «culpable» en sentido moral? ¿Cómo se relaciona la ética individual con la justicia social?'
+  },
+  ninguno: {
+    chips: [{ label: 'Sin culpables', cls: 'chip-ambos' }, { label: 'Víctimas del sistema', cls: 'chip-victima' }],
+    texto: `Declarar el acto amoral es problemático: tanto quien roba como quien porta joyas son <strong>agentes libres y conscientes</strong>. La conducta humana no puede ser amoral. Este veredicto confunde la comprensión empática del contexto con la suspensión del juicio ético. Desde cualquier teoría moral —kantismo, utilitarismo o ética de la virtud— el robo es un objeto de valoración ética, aunque el grado de culpa sea discutible.`,
+    tension: ['El ser humano no puede sustraerse a la dimensión moral de sus actos.', 'Comprender no equivale a exculpar.', 'La amoral­idad solo aplica a conductas instintivas (animales), no a agentes racionales.'],
+    debate: '¿Existe alguna situación en que la conducta humana sea genuinamente amoral? ¿O toda acción libre implica una dimensión ética?'
+  }
+};
+
+const reflexionesB = {
+  amiga: {
+    chips: [{ label: 'Culpable: la amiga', cls: 'chip-culpable' }, { label: 'Víctima: quien porta la pancarta', cls: 'chip-victima' }],
+    texto: `Este es el veredicto más sólido desde la mayoría de tradiciones éticas. Desde <strong>Kant</strong>, usar la fuerza para silenciar una expresión viola el imperativo categórico: ninguna convicción personal —por intensa que sea— autoriza a tratar al otro como obstáculo. La <strong>libertad de expresión</strong> solo tiene valor si protege también las ideas que nos parecen repugnantes. El afecto por la amiga no puede nublar este juicio: de hecho, el texto nos advierte de nuestra propia parcialidad como narradores.`,
+    tension: ['La intensidad de una convicción moral no la convierte en criterio de acción válido.', 'Censurar por la fuerza es siempre un acto inmoral, independientemente del contenido censurado.', 'El narrador (yo) tiene un conflicto de interés: debo reconocerlo para juzgar bien.'],
+    debate: '¿Hay ideas tan dañinas que justifiquen silenciarlas por la fuerza? ¿Dónde está el límite entre libertad de expresión y discurso del odio?'
+  },
+  pancarta: {
+    chips: [{ label: 'Culpable: quien porta pancarta', cls: 'chip-culpable' }, { label: 'Víctima: la amiga', cls: 'chip-victima' }],
+    texto: `Este veredicto es filosóficamente débil si se aplica de forma genérica. Señalar como culpable a quien ejerce su derecho a la expresión implica que el contenido de las ideas determina la licitud del acto. Esto abre la puerta a la censura arbitraria: ¿quién decide qué ideas son «suficientemente» reprochables para ser silenciadas? Desde el <strong>liberalismo político</strong> (Mill, Rawls), la expresión de ideas —incluso odiosas— está protegida mientras no suponga incitación directa a la violencia.`,
+    tension: ['Culpabilizar la expresión de ideas traslada el foco del acto (agresión) a la causa (ideas).', '¿Pueden las ideas ser moralmente culpables? ¿O solo los actos?', 'Este veredicto puede legitimar la violencia como respuesta a la discrepancia ideológica.'],
+    debate: '¿Es posible que una idea sea en sí misma un acto dañino? ¿Cuándo deja la expresión de ser legítima?'
+  },
+  ambos: {
+    chips: [{ label: 'Responsabilidad compartida', cls: 'chip-ambos' }, { label: 'Víctimas de distinta forma', cls: 'chip-victima' }],
+    texto: `Este veredicto reconoce la complejidad del caso: quien porta la pancarta puede difundir ideas moralmente dañinas, y la amiga actúa con violencia. Pero la distribución de culpas no es simétrica: el acto físico de arrebatar y agredir tiene una gravedad moral mayor e inmediata. La <strong>ética emotivista</strong> reconocería la legitimidad del sentimiento de indignación, pero no lo convertiría en criterio suficiente para la acción violenta.`,
+    tension: ['Reconocer culpa compartida no significa equiparar las responsabilidades.', 'El acto físico y el discurso tienen distinta naturaleza moral.', 'La indignación es una emoción moral legítima; la agresión, un acto moral distinto.'],
+    debate: '¿Puede la indignación moral justificar la acción? ¿O es siempre necesario pasar por la razón antes de actuar?'
+  },
+  ninguno: {
+    chips: [{ label: 'Sin culpables claros', cls: 'chip-ambos' }, { label: 'Conflicto de valores', cls: 'chip-victima' }],
+    texto: `Declarar a ninguno culpable en este caso resulta problemático: hay un acto físico claro (arrebatar, pelear) cometido por un agente libre y consciente. La ética no puede paralizarse ante la complejidad: incluso los <strong>dilemas morales genuinos</strong> exigen deliberación y juicio. No emitir veredicto puede ser una respuesta honesta ante la incertidumbre, pero no un resultado final del análisis ético.`,
+    tension: ['Los dilemas morales reales exigen elección, no suspensión del juicio.', 'La ausencia de veredicto es también una postura moral (y puede favorecer al agresor).', 'La ética no requiere certeza absoluta, sino la mejor razón disponible.'],
+    debate: '¿Existe el «dilema moral irresoluble»? ¿O siempre hay una opción moralmente preferible, aunque sea difícil de defender?'
+  }
+};
+
+function juzgar(caso) {
+  const culpable = document.getElementById(`culpable-${caso}`).value;
+  const victima  = document.getElementById(`victima-${caso}`).value;
+  const reflexion = document.getElementById(`reflexion-${caso}`).value.trim();
+  const resultDiv = document.getElementById(`resultado-${caso}`);
+
+  if (!culpable || !victima) {
+    resultDiv.className = 'resultado visible';
+    resultDiv.innerHTML = `<div class="reflexion-filosofica" style="border-left-color:#b06a10;background:#f5ead8;color:#412402">Completa el veredicto eligiendo culpable y víctima antes de emitir el juicio.</div>`;
+    return;
+  }
+
+  const data = caso === 'a' ? reflexionesA[culpable] : reflexionesB[culpable];
+  if (!data) return;
+
+  let html = `<div class="resultado-header">Análisis filosófico de tu veredicto</div>`;
+  html += `<div class="veredicto-chips">`;
+  data.chips.forEach(c => { html += `<span class="chip ${c.cls}">${c.label}</span>`; });
+  html += `</div>`;
+  html += `<div class="reflexion-filosofica">${data.texto}`;
+  if (data.tension.length) {
+    html += `<div class="tension-list">`;
+    data.tension.forEach(t => { html += `<div class="tension-item"><span class="tension-dot"></span><span>${t}</span></div>`; });
+    html += `</div>`;
+  }
+  html += `</div>`;
+  if (reflexion.length > 20) {
+    html += `<div style="margin-top:1rem;background:#fff;border:0.5px solid var(--rule);border-radius:6px;padding:1rem 1.1rem">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);margin-bottom:6px">Tu reflexión</div>
+      <div style="font-size:14px;font-weight:300;font-style:italic;color:var(--ink-mid);line-height:1.6">"${reflexion}"</div>
+    </div>`;
+  }
+  html += `<div class="pregunta-debate">${data.debate}</div>`;
+
+  resultDiv.className = 'resultado visible';
+  resultDiv.innerHTML = html;
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetCaso(caso) {
+  state[caso] = {};
+  document.getElementById(`culpable-${caso}`).value = '';
+  document.getElementById(`victima-${caso}`).value = '';
+  document.getElementById(`reflexion-${caso}`).value = '';
+  const r = document.getElementById(`resultado-${caso}`);
+  r.className = 'resultado';
+  r.innerHTML = '';
+  document.querySelectorAll(`#panel-${caso === 'a' ? 0 : 1} .dim-opt`).forEach(b => b.className = 'dim-opt');
+}
+</script>
+</body>
+</html>
