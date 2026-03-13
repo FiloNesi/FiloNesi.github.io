@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 1 — Clasifica la conducta</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a18; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 780px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  h2 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: #5f5e5a; margin-bottom: 1.5rem; }
+  .casos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .caso-card { background: #fff; border: 0.5px solid #aaa; border-radius: 8px; padding: 12px; font-size: 13px; cursor: grab; user-select: none; transition: opacity 0.2s, transform 0.15s; line-height: 1.5; }
+  .caso-card:hover { transform: translateY(-2px); border-color: #555; }
+  .caso-card.dragging { opacity: 0.4; }
+  .caso-card.placed { opacity: 0.4; pointer-events: none; }
+  .categorias { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .cat-zone { border-radius: 12px; border: 1.5px dashed #ccc; padding: 12px; min-height: 120px; transition: border-color 0.2s, background 0.2s; }
+  .cat-zone.over { border-style: solid; }
+  .cat-zone.amoral.over { border-color: #888780; background: #f1efe8; }
+  .cat-zone.moral.over { border-color: #0f6e56; background: #e1f5ee; }
+  .cat-zone.inmoral.over { border-color: #993c1d; background: #faece7; }
+  .cat-label { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .cat-label.amoral { color: #5f5e5a; }
+  .cat-label.moral { color: #0f6e56; }
+  .cat-label.inmoral { color: #993c1d; }
+  .cat-desc { font-size: 11px; color: #888; margin-bottom: 10px; line-height: 1.4; }
+  .dropped-item { font-size: 12px; padding: 6px 8px; border-radius: 8px; margin-bottom: 6px; line-height: 1.4; }
+  .dropped-item.amoral { background: #d3d1c7; color: #2c2c2a; }
+  .dropped-item.moral { background: #9fe1cb; color: #04342c; }
+  .dropped-item.inmoral { background: #f5c4b3; color: #4a1b0c; }
+  .dropped-item.wrong { outline: 2px solid #e24b4a; }
+  .dropped-item.correct { outline: 2px solid #1d9e75; }
+  .btn-check { background: #fff; border: 0.5px solid #aaa; border-radius: 8px; padding: 8px 20px; font-size: 14px; cursor: pointer; color: #1a1a18; }
+  .btn-check:hover { background: #f5f4f0; }
+  .result-msg { font-size: 14px; margin-top: 1rem; padding: 10px 14px; border-radius: 8px; line-height: 1.5; }
+  .result-msg.ok { background: #e1f5ee; color: #085041; }
+  .result-msg.fail { background: #faece7; color: #4a1b0c; }
+  .score-line { font-weight: 500; margin-bottom: 4px; }
+  .feedback-list { font-size: 13px; margin-top: 6px; }
+  .feedback-list li { margin-bottom: 3px; }
+  .btn-reset { background: transparent; border: none; font-size: 13px; color: #888; cursor: pointer; text-decoration: underline; margin-left: 12px; }
+  @media (max-width: 540px) {
+    .categorias { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Actividad 1 — Clasifica la conducta</h2>
+  <p class="subtitle">Arrastra cada situación a la categoría correcta: amoral, moral o inmoral.</p>
+  <div class="casos-grid" id="casos-pool"></div>
+  <div class="categorias">
+    <div class="cat-zone amoral" data-cat="amoral" id="zone-amoral">
+      <div class="cat-label amoral">Amoral</div>
+      <div class="cat-desc">Ajena a la moral. Sin consciencia ni libertad.</div>
+    </div>
+    <div class="cat-zone moral" data-cat="moral" id="zone-moral">
+      <div class="cat-label moral">Moral</div>
+      <div class="cat-desc">Acción libre y consciente conforme a normas éticas.</div>
+    </div>
+    <div class="cat-zone inmoral" data-cat="inmoral" id="zone-inmoral">
+      <div class="cat-label inmoral">Inmoral</div>
+      <div class="cat-desc">Acción libre y consciente contra las normas éticas.</div>
+    </div>
+  </div>
+  <button class="btn-check" onclick="checkAnswers()">Comprobar respuestas</button>
+  <button class="btn-reset" onclick="resetAll()">Reiniciar</button>
+  <div id="result-area"></div>
+</div>
+<script>
+const casos = [
+  { id: 1, text: "Un lobo ataca a un ciervo para alimentarse.", cat: "amoral" },
+  { id: 2, text: "Una persona miente a su amiga para quedarse con su dinero.", cat: "inmoral" },
+  { id: 3, text: "Un estudiante devuelve la cartera perdida que encontró.", cat: "moral" },
+  { id: 4, text: "Un virus destruye células del cuerpo humano.", cat: "amoral" },
+  { id: 5, text: "Alguien cede su asiento en el metro a una persona mayor.", cat: "moral" },
+  { id: 6, text: "Una empresa vierte residuos tóxicos en el río a sabiendas.", cat: "inmoral" },
+  { id: 7, text: "Un tsunami arrasa una ciudad costera.", cat: "amoral" },
+  { id: 8, text: "Un político acepta un soborno sabiendo que perjudica al bien común.", cat: "inmoral" },
+];
+
+let placements = {};
+let draggingId = null;
+
+function init() {
+  placements = {};
+  const pool = document.getElementById('casos-pool');
+  pool.innerHTML = '';
+  ['zone-amoral','zone-moral','zone-inmoral'].forEach(id => {
+    const z = document.getElementById(id);
+    z.querySelectorAll('.dropped-item').forEach(d => d.remove());
+  });
+  document.getElementById('result-area').innerHTML = '';
+
+  casos.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'caso-card';
+    el.id = 'caso-' + c.id;
+    el.draggable = true;
+    el.textContent = c.text;
+    el.addEventListener('dragstart', e => { draggingId = c.id; el.classList.add('dragging'); });
+    el.addEventListener('dragend', e => { el.classList.remove('dragging'); });
+    pool.appendChild(el);
+  });
+
+  document.querySelectorAll('.cat-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('over');
+      if (!draggingId) return;
+      const cat = zone.dataset.cat;
+      const c = casos.find(x => x.id === draggingId);
+      if (!c) return;
+      const orig = document.getElementById('caso-' + draggingId);
+      if (orig) orig.classList.add('placed');
+      placements[draggingId] = cat;
+      const dropped = document.createElement('div');
+      dropped.className = 'dropped-item ' + cat;
+      dropped.id = 'drop-' + draggingId;
+      dropped.textContent = c.text;
+      zone.appendChild(dropped);
+      draggingId = null;
+    });
+  });
+}
+
+function checkAnswers() {
+  let correct = 0;
+  const feedback = [];
+  casos.forEach(c => {
+    const drop = document.getElementById('drop-' + c.id);
+    if (!drop) return;
+    const given = placements[c.id];
+    if (given === c.cat) { correct++; drop.classList.add('correct'); }
+    else { drop.classList.add('wrong'); feedback.push(`"${c.text.slice(0,40)}..." → correcta: <strong>${c.cat}</strong>`); }
+  });
+  const total = Object.keys(placements).length;
+  const area = document.getElementById('result-area');
+  const allDone = total === casos.length;
+  let html = `<div class="result-msg ${correct===casos.length?'ok':'fail'}">
+    <div class="score-line">${correct} de ${casos.length} correctas${!allDone?' (faltan casos por clasificar)':''}.</div>`;
+  if (feedback.length) {
+    html += `<div class="feedback-list"><ul>${feedback.map(f=>`<li>${f}</li>`).join('')}</ul></div>`;
+  }
+  if (correct===casos.length) html += `<div>Perfecto. Recuerda: solo los seres con conciencia y libertad tienen conducta moral.</div>`;
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function resetAll() { init(); }
+init();
+</script>
+</body>
+</html>
