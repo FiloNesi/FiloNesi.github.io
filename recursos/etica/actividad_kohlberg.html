@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los estadios morales de Kohlberg</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2336;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.18);
+  --text: #e8e6e0;
+  --text-mid: #9a9690;
+  --text-dim: #5a5850;
+
+  /* nivel colors */
+  --pre-1: #c0392b; --pre-1-soft: rgba(192,57,43,0.15);
+  --pre-2: #e67e22; --pre-2-soft: rgba(230,126,34,0.15);
+  --conv-3: #27ae60; --conv-3-soft: rgba(39,174,96,0.15);
+  --conv-4: #2980b9; --conv-4-soft: rgba(41,128,185,0.15);
+  --post-5: #8e44ad; --post-5-soft: rgba(142,68,173,0.15);
+  --post-6: #d4a843; --post-6-soft: rgba(212,168,67,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 2rem;
+  border-bottom: 0.5px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,17,23,0.92);
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+.logo span { color: var(--text-mid); font-style: italic; font-size: 0.85rem; }
+.mode-tabs { display: flex; gap: 4px; background: var(--surface); border-radius: 8px; padding: 3px; }
+.mode-tab {
+  padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+  color: var(--text-mid); background: transparent; transition: all 0.18s;
+}
+.mode-tab.active { background: var(--surface2); color: var(--text); }
+
+/* ── HERO ── */
+.hero {
+  text-align: center; padding: 3rem 2rem 2rem;
+  max-width: 680px; margin: 0 auto;
+}
+.hero-kicker {
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400; line-height: 1.1;
+  color: var(--text); margin-bottom: 1rem;
+}
+.hero p {
+  font-size: 15px; font-weight: 300; color: var(--text-mid);
+  max-width: 480px; margin: 0 auto;
+}
+
+/* ══════════════════════════
+   MODO 1 — MAPA DE ESTADIOS
+══════════════════════════ */
+#view-mapa { display: block; }
+#view-dilema { display: none; }
+
+.nivel-section { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 1rem; }
+.nivel-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 1rem 0 0.5rem;
+  border-top: 0.5px solid var(--border);
+  margin-top: 1rem;
+}
+.nivel-badge {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 3px 12px; border-radius: 3px;
+}
+.nivel-label {
+  font-size: 12px; color: var(--text-dim); font-weight: 300; letter-spacing: 0.05em;
+}
+
+.estadios-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.5rem; }
+
+.estadio-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.18s, transform 0.15s;
+}
+.estadio-card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+.estadio-card.open { border-color: var(--border-hover); }
+
+.estadio-head {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 1rem 1.1rem;
+}
+.estadio-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; font-weight: 400; line-height: 1;
+  flex-shrink: 0; width: 36px; text-align: center;
+  margin-top: 2px;
+}
+.estadio-info { flex: 1; }
+.estadio-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem; font-weight: 400;
+  color: var(--text); margin-bottom: 3px; line-height: 1.3;
+}
+.estadio-tag {
+  font-size: 11px; font-weight: 300; color: var(--text-dim);
+  font-style: italic;
+}
+.estadio-toggle {
+  font-size: 18px; color: var(--text-dim); flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.estadio-card.open .estadio-toggle { transform: rotate(45deg); }
+
+.estadio-body {
+  display: none;
+  padding: 0 1.1rem 1.1rem;
+  border-top: 0.5px solid var(--border);
+}
+.estadio-card.open .estadio-body { display: block; }
+
+.estadio-desc {
+  font-size: 13.5px; font-weight: 300; color: var(--text-mid);
+  line-height: 1.65; margin: 0.75rem 0;
+}
+.criterio-row { display: flex; gap: 8px; margin-bottom: 5px; align-items: flex-start; }
+.criterio-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.criterio-text { font-size: 13px; font-weight: 300; color: var(--text-mid); line-height: 1.5; }
+
+.ejemplo-box {
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 12.5px; font-weight: 300; font-style: italic;
+  color: var(--text-mid); line-height: 1.55;
+}
+.ejemplo-box::before {
+  content: 'Ejemplo · ';
+  font-style: normal; font-weight: 500; color: var(--text-dim);
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.pregunta-guia {
+  font-size: 12px; font-weight: 400; color: var(--text-dim);
+  margin-top: 0.6rem; padding-top: 0.6rem;
+  border-top: 0.5px solid var(--border);
+  font-style: italic;
+}
+.pregunta-guia::before { content: '↳ '; font-style: normal; }
+
+/* ══════════════════════════
+   MODO 2 — DILEMAS
+══════════════════════════ */
+.dilema-wrap { max-width: 780px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+.dilema-nav { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.dilema-pill {
+  padding: 5px 14px; border-radius: 99px;
+  border: 0.5px solid var(--border);
+  font-size: 12px; font-weight: 400; cursor: pointer;
+  color: var(--text-mid); background: transparent; transition: all 0.15s;
+}
+.dilema-pill.active { color: var(--text); border-color: var(--border-hover); background: var(--surface); }
+
+.dilema-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.dilema-header { padding: 1.25rem 1.5rem; border-bottom: 0.5px solid var(--border); }
+.dilema-kicker {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 8px;
+}
+.dilema-titulo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem; color: var(--text); margin-bottom: 8px;
+}
+.dilema-enunciado {
+  font-size: 14px; font-weight: 300; color: var(--text-mid);
+  line-height: 1.65; font-style: italic;
+}
+
+.dilema-pregunta {
+  padding: 1rem 1.5rem;
+  font-size: 14px; font-weight: 400; color: var(--text);
+  border-bottom: 0.5px solid var(--border);
+}
+
+.respuestas { padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 8px; }
+.respuesta-btn {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-radius: 8px; border: 0.5px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px; font-weight: 300; color: var(--text-mid);
+  cursor: pointer; line-height: 1.5;
+  transition: all 0.15s;
+}
+.respuesta-btn:hover { border-color: var(--border-hover); color: var(--text); background: rgba(255,255,255,0.04); }
+.respuesta-btn.selected { color: var(--text); }
+.respuesta-btn .estadio-hint {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 3px; margin-right: 8px;
+  vertical-align: middle;
+}
+
+.dilema-feedback {
+  display: none; padding: 1.25rem 1.5rem;
+  border-top: 0.5px solid var(--border);
+  animation: fadeUp 0.3s ease both;
+}
+.dilema-feedback.visible { display: block; }
+
+.feedback-estadio {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 0.85rem;
+}
+.feedback-badge {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 4px;
+}
+.feedback-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem; color: var(--text);
+}
+.feedback-text {
+  font-size: 13.5px; font-weight: 300; color: var(--text-mid);
+  line-height: 1.65; margin-bottom: 0.75rem;
+}
+.feedback-todos {
+  margin-top: 0.85rem;
+  border-top: 0.5px solid var(--border);
+  padding-top: 0.85rem;
+}
+.feedback-todos-title {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.6rem;
+}
+.todos-grid { display: flex; flex-direction: column; gap: 6px; }
+.todo-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 12.5px; font-weight: 300; color: var(--text-mid); line-height: 1.5;
+}
+.todo-badge {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  white-space: nowrap;
+}
+.btn-siguiente {
+  margin-top: 1rem;
+  background: var(--surface2); border: 0.5px solid var(--border-hover);
+  border-radius: 7px; padding: 8px 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+  color: var(--text); cursor: pointer; transition: opacity 0.15s;
+}
+.btn-siguiente:hover { opacity: 0.8; }
+
+/* progress */
+.progress-bar {
+  height: 2px; background: var(--border);
+  border-radius: 1px; margin-bottom: 1.5rem; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--text-mid);
+  border-radius: 1px; transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: 12px; color: var(--text-dim); margin-bottom: 0.5rem;
+  display: flex; justify-content: space-between;
+}
+
+/* score */
+.score-card {
+  display: none; background: var(--surface);
+  border: 0.5px solid var(--border); border-radius: 12px;
+  padding: 2rem; text-align: center;
+}
+.score-card.visible { display: block; animation: fadeUp 0.4s ease both; }
+.score-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 4rem; color: var(--text); line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.score-label { font-size: 14px; font-weight: 300; color: var(--text-mid); margin-bottom: 1.5rem; }
+.score-estadios { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.score-row { display: flex; align-items: center; gap: 10px; }
+.score-badge { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; min-width: 80px; text-align: center; }
+.score-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.score-count { font-size: 12px; color: var(--text-dim); min-width: 30px; text-align: right; }
+.btn-reiniciar {
+  background: transparent; border: 0.5px solid var(--border-hover);
+  border-radius: 7px; padding: 8px 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+  cursor: pointer;
+}
+
+/* footer */
+footer {
+  border-top: 0.5px solid var(--border);
+  max-width: 900px; margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+footer span { font-size: 12px; font-weight: 300; color: var(--text-dim); }
+footer .sig { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--text-mid); font-size: 13px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 560px) {
+  .estadios-row { grid-template-columns: 1fr; }
+  .top-bar { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">Kohlberg <span>· estadios del desarrollo moral</span></div>
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="setMode('mapa')">Mapa de estadios</button>
+    <button class="mode-tab" onclick="setMode('dilema')">Dilemas</button>
+  </div>
+</div>
+
+<!-- ══ MODO MAPA ══ -->
+<div id="view-mapa">
+  <div class="hero">
+    <div class="hero-kicker">Lawrence Kohlberg · 1958</div>
+    <h1>Los seis estadios del desarrollo moral</h1>
+    <p>Kohlberg propone que el razonamiento moral evoluciona en tres niveles y seis estadios. Haz clic en cada estadio para explorarlo.</p>
+  </div>
+
+  <div class="nivel-section">
+
+    <!-- NIVEL PRECONVENCIONAL -->
+    <div class="nivel-header">
+      <span class="nivel-badge" style="background:var(--pre-1-soft);color:var(--pre-1)">Nivel I</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text)">Preconvencional</span>
+      <span class="nivel-label">· La moral se rige por las consecuencias externas</span>
+    </div>
+    <div class="estadios-row">
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--pre-1)">1</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Moralidad heterónoma</div>
+            <div class="estadio-tag">Obediencia y castigo</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Se obedece la norma para evitar el castigo. Lo bueno es lo que no me castigan. La autoridad es infalible.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-1)"></div><div class="criterio-text">El agente moral actúa por miedo a las consecuencias negativas</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-1)"></div><div class="criterio-text">Las reglas son fijas e inmutables, dadas por figuras de autoridad</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-1)"></div><div class="criterio-text">No se contempla el punto de vista ajeno</div></div>
+          <div class="ejemplo-box">«No robo porque si me pillan me castigan.»</div>
+          <div class="pregunta-guia">¿En qué se diferencia este razonamiento del de un animal que evita el dolor?</div>
+        </div>
+      </div>
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--pre-2)">2</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Individualismo instrumental</div>
+            <div class="estadio-tag">Interés propio y reciprocidad</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Lo correcto es lo que beneficia al propio interés. La reciprocidad aparece: «yo te ayudo si tú me ayudas». El intercambio es justo si es conveniente.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-2)"></div><div class="criterio-text">La moral sigue siendo egocéntrica, pero ya reconoce que otros también tienen intereses</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-2)"></div><div class="criterio-text">La cooperación se entiende como instrumento, no como valor</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--pre-2)"></div><div class="criterio-text">«Ojo por ojo»: la justicia es reciprocidad pragmática</div></div>
+          <div class="ejemplo-box">«Te presto mis apuntes si luego me invitas.» / «Si no me delataste, yo no te delato.»</div>
+          <div class="pregunta-guia">¿Puede existir una sociedad justa basada únicamente en el intercambio de intereses?</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NIVEL CONVENCIONAL -->
+    <div class="nivel-header">
+      <span class="nivel-badge" style="background:var(--conv-3-soft);color:var(--conv-3)">Nivel II</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text)">Convencional</span>
+      <span class="nivel-label">· La moral se rige por la conformidad social</span>
+    </div>
+    <div class="estadios-row">
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--conv-3)">3</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Relaciones y conformidad</div>
+            <div class="estadio-tag">Ser un «buen chico/chica»</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Lo correcto es lo que agrada a los demás y mantiene buenas relaciones. Se valora la lealtad, la confianza y el cuidado. La moral se orienta a la aprobación del grupo cercano.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-3)"></div><div class="criterio-text">La intención importa: «quería ayudar» ya es moralmente relevante</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-3)"></div><div class="criterio-text">Se busca la aprobación y se evita la desaprobación social</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-3)"></div><div class="criterio-text">Aparece la empatía: se toma en cuenta el punto de vista de los otros</div></div>
+          <div class="ejemplo-box">«Ayudé a ese compañero porque quería que me vieran como buena persona.» / «No me chivaré aunque sepa la verdad; sería una traidora.»</div>
+          <div class="pregunta-guia">¿Puede la presión del grupo hacernos actuar inmoralmente aunque creamos ser «buenos»?</div>
+        </div>
+      </div>
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--conv-4)">4</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Sistema social y conciencia</div>
+            <div class="estadio-tag">Ley y orden</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Lo correcto es cumplir las leyes y mantener el orden social. La sociedad en su conjunto —no solo el grupo cercano— es el referente moral. El deber y la institución son valores en sí mismos.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-4)"></div><div class="criterio-text">La ley debe obedecerse incluso cuando es inconveniente</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-4)"></div><div class="criterio-text">La desobediencia civil se percibe como amenaza al sistema</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--conv-4)"></div><div class="criterio-text">El individuo tiene deberes hacia la sociedad, no solo derechos</div></div>
+          <div class="ejemplo-box">«Aunque la ley me parezca injusta, debo cumplirla porque sin leyes no hay sociedad posible.»</div>
+          <div class="pregunta-guia">¿Existe diferencia moral entre desobedecer una ley injusta y desobedecer una ley por conveniencia?</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NIVEL POSCONVENCIONAL -->
+    <div class="nivel-header">
+      <span class="nivel-badge" style="background:var(--post-5-soft);color:var(--post-5)">Nivel III</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text)">Posconvencional</span>
+      <span class="nivel-label">· La moral se rige por principios universales autónomos</span>
+    </div>
+    <div class="estadios-row">
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--post-5)">5</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Contrato social y derechos</div>
+            <div class="estadio-tag">Utilidad y derechos individuales</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Las leyes son contratos sociales revisables. Existen derechos fundamentales que ninguna mayoría puede violar. La justicia puede exigir cambiar leyes injustas a través de procesos democráticos.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-5)"></div><div class="criterio-text">La validez de una ley depende de si protege derechos fundamentales</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-5)"></div><div class="criterio-text">La desobediencia civil puede estar justificada ante leyes injustas</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-5)"></div><div class="criterio-text">Se separa la ley positiva de la moral: no todo lo legal es justo</div></div>
+          <div class="ejemplo-box">«Esta ley es injusta y debe cambiarse; participaré en la protesta para modificarla.»</div>
+          <div class="pregunta-guia">¿Puede haber conflicto entre legalidad y moralidad? ¿Pones algún ejemplo histórico?</div>
+        </div>
+      </div>
+
+      <div class="estadio-card" onclick="toggleEstadio(this)">
+        <div class="estadio-head">
+          <div class="estadio-num" style="color:var(--post-6)">6</div>
+          <div class="estadio-info">
+            <div class="estadio-name">Principios éticos universales</div>
+            <div class="estadio-tag">Autonomía y justicia universal</div>
+          </div>
+          <div class="estadio-toggle">+</div>
+        </div>
+        <div class="estadio-body">
+          <div class="estadio-desc">Lo correcto se define por principios éticos universales elegidos autónomamente: la dignidad humana, la justicia, la igualdad. Si una ley viola estos principios, el individuo debe seguir su conciencia. Es el estadio del imperativo categórico kantiano.</div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-6)"></div><div class="criterio-text">La dignidad humana es un valor absoluto que no admite excepciones</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-6)"></div><div class="criterio-text">El sujeto actúa según principios que cualquier persona racional aceptaría</div></div>
+          <div class="criterio-row"><div class="criterio-dot" style="background:var(--post-6)"></div><div class="criterio-text">Kohlberg sitúa aquí a figuras como Gandhi, Mandela o Luther King</div></div>
+          <div class="ejemplo-box">«Aunque me arriesgue, no puedo delatar a quien se esconde: su vida vale más que mi seguridad.»</div>
+          <div class="pregunta-guia">¿Es este estadio alcanzable por cualquier persona, o solo por «héroes morales»? ¿Qué relación tiene con Kant?</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div style="height:2rem"></div>
+</div>
+
+<!-- ══ MODO DILEMAS ══ -->
+<div id="view-dilema">
+  <div class="hero">
+    <div class="hero-kicker">Actividad práctica</div>
+    <h1>¿En qué estadio razona?</h1>
+    <p>Lee la respuesta de cada personaje ante un dilema moral. Identifica en qué estadio de Kohlberg se encuentra su razonamiento.</p>
+  </div>
+
+  <div class="dilema-wrap">
+    <div class="progress-label">
+      <span id="prog-text">Dilema 1 de 6</span>
+      <span id="prog-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+    <div id="dilemas-container"></div>
+    <div class="score-card" id="score-card"></div>
+  </div>
+</div>
+
+<footer>
+  <span>Filosofía · 1.º Bachillerato · Ética</span>
+  <span class="sig">FiloNesi</span>
+</footer>
+
+<script>
+/* ── helpers ── */
+const COLORES = {
+  1: { bg: 'var(--pre-1-soft)',  text: 'var(--pre-1)',  label: 'E1 · Castigo' },
+  2: { bg: 'var(--pre-2-soft)', text: 'var(--pre-2)',  label: 'E2 · Interés' },
+  3: { bg: 'var(--conv-3-soft)',text: 'var(--conv-3)', label: 'E3 · Aprobación' },
+  4: { bg: 'var(--conv-4-soft)',text: 'var(--conv-4)', label: 'E4 · Ley y orden' },
+  5: { bg: 'var(--post-5-soft)',text: 'var(--post-5)', label: 'E5 · Contrato' },
+  6: { bg: 'var(--post-6-soft)',text: 'var(--post-6)', label: 'E6 · Universal' },
+};
+const NOMBRES = {
+  1: 'Estadio 1 — Moralidad heterónoma',
+  2: 'Estadio 2 — Individualismo instrumental',
+  3: 'Estadio 3 — Relaciones y conformidad',
+  4: 'Estadio 4 — Sistema social y conciencia',
+  5: 'Estadio 5 — Contrato social y derechos',
+  6: 'Estadio 6 — Principios éticos universales',
+};
+
+/* ── datos ── */
+const dilemas = [
+  {
+    titulo: 'El dilema de Heinz',
+    enunciado: 'Heinz no tiene dinero para comprar el medicamento que necesita su esposa. El farmacéutico se niega a fiarlo. ¿Debe robar Heinz el medicamento?',
+    pregunta: '¿En qué estadio razona cada personaje?',
+    respuestas: [
+      { texto: '«No debería robar. Si le pillan, le meten en la cárcel y entonces no podrá cuidar a su esposa. El castigo sería peor que la enfermedad.»', estadio: 1, explicacion: 'El razonamiento gira completamente en torno a evitar el castigo, sin considerar el valor de la vida ni los derechos.' },
+      { texto: '«Debería robar. Si su esposa se cura, podrá seguir trabajando y él también. A largo plazo les conviene.»', estadio: 2, explicacion: 'La decisión se basa en el cálculo de intereses propios. La reciprocidad utilitarista domina el razonamiento.' },
+      { texto: '«Debería robar porque cualquier buen marido haría lo mismo. La gente lo entendería: lo hizo por amor.»', estadio: 3, explicacion: 'La motivación es la aprobación social y el rol de «buen esposo». La intención afectuosa justifica el acto.' },
+      { texto: '«No debería robar aunque su mujer muera. El robo es ilegal y, si todo el mundo robara cuando le conviene, la sociedad se hundiría.»', estadio: 4, explicacion: 'La ley y el mantenimiento del orden social son el criterio moral supremo, por encima de las consecuencias individuales.' },
+      { texto: '«Debería robar. El derecho a la vida es un derecho fundamental que la ley de la propiedad no puede anular. La ley que deja morir a alguien por dinero es injusta.»', estadio: 5, explicacion: 'Se separa legalidad de moralidad: los derechos fundamentales prevalecen sobre la propiedad. La ley puede ser injusta.' },
+      { texto: '«Debe robar. La dignidad de la vida humana es un principio moral universal que está por encima de cualquier norma sobre la propiedad. Ningún principio racional podría justificar dejar morir a alguien pudiendo evitarlo.»', estadio: 6, explicacion: 'El razonamiento apela a un principio ético universal: la dignidad humana como valor absoluto, en la línea del imperativo categórico kantiano.' },
+    ]
+  },
+  {
+    titulo: 'La desobediencia civil',
+    enunciado: 'Una ley prohíbe manifestarse en una plaza. Un grupo de ciudadanos considera la ley injusta y decide desobedecer públicamente.',
+    pregunta: '¿Cómo razona cada personaje sobre si participar?',
+    respuestas: [
+      { texto: '«No voy. Si nos detienen, nos pondrán una multa enorme. No me compensa.»', estadio: 1, explicacion: 'La amenaza del castigo es el único factor de decisión. No se evalúa la justicia de la ley.' },
+      { texto: '«Voy si me aseguran que no habrá consecuencias para mí. Si me arriesgo, quiero algo a cambio.»', estadio: 2, explicacion: 'La participación se condiciona al beneficio propio. La reciprocidad instrumental domina.' },
+      { texto: '«Mis amigos van y no quiero quedar mal. Además, si no apoyo la causa, pensarán que no me importa.»', estadio: 3, explicacion: 'La presión del grupo y el deseo de aprobación social motivan la decisión, no la valoración de la causa.' },
+      { texto: '«No participaré. La ley es la ley. Si queremos cambiarla, hay que usar los canales legales, no saltársela.»', estadio: 4, explicacion: 'El respeto al sistema legal y al orden social es el valor supremo, incluso ante leyes percibidas como injustas.' },
+      { texto: '«Participo. Esta ley viola derechos fundamentales de reunión y expresión reconocidos internacionalmente. Desobedecerla es legítimo.»', estadio: 5, explicacion: 'Los derechos fundamentales son el criterio que permite evaluar y criticar las leyes positivas. La desobediencia civil puede ser justa.' },
+      { texto: '«Debo participar. Cualquier persona racional que valorara la dignidad y la libertad llegaría a la misma conclusión. Callar ante la injusticia es también una elección moral.»', estadio: 6, explicacion: 'El principio universal de dignidad y libertad, aplicable a cualquier ser racional, es la base del juicio. Coherente con el imperativo categórico.' },
+    ]
+  },
+  {
+    titulo: 'El secreto de un amigo',
+    enunciado: 'Tu mejor amigo te confiesa que ha cometido un delito grave. La víctima sigue sufriendo consecuencias. ¿Deberías denunciarlo?',
+    pregunta: '¿Cómo razona cada personaje?',
+    respuestas: [
+      { texto: '«No le denuncio. Si me entero de que la policía busca testigos y me ven con él, me meto en un lío.»', estadio: 1, explicacion: 'La posibilidad de sufrir consecuencias personales (castigo) es el único criterio de decisión.' },
+      { texto: '«Le digo que si no se entrega, le cuento todo. Así él decide y yo no cargo con nada. Me protejo.»', estadio: 2, explicacion: 'Se plantea un intercambio de conveniencia: el chantaje como forma de gestionar el propio interés.' },
+      { texto: '«No puedo traicionar a mi mejor amigo. Sería una deslealtad imperdonable. La amistad está por encima de todo.»', estadio: 3, explicacion: 'La lealtad al grupo cercano y la aprobación del amigo dominan sobre otros valores.' },
+      { texto: '«Debo denunciarlo. Hay una víctima y una ley que protegerla. Si todos ocultaran delitos, la justicia sería imposible.»', estadio: 4, explicacion: 'El deber cívico y el mantenimiento del sistema legal prevalecen sobre los vínculos personales.' },
+      { texto: '«Le insto a entregarse. La víctima tiene derechos. Si no lo hace, lo denunciaré: sus derechos pesan más que mi lealtad.»', estadio: 5, explicacion: 'Los derechos de la víctima, como garantías fundamentales, superan el contrato informal de la amistad.' },
+      { texto: '«Debo actuar en favor de la víctima. La dignidad humana exige que reconozcamos el daño causado. Ningún principio racional y universal avala proteger a quien ha dañado gravemente a otro.»', estadio: 6, explicacion: 'Un principio ético universal (la dignidad de la víctima) orienta la decisión, por encima de cualquier convención social o vínculo afectivo.' },
+    ]
+  },
+  {
+    titulo: 'La trampa en el examen',
+    enunciado: 'Ves a un compañero copiando en el examen final. Si aprueba, ocupará la plaza universitaria que tú necesitas.',
+    pregunta: '¿Cómo razona cada personaje?',
+    respuestas: [
+      { texto: '«Le denuncio antes de que me vean a mí también y piensen que estamos compinchados. Necesito protegerme.»', estadio: 1, explicacion: 'El miedo a ser sancionado uno mismo es el único motivo de la acción, no la justicia ni los derechos del otro.' },
+      { texto: '«Le denuncio. Si él aprueba, yo pierdo la plaza. Es simple: si no lo hago yo, lo haré peor que él.»', estadio: 2, explicacion: 'El cálculo de intereses propios (la plaza) determina la acción. Razonamiento instrumental.' },
+      { texto: '«No digo nada. Bastante mal lo tiene que pasar él para copiar. No quiero que me vean como un chivato.»', estadio: 3, explicacion: 'Evitar el rechazo social («chivato») y la compasión por el compañero dominan sobre la norma.' },
+      { texto: '«Debo comunicarlo al profesor. El sistema de evaluación existe para garantizar la equidad. Si no lo hago, soy cómplice de su trampa.»', estadio: 4, explicacion: 'El respeto al sistema normativo y la equidad institucional son los criterios. El individuo tiene deber con la institución.' },
+      { texto: '«Lo comunicaré. Todos tenemos derecho a que la competencia sea justa. Nadie puede beneficiarse de violar las reglas acordadas por todos.»', estadio: 5, explicacion: 'Los derechos acordados colectivamente (contrato social de la evaluación justa) fundamentan la decisión.' },
+      { texto: '«Debo actuar. La integridad académica es un principio que cualquier persona racional valoraría universalmente. Permitir la trampa es participar en la injusticia.»', estadio: 6, explicacion: 'Un principio universal (integridad, justicia) aplicable a cualquier ser racional orienta la acción, independientemente de las consecuencias personales.' },
+    ]
+  },
+  {
+    titulo: 'El refugiado',
+    enunciado: 'Una familia refugiada que huye de la guerra llama a tu puerta de noche. Esconderlos es ilegal según una ley reciente.',
+    pregunta: '¿Cómo razona cada personaje?',
+    respuestas: [
+      { texto: '«No abro. Si me descubren, me denuncian y puedo ir a la cárcel. No me merece la pena.»', estadio: 1, explicacion: 'La amenaza del castigo es el único criterio. La vida de los refugiados no entra en el cálculo.' },
+      { texto: '«Les ayudo solo si pueden pagarme o si obtendré algún reconocimiento por ello. Si no, es demasiado riesgo.»', estadio: 2, explicacion: 'El beneficio propio (pago o reconocimiento) es la condición de la ayuda. Razonamiento de intercambio.' },
+      { texto: '«Les ayudo porque cualquier persona decente haría lo mismo. No podría vivir con esa conciencia delante de mis vecinos.»', estadio: 3, explicacion: 'La imagen social («persona decente») y la aprobación del entorno motivan la acción.' },
+      { texto: '«No puedo ayudarles aunque me duela. La ley es clara y, si empezamos a decidir cuándo cumplirla, todo se desmorona.»', estadio: 4, explicacion: 'La obediencia al sistema legal, incluso ante una ley percibida como injusta, es el valor supremo.' },
+      { texto: '«Les acojo. El derecho a la vida y a no ser perseguido es un derecho humano que ninguna ley nacional puede anular legítimamente.»', estadio: 5, explicacion: 'Los derechos humanos fundamentales prevalecen sobre la legislación nacional. La ley puede ser ilegítima.' },
+      { texto: '«Debo acogerles. La dignidad de todo ser humano exige que actuemos para proteger la vida, al margen de lo que diga una ley injusta. Es lo que cualquier persona racional aceptaría como principio universal.»', estadio: 6, explicacion: 'La dignidad humana como principio ético universal, independiente de leyes y convenciones, orienta la acción. Máxima coherencia con el imperativo categórico.' },
+    ]
+  },
+  {
+    titulo: 'La mentira piadosa',
+    enunciado: 'Tu amiga lleva meses preparando una exposición. El trabajo es mediocre. Te pregunta qué te parece justo antes de presentarlo.',
+    pregunta: '¿Cómo razona cada personaje sobre si decir la verdad?',
+    respuestas: [
+      { texto: '«Le digo que está genial. Si le digo la verdad se enfadará conmigo y no quiero que me cause problemas.»', estadio: 1, explicacion: 'El miedo a las represalias personales (el conflicto con la amiga) determina la mentira.' },
+      { texto: '«Le digo lo que quiere escuchar. Así me mantengo en su favor y luego podré pedirle cosas.»', estadio: 2, explicacion: 'La mentira es un instrumento de gestión del propio interés y la reciprocidad futura.' },
+      { texto: '«Le digo que está bien. No quiero hacerle daño, y además pensará que soy mala amiga si la critico.»', estadio: 3, explicacion: 'La preservación de la relación y la imagen de «buena amiga» motivan la mentira.' },
+      { texto: '«Debo decirle la verdad. El respeto y la honestidad son normas básicas de toda convivencia. Mentirle, aunque duela, no la ayuda.»', estadio: 4, explicacion: 'La honestidad como norma social necesaria para la convivencia es el criterio.' },
+      { texto: '«Le digo la verdad con cuidado. Tiene derecho a una evaluación honesta para poder mejorar y tomar decisiones informadas.»', estadio: 5, explicacion: 'El derecho de la amiga a la información veraz, como base para su autonomía, justifica la verdad.' },
+      { texto: '«Debo decirle la verdad. El respeto a su autonomía como persona racional exige tratarla como un fin en sí misma, no protegerla de la realidad como si fuera incapaz. La mentira, aunque amable, niega su dignidad.»', estadio: 6, explicacion: 'La dignidad y la autonomía racional de la amiga (fórmula kantiana de la humanidad) exigen la verdad como principio universal.' },
+    ]
+  },
+];
+
+/* ── estado ── */
+let current = 0;
+let respuestas_dadas = {};
+let score_por_estadio = {1:0,2:0,3:0,4:0,5:0,6:0};
+
+function setMode(m) {
+  document.querySelectorAll('.mode-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&m==='mapa')||(i===1&&m==='dilema')));
+  document.getElementById('view-mapa').style.display = m==='mapa'?'block':'none';
+  document.getElementById('view-dilema').style.display = m==='dilema'?'block':'none';
+  if (m==='dilema' && Object.keys(respuestas_dadas).length===0) renderDilema(0);
+}
+
+function toggleEstadio(card) {
+  card.classList.toggle('open');
+}
+
+/* ── render dilema ── */
+function renderDilema(idx) {
+  if (idx >= dilemas.length) { renderScore(); return; }
+  current = idx;
+  const d = dilemas[idx];
+  const container = document.getElementById('dilemas-container');
+
+  // shuffle respuestas
+  const shuffled = d.respuestas.map((r,i)=>({...r,orig:i})).sort(()=>Math.random()-0.5);
+
+  let html = `<div class="dilema-card" id="dilema-card">
+    <div class="dilema-header">
+      <div class="dilema-kicker">Dilema ${idx+1} de ${dilemas.length}</div>
+      <div class="dilema-titulo">${d.titulo}</div>
+      <div class="dilema-enunciado">${d.enunciado}</div>
+    </div>
+    <div class="dilema-pregunta">${d.pregunta}</div>
+    <div class="respuestas">`;
+
+  shuffled.forEach((r,i) => {
+    const c = COLORES[r.estadio];
+    html += `<button class="respuesta-btn" onclick="selRespuesta(this, ${r.estadio}, ${idx})" data-estadio="${r.estadio}">
+      <span class="estadio-hint" style="background:${c.bg};color:${c.text}">Estadio ?</span>${r.texto}
+    </button>`;
+  });
+
+  html += `</div>
+    <div class="dilema-feedback" id="dilema-fb">
+      <div class="feedback-estadio">
+        <span class="feedback-badge" id="fb-badge"></span>
+        <span class="feedback-name" id="fb-name"></span>
+      </div>
+      <div class="feedback-text" id="fb-text"></div>
+      <div class="feedback-todos">
+        <div class="feedback-todos-title">Todas las respuestas</div>
+        <div class="todos-grid" id="fb-todos"></div>
+      </div>
+      <button class="btn-siguiente" onclick="siguienteDilema()">
+        ${idx < dilemas.length-1 ? 'Siguiente dilema →' : 'Ver resultados →'}
+      </button>
+    </div>
+  </div>`;
+
+  container.innerHTML = html;
+  actualizarProgress(idx);
+}
+
+function selRespuesta(btn, estadio, idx) {
+  if (respuestas_dadas[idx] !== undefined) return;
+  respuestas_dadas[idx] = estadio;
+  score_por_estadio[estadio]++;
+
+  const c = COLORES[estadio];
+  const d = dilemas[idx];
+  const rData = d.respuestas.find(r => r.estadio === estadio);
+
+  // mark selected
+  document.querySelectorAll('.respuesta-btn').forEach(b => {
+    const e = parseInt(b.dataset.estadio);
+    const bc = COLORES[e];
+    b.querySelector('.estadio-hint').textContent = `Estadio ${e}`;
+    b.style.borderColor = bc.text;
+    b.style.background = bc.bg;
+    b.querySelector('.estadio-hint').style.background = bc.bg;
+    b.querySelector('.estadio-hint').style.color = bc.text;
+    b.disabled = true;
+    if (e === estadio) b.style.opacity = '1';
+    else b.style.opacity = '0.45';
+  });
+
+  // badge
+  document.getElementById('fb-badge').textContent = c.label;
+  document.getElementById('fb-badge').style.background = c.bg;
+  document.getElementById('fb-badge').style.color = c.text;
+  document.getElementById('fb-name').textContent = NOMBRES[estadio];
+  document.getElementById('fb-text').textContent = rData.explicacion;
+
+  // todos
+  let todosHtml = '';
+  d.respuestas.forEach(r => {
+    const rc = COLORES[r.estadio];
+    todosHtml += `<div class="todo-item">
+      <span class="todo-badge" style="background:${rc.bg};color:${rc.text}">${rc.label}</span>
+      <span>${r.texto}</span>
+    </div>`;
+  });
+  document.getElementById('fb-todos').innerHTML = todosHtml;
+  document.getElementById('dilema-fb').classList.add('visible');
+  document.getElementById('dilema-fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function siguienteDilema() {
+  renderDilema(current + 1);
+  document.getElementById('dilemas-container').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function actualizarProgress(idx) {
+  const pct = Math.round((idx / dilemas.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `Dilema ${idx+1} de ${dilemas.length}`;
+  document.getElementById('prog-pct').textContent = pct + ' %';
+}
+
+function renderScore() {
+  document.getElementById('dilemas-container').innerHTML = '';
+  const card = document.getElementById('score-card');
+  const total = Object.values(score_por_estadio).reduce((a,b)=>a+b,0);
+
+  // estadio más elegido
+  let maxE = 1, maxV = 0;
+  for (let e=1; e<=6; e++) { if (score_por_estadio[e] > maxV) { maxV = score_por_estadio[e]; maxE = e; } }
+  const dom = COLORES[maxE];
+
+  let html = `<div class="score-num" style="color:${dom.text}">${dilemas.length}</div>
+    <div class="score-label">dilemas completados</div>
+    <div style="font-size:14px;color:var(--text-mid);margin-bottom:1.5rem;line-height:1.6;">
+      Has identificado los estadios de Kohlberg en ${dilemas.length} situaciones distintas.<br>
+      <span style="color:${dom.text};font-weight:500">${NOMBRES[maxE]}</span> fue el más identificado por ti (${maxV} veces).
+    </div>
+    <div class="score-estadios">`;
+
+  for (let e=1; e<=6; e++) {
+    const c = COLORES[e]; const v = score_por_estadio[e];
+    const pct = total > 0 ? Math.round((v/total)*100) : 0;
+    html += `<div class="score-row">
+      <span class="score-badge" style="background:${c.bg};color:${c.text}">${c.label}</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${pct}%;background:${c.text}"></div></div>
+      <span class="score-count">${v}</span>
+    </div>`;
+  }
+
+  html += `</div>
+    <div style="font-size:13px;font-weight:300;color:var(--text-dim);margin-bottom:1.25rem;font-style:italic;line-height:1.6;">
+      Recuerda: no hay respuestas «correctas» en este ejercicio. Lo importante es identificar el tipo de razonamiento y reflexionar sobre qué estadio te parece más sólido moralmente.
+    </div>
+    <button class="btn-reiniciar" onclick="reiniciar()">Reiniciar dilemas</button>`;
+
+  card.innerHTML = html;
+  card.classList.add('visible');
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-pct').textContent = '100 %';
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function reiniciar() {
+  respuestas_dadas = {};
+  score_por_estadio = {1:0,2:0,3:0,4:0,5:0,6:0};
+  document.getElementById('score-card').classList.remove('visible');
+  document.getElementById('score-card').innerHTML = '';
+  renderDilema(0);
+}
+</script>
+</body>
+</html>
