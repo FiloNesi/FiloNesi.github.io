@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publicidad y (anti)valores</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f2efe8;
+  --paper: #faf8f3;
+  --ink: #1a1814;
+  --ink-mid: #4a4740;
+  --ink-dim: #9a9790;
+  --rule: #d8d4cc;
+  --red: #c0281e;
+  --red-soft: #f9ecea;
+  --green: #1a5c38;
+  --green-soft: #e6f2ec;
+  --amber: #a85c10;
+  --amber-soft: #fdf0e0;
+  --blue: #1a3a6c;
+  --blue-soft: #e8eef8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 1.5rem 2rem;
+  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.header-left {}
+.site-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(242,239,232,0.45); margin-bottom: 4px;
+}
+.site-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: 0.04em; line-height: 1;
+  color: var(--bg);
+}
+.site-title em { color: #e05545; font-style: normal; }
+.header-right {
+  font-size: 13px; font-weight: 300; color: rgba(242,239,232,0.6);
+  max-width: 320px; line-height: 1.5; text-align: right;
+}
+
+/* ── NAV ── */
+.ad-nav {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 2rem;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.ad-tab {
+  padding: 0.85rem 1.25rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-dim); border: none; background: transparent;
+  border-bottom: 3px solid transparent; cursor: pointer;
+  white-space: nowrap; transition: color 0.15s;
+  margin-bottom: -1px;
+}
+.ad-tab:hover { color: var(--ink); }
+.ad-tab.active { color: var(--ink); border-bottom-color: var(--red); font-weight: 600; }
+
+/* ── MAIN LAYOUT ── */
+main { max-width: 1020px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.activity-intro {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.intro-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.intro-text { font-size: 13.5px; font-weight: 300; color: var(--ink-mid); line-height: 1.6; }
+.intro-text strong { font-weight: 500; color: var(--ink); }
+
+/* ── ANUNCIO ── */
+.ad-panel { display: none; }
+.ad-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+/* MOCK AD */
+.mock-ad {
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(26,24,20,0.12);
+  position: relative;
+}
+.ad-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  background: rgba(26,24,20,0.7); color: var(--bg);
+  padding: 3px 10px; border-radius: 2px;
+}
+.ad-visual {
+  width: 100%; aspect-ratio: 4/3;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 2rem;
+}
+
+/* AD 1 — Perfume lujo/exclusión */
+.ad-1-bg {
+  background: linear-gradient(145deg, #0a0806 0%, #1c160e 40%, #2a1f10 100%);
+}
+.ad-1-circle {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: linear-gradient(135deg, #d4a53a, #f0d080, #b8851a);
+  position: relative; margin-bottom: 1rem;
+  box-shadow: 0 0 40px rgba(212,165,58,0.3);
+}
+.ad-1-circle::after {
+  content: '✦';
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 2.5rem; color: rgba(255,255,255,0.3);
+}
+.ad-1-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem; letter-spacing: 0.12em; text-align: center;
+  color: #f0d080; line-height: 1;
+}
+.ad-1-sub {
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px; font-weight: 300; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(240,208,128,0.5); margin-top: 6px; text-align: center;
+}
+.ad-1-claim {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px; font-weight: 300; font-style: italic;
+  color: rgba(255,255,255,0.55); margin-top: 14px; text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* AD 2 — Coche velocidad/dominio */
+.ad-2-bg { background: #0d0d0d; }
+.ad-2-stripe {
+  position: absolute; top: 0; left: -20%; width: 140%; height: 6px;
+  background: #c0281e; transform: skewX(-15deg);
+}
+.ad-2-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem; letter-spacing: 0.04em; text-align: center;
+  color: #fff; line-height: 0.95; margin-bottom: 8px;
+}
+.ad-2-headline span { color: #c0281e; }
+.ad-2-sub {
+  font-size: 11px; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); margin-bottom: 16px;
+}
+.ad-2-stat {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.2rem; font-weight: 600; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.7);
+}
+.ad-2-claim {
+  font-size: 12px; font-weight: 300; font-style: italic;
+  color: rgba(255,255,255,0.3); margin-top: 12px; letter-spacing: 0.08em;
+}
+
+/* AD 3 — Belleza inseguridad */
+.ad-3-bg { background: linear-gradient(160deg, #f8f4f0 0%, #e8ddd5 100%); }
+.ad-3-circle {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: #d4b8a8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.ad-3-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.6rem; font-weight: 700; letter-spacing: 0.04em; text-align: center;
+  color: #2a1a14; line-height: 1.2; margin-bottom: 6px;
+}
+.ad-3-sub {
+  font-size: 12px; font-weight: 300; color: #7a5a4a; text-align: center; line-height: 1.5;
+  font-style: italic; max-width: 200px;
+}
+.ad-3-tag {
+  margin-top: 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  background: #2a1a14; color: #f8f4f0;
+  padding: 4px 16px; border-radius: 2px;
+}
+
+/* AD 4 — Red social envidia */
+.ad-4-bg { background: linear-gradient(135deg, #1a0a3c 0%, #2d1060 50%, #1a0a3c 100%); }
+.ad-4-phone {
+  width: 80px; height: 130px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 6px; margin-bottom: 12px;
+}
+.ad-4-heart { font-size: 1.8rem; }
+.ad-4-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem; color: rgba(255,255,255,0.8); letter-spacing: 0.05em;
+}
+.ad-4-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem; letter-spacing: 0.08em; color: #fff; text-align: center; line-height: 1.1;
+}
+.ad-4-sub {
+  font-size: 11px; font-weight: 300; color: rgba(255,255,255,0.4);
+  text-align: center; margin-top: 8px; letter-spacing: 0.1em; font-style: italic;
+}
+
+/* AD 5 — Fast food exceso */
+.ad-5-bg { background: #d42b00; }
+.ad-5-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.4rem; letter-spacing: 0.02em; text-align: center;
+  color: #ffe135; line-height: 0.9; margin-bottom: 8px;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+}
+.ad-5-emoji { font-size: 3rem; margin-bottom: 8px; }
+.ad-5-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.9); margin-bottom: 10px;
+}
+.ad-5-claim {
+  font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.6);
+  font-style: italic; text-align: center;
+}
+
+/* AD FOOTER */
+.ad-footer {
+  background: var(--ink);
+  padding: 0.75rem 1.1rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ad-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem; letter-spacing: 0.12em; color: rgba(242,239,232,0.9);
+}
+.ad-slogan {
+  font-size: 11px; font-weight: 300; font-style: italic;
+  color: rgba(242,239,232,0.4); letter-spacing: 0.05em;
+}
+
+/* ── ANÁLISIS PANEL ── */
+.analysis-panel {
+  display: flex; flex-direction: column; gap: 1rem;
+}
+
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 6px;
+}
+
+/* antivalores */
+.antivalores-grid {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.antivalor-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 3px;
+  border: 1px solid transparent; cursor: pointer;
+  font-size: 12.5px; font-weight: 400;
+  transition: all 0.15s; user-select: none;
+  background: var(--paper); border-color: var(--rule); color: var(--ink-mid);
+}
+.antivalor-chip:hover { border-color: var(--red); color: var(--red); }
+.antivalor-chip.selected { background: var(--red-soft); border-color: var(--red); color: var(--red); font-weight: 500; }
+.antivalor-chip .chip-icon { font-size: 13px; }
+
+/* mecanismos */
+.mecanismo-list { display: flex; flex-direction: column; gap: 5px; }
+.mecanismo-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 7px 10px; border-radius: 4px;
+  border: 1px solid var(--rule); background: var(--paper);
+  cursor: pointer; transition: all 0.15s;
+  font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.4;
+}
+.mecanismo-item:hover { border-color: var(--amber); color: var(--ink); }
+.mecanismo-item.selected { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
+.mec-check { width: 16px; height: 16px; border-radius: 3px; border: 1.5px solid var(--rule); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.mecanismo-item.selected .mec-check { border-color: var(--amber); background: var(--amber); color: #fff; }
+
+/* textarea */
+.campo {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 10px 12px; width: 100%;
+  font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 300;
+  color: var(--ink); resize: vertical; outline: none; min-height: 70px;
+  transition: border-color 0.15s; line-height: 1.6;
+}
+.campo:focus { border-color: var(--ink-mid); }
+.campo::placeholder { color: var(--ink-dim); font-style: italic; }
+
+/* contrapropuesta visual */
+.contrapropuesta-preview {
+  display: none;
+  background: var(--green-soft); border: 1px solid #a8d4b8;
+  border-radius: 6px; padding: 1rem 1.1rem;
+  font-size: 13.5px; font-weight: 300; color: var(--green);
+  line-height: 1.6; font-style: italic;
+  animation: fadeUp 0.3s ease both;
+}
+.contrapropuesta-preview.visible { display: block; }
+.contrapropuesta-preview strong { font-weight: 500; font-style: normal; }
+
+/* btn */
+.btn-analizar {
+  background: var(--ink); color: var(--bg);
+  border: none; border-radius: 5px; padding: 10px 22px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: opacity 0.15s; align-self: flex-start;
+}
+.btn-analizar:hover { opacity: 0.8; }
+
+/* feedback box */
+.feedback-box {
+  display: none; border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--rule);
+  animation: fadeUp 0.3s ease both;
+}
+.feedback-box.visible { display: block; }
+.fb-header {
+  background: var(--ink); color: var(--bg);
+  padding: 0.75rem 1.1rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+}
+.fb-body { background: var(--paper); padding: 1rem 1.1rem; }
+.fb-antivalores { margin-bottom: 0.75rem; }
+.fb-av-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 5px; }
+.fb-av-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.fb-av-chip { font-size: 12px; padding: 3px 10px; border-radius: 3px; background: var(--red-soft); color: var(--red); }
+.fb-mecanismos { margin-bottom: 0.75rem; }
+.fb-mec-title { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 5px; }
+.fb-mec-item { font-size: 12.5px; font-weight: 300; color: var(--ink-mid); margin-bottom: 3px; padding-left: 10px; line-height: 1.5; }
+.fb-mec-item::before { content: '→ '; color: var(--amber); }
+.fb-reflexion { font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.65; border-top: 1px solid var(--rule); padding-top: 0.75rem; margin-top: 0.75rem; }
+.fb-reflexion strong { font-weight: 500; color: var(--ink); }
+
+.btn-reset-ad { background: transparent; border: none; font-size: 13px; font-weight: 300; color: var(--ink-dim); cursor: pointer; text-decoration: underline; margin-left: 10px; }
+
+/* ── SEPARADOR ── */
+.ad-divider { height: 1px; background: var(--rule); margin: 1rem 0; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+@media (max-width: 680px) {
+  .ad-panel.active { grid-template-columns: 1fr; }
+  .ad-nav { padding: 0 1rem; }
+  main { padding: 1.25rem 1rem 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="header-left">
+    <div class="site-eyebrow">Filosofía · Ética · 1.º Bachillerato</div>
+    <div class="site-title">Publicidad<br>y <em>(anti)valores</em></div>
+  </div>
+  <div class="header-right">Analiza qué valores reales promueve cada anuncio. Identifica los antivalores y transforma el mensaje en uno éticamente positivo.</div>
+</div>
+
+<div class="ad-nav">
+  <button class="ad-tab active" onclick="switchAd(0)">① Perfume</button>
+  <button class="ad-tab" onclick="switchAd(1)">② Automóvil</button>
+  <button class="ad-tab" onclick="switchAd(2)">③ Cosmética</button>
+  <button class="ad-tab" onclick="switchAd(3)">④ Red social</button>
+  <button class="ad-tab" onclick="switchAd(4)">⑤ Comida rápida</button>
+</div>
+
+<div class="activity-intro" style="margin:1.5rem auto 0;max-width:1020px;margin-left:auto;margin-right:auto;padding-left:1.5rem;padding-right:1.5rem;">
+  <div class="activity-intro" style="margin:0">
+    <span class="intro-icon">🔍</span>
+    <span class="intro-text"><strong>Cómo trabajar:</strong> selecciona los antivalores que detectas en el anuncio · marca los mecanismos retóricos que usa · escribe tu reflexión ética · propón un eslogan alternativo que apele a valores positivos.</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ════════════════ AD 1: PERFUME ════════════════ -->
+<div class="ad-panel active" id="ad-0">
+  <div class="mock-ad">
+    <div class="ad-badge">Publicidad simulada</div>
+    <div class="ad-visual ad-1-bg">
+      <div class="ad-1-circle"></div>
+      <div class="ad-1-headline">ÉLITE<br>NOIR</div>
+      <div class="ad-1-sub">Parfum de Luxe · Édition Limitée</div>
+      <div class="ad-1-claim">«Para quien nunca se conforma<br>con ser como los demás.»</div>
+    </div>
+    <div class="ad-footer">
+      <span class="ad-brand">MAISON ÉLITE</span>
+      <span class="ad-slogan">Solo para quienes lo merecen.</span>
+    </div>
+  </div>
+  <div class="analysis-panel">
+    <div>
+      <div class="section-label">¿Qué antivalores promueve?</div>
+      <div class="antivalores-grid" id="av-0">
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">👑</span>Elitismo</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🪞</span>Vanidad</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🚫</span>Exclusión social</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">💸</span>Culto al lujo</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">😤</span>Superioridad</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🎭</span>Imagen como identidad</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🤝</span>Desprecio al común</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">¿Qué mecanismos retóricos usa?</div>
+      <div class="mecanismo-list" id="mec-0">
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Apelación a la distinción: «no eres como los demás»</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Escasez artificial («édition limitée») para crear deseo</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Lenguaje de merecimiento: «solo para quienes lo merecen»</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Uso del francés como marcador de sofisticación</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Asociación entre dinero gastado e identidad superior</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Tu reflexión ética</div>
+      <textarea class="campo" id="ref-0" placeholder="¿Qué visión del ser humano implica este anuncio? ¿Cómo se relaciona con el concepto de dignidad? ¿Qué teoría ética (Kant, Aristóteles, utilitarismo) usarías para criticarlo?"></textarea>
+    </div>
+    <div>
+      <div class="section-label">Transforma el anuncio · Nuevo eslogan con valores positivos</div>
+      <textarea class="campo" id="eslog-0" placeholder="Escribe un eslogan alternativo que venda el mismo producto apelando a valores como autenticidad, confianza, creatividad, comunidad..."></textarea>
+    </div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <button class="btn-analizar" onclick="mostrarFeedback(0)">Ver análisis filosófico →</button>
+      <button class="btn-reset-ad" onclick="resetAd(0)">Reiniciar</button>
+    </div>
+    <div class="feedback-box" id="fb-0">
+      <div class="fb-header">Análisis filosófico</div>
+      <div class="fb-body">
+        <div class="fb-antivalores">
+          <div class="fb-av-title">Antivalores clave</div>
+          <div class="fb-av-list">
+            <span class="fb-av-chip">Elitismo</span>
+            <span class="fb-av-chip">Exclusión social</span>
+            <span class="fb-av-chip">Vanidad</span>
+            <span class="fb-av-chip">Imagen como identidad</span>
+          </div>
+        </div>
+        <div class="fb-mecanismos">
+          <div class="fb-mec-title">Mecanismo central</div>
+          <div class="fb-mec-item">Este anuncio construye la identidad del comprador sobre la <em>distinción</em>: valer más que los demás.</div>
+          <div class="fb-mec-item">El mensaje «nunca se conforma con ser como los demás» convierte el desprecio al prójimo en aspiración positiva.</div>
+          <div class="fb-mec-item">El lenguaje de «merecimiento» implica que la mayoría de personas <em>no merece</em> el producto, reforzando la exclusión.</div>
+        </div>
+        <div class="fb-reflexion">
+          <strong>Perspectiva kantiana:</strong> tratar a las personas como superiores o inferiores en función de su poder adquisitivo viola el imperativo categórico: la dignidad humana no admite jerarquías por riqueza. <br><br>
+          <strong>Aristóteles</strong> señalaría que la virtud de la magnanimidad no es arrogancia: conocer el propio valor no implica despreciar al otro. El eudemonismo propone la plenitud a través de la comunidad, no a su costa.<br><br>
+          <strong>Para transformarlo:</strong> un eslogan como «Tu esencia, no tu precio» o «Cada persona, un aroma propio» vende el producto apelando a la singularidad sin excluir ni jerarquizar.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ AD 2: COCHE ════════════════ -->
+<div class="ad-panel" id="ad-1">
+  <div class="mock-ad">
+    <div class="ad-badge">Publicidad simulada</div>
+    <div class="ad-visual ad-2-bg">
+      <div class="ad-2-stripe"></div>
+      <div class="ad-2-headline">DOMINA<br><span>TODO</span><br>LO QUE VES</div>
+      <div class="ad-2-sub">Performance · Power · Prestige</div>
+      <div class="ad-2-stat">0–100 en 3,2 s · 620 CV</div>
+      <div class="ad-2-claim">«El mundo es tuyo. Tómalo.»</div>
+    </div>
+    <div class="ad-footer">
+      <span class="ad-brand">VULCANO GT</span>
+      <span class="ad-slogan">No pidas permiso.</span>
+    </div>
+  </div>
+  <div class="analysis-panel">
+    <div>
+      <div class="section-label">¿Qué antivalores promueve?</div>
+      <div class="antivalores-grid" id="av-1">
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">⚡</span>Agresividad</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">👊</span>Dominación</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🔥</span>Individualismo extremo</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🏎️</span>Culto a la velocidad</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🪖</span>Mentalidad de conquista</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">💪</span>Masculinidad tóxica</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🌍</span>Indiferencia ecológica</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">¿Qué mecanismos retóricos usa?</div>
+      <div class="mecanismo-list" id="mec-1">
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Imperativo agresivo: «Domina», «Tómalo», «No pidas permiso»</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Métricas de potencia como sinónimo de valía personal</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>El mundo como territorio a conquistar, no como comunidad</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Ausencia total de los otros: solo el conductor (masculino implícito) existe</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Paleta y tipografía agresivas (rojo, mayúsculas) refuerzan el mensaje</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Tu reflexión ética</div>
+      <textarea class="campo" id="ref-1" placeholder="¿Qué modelo de masculinidad y de éxito proyecta este anuncio? ¿Cómo conecta con la idea de responsabilidad moral hacia los demás y hacia el planeta?"></textarea>
+    </div>
+    <div>
+      <div class="section-label">Transforma el anuncio · Nuevo eslogan con valores positivos</div>
+      <textarea class="campo" id="eslog-1" placeholder="Propón un eslogan alternativo. ¿Puedes vender un coche de alto rendimiento apelando a la libertad responsable, la ingeniería sostenible o el disfrute sin dominación?"></textarea>
+    </div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <button class="btn-analizar" onclick="mostrarFeedback(1)">Ver análisis filosófico →</button>
+      <button class="btn-reset-ad" onclick="resetAd(1)">Reiniciar</button>
+    </div>
+    <div class="feedback-box" id="fb-1">
+      <div class="fb-header">Análisis filosófico</div>
+      <div class="fb-body">
+        <div class="fb-antivalores">
+          <div class="fb-av-title">Antivalores clave</div>
+          <div class="fb-av-list">
+            <span class="fb-av-chip">Dominación</span>
+            <span class="fb-av-chip">Agresividad</span>
+            <span class="fb-av-chip">Individualismo extremo</span>
+            <span class="fb-av-chip">Indiferencia ecológica</span>
+          </div>
+        </div>
+        <div class="fb-mecanismos">
+          <div class="fb-mec-title">Mecanismo central</div>
+          <div class="fb-mec-item">El vocabulario militar («domina», «conquista») traslada la lógica de la guerra al desplazamiento cotidiano.</div>
+          <div class="fb-mec-item">«No pidas permiso» convierte la norma —que protege la vida de otros— en un obstáculo para la libertad individual.</div>
+          <div class="fb-mec-item">La omisión del impacto ambiental es en sí misma un acto retórico: invisibiliza las consecuencias colectivas del consumo individual.</div>
+        </div>
+        <div class="fb-reflexion">
+          <strong>Kohlberg</strong> situaría el razonamiento moral de este anuncio en el estadio 2 (interés propio) o incluso el 1 (ausencia de los demás): el otro no existe como sujeto moral, solo como paisaje.<br><br>
+          <strong>Ética de la responsabilidad</strong> (Hans Jonas): tenemos deberes hacia las generaciones futuras y el planeta. Un coche de 620 CV no es moralmente neutro en el contexto de la crisis climática.<br><br>
+          <strong>Para transformarlo:</strong> «Ingeniería que te lleva lejos, sin dejar a nadie atrás» o «La verdadera potencia: elegir bien» apuestan por el rendimiento desde la responsabilidad.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ AD 3: COSMÉTICA ════════════════ -->
+<div class="ad-panel" id="ad-2">
+  <div class="mock-ad">
+    <div class="ad-badge">Publicidad simulada</div>
+    <div class="ad-visual ad-3-bg">
+      <div class="ad-3-circle">✨</div>
+      <div class="ad-3-headline">¿TODAVÍA<br>NO ERES<br>LA MEJOR VERSIÓN<br>DE TI?</div>
+      <div class="ad-3-sub">Porque siempre hay algo que mejorar.<br>Empieza por tu piel.</div>
+      <div class="ad-3-tag">NUEVA FÓRMULA PERFECTA</div>
+    </div>
+    <div class="ad-footer">
+      <span class="ad-brand">LUMIÈRE</span>
+      <span class="ad-slogan">Porque lo imperfecto no es suficiente.</span>
+    </div>
+  </div>
+  <div class="analysis-panel">
+    <div>
+      <div class="section-label">¿Qué antivalores promueve?</div>
+      <div class="antivalores-grid" id="av-2">
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">😟</span>Inseguridad inducida</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🪞</span>Culto al cuerpo</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">❌</span>Rechazo de la imperfección</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">📉</span>Baja autoestima</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🎯</span>Perfeccionismo tóxico</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">💊</span>Dependencia del producto</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">⚖️</span>Canon estético único</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">¿Qué mecanismos retóricos usa?</div>
+      <div class="mecanismo-list" id="mec-2">
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Pregunta retórica que crea déficit: «¿todavía no eres…?»</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>«Siempre hay algo que mejorar»: la insatisfacción como estado permanente</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>El producto como solución a un problema que el anuncio mismo crea</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>«Lo imperfecto no es suficiente»: la imperfección como fracaso moral</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>«Mejor versión de ti»: la persona actual es deficiente por definición</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Tu reflexión ética</div>
+      <textarea class="campo" id="ref-2" placeholder="¿Cómo se relaciona este anuncio con la autoestima y la salud mental? ¿Qué daño puede causar este tipo de mensaje en adolescentes? ¿Qué valor filosófico opones a la «mejora permanente»?"></textarea>
+    </div>
+    <div>
+      <div class="section-label">Transforma el anuncio · Nuevo eslogan con valores positivos</div>
+      <textarea class="campo" id="eslog-2" placeholder="¿Puedes vender una crema apelando al autocuidado, la aceptación o el bienestar real, sin crear inseguridad? Escribe tu propuesta."></textarea>
+    </div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <button class="btn-analizar" onclick="mostrarFeedback(2)">Ver análisis filosófico →</button>
+      <button class="btn-reset-ad" onclick="resetAd(2)">Reiniciar</button>
+    </div>
+    <div class="feedback-box" id="fb-2">
+      <div class="fb-header">Análisis filosófico</div>
+      <div class="fb-body">
+        <div class="fb-antivalores">
+          <div class="fb-av-title">Antivalores clave</div>
+          <div class="fb-av-list">
+            <span class="fb-av-chip">Inseguridad inducida</span>
+            <span class="fb-av-chip">Perfeccionismo tóxico</span>
+            <span class="fb-av-chip">Canon estético único</span>
+            <span class="fb-av-chip">Dependencia del producto</span>
+          </div>
+        </div>
+        <div class="fb-mecanismos">
+          <div class="fb-mec-title">Mecanismo central</div>
+          <div class="fb-mec-item">El anuncio opera en tres pasos: (1) crea la herida («todavía no eres»), (2) la normaliza («siempre hay algo que mejorar»), (3) ofrece el producto como cura.</div>
+          <div class="fb-mec-item">La «mejor versión de ti» presupone que la versión actual es defectuosa: la persona queda atrapada en una insatisfacción permanente.</div>
+          <div class="fb-mec-item">«Lo imperfecto no es suficiente» convierte la condición humana —imperfecta por naturaleza— en un fracaso moral.</div>
+        </div>
+        <div class="fb-reflexion">
+          <strong>Aristóteles</strong> distingue entre el cuidado del cuerpo como parte del florecimiento humano (eudaimonia) y el culto al cuerpo como fin en sí mismo. Este anuncio promueve lo segundo.<br><br>
+          <strong>Autoestima vs. autocomplacencia:</strong> la psicología humanista (Rogers, Maslow) distingue aceptarse a uno mismo de no querer crecer. Este anuncio tergiversa el concepto de «mejor versión» para crear una insatisfacción comercializable.<br><br>
+          <strong>Para transformarlo:</strong> «Cuídate porque te lo mereces, no porque seas insuficiente» o «Tu piel. Tu historia. Cuídala.» venden el producto desde el respeto, no desde el déficit.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ AD 4: RED SOCIAL ════════════════ -->
+<div class="ad-panel" id="ad-3">
+  <div class="mock-ad">
+    <div class="ad-badge">Publicidad simulada</div>
+    <div class="ad-visual ad-4-bg">
+      <div class="ad-4-phone">
+        <div class="ad-4-heart">❤️</div>
+        <div class="ad-4-count">48.3K</div>
+      </div>
+      <div class="ad-4-headline">SIN LIKES<br>NO EXISTES</div>
+      <div class="ad-4-sub">Tu valor es lo que los demás deciden que eres.</div>
+    </div>
+    <div class="ad-footer">
+      <span class="ad-brand">VRALIFY</span>
+      <span class="ad-slogan">Hazte ver. O desaparece.</span>
+    </div>
+  </div>
+  <div class="analysis-panel">
+    <div>
+      <div class="section-label">¿Qué antivalores promueve?</div>
+      <div class="antivalores-grid" id="av-3">
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">👁️</span>Validación externa</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">😰</span>Miedo al olvido</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🤳</span>Narcisismo digital</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">⚖️</span>Valor condicional</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">📊</span>Cuantificación del ser</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🎭</span>Identidad performativa</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🏆</span>Envidia y comparación</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">¿Qué mecanismos retóricos usa?</div>
+      <div class="mecanismo-list" id="mec-3">
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Amenaza existencial: «sin likes no existes» apela al miedo más básico</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Externalización del valor: «los demás deciden lo que eres»</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Disyuntiva falsa: «hazte ver o desaparece» no hay término medio</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Número grande (48.3K) como prueba de valor real</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Urgencia implícita: la visibilidad como condición de existencia social</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Tu reflexión ética</div>
+      <textarea class="campo" id="ref-3" placeholder="¿Qué visión del ser humano hay detrás del «sin likes no existes»? ¿Cómo conecta con la dignidad kantiana? ¿Qué relación tiene este anuncio con problemas de salud mental en jóvenes?"></textarea>
+    </div>
+    <div>
+      <div class="section-label">Transforma el anuncio · Nuevo eslogan con valores positivos</div>
+      <textarea class="campo" id="eslog-3" placeholder="¿Puedes promover una red social apelando a la conexión genuina, la creatividad o la comunidad, sin instrumentalizar el miedo al rechazo?"></textarea>
+    </div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <button class="btn-analizar" onclick="mostrarFeedback(3)">Ver análisis filosófico →</button>
+      <button class="btn-reset-ad" onclick="resetAd(3)">Reiniciar</button>
+    </div>
+    <div class="feedback-box" id="fb-3">
+      <div class="fb-header">Análisis filosófico</div>
+      <div class="fb-body">
+        <div class="fb-antivalores">
+          <div class="fb-av-title">Antivalores clave</div>
+          <div class="fb-av-list">
+            <span class="fb-av-chip">Validación externa</span>
+            <span class="fb-av-chip">Valor condicional</span>
+            <span class="fb-av-chip">Cuantificación del ser</span>
+            <span class="fb-av-chip">Identidad performativa</span>
+          </div>
+        </div>
+        <div class="fb-mecanismos">
+          <div class="fb-mec-title">Mecanismo central</div>
+          <div class="fb-mec-item">«Tu valor es lo que los demás deciden que eres» invierte la ética: la dignidad ya no es intrínseca sino estadística.</div>
+          <div class="fb-mec-item">El anuncio convierte la visibilidad en condición de existencia, instrumentalizando el miedo a la invisibilidad social.</div>
+          <div class="fb-mec-item">La cuantificación (48.3K) propone que el valor humano es numerable, comparable y siempre provisional.</div>
+        </div>
+        <div class="fb-reflexion">
+          <strong>Kant</strong> fundamenta la dignidad humana en la razón, no en la opinión ajena: cada persona vale por sí misma como fin, no como función de los «me gustas» recibidos.<br><br>
+          <strong>Hegel y el reconocimiento:</strong> el filósofo alemán argumenta que necesitamos ser reconocidos por otros para constituirnos como sujetos. Pero este anuncio pervierte el reconocimiento genuino convirtiéndolo en validación cuantitativa y efímera.<br><br>
+          <strong>Para transformarlo:</strong> «Conecta. Crea. Sé tú.» o «Las mejores redes no se miden, se sienten» apuestan por la autenticidad como motor de la conexión social.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ AD 5: COMIDA RÁPIDA ════════════════ -->
+<div class="ad-panel" id="ad-4">
+  <div class="mock-ad">
+    <div class="ad-badge">Publicidad simulada</div>
+    <div class="ad-visual ad-5-bg">
+      <div class="ad-5-emoji">🍔</div>
+      <div class="ad-5-headline">MÁS.<br>MÁS.<br>MÁS.</div>
+      <div class="ad-5-sub">Triple burger · Doble queso · Sin límites</div>
+      <div class="ad-5-claim">«¿Para qué conformarse<br>cuando puedes tenerlo todo?»</div>
+    </div>
+    <div class="ad-footer">
+      <span class="ad-brand">MEGABITE</span>
+      <span class="ad-slogan">El exceso es el nuevo normal.</span>
+    </div>
+  </div>
+  <div class="analysis-panel">
+    <div>
+      <div class="section-label">¿Qué antivalores promueve?</div>
+      <div class="antivalores-grid" id="av-4">
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🍟</span>Exceso y glotonería</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">♻️</span>Irresponsabilidad ambiental</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">💰</span>Consumismo</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🤷</span>Indiferencia hacia la salud</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🌐</span>Insolidaridad global</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">⏩</span>Inmediatez como valor</span>
+        <span class="antivalor-chip" onclick="toggleChip(this)"><span class="chip-icon">🚫</span>Rechazo de la moderación</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">¿Qué mecanismos retóricos usa?</div>
+      <div class="mecanismo-list" id="mec-4">
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Repetición («más, más, más») como mantra de la acumulación</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>«Sin límites» convierte la desregulación en promesa de libertad</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>«El exceso es el nuevo normal»: normalización del consumo extremo</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>La moderación se presenta como renuncia, no como virtud</div>
+        <div class="mecanismo-item" onclick="toggleMec(this)"><div class="mec-check">✓</div>Ocultamiento del impacto: en salud, en los trabajadores, en el planeta</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Tu reflexión ética</div>
+      <textarea class="campo" id="ref-4" placeholder="¿Qué visión de la vida buena propone este anuncio? ¿Cómo critica Aristóteles la pleonexia (el deseo insaciable de más)? ¿Qué responsabilidad tienen las empresas respecto al consumo que incentivan?"></textarea>
+    </div>
+    <div>
+      <div class="section-label">Transforma el anuncio · Nuevo eslogan con valores positivos</div>
+      <textarea class="campo" id="eslog-4" placeholder="¿Puedes vender comida apelando al placer genuino, la calidad, el disfrute consciente o la solidaridad con productores locales? Propón tu alternativa."></textarea>
+    </div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <button class="btn-analizar" onclick="mostrarFeedback(4)">Ver análisis filosófico →</button>
+      <button class="btn-reset-ad" onclick="resetAd(4)">Reiniciar</button>
+    </div>
+    <div class="feedback-box" id="fb-4">
+      <div class="fb-header">Análisis filosófico</div>
+      <div class="fb-body">
+        <div class="fb-antivalores">
+          <div class="fb-av-title">Antivalores clave</div>
+          <div class="fb-av-list">
+            <span class="fb-av-chip">Exceso y consumismo</span>
+            <span class="fb-av-chip">Inmediatez como valor</span>
+            <span class="fb-av-chip">Irresponsabilidad ambiental</span>
+            <span class="fb-av-chip">Rechazo de la moderación</span>
+          </div>
+        </div>
+        <div class="fb-mecanismos">
+          <div class="fb-mec-title">Mecanismo central</div>
+          <div class="fb-mec-item">La tríada «más, más, más» convierte la acumulación en valor supremo, vaciando de contenido el concepto de «suficiente».</div>
+          <div class="fb-mec-item">«El exceso es el nuevo normal» normaliza un modelo de consumo insostenible presentándolo como progreso cultural.</div>
+          <div class="fb-mec-item">Silencia el impacto: condiciones laborales de los trabajadores, huella de carbono de la cadena, consecuencias para la salud pública.</div>
+        </div>
+        <div class="fb-reflexion">
+          <strong>Aristóteles y la templanza (sophrosyne):</strong> la virtud de la moderación no es renuncia sino la capacidad de disfrutar bien. La pleonexia —el deseo insaciable de más— destruye el carácter y la comunidad.<br><br>
+          <strong>Ética del consumo</strong> (Peter Singer): lo que compramos tiene consecuencias morales sobre trabajadores, animales y el medioambiente. El consumo no es un acto privado e inocente.<br><br>
+          <strong>Para transformarlo:</strong> «Lo bueno no necesita ser más, necesita ser mejor» o «Come bien. Vive mejor. Deja huella.» proponen el placer desde la consciencia y la responsabilidad.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function switchAd(i) {
+  document.querySelectorAll('.ad-tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  document.querySelectorAll('.ad-panel').forEach((p,j) => p.classList.toggle('active', i===j));
+}
+
+function toggleChip(el) { el.classList.toggle('selected'); }
+
+function toggleMec(el) { el.classList.toggle('selected'); }
+
+function mostrarFeedback(i) {
+  const fb = document.getElementById('fb-' + i);
+  fb.classList.add('visible');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetAd(i) {
+  document.querySelectorAll(`#av-${i} .antivalor-chip`).forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll(`#mec-${i} .mecanismo-item`).forEach(m => m.classList.remove('selected'));
+  const ref = document.getElementById('ref-' + i);
+  const esl = document.getElementById('eslog-' + i);
+  if (ref) ref.value = '';
+  if (esl) esl.value = '';
+  const fb = document.getElementById('fb-' + i);
+  if (fb) fb.classList.remove('visible');
+}
+</script>
+</body>
+</html>
