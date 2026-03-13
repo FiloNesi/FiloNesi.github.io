@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 2 — ¿Hay responsabilidad moral?</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a18; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 700px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  h2 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: #5f5e5a; margin-bottom: 1.5rem; line-height: 1.5; }
+  .formula-bar { display: flex; align-items: center; gap: 8px; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+  .formula-pill { padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 500; transition: background 0.2s, color 0.2s; }
+  .pill-conc { background: #cecbf6; color: #26215c; }
+  .pill-lib  { background: #b5d4f4; color: #042c53; }
+  .pill-resp { background: #9fe1cb; color: #04342c; }
+  .pill-off  { background: #e8e7e3; color: #aaa; }
+  .pill-eq   { font-size: 16px; color: #888; }
+  .caso-box { background: #f5f4f0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .caso-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .nav-btn { background: #fff; border: 0.5px solid #aaa; border-radius: 8px; padding: 4px 12px; font-size: 13px; cursor: pointer; color: #1a1a18; }
+  .nav-btn:hover { background: #f0efeb; }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; }
+  .caso-counter { font-size: 13px; color: #5f5e5a; }
+  .caso-text { font-size: 14px; line-height: 1.6; color: #1a1a18; }
+  .preguntas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1.25rem 0; }
+  .pregunta { background: #fff; border: 0.5px solid #ddd; border-radius: 8px; padding: 12px; }
+  .preg-label { font-size: 11px; font-weight: 500; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .preg-question { font-size: 13px; color: #1a1a18; margin-bottom: 10px; line-height: 1.5; }
+  .radio-group { display: flex; gap: 8px; }
+  .radio-btn { flex: 1; text-align: center; padding: 7px 4px; border-radius: 8px; border: 0.5px solid #ccc; font-size: 13px; cursor: pointer; color: #1a1a18; background: #fff; transition: background 0.15s, color 0.15s; }
+  .radio-btn.selected-si  { background: #e1f5ee; color: #085041; border-color: #1d9e75; }
+  .radio-btn.selected-no  { background: #faece7; color: #4a1b0c; border-color: #d85a30; }
+  .btn-analizar { background: #fff; border: 0.5px solid #aaa; border-radius: 8px; padding: 8px 20px; font-size: 14px; cursor: pointer; color: #1a1a18; }
+  .btn-analizar:hover { background: #f0efeb; }
+  .resultado-area { margin-top: 1rem; }
+  .resultado-card { border-radius: 8px; padding: 14px 16px; font-size: 14px; line-height: 1.6; }
+  .resultado-card.responsable    { background: #e1f5ee; color: #085041; }
+  .resultado-card.no-responsable { background: #faece7; color: #4a1b0c; }
+  .resultado-card.incompleto     { background: #faeeda; color: #412402; }
+  .resultado-title { font-weight: 500; font-size: 15px; margin-bottom: 6px; }
+  @media (max-width: 480px) {
+    .preguntas { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Actividad 2 — ¿Hay responsabilidad moral?</h2>
+  <p class="subtitle">Lee cada caso y decide si el agente actuó con conciencia y con libertad. Luego analiza si existe responsabilidad moral.</p>
+
+  <div class="formula-bar">
+    <span class="formula-pill pill-off" id="pill-c">Conciencia</span>
+    <span class="pill-eq">+</span>
+    <span class="formula-pill pill-off" id="pill-l">Libertad</span>
+    <span class="pill-eq">=</span>
+    <span class="formula-pill pill-off" id="pill-r">Responsabilidad</span>
+  </div>
+
+  <div class="caso-box">
+    <div class="caso-nav">
+      <button class="nav-btn" id="btn-prev" onclick="prevCaso()">← Anterior</button>
+      <span class="caso-counter" id="counter">Caso 1 de 5</span>
+      <button class="nav-btn" id="btn-next" onclick="nextCaso()">Siguiente →</button>
+    </div>
+    <div class="caso-text" id="caso-texto"></div>
+  </div>
+
+  <div class="preguntas">
+    <div class="pregunta">
+      <div class="preg-label">Dimensión 1</div>
+      <div class="preg-question">¿El agente sabía lo que estaba haciendo y las consecuencias de su acción?</div>
+      <div class="radio-group">
+        <div class="radio-btn" id="btn-c-si" onclick="select('conciencia','si')">Sí</div>
+        <div class="radio-btn" id="btn-c-no" onclick="select('conciencia','no')">No</div>
+      </div>
+    </div>
+    <div class="pregunta">
+      <div class="preg-label">Dimensión 2</div>
+      <div class="preg-question">¿Pudo el agente haber actuado de otra manera? ¿Eligió libremente?</div>
+      <div class="radio-group">
+        <div class="radio-btn" id="btn-l-si" onclick="select('libertad','si')">Sí</div>
+        <div class="radio-btn" id="btn-l-no" onclick="select('libertad','no')">No</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-analizar" onclick="analizar()">Analizar</button>
+  <div class="resultado-area" id="resultado-area"></div>
+</div>
+
+<script>
+const casos = [
+  {
+    texto: "Marta tiene 16 años. Sabe que su amiga guarda el dinero de su ahorro en un cajón. Aprovecha que está sola en su habitación para coger 50€ sin decírselo.",
+    conciencia: "si", libertad: "si",
+    explicacion: "Marta sabía perfectamente lo que hacía (conocía el dinero, eligió el momento) y nadie la obligó. Hay conciencia plena y libertad de acción: la responsabilidad moral es completa."
+  },
+  {
+    texto: "Un perro muerde a un niño que invadió su espacio y lo asustó. El perro reacciona por instinto de defensa.",
+    conciencia: "no", libertad: "no",
+    explicacion: "El perro no tiene conciencia moral ni puede elegir racionalmente entre opciones. Su conducta es instintiva, por lo que es amoral: ni moral ni inmoral. No hay responsabilidad."
+  },
+  {
+    texto: "Iván conduce bajo los efectos del alcohol, sabiendo que no debería hacerlo, y atropella a un peatón.",
+    conciencia: "si", libertad: "si",
+    explicacion: "Iván sabía que conducir bebido era peligroso y eligió hacerlo de todas formas. La responsabilidad moral (y legal) es plena. El hecho de que estuviera bajo los efectos del alcohol no elimina la responsabilidad, pues él eligió beber y conducir."
+  },
+  {
+    texto: "Elena empuja a alguien en el metro porque otra persona la empuja bruscamente a ella desde atrás sin que pueda evitarlo.",
+    conciencia: "si", libertad: "no",
+    explicacion: "Elena era consciente del empujón, pero no tuvo libertad real de actuar de otro modo: fue una reacción involuntaria forzada por una causa externa. La responsabilidad moral está muy atenuada o es inexistente."
+  },
+  {
+    texto: "Carlos, médico, receta un tratamiento incorrecto porque nadie le informó de la alergia del paciente y los registros médicos estaban incompletos.",
+    conciencia: "no", libertad: "si",
+    explicacion: "Carlos actuó libremente pero sin el conocimiento necesario (no sabía de la alergia). La falta de conciencia sobre un dato crucial reduce su responsabilidad moral, aunque puede haber responsabilidad institucional por la gestión de los registros."
+  }
+];
+
+let current = 0;
+let answers = {};
+
+function loadCaso() {
+  const c = casos[current];
+  document.getElementById('caso-texto').textContent = c.texto;
+  document.getElementById('counter').textContent = `Caso ${current + 1} de ${casos.length}`;
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === casos.length - 1;
+  const a = answers[current] || {};
+  resetButtons();
+  if (a.conciencia) highlightBtn('conciencia', a.conciencia);
+  if (a.libertad)   highlightBtn('libertad',   a.libertad);
+  document.getElementById('resultado-area').innerHTML = '';
+  updateFormulaPills(a.conciencia, a.libertad);
+}
+
+function resetButtons() {
+  ['btn-c-si','btn-c-no','btn-l-si','btn-l-no'].forEach(id => {
+    document.getElementById(id).className = 'radio-btn';
+  });
+}
+
+function highlightBtn(dim, val) {
+  const prefix = dim === 'conciencia' ? 'btn-c-' : 'btn-l-';
+  document.getElementById(prefix + 'si').className = 'radio-btn' + (val === 'si' ? ' selected-si' : '');
+  document.getElementById(prefix + 'no').className = 'radio-btn' + (val === 'no' ? ' selected-no' : '');
+}
+
+function select(dim, val) {
+  if (!answers[current]) answers[current] = {};
+  answers[current][dim] = val;
+  highlightBtn(dim, val);
+  updateFormulaPills(answers[current].conciencia, answers[current].libertad);
+  document.getElementById('resultado-area').innerHTML = '';
+}
+
+function updateFormulaPills(c, l) {
+  document.getElementById('pill-c').className = 'formula-pill ' + (c ? (c === 'si' ? 'pill-conc' : 'pill-off') : 'pill-off');
+  document.getElementById('pill-l').className = 'formula-pill ' + (l ? (l === 'si' ? 'pill-lib'  : 'pill-off') : 'pill-off');
+  document.getElementById('pill-r').className = 'formula-pill ' + (c && l && c === 'si' && l === 'si' ? 'pill-resp' : 'pill-off');
+}
+
+function analizar() {
+  const a = answers[current] || {};
+  const c = casos[current];
+  const area = document.getElementById('resultado-area');
+  if (!a.conciencia || !a.libertad) {
+    area.innerHTML = `<div class="resultado-card incompleto"><div class="resultado-title">Responde a las dos dimensiones antes de analizar.</div></div>`;
+    return;
+  }
+  const corrConc = a.conciencia === c.conciencia;
+  const corrLib  = a.libertad   === c.libertad;
+  const ambas    = corrConc && corrLib;
+  const hayResp  = c.conciencia === 'si' && c.libertad === 'si';
+  const titulo   = ambas ? (hayResp ? 'Correcto — hay responsabilidad moral' : 'Correcto — no hay responsabilidad moral') : 'Revisa tu análisis';
+  const clase    = ambas ? (hayResp ? 'responsable' : 'no-responsable') : 'incompleto';
+  let html = `<div class="resultado-card ${clase}"><div class="resultado-title">${titulo}</div>`;
+  if (!ambas) {
+    if (!corrConc) html += `<div>· Conciencia: la respuesta correcta es <strong>${c.conciencia === 'si' ? 'Sí' : 'No'}</strong>.</div>`;
+    if (!corrLib)  html += `<div>· Libertad: la respuesta correcta es <strong>${c.libertad === 'si' ? 'Sí' : 'No'}</strong>.</div>`;
+    html += `<br>`;
+  }
+  html += `<div>${c.explicacion}</div></div>`;
+  area.innerHTML = html;
+}
+
+function prevCaso() { if (current > 0)              { current--; loadCaso(); } }
+function nextCaso() { if (current < casos.length-1) { current++; loadCaso(); } }
+
+loadCaso();
+</script>
+</body>
+</html>
