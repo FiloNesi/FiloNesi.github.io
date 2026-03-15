@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ética de máximos y mínimos</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5ef;
+  --paper: #fdfcf8;
+  --ink: #1e1c17;
+  --ink-mid: #524f46;
+  --ink-dim: #a09c90;
+  --rule: #dedad0;
+  --max-bg: #1e3a5c;
+  --max-text: #e8f0f8;
+  --max-mid: #7aaad4;
+  --max-soft: #e4eef8;
+  --max-mid2: #3468a0;
+  --min-bg: #2a4a38;
+  --min-text: #e6f2ec;
+  --min-mid: #72c4a0;
+  --min-soft: #e2f0ea;
+  --min-mid2: #2a7a52;
+  --gold: #b07c20;
+  --gold-soft: #fdf5e0;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--ink);
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.header-max {
+  background: var(--max-bg);
+  padding: 2rem 1.75rem 1.5rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.header-min {
+  background: var(--min-bg);
+  padding: 2rem 1.75rem 1.5rem;
+}
+.h-eyebrow {
+  font-size: 10px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase;
+  margin-bottom: 6px; opacity: 0.5;
+}
+.h-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  font-weight: 500; line-height: 1.1; color: #fff;
+  margin-bottom: 6px;
+}
+.h-sub {
+  font-size: 12px; font-weight: 300; opacity: 0.55; line-height: 1.5;
+}
+.header-max .h-eyebrow { color: var(--max-mid); }
+.header-min .h-eyebrow { color: var(--min-mid); }
+
+/* center badge */
+.header-center-wrap {
+  grid-column: 1 / -1;
+  display: flex; justify-content: center; align-items: center;
+  background: var(--ink);
+  padding: 0.75rem 1rem;
+  gap: 1.5rem;
+}
+.header-center-tag {
+  font-family: 'Fraunces', serif;
+  font-size: 11px; font-weight: 300; font-style: italic;
+  color: rgba(255,255,255,0.35); letter-spacing: 0.05em;
+}
+.center-divider { color: rgba(255,255,255,0.15); }
+
+/* ── NAV TABS ── */
+.act-nav {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; padding: 0 1.5rem; gap: 0; overflow-x: auto;
+}
+.act-tab {
+  padding: 0.8rem 1.2rem;
+  font-size: 13px; font-weight: 400; color: var(--ink-dim);
+  border: none; background: transparent;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer; white-space: nowrap;
+  transition: color 0.15s; margin-bottom: -1px;
+}
+.act-tab:hover { color: var(--ink); }
+.act-tab.active { color: var(--ink); font-weight: 500; border-bottom-color: var(--gold); }
+
+/* ── MAIN ── */
+main { max-width: 980px; margin: 0 auto; padding: 1.75rem 1.5rem 4rem; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── INTRO BOX ── */
+.intro-box {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 1rem 1.25rem; margin-bottom: 1.75rem;
+  font-size: 13.5px; font-weight: 300; color: var(--ink-mid); line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.intro-box strong { font-weight: 500; color: var(--ink); }
+
+/* ══════════════════════
+   ACTIVIDAD 1 — MAPA
+══════════════════════ */
+.concepto-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--rule); border: 1px solid var(--rule); border-radius: 10px;
+  overflow: hidden; margin-bottom: 1.75rem;
+}
+.concepto-card { background: var(--paper); padding: 1.4rem 1.5rem; }
+.cc-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.cc-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem; font-weight: 500; color: var(--ink); margin-bottom: 4px;
+}
+.cc-tag {
+  font-size: 11px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 10px; display: inline-block; padding: 2px 10px; border-radius: 2px;
+}
+.tag-max { background: var(--max-soft); color: var(--max-mid2); }
+.tag-min { background: var(--min-soft); color: var(--min-mid2); }
+.tag-bien { background: var(--gold-soft); color: var(--gold); }
+.cc-desc { font-size: 13.5px; font-weight: 300; color: var(--ink-mid); line-height: 1.65; }
+.cc-ejemplos { margin-top: 0.75rem; }
+.cc-ejemplo {
+  display: flex; gap: 7px; align-items: flex-start;
+  font-size: 13px; font-weight: 300; color: var(--ink-mid); margin-bottom: 4px; line-height: 1.5;
+}
+.cc-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+
+/* mapa visual */
+.mapa-wrap {
+  position: relative;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+  padding: 1.5rem; margin-bottom: 1.75rem;
+}
+.mapa-title {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 1.25rem; text-align: center;
+}
+.mapa-cols { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; }
+.mapa-col-header {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem; font-weight: 500; text-align: center; padding: 0.6rem 1rem;
+  border-radius: 6px; margin-bottom: 0.75rem;
+}
+.mapa-col-header.max { background: var(--max-soft); color: var(--max-bg); }
+.mapa-col-header.min { background: var(--min-soft); color: var(--min-bg); }
+.mapa-center-col { display: flex; align-items: flex-start; justify-content: center; padding-top: 1rem; }
+.mapa-vs {
+  font-family: 'Fraunces', serif; font-size: 0.9rem; font-weight: 300; font-style: italic;
+  color: var(--ink-dim); writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 0.1em;
+}
+.mapa-items { display: flex; flex-direction: column; gap: 6px; }
+.mapa-item {
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 7px 12px; font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.4;
+  cursor: default;
+}
+.mapa-item.max-item { border-left: 3px solid var(--max-mid2); }
+.mapa-item.min-item { border-left: 3px solid var(--min-mid2); }
+.mapa-item strong { font-weight: 500; color: var(--ink); }
+
+.mapa-base {
+  margin-top: 1rem;
+  background: var(--gold-soft); border: 1px solid #e8c870; border-radius: 6px;
+  padding: 0.85rem 1rem; text-align: center;
+  font-family: 'Fraunces', serif; font-size: 13.5px; font-weight: 300; font-style: italic;
+  color: var(--gold); line-height: 1.6;
+}
+.mapa-base strong { font-weight: 500; font-style: normal; }
+
+/* ══════════════════════
+   ACTIVIDAD 2 — CLASIFICA
+══════════════════════ */
+.clasif-intro { font-size: 14px; font-weight: 300; color: var(--ink-mid); margin-bottom: 1.25rem; line-height: 1.6; }
+
+.clasif-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;
+}
+.drop-zone {
+  min-height: 220px; border-radius: 8px; border: 2px dashed var(--rule);
+  padding: 1rem; transition: background 0.2s, border-color 0.2s;
+}
+.drop-zone.over-max { background: var(--max-soft); border-color: var(--max-mid2); }
+.drop-zone.over-min { background: var(--min-soft); border-color: var(--min-mid2); }
+.drop-zone.over-shared { background: var(--gold-soft); border-color: var(--gold); }
+.dz-header {
+  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 500;
+  margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;
+}
+.dz-desc { font-size: 12px; font-weight: 300; color: var(--ink-dim); margin-bottom: 10px; line-height: 1.4; }
+.dz-items { display: flex; flex-direction: column; gap: 6px; min-height: 80px; }
+
+.prop-pool {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 1rem; margin-bottom: 1.25rem;
+}
+.pool-label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 0.75rem; }
+.pool-items { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.prop-card {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 7px 12px; font-size: 13px; font-weight: 300; color: var(--ink);
+  cursor: grab; user-select: none; transition: box-shadow 0.15s, opacity 0.2s;
+  line-height: 1.4;
+}
+.prop-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.prop-card.dragging { opacity: 0.35; }
+.prop-card.placed { opacity: 0.5; pointer-events: none; font-size: 12px; padding: 5px 10px; }
+.prop-card.placed.max-placed { background: var(--max-soft); color: var(--max-bg); border-color: var(--max-mid2); }
+.prop-card.placed.min-placed { background: var(--min-soft); color: var(--min-bg); border-color: var(--min-mid2); }
+.prop-card.placed.shared-placed { background: var(--gold-soft); color: var(--gold); border-color: var(--gold); }
+.prop-card.placed.wrong { outline: 2px solid #c0281e; }
+.prop-card.placed.correct { outline: 2px solid #2a7a52; }
+
+.btn-check {
+  background: var(--ink); color: var(--bg);
+  border: none; border-radius: 5px; padding: 9px 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-check:hover { opacity: 0.8; }
+.btn-reset { background: transparent; border: none; font-size: 13px; font-weight: 300; color: var(--ink-dim); cursor: pointer; text-decoration: underline; margin-left: 10px; }
+
+.clasif-result { margin-top: 1rem; display: none; animation: fadeUp 0.3s ease both; }
+.clasif-result.visible { display: block; }
+.res-box { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.res-header { background: var(--ink); color: var(--bg); padding: 0.65rem 1rem; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.res-body { padding: 1rem 1.1rem; }
+.res-score { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.res-text { font-size: 13.5px; font-weight: 300; color: var(--ink-mid); line-height: 1.65; }
+.res-text strong { font-weight: 500; color: var(--ink); }
+
+/* ══════════════════════
+   ACTIVIDAD 3 — DILEMAS
+══════════════════════ */
+.dilema-set { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.dilema-card-big {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+}
+.dc-header {
+  display: grid; grid-template-columns: 4px 1fr;
+}
+.dc-stripe { }
+.dc-header-content { padding: 1rem 1.1rem; }
+.dc-num { font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+.dc-title {
+  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 500; color: var(--ink); margin-bottom: 4px;
+}
+.dc-scenario { font-size: 13.5px; font-weight: 300; font-style: italic; color: var(--ink-mid); line-height: 1.6; }
+
+.dc-body { padding: 1rem 1.1rem; border-top: 1px solid var(--rule); }
+.dc-pregunta { font-size: 13.5px; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; }
+
+.resp-opts { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.85rem; }
+.resp-opt {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 8px 12px; border-radius: 6px; border: 1px solid var(--rule);
+  background: var(--bg); cursor: pointer; transition: all 0.15s;
+  font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.5;
+}
+.resp-opt:hover { border-color: var(--ink-dim); color: var(--ink); }
+.resp-opt.sel-max { background: var(--max-soft); border-color: var(--max-mid2); color: var(--max-bg); }
+.resp-opt.sel-min { background: var(--min-soft); border-color: var(--min-mid2); color: var(--min-bg); }
+.resp-opt.sel-both { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); }
+.resp-radio { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--rule); flex-shrink: 0; margin-top: 1px; transition: all 0.15s; }
+.resp-opt.sel-max .resp-radio { background: var(--max-mid2); border-color: var(--max-mid2); }
+.resp-opt.sel-min .resp-radio { background: var(--min-mid2); border-color: var(--min-mid2); }
+.resp-opt.sel-both .resp-radio { background: var(--gold); border-color: var(--gold); }
+.resp-label { flex: 1; }
+.resp-tipo { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+
+.dc-reflexion-wrap { margin-top: 0.75rem; }
+.dc-reflexion-label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 5px; }
+.dc-reflexion {
+  width: 100%; min-height: 65px;
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 8px 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px; font-weight: 300; color: var(--ink); line-height: 1.6;
+  resize: vertical; outline: none; transition: border-color 0.15s;
+}
+.dc-reflexion:focus { border-color: var(--ink-dim); }
+.dc-reflexion::placeholder { color: var(--ink-dim); font-style: italic; }
+
+.dc-feedback {
+  display: none; margin-top: 0.75rem;
+  border-top: 1px solid var(--rule); padding-top: 0.75rem;
+  animation: fadeUp 0.25s ease both;
+}
+.dc-feedback.visible { display: block; }
+.dcf-badge {
+  display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 2px; margin-bottom: 6px;
+}
+.dcf-text { font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.65; }
+.dcf-text strong { font-weight: 500; color: var(--ink); }
+
+.btn-ver-fb { background: transparent; border: 1px solid var(--rule); border-radius: 4px; padding: 5px 14px; font-size: 12.5px; font-weight: 400; color: var(--ink-mid); cursor: pointer; transition: all 0.15s; }
+.btn-ver-fb:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+/* ══════════════════════
+   ACTIVIDAD 4 — CARTA
+══════════════════════ */
+.carta-wrap {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.carta-header {
+  background: var(--ink); color: var(--bg); padding: 1rem 1.25rem;
+  display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 0.5rem;
+}
+.carta-header h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 500; }
+.carta-header span { font-size: 12px; font-weight: 300; opacity: 0.5; font-style: italic; }
+
+.carta-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+.campo-group { display: flex; flex-direction: column; gap: 4px; }
+.campo-label { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); }
+.campo-input {
+  width: 100%; background: var(--bg); border: 1px solid var(--rule); border-radius: 5px;
+  padding: 9px 12px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 300; color: var(--ink); line-height: 1.6;
+  outline: none; transition: border-color 0.15s;
+}
+.campo-input:focus { border-color: var(--ink-mid); }
+.campo-input::placeholder { color: var(--ink-dim); font-style: italic; }
+.campo-ta { resize: vertical; min-height: 80px; }
+
+.tipo-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+.tipo-btn {
+  padding: 6px 14px; border-radius: 4px; border: 1px solid var(--rule);
+  font-size: 13px; font-weight: 300; color: var(--ink-mid); cursor: pointer;
+  background: var(--bg); transition: all 0.15s;
+}
+.tipo-btn:hover { border-color: var(--ink-mid); color: var(--ink); }
+.tipo-btn.active-max { background: var(--max-soft); border-color: var(--max-mid2); color: var(--max-bg); font-weight: 500; }
+.tipo-btn.active-min { background: var(--min-soft); border-color: var(--min-mid2); color: var(--min-bg); font-weight: 500; }
+
+.carta-preview {
+  display: none; background: var(--bg); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 1.25rem; margin-top: 0.5rem;
+  animation: fadeUp 0.3s ease both;
+}
+.carta-preview.visible { display: block; }
+.prev-eyebrow { font-size: 11px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 0.75rem; }
+.prev-dest { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.prev-tipo-badge { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; margin-bottom: 0.75rem; }
+.prev-texto { font-size: 14px; font-weight: 300; color: var(--ink-mid); line-height: 1.75; white-space: pre-wrap; }
+.prev-firma { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; color: var(--ink); margin-top: 1rem; }
+.prev-reflexion-box {
+  margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--rule);
+  font-size: 13px; font-weight: 300; color: var(--ink-mid); line-height: 1.65; font-style: italic;
+}
+.prev-reflexion-box strong { font-weight: 500; color: var(--ink); font-style: normal; }
+
+.btn-preview { background: var(--ink); color: var(--bg); border: none; border-radius: 5px; padding: 9px 20px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+.btn-preview:hover { opacity: 0.8; }
+
+/* ── shared ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.section-title {
+  font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 500;
+  color: var(--ink); margin-bottom: 0.3rem;
+}
+.section-sub { font-size: 13.5px; font-weight: 300; color: var(--ink-mid); margin-bottom: 1.25rem; line-height: 1.55; }
+
+@media (max-width: 600px) {
+  header { grid-template-columns: 1fr; }
+  .header-center-wrap { display: none; }
+  .concepto-grid { grid-template-columns: 1fr; }
+  .clasif-grid { grid-template-columns: 1fr; }
+  main { padding: 1.25rem 1rem 3rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-max">
+    <div class="h-eyebrow">Ética de máximos</div>
+    <div class="h-title">El Bien<br>individual</div>
+    <div class="h-sub">Felicidad · Plenitud · Vida buena</div>
+  </div>
+  <div class="header-min">
+    <div class="h-eyebrow">Ética de mínimos</div>
+    <div class="h-title">La Justicia<br>común</div>
+    <div class="h-sub">Convivencia · Consenso · Derechos</div>
+  </div>
+  <div class="header-center-wrap">
+    <span class="header-center-tag">Filosofía · 1.º Bachillerato</span>
+    <span class="center-divider">·</span>
+    <span class="header-center-tag">Bien y justicia · §3.1</span>
+  </div>
+</header>
+
+<div class="act-nav">
+  <button class="act-tab active" onclick="setView('mapa')">① Mapa conceptual</button>
+  <button class="act-tab" onclick="setView('clasif')">② Clasifica</button>
+  <button class="act-tab" onclick="setView('dilemas')">③ Dilemas</button>
+  <button class="act-tab" onclick="setView('carta')">④ Escribe</button>
+</div>
+
+<main>
+
+<!-- ════════════════════════════
+     VISTA 1 — MAPA CONCEPTUAL
+════════════════════════════ -->
+<div class="view active" id="view-mapa">
+  <div class="intro-box">
+    <span style="font-size:18px;flex-shrink:0">🗺️</span>
+    <span><strong>Explora el mapa.</strong> Revisa los cuatro conceptos clave y su relación. Luego usa las siguientes actividades para aplicarlos.</span>
+  </div>
+
+  <div class="concepto-grid">
+    <div class="concepto-card">
+      <div class="cc-icon">✦</div>
+      <div class="cc-title">El Bien</div>
+      <span class="cc-tag tag-bien">Valor moral principal</span>
+      <div class="cc-desc">Todos los valores morales, en la medida en que son buenos y nos convienen, pueden resumirse en uno: el bien. Es el horizonte de la acción moral individual.</div>
+      <div class="cc-ejemplos">
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--gold)"></div><span>Vivir con honestidad y coherencia</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--gold)"></div><span>Desarrollar las propias capacidades</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--gold)"></div><span>Alcanzar la plenitud como persona</span></div>
+      </div>
+    </div>
+    <div class="concepto-card">
+      <div class="cc-icon">⚖️</div>
+      <div class="cc-title">La Justicia</div>
+      <span class="cc-tag tag-min">Bien común</span>
+      <div class="cc-desc">Cuando el bien se refiere a todos, hablamos de justicia. Es la realización del bien común: lo que buscamos como comunidad, no solo como individuos.</div>
+      <div class="cc-ejemplos">
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Igualdad ante la ley</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Ausencia de discriminación</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Libertades individuales garantizadas</span></div>
+      </div>
+    </div>
+    <div class="concepto-card">
+      <div class="cc-icon">🏔️</div>
+      <div class="cc-title">Ética de máximos</div>
+      <span class="cc-tag tag-max">Individual · Subjetiva</span>
+      <div class="cc-desc">Orienta la vida individual hacia el bien y la felicidad plena. Sus objetivos son los más altos posibles para cada persona. <em>No hay un solo modelo válido</em>: cada cual define su bien.</div>
+      <div class="cc-ejemplos">
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--max-mid2)"></div><span>¿El bien es el placer? (Epicuro)</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--max-mid2)"></div><span>¿El bien es la virtud? (Aristóteles)</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--max-mid2)"></div><span>¿El bien es Dios? (Agustín de Hipona)</span></div>
+      </div>
+    </div>
+    <div class="concepto-card">
+      <div class="cc-icon">🏛️</div>
+      <div class="cc-title">Ética de mínimos</div>
+      <span class="cc-tag tag-min">Común · Objetiva</span>
+      <div class="cc-desc">Busca los valores y comportamientos <em>mínimos compartidos por todos</em> que permiten la convivencia. Resuelve la disputa entre objetivismo y subjetivismo: no hay acuerdo en los máximos, pero sí podemos acordar los mínimos.</div>
+      <div class="cc-ejemplos">
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Rechazo del abuso y la esclavitud</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Prohibición de la discriminación</span></div>
+        <div class="cc-ejemplo"><div class="cc-dot" style="background:var(--min-mid2)"></div><span>Garantía de libertades básicas</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mapa-wrap">
+    <div class="mapa-title">Diferencias clave entre ambas éticas</div>
+    <div class="mapa-cols">
+      <div>
+        <div class="mapa-col-header max">Ética de máximos</div>
+        <div class="mapa-items">
+          <div class="mapa-item max-item"><strong>Objetivo:</strong> felicidad y plenitud personal</div>
+          <div class="mapa-item max-item"><strong>Sujeto:</strong> el individuo</div>
+          <div class="mapa-item max-item"><strong>Carácter:</strong> subjetivo (cada cual elige su bien)</div>
+          <div class="mapa-item max-item"><strong>Acuerdo:</strong> no exigible — puede haber pluralidad</div>
+          <div class="mapa-item max-item"><strong>Pregunta:</strong> ¿qué debo hacer para ser feliz?</div>
+        </div>
+      </div>
+      <div class="mapa-center-col">
+        <span class="mapa-vs">vs.</span>
+      </div>
+      <div>
+        <div class="mapa-col-header min">Ética de mínimos</div>
+        <div class="mapa-items">
+          <div class="mapa-item min-item"><strong>Objetivo:</strong> justicia y convivencia armónica</div>
+          <div class="mapa-item min-item"><strong>Sujeto:</strong> la comunidad</div>
+          <div class="mapa-item min-item"><strong>Carácter:</strong> objetivo (consenso universal posible)</div>
+          <div class="mapa-item min-item"><strong>Acuerdo:</strong> exigible — base de toda sociedad justa</div>
+          <div class="mapa-item min-item"><strong>Pregunta:</strong> ¿qué debemos respetar todos?</div>
+        </div>
+      </div>
+    </div>
+    <div class="mapa-base">
+      <strong>Relación entre ambas:</strong> la ética de mínimos no dice cómo debes ser feliz, pero sí garantiza que nadie te lo impida.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     VISTA 2 — CLASIFICA
+════════════════════════════ -->
+<div class="view" id="view-clasif">
+  <div class="section-title">Clasifica estas afirmaciones</div>
+  <p class="section-sub">Arrastra cada afirmación a la columna que corresponda: ética de máximos, ética de mínimos, o ambas.</p>
+
+  <div class="prop-pool">
+    <div class="pool-label">Afirmaciones por clasificar</div>
+    <div class="pool-items" id="pool"></div>
+  </div>
+
+  <div class="clasif-grid">
+    <div class="drop-zone" id="zone-max" data-cat="max"
+      ondragover="dzOver(event,'over-max')" ondragleave="dzLeave(event,'over-max')" ondrop="dzDrop(event,'max')">
+      <div class="dz-header" style="color:var(--max-bg)">🏔️ Ética de máximos</div>
+      <div class="dz-desc">Lo que cada persona persigue para su propia felicidad y plenitud.</div>
+      <div class="dz-items" id="items-max"></div>
+    </div>
+    <div class="drop-zone" id="zone-min" data-cat="min"
+      ondragover="dzOver(event,'over-min')" ondragleave="dzLeave(event,'over-min')" ondrop="dzDrop(event,'min')">
+      <div class="dz-header" style="color:var(--min-bg)">🏛️ Ética de mínimos</div>
+      <div class="dz-desc">Lo que toda sociedad justa debe garantizar para la convivencia.</div>
+      <div class="dz-items" id="items-min"></div>
+    </div>
+    <div class="drop-zone" id="zone-shared" data-cat="shared"
+      ondragover="dzOver(event,'over-shared')" ondragleave="dzLeave(event,'over-shared')" ondrop="dzDrop(event,'shared')">
+      <div class="dz-header" style="color:var(--gold)">✦ Ambas</div>
+      <div class="dz-desc">Principios que pertenecen a los dos ámbitos a la vez.</div>
+      <div class="dz-items" id="items-shared"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0.5rem;background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:1rem;text-align:center">
+      <div style="font-size:13px;font-weight:300;color:var(--ink-mid);line-height:1.5">¿No estás seguro/a?<br>Revisa el mapa conceptual<br>en la pestaña anterior.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <button class="btn-check" onclick="checkClasif()">Comprobar</button>
+    <button class="btn-reset" onclick="resetClasif()">Reiniciar</button>
+  </div>
+  <div class="clasif-result" id="clasif-result"></div>
+</div>
+
+<!-- ════════════════════════════
+     VISTA 3 — DILEMAS
+════════════════════════════ -->
+<div class="view" id="view-dilemas">
+  <div class="section-title">Aplica la distinción a situaciones reales</div>
+  <p class="section-sub">Para cada situación, identifica si la cuestión pertenece a la ética de máximos, de mínimos, o a ambas. Luego reflexiona brevemente.</p>
+
+  <div class="dilema-set" id="dilema-set"></div>
+</div>
+
+<!-- ════════════════════════════
+     VISTA 4 — CARTA
+════════════════════════════ -->
+<div class="view" id="view-carta">
+  <div class="section-title">Escribe desde dentro</div>
+  <p class="section-sub">Elige un destinatario imaginario (un político, un amigo, una institución) y escríbele una carta argumentando desde la ética de máximos o de mínimos.</p>
+
+  <div class="carta-wrap">
+    <div class="carta-header">
+      <h3>Carta filosófica</h3>
+      <span>Argumenta con precisión conceptual</span>
+    </div>
+    <div class="carta-body">
+      <div class="campo-group">
+        <div class="campo-label">Destinatario</div>
+        <input class="campo-input" id="carta-dest" placeholder="A quien va dirigida la carta (p. ej.: «Al Parlamento», «A mi mejor amiga», «A un político»)">
+      </div>
+      <div class="campo-group">
+        <div class="campo-label">Tipo de ética que aplicas</div>
+        <div class="tipo-selector">
+          <button class="tipo-btn" id="tbtn-max" onclick="setTipo('max')">🏔️ Ética de máximos</button>
+          <button class="tipo-btn" id="tbtn-min" onclick="setTipo('min')">🏛️ Ética de mínimos</button>
+        </div>
+      </div>
+      <div class="campo-group">
+        <div class="campo-label">Asunto de la carta</div>
+        <input class="campo-input" id="carta-asunto" placeholder="¿Qué quieres argumentar o reivindicar?">
+      </div>
+      <div class="campo-group">
+        <div class="campo-label">Cuerpo de la carta</div>
+        <textarea class="campo-input campo-ta" id="carta-cuerpo" style="min-height:130px"
+          placeholder="Desarrolla tu argumento usando los conceptos de bien, justicia, máximos y mínimos. Cita al menos un filósofo o una idea del tema."></textarea>
+      </div>
+      <div class="campo-group">
+        <div class="campo-label">¿Por qué elegiste esa ética para este caso?</div>
+        <textarea class="campo-input campo-ta" id="carta-razon"
+          placeholder="Reflexiona: ¿es este un asunto que afecta solo a la felicidad individual o que exige un consenso colectivo?"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn-preview" onclick="generarPreview()">Previsualizar carta →</button>
+        <button class="btn-reset" onclick="resetCarta()">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="carta-preview" id="carta-preview"></div>
+</div>
+
+</main>
+
+<script>
+/* ── NAV ── */
+function setView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.act-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  const idx = ['mapa','clasif','dilemas','carta'].indexOf(id);
+  document.querySelectorAll('.act-tab')[idx].classList.add('active');
+}
+
+/* ════════ ACTIVIDAD 2 — CLASIFICA ════════ */
+const props = [
+  { id: 1,  text: '«Vivo para servir a Dios: ese es mi bien supremo.»', cat: 'max' },
+  { id: 2,  text: 'Nadie puede ser discriminado por su origen étnico.', cat: 'min' },
+  { id: 3,  text: '«Busco el placer moderado como camino a la felicidad.»', cat: 'max' },
+  { id: 4,  text: 'Toda persona tiene derecho a un juicio justo.', cat: 'min' },
+  { id: 5,  text: 'La esclavitud está prohibida en cualquier circunstancia.', cat: 'min' },
+  { id: 6,  text: '«Para mí, la vida buena es la contemplación filosófica.»', cat: 'max' },
+  { id: 7,  text: 'Respetar la dignidad humana es un deber universal.', cat: 'shared' },
+  { id: 8,  text: 'Cada persona puede elegir su modelo de familia o convivencia.', cat: 'max' },
+  { id: 9,  text: 'Libertad de expresión como derecho garantizado para todos.', cat: 'min' },
+  { id: 10, text: '«Ser virtuoso y ejercer mis capacidades es mi plenitud.»', cat: 'max' },
+  { id: 11, text: 'Prohibición de la tortura, sin excepción posible.', cat: 'min' },
+  { id: 12, text: 'Vivir auténticamente según los propios valores elegidos.', cat: 'shared' },
+];
+
+let dragId = null;
+let placements = {};
+
+function initClasif() {
+  placements = {};
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  ['items-max','items-min','items-shared'].forEach(id => { document.getElementById(id).innerHTML = ''; });
+  document.getElementById('clasif-result').className = 'clasif-result';
+  document.getElementById('clasif-result').innerHTML = '';
+
+  const shuffled = [...props].sort(() => Math.random() - 0.5);
+  shuffled.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'prop-card';
+    el.id = 'prop-' + p.id;
+    el.draggable = true;
+    el.textContent = p.text;
+    el.addEventListener('dragstart', () => { dragId = p.id; el.classList.add('dragging'); });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    pool.appendChild(el);
+  });
+}
+
+function dzOver(e, cls) {
+  e.preventDefault();
+  e.currentTarget.classList.add(cls);
+}
+function dzLeave(e, cls) {
+  e.currentTarget.classList.remove(cls);
+}
+function dzDrop(e, cat) {
+  e.preventDefault();
+  const clsMap = { max: 'over-max', min: 'over-min', shared: 'over-shared' };
+  e.currentTarget.classList.remove(clsMap[cat]);
+  if (!dragId) return;
+  const p = props.find(x => x.id === dragId);
+  if (!p) return;
+  const orig = document.getElementById('prop-' + dragId);
+  if (orig) orig.classList.add('placed', cat + '-placed');
+  placements[dragId] = cat;
+  const dropped = document.createElement('div');
+  dropped.className = 'prop-card placed ' + cat + '-placed';
+  dropped.id = 'drop-' + dragId;
+  dropped.textContent = p.text;
+  document.getElementById('items-' + cat).appendChild(dropped);
+  dragId = null;
+}
+
+function checkClasif() {
+  let correct = 0, wrong = 0;
+  const feedback = [];
+  props.forEach(p => {
+    const drop = document.getElementById('drop-' + p.id);
+    if (!drop) return;
+    if (placements[p.id] === p.cat) {
+      correct++; drop.classList.add('correct');
+    } else {
+      wrong++;
+      const labels = { max: 'ética de máximos', min: 'ética de mínimos', shared: 'ambas' };
+      feedback.push(`<em>${p.text.slice(0,50)}…</em> → ${labels[p.cat]}`);
+      drop.classList.add('wrong');
+    }
+  });
+  const total = Object.keys(placements).length;
+  const res = document.getElementById('clasif-result');
+  res.classList.add('visible');
+  let html = `<div class="res-box"><div class="res-header">Resultado</div><div class="res-body">
+    <div class="res-score">${correct} de ${props.length} correctas${total < props.length ? ' (faltan por clasificar)' : ''}</div>`;
+  if (feedback.length) {
+    html += `<div class="res-text" style="margin-top:0.5rem"><strong>Revisión necesaria:</strong><br>${feedback.map(f=>`· ${f}`).join('<br>')}</div>`;
+  } else {
+    html += `<div class="res-text" style="margin-top:0.5rem">Perfecto. Recuerda: la ética de mínimos establece el suelo común; la de máximos, el techo personal.</div>`;
+  }
+  html += '</div></div>';
+  res.innerHTML = html;
+}
+
+function resetClasif() { initClasif(); }
+initClasif();
+
+/* ════════ ACTIVIDAD 3 — DILEMAS ════════ */
+const dilemas = [
+  {
+    num: 1,
+    title: 'La dieta del vecino',
+    scenario: 'Tu vecino ha decidido que llevar una dieta vegana estricta es su camino hacia la vida buena y la plenitud. Su familia, en cambio, come carne con normalidad. ¿Qué tipo de cuestión ética plantea esto?',
+    pregunta: '¿A qué ámbito ético pertenece la decisión dietética de tu vecino?',
+    opciones: [
+      { label: 'Ética de máximos', tipo: 'max', texto: 'Es una elección personal sobre el propio bien y estilo de vida. No puede imponerse a nadie ni exigirse a otros.' },
+      { label: 'Ética de mínimos', tipo: 'min', texto: 'Debería ser una norma social universal: la dieta vegana protege el medioambiente y los animales, por lo que todos deberían seguirla.' },
+      { label: 'Ambas', tipo: 'both', texto: 'Pertenece a los máximos como elección personal, pero tiene dimensión de mínimos si el impacto ecológico de las dietas es un bien común.' },
+    ],
+    feedback: {
+      max: { cls: 'max', texto: '<strong>Correcto en la dimensión principal.</strong> La elección del propio estilo de vida —incluida la dieta— pertenece a la ética de máximos: cada persona define qué considera el bien para sí misma. No existe una sola dieta "objetivamente buena" que deba imponerse a todos. Sin embargo, tiene dimensión de mínimos si consideramos el impacto colectivo del consumo en el medioambiente.' },
+      min: { cls: 'min', texto: '<strong>Reflexión interesante, pero cuestionable.</strong> Aunque la sostenibilidad ambiental tiene dimensión de mínimos (bien común), la ética de mínimos no permite imponer a todos un modelo concreto de vida buena. Forzar a alguien a seguir una dieta específica violaría su libertad individual, que sí forma parte de los mínimos.' },
+      both: { cls: 'both', texto: '<strong>Muy matizada.</strong> Efectivamente hay una tensión: como elección personal es un máximo, pero el impacto colectivo del consumo alimentario introduce una dimensión de mínimos relacionada con la sostenibilidad. Esta tensión entre libertad individual y responsabilidad colectiva es uno de los grandes debates éticos actuales.' },
+    }
+  },
+  {
+    num: 2,
+    title: 'La ley de igualdad salarial',
+    scenario: 'Un gobierno propone una ley que prohíbe pagar salarios distintos a personas con el mismo trabajo y cualificación por razón de género. Algunas empresas se oponen aduciendo libertad de mercado.',
+    pregunta: '¿A qué tipo de ética pertenece la igualdad salarial por género?',
+    opciones: [
+      { label: 'Ética de máximos', tipo: 'max', texto: 'Es una preferencia de algunas personas que valoran la igualdad, pero cada empresa debería poder elegir libremente cómo gestiona sus salarios.' },
+      { label: 'Ética de mínimos', tipo: 'min', texto: 'La no discriminación es un mínimo ético universal: ninguna sociedad justa puede permitir diferencias salariales por género. Pertenece a los derechos fundamentales.' },
+      { label: 'Ambas', tipo: 'both', texto: 'Es un mínimo ético (no discriminación), pero su implementación concreta puede variar según los valores específicos de cada sociedad.' },
+    ],
+    feedback: {
+      max: { cls: 'max', texto: '<strong>Esta perspectiva confunde libertad con ausencia de mínimos.</strong> La libertad de mercado no puede justificar la discriminación: la no discriminación es precisamente uno de los mínimos éticos que ninguna preferencia individual o empresarial puede anular. La ética de mínimos existe para proteger derechos fundamentales frente a poderes privados o públicos.' },
+      min: { cls: 'min', texto: '<strong>Correcto.</strong> La ausencia de discriminación —en este caso por género— es un mínimo ético universal. No depende de si a cada empresa le parece bien o mal, ni de sus preferencias ideológicas. Es uno de los principios básicos para una convivencia justa que Adela Cortina define como ética de mínimos: el suelo que ninguna voluntad particular puede cavar.' },
+      both: { cls: 'both', texto: '<strong>Parcialmente correcto.</strong> Es cierto que la implementación concreta puede variar, pero el principio de no discriminación no es "tanto de máximos como de mínimos": es un mínimo claro. Los máximos son los modelos de vida buena personal; los mínimos son los derechos y deberes que garantizan la convivencia justa.' },
+    }
+  },
+  {
+    num: 3,
+    title: 'La religión en la vida pública',
+    scenario: 'Una persona considera que vivir según los preceptos de su fe es su camino hacia el bien supremo y la plenitud. Quiere que esos preceptos se conviertan en leyes para toda la sociedad.',
+    pregunta: '¿Puede la ética de máximos de una persona convertirse en la ética de mínimos de todos?',
+    opciones: [
+      { label: 'Sí puede y debe', tipo: 'max', texto: 'Si una mayoría comparte esos valores religiosos, es justo que se conviertan en normas para toda la sociedad.' },
+      { label: 'No: son ámbitos distintos', tipo: 'min', texto: 'La ética de máximos (modelo de vida buena personal) no puede imponerse como mínimo a quienes no lo comparten. La libertad religiosa y de conciencia son precisamente mínimos que protegen la pluralidad de máximos.' },
+      { label: 'Depende del contenido', tipo: 'both', texto: 'Algunos preceptos religiosos coinciden con mínimos universales (no matar, no robar), pero otros son exclusivos de esa visión de la vida buena y no pueden exigirse a todos.' },
+    ],
+    feedback: {
+      max: { cls: 'max', texto: '<strong>Esta posición es problemática.</strong> La ética de mínimos existe precisamente para resolver este conflicto: en una sociedad plural, ninguna visión particular del bien —por mayoritaria que sea— puede imponerse a quienes no la comparten, si ello viola sus libertades fundamentales. La libertad de conciencia es un mínimo que protege la pluralidad de máximos.' },
+      min: { cls: 'min', texto: '<strong>Correcto y muy bien razonado.</strong> Esta es exactamente la función de la distinción entre máximos y mínimos: los máximos son las concepciones del bien que cada persona o comunidad elige; los mínimos son los principios que garantizan que esa elección sea posible para todos. Imponer los máximos de unos como mínimos de todos destruye la convivencia plural.' },
+      both: { cls: 'both', texto: '<strong>Buena matización.</strong> Efectivamente hay preceptos presentes en muchas tradiciones que coinciden con mínimos universales (respeto a la vida, a la propiedad ajena). Pero la clave está en que su justificación en los mínimos no puede ser religiosa, sino racional y universal: deben poder ser aceptados por personas de cualquier cosmovisión.' },
+    }
+  },
+  {
+    num: 4,
+    title: 'El derecho al voto',
+    scenario: 'En una sociedad democrática, alguien propone que solo voten quienes superen un test de conocimiento político, argumentando que así se tomarán mejores decisiones colectivas.',
+    pregunta: '¿Restringir el voto por capacidad intelectual viola la ética de mínimos?',
+    opciones: [
+      { label: 'No lo viola', tipo: 'max', texto: 'Es una propuesta racional para mejorar la calidad de las decisiones. No hay por qué garantizar el voto a todos si el resultado colectivo sería mejor.' },
+      { label: 'Sí lo viola', tipo: 'min', texto: 'El sufragio universal es un mínimo ético de toda democracia justa. Condicionarlo a capacidades intelectuales introduce una discriminación que viola la igualdad ante la ley.' },
+      { label: 'Es debatible', tipo: 'both', texto: 'Depende de la concepción de democracia que tengamos: es un debate filosófico abierto entre eficiencia y participación universal.' },
+    ],
+    feedback: {
+      max: { cls: 'max', texto: '<strong>Esta posición confunde eficiencia con justicia.</strong> Que una decisión sea "mejor" según algún criterio no justifica excluir personas de la participación política. La igualdad ante la ley y la no discriminación son mínimos que ningún argumento de eficiencia puede anular. Históricamente, los filtros de "capacidad" han servido para excluir a las clases populares, a las mujeres, a las minorías.' },
+      min: { cls: 'min', texto: '<strong>Correcto.</strong> El sufragio universal es uno de los conquistas más importantes de la ética de mínimos moderna. Condicionarlo crea ciudadanos de primera y segunda categoría, lo cual viola el principio de igualdad ante la ley que es precisamente uno de los mínimos sin los cuales la convivencia justa es imposible.' },
+      both: { cls: 'both', texto: '<strong>Parcialmente correcto.</strong> Aunque hay debates filosóficos sobre la calidad de la democracia, la cuestión de si es lícito excluir personas del voto por capacidades intelectuales no es realmente debatible desde la ética de mínimos: afecta directamente al principio de igualdad que es uno de sus pilares. Otra cosa es cómo mejorar la calidad deliberativa sin excluir a nadie.' },
+    }
+  },
+];
+
+function renderDilemas() {
+  const container = document.getElementById('dilema-set');
+  container.innerHTML = '';
+  dilemas.forEach(d => {
+    let optsHtml = d.opciones.map(o => `
+      <div class="resp-opt" onclick="selDilema(this,'${d.num}','${o.tipo}')" data-tipo="${o.tipo}">
+        <div class="resp-radio"></div>
+        <div class="resp-label">
+          <span class="resp-tipo" style="color:${o.tipo==='max'?'var(--max-mid2)':o.tipo==='min'?'var(--min-mid2)':'var(--gold)'}">${o.label}</span>
+          ${o.texto}
+        </div>
+      </div>`).join('');
+
+    container.innerHTML += `
+      <div class="dilema-card-big" id="dc-${d.num}">
+        <div class="dc-header">
+          <div class="dc-stripe" style="background:${d.num%2===0?'var(--min-mid2)':'var(--max-mid2)'}"></div>
+          <div class="dc-header-content">
+            <div class="dc-num">Situación ${d.num}</div>
+            <div class="dc-title">${d.title}</div>
+            <div class="dc-scenario">${d.scenario}</div>
+          </div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-pregunta">${d.pregunta}</div>
+          <div class="resp-opts">${optsHtml}</div>
+          <div class="dc-reflexion-wrap">
+            <div class="dc-reflexion-label">Tu reflexión</div>
+            <textarea class="dc-reflexion" placeholder="Argumenta tu elección usando los conceptos de máximos, mínimos, bien y justicia..."></textarea>
+          </div>
+          <div style="margin-top:0.5rem">
+            <button class="btn-ver-fb" onclick="verFeedback(${d.num})">Ver análisis →</button>
+          </div>
+          <div class="dc-feedback" id="dcfb-${d.num}"></div>
+        </div>
+      </div>`;
+  });
+}
+
+const dilemaSels = {};
+function selDilema(el, num, tipo) {
+  const card = document.getElementById('dc-' + num);
+  card.querySelectorAll('.resp-opt').forEach(o => {
+    o.classList.remove('sel-max','sel-min','sel-both');
+  });
+  el.classList.add('sel-' + tipo);
+  dilemaSels[num] = tipo;
+}
+
+function verFeedback(num) {
+  const tipo = dilemaSels[num];
+  const fb = document.getElementById('dcfb-' + num);
+  if (!tipo) {
+    fb.innerHTML = `<div style="font-size:13px;color:var(--ink-dim);font-style:italic">Selecciona una opción antes de ver el análisis.</div>`;
+    fb.classList.add('visible'); return;
+  }
+  const d = dilemas.find(x => x.num === num);
+  const data = d.feedback[tipo];
+  const col = tipo === 'max' ? 'var(--max-mid2)' : tipo === 'min' ? 'var(--min-mid2)' : 'var(--gold)';
+  const colBg = tipo === 'max' ? 'var(--max-soft)' : tipo === 'min' ? 'var(--min-soft)' : 'var(--gold-soft)';
+  const label = tipo === 'max' ? 'Ética de máximos' : tipo === 'min' ? 'Ética de mínimos' : 'Ambas éticas';
+  fb.innerHTML = `
+    <span class="dcf-badge" style="background:${colBg};color:${col}">${label}</span>
+    <div class="dcf-text">${data.texto}</div>`;
+  fb.classList.add('visible');
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+renderDilemas();
+
+/* ════════ ACTIVIDAD 4 — CARTA ════════ */
+let tipoActivo = null;
+function setTipo(t) {
+  tipoActivo = t;
+  document.getElementById('tbtn-max').className = 'tipo-btn' + (t === 'max' ? ' active-max' : '');
+  document.getElementById('tbtn-min').className = 'tipo-btn' + (t === 'min' ? ' active-min' : '');
+}
+
+function generarPreview() {
+  const dest = document.getElementById('carta-dest').value.trim();
+  const asunto = document.getElementById('carta-asunto').value.trim();
+  const cuerpo = document.getElementById('carta-cuerpo').value.trim();
+  const razon = document.getElementById('carta-razon').value.trim();
+  const prev = document.getElementById('carta-preview');
+
+  if (!dest || !cuerpo) {
+    prev.innerHTML = `<div style="font-size:13px;color:var(--ink-dim);font-style:italic;padding:0.75rem">Completa al menos el destinatario y el cuerpo de la carta.</div>`;
+    prev.classList.add('visible'); return;
+  }
+
+  const col = tipoActivo === 'max' ? 'var(--max-mid2)' : tipoActivo === 'min' ? 'var(--min-mid2)' : 'var(--ink-dim)';
+  const colBg = tipoActivo === 'max' ? 'var(--max-soft)' : tipoActivo === 'min' ? 'var(--min-soft)' : 'var(--bg)';
+  const tipoLabel = tipoActivo === 'max' ? '🏔️ Ética de máximos' : tipoActivo === 'min' ? '🏛️ Ética de mínimos' : 'Tipo no seleccionado';
+
+  prev.innerHTML = `
+    <div class="prev-eyebrow">Vista previa de la carta</div>
+    <div class="prev-dest">A: ${dest}</div>
+    ${asunto ? `<div style="font-size:13px;font-weight:300;color:var(--ink-dim);margin-bottom:8px;font-style:italic">Asunto: ${asunto}</div>` : ''}
+    <span class="prev-tipo-badge" style="background:${colBg};color:${col}">${tipoLabel}</span>
+    <div class="prev-texto">${cuerpo}</div>
+    <div class="prev-firma">— el/la autor/a</div>
+    ${razon ? `<div class="prev-reflexion-box"><strong>Reflexión sobre la elección ética:</strong><br>${razon}</div>` : ''}`;
+  prev.classList.add('visible');
+  prev.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetCarta() {
+  ['carta-dest','carta-asunto','carta-cuerpo','carta-razon'].forEach(id => { document.getElementById(id).value = ''; });
+  tipoActivo = null;
+  document.getElementById('tbtn-max').className = 'tipo-btn';
+  document.getElementById('tbtn-min').className = 'tipo-btn';
+  document.getElementById('carta-preview').classList.remove('visible');
+}
+</script>
+</body>
+</html>
