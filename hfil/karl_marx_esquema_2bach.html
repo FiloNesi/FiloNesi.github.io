@@ -1,0 +1,514 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap');
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  .wrap {
+    font-family: 'Source Serif 4', var(--font-serif), Georgia, serif;
+    background: var(--color-background-primary);
+    padding: 20px 16px 24px;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 3px solid #1a1a1a;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+  .header-left {
+    flex: 1;
+  }
+  .tag-curso {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+  .titulo-main {
+    font-family: 'Playfair Display', var(--font-serif), serif;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-text-primary);
+    letter-spacing: -1px;
+  }
+  .titulo-sub {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+  }
+  .header-dates {
+    text-align: right;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .header-dates strong {
+    display: block;
+    font-size: 11px;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  /* Layout principal: 3 columnas */
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bloque {
+    border: 1.5px solid var(--color-border-primary);
+    border-radius: 4px;
+    padding: 10px 11px 11px;
+    position: relative;
+  }
+  .bloque.accent-rojo {
+    border-left: 5px solid #C0392B;
+  }
+  .bloque.accent-naranja {
+    border-left: 5px solid #D35400;
+  }
+  .bloque.accent-gris {
+    border-left: 5px solid #5D6D7E;
+  }
+  .bloque.accent-azul {
+    border-left: 5px solid #1A5276;
+  }
+  .bloque.accent-verde {
+    border-left: 5px solid #1E8449;
+  }
+
+  .bloque-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .bloque-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: 7px;
+    border-bottom: 1px solid var(--color-border-tertiary);
+    padding-bottom: 5px;
+  }
+
+  .sub-titulo {
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-top: 7px;
+    margin-bottom: 2px;
+  }
+
+  ul.ideas {
+    list-style: none;
+    padding: 0;
+  }
+  ul.ideas li {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--color-text-primary);
+    padding: 1.5px 0 1.5px 10px;
+    position: relative;
+    font-family: 'Source Serif 4', serif;
+  }
+  ul.ideas li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-text-secondary);
+    font-size: 10px;
+  }
+
+  .pill {
+    display: inline-block;
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+    padding: 1px 5px;
+    margin: 1px 2px 1px 0;
+    text-transform: uppercase;
+  }
+
+  /* Bloque ancho: materialismo histórico */
+  .bloque.wide {
+    grid-column: span 2;
+  }
+
+  /* Bloque de dialéctica */
+  .dialectica-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 5px;
+  }
+  .dial-paso {
+    flex: 1;
+    background: var(--color-background-secondary);
+    border-radius: 3px;
+    padding: 5px 6px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.35;
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    position: relative;
+  }
+  .dial-paso span {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-text-secondary);
+    margin-bottom: 2px;
+  }
+  .dial-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    padding-top: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Estructura infra/superestructura */
+  .estructura-diagram {
+    margin-top: 6px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 3px;
+    overflow: hidden;
+    font-size: 10px;
+    font-family: var(--font-sans);
+  }
+  .estruct-row {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--color-border-tertiary);
+    line-height: 1.35;
+  }
+  .estruct-row:last-child { border-bottom: none; }
+  .estruct-row.top {
+    background: var(--color-background-secondary);
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    padding: 3px 8px;
+  }
+  .estruct-row.highlight {
+    background: var(--color-background-secondary);
+  }
+  .estruct-label {
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  .estruct-desc {
+    color: var(--color-text-secondary);
+    font-size: 9.5px;
+  }
+
+  /* Fila inferior: revolución + vigencia */
+  .grid-bottom {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  /* Citas */
+  .cita {
+    font-family: 'Playfair Display', serif;
+    font-size: 10.5px;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    border-left: 2.5px solid var(--color-border-secondary);
+    padding-left: 7px;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .cita span {
+    font-style: normal;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Footer: relaciones con otros autores */
+  .footer-autores {
+    border-top: 2px solid var(--color-border-primary);
+    padding-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .footer-label {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+  .autor-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  .autor-pill .rel {
+    color: var(--color-text-tertiary);
+    font-style: italic;
+  }
+
+  /* Línea editorial */
+  .editorial-line {
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    letter-spacing: 0.5px;
+    color: var(--color-text-tertiary);
+    text-align: right;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="wrap">
+
+  <!-- CABECERA -->
+  <div class="header">
+    <div class="header-left">
+      <div class="tag-curso">Historia de la Filosofía · 2.º Bachillerato · Curso 2025–26</div>
+      <div class="titulo-main">Karl Marx</div>
+      <div class="titulo-sub">Esquema de contenidos EVAU</div>
+    </div>
+    <div class="header-dates">
+      <strong>Cronología</strong>
+      Tréveris, 1818<br>Londres, 1883<br>
+      <em>El Capital</em> (1867)
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL: 3 columnas -->
+  <div class="grid-main">
+
+    <!-- BLOQUE 1: ALIENACIÓN -->
+    <div class="bloque accent-rojo">
+      <div class="bloque-num">Bloque 1 · Problema del hombre</div>
+      <div class="bloque-titulo">La alienación y la ideología</div>
+
+      <div class="sub-titulo">Concepto</div>
+      <ul class="ideas">
+        <li>Origen hegeliano: pérdida de algo propio del ser humano</li>
+        <li>Feuerbach: alienación <strong>religiosa</strong> (los dioses son invención humana)</li>
+        <li>Marx supera a Feuerbach: la religión es <em>consecuencia</em> de la miseria económica</li>
+      </ul>
+
+      <div class="sub-titulo">Tres formas</div>
+      <ul class="ideas">
+        <li><strong>Religiosa:</strong> «la religión es el opio del pueblo»</li>
+        <li><strong>Política:</strong> el Estado burgués, autonomizado, oprime al ser humano</li>
+        <li><strong>Económica:</strong> el trabajador no controla su propio producto → se convierte en mercancía</li>
+      </ul>
+
+      <div class="sub-titulo">Derivados</div>
+      <ul class="ideas">
+        <li><strong>Ideología:</strong> «falsa conciencia» que naturaliza la explotación</li>
+        <li><strong>Fetichismo:</strong> las cosas dominan al hombre (el dinero)</li>
+        <li><strong>Reificación:</strong> relaciones humanas → relaciones entre cosas</li>
+      </ul>
+
+      <div class="cita">«La religión es el opio del pueblo»<span>Marx · Crítica a Hegel</span></div>
+    </div>
+
+    <!-- BLOQUE 2: MATERIALISMO DIALÉCTICO -->
+    <div class="bloque accent-naranja">
+      <div class="bloque-num">Bloque 2 · Problema de la realidad</div>
+      <div class="bloque-titulo">Materialismo dialéctico</div>
+
+      <div class="sub-titulo">Relación con Hegel</div>
+      <ul class="ideas">
+        <li>Adopta la dialéctica hegeliana (contradicción como motor)</li>
+        <li>Invierte el idealismo: las ideas dependen de las condiciones <strong>materiales</strong></li>
+        <li>«La dialéctica de Hegel está de cabeza; hay que ponerla sobre sus pies»</li>
+      </ul>
+
+      <div class="sub-titulo">Tres leyes dialécticas (Engels)</div>
+      <ul class="ideas">
+        <li>Unidad y lucha de contrarios</li>
+        <li>Transición de cantidad a cualidad</li>
+        <li>Negación de la negación</li>
+      </ul>
+
+      <div class="sub-titulo">Dinámica histórica</div>
+      <div class="dialectica-row">
+        <div class="dial-paso"><span>Tesis</span>Modo de producción con contradicciones internas</div>
+        <div class="dial-arrow">›</div>
+        <div class="dial-paso"><span>Antítesis</span>Revolución de clase</div>
+        <div class="dial-arrow">›</div>
+        <div class="dial-paso"><span>Síntesis</span>Nuevo modo de producción</div>
+      </div>
+
+      <div class="cita">La realidad es contradictoria; la contradicción es motor del progreso<span>Heráclito → Hegel → Marx</span></div>
+    </div>
+
+    <!-- BLOQUE 3: MATERIALISMO HISTÓRICO -->
+    <div class="bloque accent-gris">
+      <div class="bloque-num">Bloque 3 · Problema de la sociedad</div>
+      <div class="bloque-titulo">Materialismo histórico</div>
+
+      <div class="sub-titulo">Estructura social</div>
+      <div class="estructura-diagram">
+        <div class="estruct-row top">Superestructura (determinada por la base)</div>
+        <div class="estruct-row"><span class="estruct-label">Ideológica:</span> <span class="estruct-desc">cultura, religión, filosofía — «falsa conciencia»</span></div>
+        <div class="estruct-row"><span class="estruct-label">Jurídico-política:</span> <span class="estruct-desc">Estado, leyes, instituciones — instrumento de dominio</span></div>
+        <div class="estruct-row top">Infraestructura (base económica)</div>
+        <div class="estruct-row highlight"><span class="estruct-label">Fuerzas productivas:</span> <span class="estruct-desc">materias primas, trabajo, herramientas</span></div>
+        <div class="estruct-row highlight"><span class="estruct-label">Relaciones de producción:</span> <span class="estruct-desc">propietarios vs. no propietarios → explotación</span></div>
+      </div>
+
+      <div class="sub-titulo">Modos de producción históricos</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;">
+        <span class="pill">Comunismo tribal</span>
+        <span class="pill">Esclavismo</span>
+        <span class="pill">Feudalismo</span>
+        <span class="pill">Capitalismo</span>
+        <span class="pill">Socialismo →</span>
+        <span class="pill">Comunismo</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GRID INFERIOR: revolución + vigencia -->
+  <div class="grid-bottom">
+
+    <!-- BLOQUE REVOLUCIÓN -->
+    <div class="bloque accent-azul">
+      <div class="bloque-num">Bloque 4 · Filosofía como praxis</div>
+      <div class="bloque-titulo">La revolución y la sociedad comunista</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <div class="sub-titulo">Condiciones objetivas</div>
+          <ul class="ideas">
+            <li>El capitalismo se destruye a sí mismo por la explotación y la acumulación</li>
+            <li>Las fuerzas productivas entran en contradicción con las relaciones de producción</li>
+          </ul>
+        </div>
+        <div>
+          <div class="sub-titulo">Condiciones subjetivas</div>
+          <ul class="ideas">
+            <li>Toma de conciencia de clase del proletariado</li>
+            <li>Lucha revolucionaria organizada contra la explotación</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-titulo">Fases de la revolución</div>
+      <div class="dialectica-row">
+        <div class="dial-paso"><span>1.ª fase</span>Dictadura del proletariado</div>
+        <div class="dial-arrow">›</div>
+        <div class="dial-paso"><span>2.ª fase</span>Socialismo: abolición propiedad privada</div>
+        <div class="dial-arrow">›</div>
+        <div class="dial-paso"><span>Meta</span>Comunismo: desaparece el Estado y las clases</div>
+      </div>
+
+      <div class="cita">«Los filósofos se han limitado a interpretar el mundo; de lo que se trata es de transformarlo»<span>Marx · Tesis XI sobre Feuerbach</span></div>
+    </div>
+
+    <!-- BLOQUE VIGENCIA -->
+    <div class="bloque accent-verde">
+      <div class="bloque-num">Bloque 5 · Actualidad</div>
+      <div class="bloque-titulo">Vigencia del pensamiento</div>
+
+      <div class="sub-titulo">A favor de su vigencia</div>
+      <ul class="ideas">
+        <li>Análisis del capitalismo sigue siendo útil como instrumento crítico</li>
+        <li>Las desigualdades sociales que denunció persisten</li>
+        <li>La Escuela de Frankfurt amplió su teoría (freudomarxismo, mayo del 68)</li>
+      </ul>
+
+      <div class="sub-titulo">En contra</div>
+      <ul class="ideas">
+        <li>Caída del Muro de Berlín (1989) y colapso de la URSS</li>
+        <li>Partidos de izquierda han abandonado el marxismo como programa</li>
+        <li>Determinismo económico: ¿deja margen para la libertad?</li>
+      </ul>
+
+      <div class="sub-titulo">Obras clave</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px">
+        <span class="pill">El Capital (1867)</span>
+        <span class="pill">Manifiesto (1848)</span>
+        <span class="pill">Manuscritos econ.-fil.</span>
+        <span class="pill">Ideología alemana</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER: relaciones con otros autores -->
+  <div class="footer-autores">
+    <span class="footer-label">Relaciones con otros autores:</span>
+    <span class="autor-pill">Hegel <span class="rel">dialéctica (invertida)</span></span>
+    <span class="autor-pill">Feuerbach <span class="rel">alienación religiosa</span></span>
+    <span class="autor-pill">Heráclito <span class="rel">contradicción</span></span>
+    <span class="autor-pill">Platón / Aristóteles <span class="rel">problema del alma</span></span>
+    <span class="autor-pill">Rousseau <span class="rel">contrato social</span></span>
+    <span class="autor-pill">Nietzsche <span class="rel">crítica cultura burguesa</span></span>
+    <span class="autor-pill">Ortega <span class="rel">problema del hombre</span></span>
+  </div>
+
+  <div class="editorial-line">FiloNesi · Historia de la Filosofía 2.º Bachillerato · Esquema de estudio EVAU</div>
+
+</div>
