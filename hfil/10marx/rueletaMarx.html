@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="es" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasapalabra — Filosofía de Marx</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'Outfit', sans-serif; }
+
+    .rosco-letter {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid rgba(255,255,255,0.15);
+    }
+    .rosco-letter:hover { transform: scale(1.15); }
+    .rosco-letter.pending { background: #1e293b; color: #94a3b8; border-color: rgba(148,163,184,0.3); }
+    .rosco-letter.active { background: #f59e0b; color: #000; border-color: #fbbf24; box-shadow: 0 0 20px rgba(245,158,11,0.5); transform: scale(1.2); }
+    .rosco-letter.correct { background: #10b981; color: #fff; border-color: #34d399; }
+    .rosco-letter.wrong { background: #ef4444; color: #fff; border-color: #f87171; }
+    .rosco-letter.skipped { background: #f97316; color: #fff; border-color: #fb923c; }
+
+    .input-glow:focus {
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.3);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(245,158,11,0); }
+      100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+    }
+    .rosco-letter.active { animation: pulse-ring 1.5s infinite; }
+    .hint-card { animation: slideUp 0.3s ease-out; }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      animation: confetti-fall 2.5s ease-in forwards;
+    }
+
+    .timer-bar {
+      transition: width 1s linear;
+    }
+
+    .scroll-area {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148,163,184,0.3) transparent;
+    }
+    .scroll-area::-webkit-scrollbar { width: 4px; }
+    .scroll-area::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); border-radius: 2px; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);">
+   <!-- START SCREEN -->
+   <div id="start-screen" class="h-full w-full flex flex-col items-center justify-center px-4">
+    <div class="text-center" style="animation: slideUp 0.6s ease-out;">
+     <div class="mb-3">
+      <span class="text-6xl">🎯</span>
+     </div>
+     <h1 id="main-title" class="text-5xl md:text-6xl font-900 text-white tracking-tight mb-2" style="font-family: 'Outfit', sans-serif;">PASAPALABRA</h1>
+     <p id="main-subtitle" class="text-xl md:text-2xl font-300 text-amber-400 mb-8 tracking-wide">Filosofía de Marx</p>
+     <div class="flex flex-col items-center gap-3 mb-8">
+      <p class="text-slate-400 text-sm max-w-md">Responde correctamente a las 25 definiciones filosóficas. Escribe tu respuesta o pasa a la siguiente letra.</p>
+     </div>
+     <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+      <button onclick="startGame(false)" class="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-black font-700 rounded-xl text-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-2"> <i data-lucide="play" style="width:20px;height:20px;"></i> Jugar sin tiempo </button> <button onclick="startGame(true)" class="px-8 py-3 bg-transparent border-2 border-amber-500 text-amber-400 hover:bg-amber-500/10 font-600 rounded-xl text-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-2"> <i data-lucide="timer" style="width:20px;height:20px;"></i> Con tiempo (300s) </button>
+     </div>
+    </div>
+   </div><!-- GAME SCREEN -->
+   <div id="game-screen" class="h-full w-full hidden flex-col">
+    <!-- Top bar -->
+    <div class="flex items-center justify-between px-4 py-2 bg-black/30 backdrop-blur-sm border-b border-white/5">
+     <div class="flex items-center gap-4">
+      <span class="text-white font-700 text-sm tracking-wider" id="score-display">✅ 0 &nbsp; ❌ 0</span>
+     </div>
+     <div id="timer-display" class="text-amber-400 font-700 text-lg font-mono hidden">
+      5:00
+     </div><button onclick="showQuit()" class="text-slate-500 hover:text-slate-300 transition-colors p-1"> <i data-lucide="x" style="width:20px;height:20px;"></i> </button>
+    </div><!-- Timer bar -->
+    <div id="timer-bar-container" class="h-1 bg-black/30 hidden">
+     <div id="timer-bar" class="timer-bar h-full bg-gradient-to-r from-amber-500 to-amber-300" style="width:100%"></div>
+    </div><!-- Main game area - Vertical layout -->
+    <div class="flex-1 flex flex-col items-center justify-start overflow-y-auto w-full"><!-- Rosco at top -->
+     <div class="relative flex-shrink-0 mt-6" style="width: 540px; height: 540px;">
+      <div id="rosco" class="relative w-full h-full"></div>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+       <div class="text-center">
+        <div id="center-letter" class="text-8xl font-900 text-amber-400" style="font-family:'Space Mono',monospace;">
+         A
+        </div>
+        <div id="center-mode" class="text-xs text-slate-500 font-500 mt-2 uppercase tracking-wider"></div>
+       </div>
+      </div>
+     </div><!-- Question panel below rosco -->
+     <div class="w-full max-w-3xl px-4 py-8 flex flex-col gap-4">
+      <div class="hint-card bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10" id="hint-card">
+       <div class="flex items-start gap-3 mb-2">
+        <span id="hint-badge" class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 text-sm font-700 font-mono">A</span> <span id="hint-mode" class="text-sm text-slate-500 font-500 mt-0.5"></span>
+       </div>
+       <p id="hint-text" class="text-slate-200 text-lg leading-relaxed mt-4"></p>
+      </div>
+      <div class="flex gap-3 flex-wrap justify-center">
+       <input type="text" id="answer-input" class="input-glow flex-1 min-w-xs bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 outline-none text-base" placeholder="Escribe tu respuesta..." autocomplete="off" spellcheck="false"> <button onclick="submitAnswer()" id="submit-btn" class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-700 rounded-xl transition-all hover:scale-105 active:scale-95 text-base"> Enviar </button> <button onclick="skipLetter()" id="skip-btn" class="px-6 py-3 bg-white/10 hover:bg-white/15 text-slate-300 font-600 rounded-xl transition-all hover:scale-105 active:scale-95 text-base"> Paso </button>
+      </div><!-- Feedback -->
+      <div id="feedback" class="hidden rounded-xl px-4 py-3 text-sm font-600"></div><!-- Remaining info -->
+      <div class="text-center pb-4">
+       <span id="remaining-info" class="text-slate-500 text-sm"></span>
+      </div>
+     </div>
+    </div>
+   </div><!-- END SCREEN -->
+   <div id="end-screen" class="h-full w-full hidden flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div id="confetti-container" class="absolute inset-0 pointer-events-none"></div>
+    <div class="text-center z-10" style="animation: slideUp 0.6s ease-out;">
+     <div class="mb-4">
+      <span id="end-emoji" class="text-7xl">🏆</span>
+     </div>
+     <h2 id="end-title" class="text-4xl font-900 text-white mb-2">¡Resultado!</h2>
+     <p id="end-subtitle" class="text-lg text-slate-400 mb-6"></p>
+     <div class="flex justify-center gap-6 mb-8">
+      <div class="text-center">
+       <div id="end-correct" class="text-4xl font-900 text-emerald-400">
+        0
+       </div>
+       <div class="text-xs text-slate-500 mt-1">
+        Aciertos
+       </div>
+      </div>
+      <div class="text-center">
+       <div id="end-wrong" class="text-4xl font-900 text-red-400">
+        0
+       </div>
+       <div class="text-xs text-slate-500 mt-1">
+        Fallos
+       </div>
+      </div>
+      <div class="text-center">
+       <div id="end-skipped" class="text-4xl font-900 text-orange-400">
+        0
+       </div>
+       <div class="text-xs text-slate-500 mt-1">
+        Sin responder
+       </div>
+      </div>
+     </div>
+     <div id="end-answers" class="scroll-area max-h-48 w-full max-w-lg mx-auto mb-6 text-left bg-white/5 rounded-xl p-4 border border-white/10 text-sm text-slate-300 space-y-1"></div><button onclick="resetGame()" class="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-black font-700 rounded-xl text-lg transition-all hover:scale-105 active:scale-95"> Jugar de nuevo </button>
+    </div>
+   </div><!-- Quit confirm -->
+   <div id="quit-overlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-slate-800 rounded-2xl p-6 max-w-sm w-full border border-white/10 text-center">
+     <p class="text-white font-600 text-lg mb-1">¿Salir de la partida?</p>
+     <p class="text-slate-400 text-sm mb-5">Perderás tu progreso actual.</p>
+     <div class="flex gap-3 justify-center">
+      <button onclick="hideQuit()" class="px-5 py-2 bg-white/10 text-white rounded-lg font-600 hover:bg-white/15 transition-colors">Cancelar</button> <button onclick="confirmQuit()" class="px-5 py-2 bg-red-500 text-white rounded-lg font-600 hover:bg-red-400 transition-colors">Salir</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+// Game data
+const questions = [
+  { letter: "A", mode: "empieza", hint: "Conversión del trabajador en mercancía que no se reconoce en el producto de su trabajo y lo considera ajeno.", answer: "alienación" },
+  { letter: "B", mode: "empieza", hint: "Clase social que acabó con el sistema feudal y en la fase actual posee los medios de producción.", answer: "burguesía" },
+  { letter: "C", mode: "empieza", hint: "Sistema económico (modo de producción) basado en la propiedad privada de los medios de producción.", answer: "capitalismo" },
+  { letter: "D", mode: "empieza", hint: "Enfrentamiento y superación de contrarios; rige tanto la naturaleza como la historia.", answer: "dialéctica" },
+  { letter: "E", mode: "contiene", hint: "Proceso en el que desembocará inevitablemente la lucha de clases entre el proletariado y la burguesía.", answer: "revolución del proletariado" },
+  { letter: "F", mode: "empieza", hint: "Atribución de cualidades mágicas a las mercancías, ocultando que su valor proviene del trabajo y la explotación.", answer: "fetichismo" },
+  { letter: "G", mode: "contiene", hint: "Visión deformada de la sociedad que justifica los privilegios de la clase dominante; también llamada falsa conciencia.", answer: "ideología" },
+  { letter: "H", mode: "contiene", hint: "Interpretación de la historia donde la sociedad es resultado de leyes dialécticas expresadas en la lucha de clases.", answer: "materialismo histórico" },
+  { letter: "I", mode: "empieza", hint: "El modo de producción de una sociedad o su estructura económica que determina la superestructura.", answer: "infraestructura" },
+  { letter: "J", mode: "contiene", hint: "Esencia del hombre entendida como actividad productiva o praxis que lo distingue de los animales.", answer: "trabajo" },
+  { letter: "K", mode: "empieza", hint: "Nombre de pila del filósofo de Tréveris autor de El Capital, que considera que la historia es la historia de la lucha de clases.", answer: "karl" },
+  { letter: "L", mode: "empieza", hint: "Motor de la historia; manifestación de la tensión entre fuerzas productivas y relaciones de producción.", answer: "lucha de clases" },
+  { letter: "M", mode: "empieza", hint: "Producto del trabajo del asalariado que se vende en el mercado y genera un beneficio para el capitalista.", answer: "mercancía" },
+  { letter: "N", mode: "contiene", hint: "Segundo momento de la dialéctica. En la fase actual, se identifica con la dictadura del proletariado.", answer: "antítesis" },
+  { letter: "O", mode: "contiene", hint: "Conjunto de las relaciones de producción y las fuerzas productivas de un momento histórico determinado.", answer: "modo de producción" },
+  { letter: "P", mode: "empieza", hint: "Beneficio del producto del trabajo del asalariado que se queda el capitalista sin retornar al trabajador.", answer: "plusvalía" },
+  { letter: "Q", mode: "contiene", hint: "Movimiento filosófico al que pertenece Marx y que interpreta a Hegel en sentido inmaterialista y denuncia las contradicciones de su época.", answer: "izquierda hegeliana" },
+  { letter: "R", mode: "empieza", hint: "Proceso por el cual las relaciones entre personas se presentan como si fueran relaciones entre cosas u objetos.", answer: "reificación" },
+  { letter: "S", mode: "empieza", hint: "Tercer momento de la dialéctica que se producirá con la llegada del comunismo (sociedad sin clases).", answer: "síntesis" },
+  { letter: "T", mode: "empieza", hint: "Primer momento de la dialéctica que en la fase actual se identifica con el modo de producción capitalista.", answer: "tesis" },
+  { letter: "U", mode: "contiene", hint: "Ideología de una sociedad materializada en sus instituciones (leyes, política) y determinada por la base económica.", answer: "superestructura" },
+  { letter: "V", mode: "empieza", hint: "Utilidad de una mercancía para satisfacer una necesidad; no se mide en dinero.", answer: "valor de uso" },
+  { letter: "X", mode: "contiene", hint: "Actividad productiva del hombre. Como actividad social, es la transformación de la realidad o revolución.", answer: "praxis" },
+  { letter: "Y", mode: "contiene", hint: "Principios internos (como la de unidad y oposición de contrarios) que rigen el materialismo dialéctico.", answer: "leyes dialécticas" },
+  { letter: "Z", mode: "contiene", hint: "Elementos que actúan en el proceso de trabajo: fuerza de trabajo (personas) y medios de producción.", answer: "fuerzas productivas" }
+];
+
+let gameState = {
+  currentIndex: 0,
+  statuses: [], // 'pending', 'correct', 'wrong', 'skipped'
+  correct: 0,
+  wrong: 0,
+  timed: false,
+  timeLeft: 300,
+  timerInterval: null,
+  round: 1,
+  finished: false
+};
+
+// Normalize string for comparison
+function normalize(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+function buildRosco() {
+  const container = document.getElementById('rosco');
+  container.innerHTML = '';
+  const total = questions.length;
+  const cx = 270, cy = 270, r = 225;
+
+  questions.forEach((q, i) => {
+    const angle = (2 * Math.PI * i / total) - Math.PI / 2;
+    const x = cx + r * Math.cos(angle) - 21;
+    const y = cy + r * Math.sin(angle) - 21;
+
+    const el = document.createElement('div');
+    el.className = `rosco-letter ${gameState.statuses[i]}`;
+    el.id = `letter-${i}`;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.textContent = q.letter;
+    el.onclick = () => {
+      if (gameState.statuses[i] === 'pending' && !gameState.finished) {
+        gameState.currentIndex = i;
+        updateUI();
+      }
+    };
+    container.appendChild(el);
+  });
+}
+
+function updateRoscoVisuals() {
+  questions.forEach((q, i) => {
+    const el = document.getElementById(`letter-${i}`);
+    if (!el) return;
+    el.className = `rosco-letter ${gameState.statuses[i]}`;
+    if (i === gameState.currentIndex && gameState.statuses[i] === 'pending' && !gameState.finished) {
+      el.classList.add('active');
+      el.classList.remove('pending');
+    }
+  });
+}
+
+function updateUI() {
+  const q = questions[gameState.currentIndex];
+  document.getElementById('center-letter').textContent = q.letter;
+  const modeText = q.mode === 'empieza' ? 'Empieza por ' + q.letter : 'Contiene la ' + q.letter;
+  document.getElementById('center-mode').textContent = modeText;
+
+  document.getElementById('hint-badge').textContent = q.letter;
+  document.getElementById('hint-mode').textContent = modeText;
+  document.getElementById('hint-text').textContent = q.hint;
+
+  document.getElementById('score-display').innerHTML = `✅ ${gameState.correct} &nbsp; ❌ ${gameState.wrong}`;
+
+  const pending = gameState.statuses.filter(s => s === 'pending').length;
+  document.getElementById('remaining-info').textContent = `Quedan ${pending} de ${questions.length} letras`;
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('answer-input').value = '';
+  document.getElementById('answer-input').focus();
+
+  updateRoscoVisuals();
+}
+
+function findNextPending(fromIndex) {
+  const len = questions.length;
+  for (let i = 1; i <= len; i++) {
+    const idx = (fromIndex + i) % len;
+    if (gameState.statuses[idx] === 'pending') return idx;
+  }
+  return -1;
+}
+
+function showFeedback(text, type) {
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.textContent = text;
+  if (type === 'correct') {
+    fb.className = 'rounded-xl px-4 py-3 text-sm font-600 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+  } else if (type === 'wrong') {
+    fb.className = 'rounded-xl px-4 py-3 text-sm font-600 bg-red-500/20 text-red-300 border border-red-500/30';
+  } else {
+    fb.className = 'rounded-xl px-4 py-3 text-sm font-600 bg-orange-500/20 text-orange-300 border border-orange-500/30';
+  }
+}
+
+function checkAnswer(input, question) {
+  const norm = normalize(input);
+  const ans = normalize(question.answer);
+  // Exact match
+  if (norm === ans) return true;
+  // For multi-word answers, also accept key word
+  const keywords = {
+    "relaciones de producción": ["relaciones de produccion"],
+    "karl": ["karl", "karl marx", "marx"],
+    "lucha de clases": ["lucha de clases"],
+    "modo de producción": ["modo de produccion"],
+    "praxis": ["praxis"],
+    "proletariado": ["proletariado"],
+    "izquierda hegeliana": ["izquierda hegeliana"],
+    "revolución": ["revolucion", "revolucion del proletariado", "revolución del proletariado"],
+    "valor de cambio": ["valor de cambio"],
+    "valor de uso": ["valor de uso"],
+    "el capital": ["el capital", "das kapital"],
+    "infraestructura": ["infraestructura"]
+  };
+  const alts = keywords[question.answer];
+  if (alts && alts.includes(norm)) return true;
+  return false;
+}
+
+function submitAnswer() {
+  if (gameState.finished) return;
+  const input = document.getElementById('answer-input').value.trim();
+  if (!input) return;
+
+  const q = questions[gameState.currentIndex];
+
+  if (checkAnswer(input, q)) {
+    gameState.statuses[gameState.currentIndex] = 'correct';
+    gameState.correct++;
+    showFeedback(`¡Correcto! ✅ ${q.answer.charAt(0).toUpperCase() + q.answer.slice(1)}`, 'correct');
+  } else {
+    gameState.statuses[gameState.currentIndex] = 'wrong';
+    gameState.wrong++;
+    showFeedback(`Incorrecto ❌ La respuesta era: ${q.answer.charAt(0).toUpperCase() + q.answer.slice(1)}`, 'wrong');
+  }
+
+  updateRoscoVisuals();
+
+  setTimeout(() => {
+    const next = findNextPending(gameState.currentIndex);
+    if (next === -1) {
+      endGame();
+    } else {
+      gameState.currentIndex = next;
+      updateUI();
+    }
+  }, 1200);
+}
+
+function skipLetter() {
+  if (gameState.finished) return;
+  const q = questions[gameState.currentIndex];
+  showFeedback(`Pasapalabra — "${q.letter}" queda pendiente`, 'skip');
+
+  setTimeout(() => {
+    const next = findNextPending(gameState.currentIndex);
+    if (next === -1 || next === gameState.currentIndex) {
+      // Only one left, force answer
+      updateUI();
+    } else {
+      gameState.currentIndex = next;
+      updateUI();
+    }
+  }, 600);
+}
+
+function startTimer() {
+  document.getElementById('timer-display').classList.remove('hidden');
+  document.getElementById('timer-bar-container').classList.remove('hidden');
+
+  gameState.timerInterval = setInterval(() => {
+    gameState.timeLeft--;
+    const m = Math.floor(gameState.timeLeft / 60);
+    const s = gameState.timeLeft % 60;
+    document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    document.getElementById('timer-bar').style.width = (gameState.timeLeft / 300 * 100) + '%';
+
+    if (gameState.timeLeft <= 30) {
+      document.getElementById('timer-display').classList.add('text-red-400');
+      document.getElementById('timer-display').classList.remove('text-amber-400');
+    }
+
+    if (gameState.timeLeft <= 0) {
+      clearInterval(gameState.timerInterval);
+      // Mark remaining as skipped
+      gameState.statuses.forEach((s, i) => {
+        if (s === 'pending') gameState.statuses[i] = 'skipped';
+      });
+      endGame();
+    }
+  }, 1000);
+}
+
+function startGame(timed) {
+  gameState = {
+    currentIndex: 0,
+    statuses: questions.map(() => 'pending'),
+    correct: 0,
+    wrong: 0,
+    timed: timed,
+    timeLeft: 300,
+    timerInterval: null,
+    round: 1,
+    finished: false
+  };
+
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('end-screen').classList.add('hidden');
+  const gs = document.getElementById('game-screen');
+  gs.classList.remove('hidden');
+  gs.classList.add('flex');
+
+  buildRosco();
+  updateUI();
+
+  if (timed) startTimer();
+
+  document.getElementById('answer-input').focus();
+}
+
+function endGame() {
+  gameState.finished = true;
+  if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+
+  const skipped = gameState.statuses.filter(s => s === 'pending' || s === 'skipped').length;
+
+  const gs = document.getElementById('game-screen');
+  gs.classList.add('hidden');
+  gs.classList.remove('flex');
+  document.getElementById('end-screen').classList.remove('hidden');
+  document.getElementById('end-screen').classList.add('flex');
+
+  document.getElementById('end-correct').textContent = gameState.correct;
+  document.getElementById('end-wrong').textContent = gameState.wrong;
+  document.getElementById('end-skipped').textContent = skipped;
+
+  // Emoji and title
+  if (gameState.correct === 25) {
+    document.getElementById('end-emoji').textContent = '🏆';
+    document.getElementById('end-title').textContent = '¡PASAPALABRA PERFECTO!';
+    document.getElementById('end-subtitle').textContent = '¡Increíble! Has acertado todas las letras.';
+    spawnConfetti();
+  } else if (gameState.correct >= 20) {
+    document.getElementById('end-emoji').textContent = '🎉';
+    document.getElementById('end-title').textContent = '¡Excelente!';
+    document.getElementById('end-subtitle').textContent = `Has acertado ${gameState.correct} de 25. ¡Casi perfecto!`;
+    spawnConfetti();
+  } else if (gameState.correct >= 13) {
+    document.getElementById('end-emoji').textContent = '👏';
+    document.getElementById('end-title').textContent = '¡Buen trabajo!';
+    document.getElementById('end-subtitle').textContent = `Has acertado ${gameState.correct} de 25.`;
+  } else {
+    document.getElementById('end-emoji').textContent = '📚';
+    document.getElementById('end-title').textContent = 'Sigue estudiando';
+    document.getElementById('end-subtitle').textContent = `Has acertado ${gameState.correct} de 25. ¡Tú puedes!`;
+  }
+
+  // Show all answers
+  const answersDiv = document.getElementById('end-answers');
+  answersDiv.innerHTML = '';
+  questions.forEach((q, i) => {
+    const status = gameState.statuses[i];
+    const icon = status === 'correct' ? '✅' : status === 'wrong' ? '❌' : '⏭️';
+    const d = document.createElement('div');
+    d.className = 'flex items-start gap-2 py-1';
+    d.innerHTML = `<span class="flex-shrink-0">${icon}</span><span><strong class="text-amber-400 font-mono">${q.letter}:</strong> ${q.answer.charAt(0).toUpperCase() + q.answer.slice(1)}</span>`;
+    answersDiv.appendChild(d);
+  });
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#f59e0b', '#10b981', '#ef4444', '#6366f1', '#ec4899', '#14b8a6'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.top = '-10px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDelay = Math.random() * 1.5 + 's';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    container.appendChild(piece);
+  }
+}
+
+function resetGame() {
+  document.getElementById('end-screen').classList.add('hidden');
+  document.getElementById('end-screen').classList.remove('flex');
+  document.getElementById('start-screen').classList.remove('hidden');
+}
+
+function showQuit() { document.getElementById('quit-overlay').classList.remove('hidden'); }
+function hideQuit() { document.getElementById('quit-overlay').classList.add('hidden'); }
+function confirmQuit() {
+  hideQuit();
+  if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+  gameState.finished = true;
+  const gs = document.getElementById('game-screen');
+  gs.classList.add('hidden');
+  gs.classList.remove('flex');
+  document.getElementById('start-screen').classList.remove('hidden');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (gameState.finished) return;
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitAnswer();
+  }
+});
+
+// Element SDK
+const defaultConfig = {
+  game_title: "PASAPALABRA",
+  subtitle: "Filosofía de Marx",
+  background_color: "#0f172a",
+  surface_color: "#1e293b",
+  text_color: "#e2e8f0",
+  primary_action_color: "#f59e0b",
+  secondary_action_color: "#94a3b8",
+  font_family: "Outfit",
+  font_size: 16
+};
+
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+  const font = c.font_family || defaultConfig.font_family;
+  const baseSize = c.font_size || defaultConfig.font_size;
+
+  document.getElementById('main-title').textContent = c.game_title || defaultConfig.game_title;
+  document.getElementById('main-subtitle').textContent = c.subtitle || defaultConfig.subtitle;
+
+  document.getElementById('main-title').style.fontFamily = `${font}, sans-serif`;
+  document.getElementById('main-subtitle').style.fontFamily = `${font}, sans-serif`;
+
+  const app = document.getElementById('app');
+  app.style.background = `linear-gradient(135deg, ${c.background_color} 0%, ${c.surface_color} 50%, ${c.background_color} 100%)`;
+
+  document.getElementById('main-title').style.color = c.text_color;
+  document.getElementById('main-title').style.fontSize = `${baseSize * 3}px`;
+  document.getElementById('main-subtitle').style.color = c.primary_action_color;
+  document.getElementById('main-subtitle').style.fontSize = `${baseSize * 1.4}px`;
+}
+
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => { applyConfig(config); },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+        { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || defaultConfig.font_family,
+        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => config.font_size || defaultConfig.font_size,
+        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ["game_title", config.game_title || defaultConfig.game_title],
+      ["subtitle", config.subtitle || defaultConfig.subtitle]
+    ])
+  });
+}
+
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9de5702ca4893ed1',t:'MTc3Mzg0OTQ5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
