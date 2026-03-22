@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIVITAS — El juego de la participación ciudadana</title>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #0f0e17;
+  --bg-city: #1a1a2e;
+  --teal: #0f9b8e;
+  --teal-light: #1de9b6;
+  --coral: #ff6b6b;
+  --coral-dark: #ee5a24;
+  --yellow: #ffd93d;
+  --yellow-dark: #f0c929;
+  --blue: #4facfe;
+  --blue-dark: #2980b9;
+  --purple: #a55eea;
+  --purple-dark: #8854d0;
+  --green: #26de81;
+  --green-dark: #20bf6b;
+  --orange: #fd9644;
+  --orange-dark: #e67e22;
+  --pink: #fd79a8;
+  --cream: #ffeaa7;
+  --sky: #74b9ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg-dark);
+  color: #fff;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ═══ HEADER ═══ */
+.game-header {
+  text-align: center;
+  padding: 20px 20px 10px;
+  position: relative;
+  z-index: 10;
+}
+
+.game-title {
+  font-family: 'Lilita One', cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  background: linear-gradient(135deg, var(--yellow), var(--orange), var(--coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: 6px;
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+}
+
+.game-subtitle {
+  font-size: 0.95rem;
+  color: var(--cream);
+  opacity: 0.8;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+/* ═══ MAIN LAYOUT ═══ */
+.game-container {
+  display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  gap: 12px;
+  padding: 10px 16px 20px;
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: calc(100vh - 90px);
+}
+
+/* ═══ TEAMS PANEL ═══ */
+.teams-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-title {
+  font-family: 'Lilita One', cursive;
+  font-size: 1.1rem;
+  color: var(--cream);
+  text-align: center;
+  padding: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.team-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 12px;
+  border: 2px solid rgba(255,255,255,0.06);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.team-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--team-color);
+}
+
+.team-card.active {
+  border-color: var(--team-color);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--team-color) 30%, transparent);
+  transform: scale(1.02);
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.team-token {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--team-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--team-color) 50%, transparent),
+              inset 0 2px 4px rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.team-name {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--team-color);
+}
+
+.team-name input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.2);
+  color: var(--team-color);
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.85rem;
+  width: 100%;
+  outline: none;
+}
+
+.team-score {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.team-score strong {
+  font-size: 1.3rem;
+  color: var(--cream);
+  font-family: 'Lilita One', cursive;
+}
+
+.team-pos {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+}
+
+.add-team-btn, .remove-team-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px dashed rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-team-btn:hover { border-color: var(--green); color: var(--green); }
+.remove-team-btn { border-color: rgba(255,100,100,0.2); }
+.remove-team-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+/* ═══ BOARD AREA ═══ */
+.board-wrapper {
+  position: relative;
+  background: linear-gradient(180deg, #16213e 0%, #1a1a2e 40%, #2d3436 85%, #1e272e 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.06);
+  min-height: 520px;
+}
+
+/* City skyline background */
+.city-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Stars */
+.stars {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 40%;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--dur) ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* Board SVG */
+.board-svg {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+/* ═══ CONTROLS PANEL ═══ */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Dice */
+.dice-area {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.dice-container {
+  perspective: 600px;
+  width: 80px;
+  height: 80px;
+  margin: 10px auto;
+}
+
+.dice {
+  width: 80px;
+  height: 80px;
+  background: #fff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lilita One', cursive;
+  font-size: 2.5rem;
+  color: var(--bg-dark);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4),
+              inset 0 -3px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.1s;
+  user-select: none;
+  position: relative;
+}
+
+.dice:hover { transform: scale(1.05); }
+
+.dice.rolling {
+  animation: diceRoll 0.6s ease-out;
+}
+
+@keyframes diceRoll {
+  0% { transform: rotateX(0) rotateZ(0) scale(1); }
+  25% { transform: rotateX(180deg) rotateZ(90deg) scale(0.8); }
+  50% { transform: rotateX(360deg) rotateZ(180deg) scale(1.1); }
+  75% { transform: rotateX(540deg) rotateZ(270deg) scale(0.9); }
+  100% { transform: rotateX(720deg) rotateZ(360deg) scale(1); }
+}
+
+.dice-dots {
+  display: grid;
+  gap: 6px;
+  width: 52px;
+  height: 52px;
+}
+
+.dice-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--bg-dark);
+  border-radius: 50%;
+}
+
+.roll-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  color: var(--bg-dark);
+  font-family: 'Lilita One', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(253,150,68,0.3);
+}
+
+.roll-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(253,150,68,0.5); }
+.roll-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Card display */
+.card-display {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-display-title {
+  font-family: 'Lilita One', cursive;
+  font-size: 0.9rem;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.card-content {
+  flex: 1;
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--card-color, rgba(255,255,255,0.1));
+  border-radius: 4px 4px 0 0;
+}
+
+.card-type-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--card-color, #666);
+  color: #fff;
+  margin-bottom: 8px;
+  align-self: flex-start;
+}
+
+.card-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  flex: 1;
+}
+
+.card-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.25);
+  font-style: italic;
+  font-size: 0.8rem;
+  text-align: center;
+  height: 100%;
+}
+
+/* Score buttons */
+.score-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.score-btn {
+  flex: 1;
+  min-width: 50px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.score-btn:hover { background: rgba(255,255,255,0.12); }
+.score-btn.positive { border-color: var(--green); color: var(--green); }
+.score-btn.positive:hover { background: rgba(38,222,129,0.15); }
+.score-btn.negative { border-color: var(--coral); color: var(--coral); }
+.score-btn.negative:hover { background: rgba(255,107,107,0.15); }
+
+/* Log */
+.game-log {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.log-entry {
+  font-size: 0.7rem;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+}
+
+.log-entry:last-child { border-bottom: none; }
+.log-entry strong { color: var(--cream); }
+
+/* Reset */
+/* Next turn button */
+.next-turn-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  color: #fff;
+  font-family: 'Lilita One', cursive;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(15,155,142,0.3);
+  animation: pulseBtn 1.5s ease-in-out infinite;
+}
+
+.next-turn-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15,155,142,0.5); }
+
+@keyframes pulseBtn {
+  0%, 100% { box-shadow: 0 4px 15px rgba(15,155,142,0.3); }
+  50% { box-shadow: 0 4px 25px rgba(15,155,142,0.6); }
+}
+
+.score-assigned-label {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--green);
+  font-weight: 700;
+  padding: 4px 0;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Reset */
+.reset-btn {
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+/* ═══ BOARD SQUARES ═══ */
+.sq-group { cursor: pointer; }
+.sq-group:hover .sq-bg { filter: brightness(1.15); }
+
+.sq-bg {
+  transition: filter 0.2s;
+  rx: 6;
+  ry: 6;
+}
+
+.sq-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  fill: #fff;
+  text-anchor: middle;
+  pointer-events: none;
+  font-size: 7px;
+}
+
+.sq-number {
+  font-family: 'Lilita One', cursive;
+  fill: rgba(255,255,255,0.7);
+  text-anchor: middle;
+  pointer-events: none;
+  font-size: 9px;
+}
+
+.sq-icon {
+  font-size: 14px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Token on board */
+.board-token {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5));
+}
+
+/* ═══ MODAL ═══ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-card {
+  background: var(--bg-city);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 440px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.1);
+  animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.8) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: var(--modal-color, var(--teal));
+}
+
+.modal-type {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--modal-color);
+  margin-bottom: 12px;
+}
+
+.modal-text {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close:hover { background: rgba(255,255,255,0.18); }
+
+/* Turn indicator */
+.turn-indicator {
+  text-align: center;
+  padding: 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: var(--cream);
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.turn-indicator .turn-team {
+  color: var(--turn-color);
+  font-family: 'Lilita One', cursive;
+  font-size: 1rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .game-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .teams-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .team-card { flex: 1; min-width: 140px; }
+  .board-wrapper { min-height: 400px; }
+  .controls-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .controls-panel > * { flex: 1; min-width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<header class="game-header">
+  <h1 class="game-title">CIVITAS</h1>
+  <p class="game-subtitle">El juego de la participación ciudadana · 2º ESO</p>
+</header>
+
+<main class="game-container">
+  <!-- LEFT: Teams Panel -->
+  <aside class="teams-panel" id="teamsPanel">
+    <div class="panel-title">🏘️ Equipos</div>
+    <!-- Teams injected by JS -->
+    <button class="add-team-btn" id="addTeamBtn" onclick="addTeam()">+ Añadir equipo</button>
+    <button class="remove-team-btn" onclick="removeTeam()">− Quitar último equipo</button>
+  </aside>
+
+  <!-- CENTER: Board -->
+  <section class="board-wrapper" id="boardWrapper">
+    <div class="stars" id="stars"></div>
+    <svg class="board-svg" id="boardSvg" viewBox="0 0 760 500" preserveAspectRatio="xMidYMid meet"></svg>
+  </section>
+
+  <!-- RIGHT: Controls -->
+  <aside class="controls-panel">
+    <div class="turn-indicator" id="turnIndicator">
+      Turno: <span class="turn-team" id="turnTeamName">—</span>
+    </div>
+
+    <div class="dice-area">
+      <div class="panel-title" style="background:none;border:none;padding:0 0 4px">🎲 Dado</div>
+      <div class="dice-container">
+        <div class="dice" id="dice" onclick="rollDice()">?</div>
+      </div>
+      <button class="roll-btn" id="rollBtn" onclick="rollDice()">LANZAR DADO</button>
+    </div>
+
+    <div class="card-display">
+      <div class="card-display-title">📋 Instrucción</div>
+      <div class="card-content" id="cardContent">
+        <div class="card-empty">Lanza el dado para comenzar</div>
+      </div>
+      <div class="score-controls" id="scoreControls" style="display:none">
+        <button class="score-btn positive" onclick="addScore(1)">+1 PP</button>
+        <button class="score-btn positive" onclick="addScore(2)">+2 PP</button>
+        <button class="score-btn positive" onclick="addScore(3)">+3 PP</button>
+        <button class="score-btn positive" onclick="addScore(4)">+4 PP</button>
+        <button class="score-btn negative" onclick="addScore(-1)">−1 PP</button>
+        <button class="score-btn" onclick="addScore(0)" style="border-color:rgba(255,255,255,0.3)">0 PP</button>
+      </div>
+      <button class="next-turn-btn" id="nextTurnBtn" style="display:none" onclick="confirmNextTurn()">▶ PASAR TURNO</button>
+    </div>
+
+    <div class="game-log">
+      <div class="panel-title" style="background:none;border:none;padding:0 0 4px;font-size:0.8rem">📜 Registro</div>
+      <div id="logEntries">
+        <div class="log-entry">Partida preparada. ¡Añade equipos y lanza el dado!</div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="if(confirm('¿Reiniciar partida?')) resetGame()">🔄 Reiniciar partida</button>
+  </aside>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card" id="modalCard">
+    <div class="modal-type" id="modalType"></div>
+    <div class="modal-text" id="modalText"></div>
+    <button class="modal-close" onclick="closeModal()">Entendido ✓</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CIVITAS — Game Engine
+// ═══════════════════════════════════════════
+
+const SQUARE_TYPES = {
+  INICIO:    { color: '#0f9b8e', dark: '#0d8377', icon: '🏠', label: 'INICIO' },
+  PARTICIPA: { color: '#26de81', dark: '#20bf6b', icon: '✋', label: 'PARTICIPA' },
+  DILEMA:    { color: '#ff6b6b', dark: '#ee5a24', icon: '⚖️', label: 'DILEMA' },
+  PREGUNTA:  { color: '#4facfe', dark: '#2980b9', icon: '❓', label: 'PREGUNTA' },
+  EVENTO:    { color: '#f0c929', dark: '#e67e22', icon: '⚡', label: 'EVENTO' },
+  ASAMBLEA:  { color: '#a55eea', dark: '#8854d0', icon: '🏛️', label: 'ASAMBLEA' },
+  META:      { color: '#fd9644', dark: '#e67e22', icon: '🏆', label: 'META' },
+};
+
+const BOARD_PATH = [
+  'INICIO','PARTICIPA','PREGUNTA','EVENTO','DILEMA','PARTICIPA',
+  'PREGUNTA','ASAMBLEA','EVENTO','PARTICIPA','DILEMA','PREGUNTA',
+  'PARTICIPA','EVENTO','PREGUNTA','ASAMBLEA','DILEMA','PARTICIPA',
+  'EVENTO','PREGUNTA','PARTICIPA','DILEMA','EVENTO','ASAMBLEA',
+  'PARTICIPA','PREGUNTA','DILEMA','EVENTO','PARTICIPA','META',
+];
+
+// Las tarjetas son físicas (PDF impreso). El tablero solo indica qué mazo tomar.
+const CARD_INSTRUCTIONS = {
+  PARTICIPA: '✋ Toma una tarjeta verde de PARTICIPA.\n\nLéela en voz alta y responde ante el grupo.\n\nSi convences → +3 PP. Si no → +1 PP por intentarlo.',
+  DILEMA:    '⚖️ Toma una tarjeta roja de DILEMA.\n\nLee las dos opciones en voz alta, elige una y argumenta tu decisión.\n\nBien argumentada → +3 PP. Sin argumentar → +1 PP.',
+  PREGUNTA:  '❓ Toma una tarjeta azul de PREGUNTA.\n\nLéela en voz alta e intenta responder correctamente.\n\nRespuesta correcta → +2 PP. Incorrecta → 0 PP.',
+  EVENTO:    '⚡ Toma una tarjeta amarilla de EVENTO.\n\nLéela en voz alta y seguid las instrucciones de la tarjeta.\n\nLos eventos pueden afectar a todos los equipos.',
+  ASAMBLEA:  '🏛️ Toma una tarjeta morada de ASAMBLEA.\n\n¡Todos los equipos participan! Leed el tema y debatid.\n\nPropuesta ganadora → +4 PP. Participar votando → +1 PP.',
+};
+
+const TEAM_COLORS = [
+  { color: '#ff6b6b', emoji: '🔴', name: 'Equipo Rojo' },
+  { color: '#4facfe', emoji: '🔵', name: 'Equipo Azul' },
+  { color: '#26de81', emoji: '🟢', name: 'Equipo Verde' },
+  { color: '#ffd93d', emoji: '🟡', name: 'Equipo Amarillo' },
+  { color: '#a55eea', emoji: '🟣', name: 'Equipo Morado' },
+  { color: '#fd9644', emoji: '🟠', name: 'Equipo Naranja' },
+];
+
+// ═══ GAME STATE ═══
+let teams = [];
+let currentTeamIndex = 0;
+let isRolling = false;
+let awaitingScore = false; // waiting for score before next turn
+let squarePositions = [];
+
+// ═══ INITIALIZE ═══
+function init() {
+  createStars();
+  drawBoard();
+  addTeam();
+  addTeam();
+  updateTurnIndicator();
+}
+
+// ═══ STARS ═══
+function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.width = (1 + Math.random() * 2) + 'px';
+    star.style.height = star.style.width;
+    container.appendChild(star);
+  }
+}
+
+// ═══ DRAW BOARD ═══
+function drawBoard() {
+  const svg = document.getElementById('boardSvg');
+  const W = 760, H = 500;
+  let svgContent = '';
+
+  // City skyline background
+  svgContent += drawCitySkyline(W, H);
+
+  // Calculate square positions (snake path)
+  const sqSize = 48;
+  const cols = 10;
+  const marginX = 30;
+  const marginTop = 45;
+  const spacingX = (W - 2 * marginX - sqSize) / (cols - 1);
+  const spacingY = 72;
+  const rows = [0, 1, 2]; // 3 rows
+
+  squarePositions = [];
+  let idx = 0;
+
+  // Row 0 (bottom): left to right — indices 0-9
+  for (let c = 0; c < cols && idx < BOARD_PATH.length; c++, idx++) {
+    squarePositions.push({
+      x: marginX + c * spacingX,
+      y: H - marginTop - sqSize - rows[0] * spacingY
+    });
+  }
+
+  // Go up on the right side — index 10
+  if (idx < BOARD_PATH.length) {
+    squarePositions.push({
+      x: marginX + (cols - 1) * spacingX,
+      y: H - marginTop - sqSize - 1 * spacingY
+    });
+    idx++;
+  }
+
+  // Row 1 (middle): right to left — indices 11-19
+  for (let c = cols - 2; c >= 0 && idx < BOARD_PATH.length; c--, idx++) {
+    squarePositions.push({
+      x: marginX + c * spacingX,
+      y: H - marginTop - sqSize - 1 * spacingY
+    });
+  }
+
+  // Go up on the left side — index 20
+  if (idx < BOARD_PATH.length) {
+    squarePositions.push({
+      x: marginX,
+      y: H - marginTop - sqSize - 2 * spacingY
+    });
+    idx++;
+  }
+
+  // Row 2 (top): left to right — indices 21-29
+  for (let c = 1; c < cols && idx < BOARD_PATH.length; c++, idx++) {
+    squarePositions.push({
+      x: marginX + c * spacingX,
+      y: H - marginTop - sqSize - 2 * spacingY
+    });
+  }
+
+  // Draw path connections
+  svgContent += '<g opacity="0.3">';
+  for (let i = 0; i < squarePositions.length - 1; i++) {
+    const a = squarePositions[i];
+    const b = squarePositions[i + 1];
+    svgContent += `<line x1="${a.x + sqSize/2}" y1="${a.y + sqSize/2}" x2="${b.x + sqSize/2}" y2="${b.y + sqSize/2}" stroke="#fff" stroke-width="3" stroke-dasharray="6,4"/>`;
+  }
+  svgContent += '</g>';
+
+  // Draw direction arrows
+  svgContent += '<g opacity="0.25">';
+  for (let i = 0; i < squarePositions.length - 1; i += 2) {
+    const a = squarePositions[i];
+    const b = squarePositions[i + 1];
+    const mx = (a.x + b.x) / 2 + sqSize / 2;
+    const my = (a.y + b.y) / 2 + sqSize / 2;
+    const angle = Math.atan2(b.y - a.y, b.x - a.x);
+    const sz = 6;
+    const p1x = mx + sz * Math.cos(angle);
+    const p1y = my + sz * Math.sin(angle);
+    const p2x = mx + sz * Math.cos(angle + 2.5);
+    const p2y = my + sz * Math.sin(angle + 2.5);
+    const p3x = mx + sz * Math.cos(angle - 2.5);
+    const p3y = my + sz * Math.sin(angle - 2.5);
+    svgContent += `<polygon points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}" fill="#fff"/>`;
+  }
+  svgContent += '</g>';
+
+  // Draw squares
+  for (let i = 0; i < BOARD_PATH.length; i++) {
+    const pos = squarePositions[i];
+    const type = SQUARE_TYPES[BOARD_PATH[i]];
+    svgContent += drawSquare(pos.x, pos.y, sqSize, type, i + 1);
+  }
+
+  // Token layer placeholder
+  svgContent += '<g id="tokenLayer"></g>';
+
+  svg.innerHTML = svgContent;
+}
+
+function drawCitySkyline(W, H) {
+  let s = '';
+  // Ground
+  s += `<rect x="0" y="${H-35}" width="${W}" height="35" fill="#2d3436"/>`;
+  s += `<rect x="0" y="${H-40}" width="${W}" height="8" fill="#636e72" opacity="0.5"/>`;
+  // Road line
+  s += `<line x1="0" y1="${H-35}" x2="${W}" y2="${H-35}" stroke="#ffd93d" stroke-width="1.5" stroke-dasharray="8,5" opacity="0.5"/>`;
+
+  // Buildings (back row)
+  const colors = ['#e74c3c','#3498db','#9b59b6','#1abc9c','#e67e22','#2ecc71','#f39c12','#fd79a8'];
+  let seed = 42;
+  function pseudoRand() { seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; }
+
+  // Back row
+  let bx = 5;
+  while (bx < W - 10) {
+    const bw = 15 + pseudoRand() * 25;
+    const bh = 40 + pseudoRand() * 80;
+    const col = colors[Math.floor(pseudoRand() * colors.length)];
+    s += `<rect x="${bx}" y="${H - 35 - bh}" width="${bw}" height="${bh}" rx="2" fill="${col}" opacity="0.15"/>`;
+    // Windows
+    const wcols = Math.floor(bw / 8);
+    const wrows = Math.floor(bh / 12);
+    for (let wr = 0; wr < Math.min(wrows, 6); wr++) {
+      for (let wc = 0; wc < Math.min(wcols, 3); wc++) {
+        const wx = bx + 3 + wc * 8;
+        const wy = H - 35 - bh + 5 + wr * 12;
+        s += `<rect x="${wx}" y="${wy}" width="4" height="5" rx="0.5" fill="#ffeaa7" opacity="${0.15 + pseudoRand() * 0.15}"/>`;
+      }
+    }
+    bx += bw + 3 + pseudoRand() * 8;
+  }
+
+  // Front row
+  bx = 10;
+  while (bx < W - 10) {
+    const bw = 12 + pseudoRand() * 20;
+    const bh = 25 + pseudoRand() * 50;
+    const col = colors[Math.floor(pseudoRand() * colors.length)];
+    s += `<rect x="${bx}" y="${H - 35 - bh}" width="${bw}" height="${bh}" rx="2" fill="${col}" opacity="0.25"/>`;
+    const wcols = Math.floor(bw / 8);
+    const wrows = Math.floor(bh / 12);
+    for (let wr = 0; wr < Math.min(wrows, 4); wr++) {
+      for (let wc = 0; wc < Math.min(wcols, 2); wc++) {
+        const wx = bx + 3 + wc * 8;
+        const wy = H - 35 - bh + 4 + wr * 12;
+        s += `<rect x="${wx}" y="${wy}" width="4" height="5" rx="0.5" fill="#ffeaa7" opacity="${0.2 + pseudoRand() * 0.2}"/>`;
+      }
+    }
+    bx += bw + 4 + pseudoRand() * 10;
+  }
+
+  // Trees
+  for (let tx = 25; tx < W - 20; tx += 50 + pseudoRand() * 40) {
+    const th = 12 + pseudoRand() * 8;
+    s += `<rect x="${tx-1.5}" y="${H-35-th}" width="3" height="${th}" fill="#5D4037" opacity="0.5"/>`;
+    s += `<circle cx="${tx}" cy="${H-35-th-5}" r="${5+pseudoRand()*4}" fill="#27ae60" opacity="0.35"/>`;
+    s += `<circle cx="${tx+3}" cy="${H-35-th-3}" r="${4+pseudoRand()*3}" fill="#2ecc71" opacity="0.3"/>`;
+  }
+
+  // Moon
+  s += `<circle cx="${W-60}" cy="40" r="18" fill="#ffeaa7" opacity="0.8"/>`;
+  s += `<circle cx="${W-54}" cy="36" r="15" fill="#16213e" opacity="0.9"/>`;
+
+  return s;
+}
+
+function drawSquare(x, y, size, type, num) {
+  const isSpecial = type.label === 'INICIO' || type.label === 'META';
+  const s = isSpecial ? size + 6 : size;
+  const ax = isSpecial ? x - 3 : x;
+  const ay = isSpecial ? y - 3 : y;
+
+  return `
+    <g class="sq-group" data-index="${num - 1}" onclick="onSquareClick(${num - 1})">
+      <rect class="sq-bg" x="${ax+2}" y="${ay+2}" width="${s}" height="${s}" rx="8" fill="rgba(0,0,0,0.25)"/>
+      <rect class="sq-bg" x="${ax}" y="${ay}" width="${s}" height="${s}" rx="8" fill="${type.color}" stroke="${type.dark}" stroke-width="2"/>
+      <rect x="${ax+2}" y="${ay}" width="${s-4}" height="${s*0.45}" rx="6" fill="rgba(255,255,255,0.12)"/>
+      <text class="sq-icon" x="${ax+s/2}" y="${ay+s/2-2}" dominant-baseline="middle">${type.icon}</text>
+      <text class="sq-number" x="${ax+s/2}" y="${ay+s-5}">${num}</text>
+      ${isSpecial ? `<text class="sq-label" x="${ax+s/2}" y="${ay+12}" style="font-size:6px;opacity:0.8">${type.label}</text>` : ''}
+    </g>`;
+}
+
+// ═══ TEAMS ═══
+function addTeam() {
+  if (teams.length >= 6) return;
+  const tc = TEAM_COLORS[teams.length];
+  teams.push({
+    name: tc.name,
+    color: tc.color,
+    emoji: tc.emoji,
+    score: 0,
+    position: 0,
+  });
+  renderTeams();
+  renderTokens();
+  updateTurnIndicator();
+  if (teams.length >= 6) document.getElementById('addTeamBtn').style.display = 'none';
+}
+
+function removeTeam() {
+  if (teams.length <= 1) return;
+  teams.pop();
+  if (currentTeamIndex >= teams.length) currentTeamIndex = 0;
+  renderTeams();
+  renderTokens();
+  updateTurnIndicator();
+  document.getElementById('addTeamBtn').style.display = '';
+}
+
+function renderTeams() {
+  const panel = document.getElementById('teamsPanel');
+  const cards = panel.querySelectorAll('.team-card');
+  cards.forEach(c => c.remove());
+
+  const addBtn = document.getElementById('addTeamBtn');
+  teams.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = `team-card ${i === currentTeamIndex ? 'active' : ''}`;
+    card.style.setProperty('--team-color', t.color);
+    card.innerHTML = `
+      <div class="team-header">
+        <div class="team-token">${t.emoji}</div>
+        <div>
+          <div class="team-name"><input value="${t.name}" onchange="teams[${i}].name=this.value;updateTurnIndicator()" style="color:${t.color}"/></div>
+          <div class="team-score">PP: <strong>${t.score}</strong></div>
+        </div>
+      </div>
+      <div class="team-pos">📍 Casilla ${t.position + 1} · ${BOARD_PATH[t.position]}</div>
+    `;
+    panel.insertBefore(card, addBtn);
+  });
+}
+
+// ═══ TOKENS ON BOARD ═══
+function renderTokens() {
+  const layer = document.getElementById('tokenLayer');
+  if (!layer || squarePositions.length === 0) return;
+  let html = '';
+
+  // Group tokens by position
+  const posMap = {};
+  teams.forEach((t, i) => {
+    if (!posMap[t.position]) posMap[t.position] = [];
+    posMap[t.position].push(i);
+  });
+
+  teams.forEach((t, i) => {
+    const pos = squarePositions[t.position];
+    if (!pos) return;
+
+    const samePos = posMap[t.position];
+    const myIdx = samePos.indexOf(i);
+    const total = samePos.length;
+
+    // Offset tokens sharing the same square
+    const offsetX = total > 1 ? (myIdx - (total - 1) / 2) * 14 : 0;
+    const offsetY = total > 3 ? (myIdx > 2 ? -14 : 0) : 0;
+
+    const cx = pos.x + 24 + offsetX;
+    const cy = pos.y + 24 + offsetY;
+
+    html += `
+      <g class="board-token" style="transform:translate(${cx}px,${cy}px)">
+        <circle cx="0" cy="2" r="10" fill="rgba(0,0,0,0.3)"/>
+        <circle cx="0" cy="0" r="10" fill="${t.color}" stroke="#fff" stroke-width="2"/>
+        <text x="0" y="1" text-anchor="middle" dominant-baseline="middle" font-size="10">${t.emoji}</text>
+      </g>`;
+  });
+
+  layer.innerHTML = html;
+}
+
+// ═══ DICE ═══
+function rollDice() {
+  if (isRolling || teams.length === 0 || awaitingScore) return;
+  isRolling = true;
+
+  const dice = document.getElementById('dice');
+  const btn = document.getElementById('rollBtn');
+  btn.disabled = true;
+  dice.classList.add('rolling');
+
+  // Animate random numbers
+  let count = 0;
+  const interval = setInterval(() => {
+    dice.textContent = Math.floor(Math.random() * 6) + 1;
+    count++;
+    if (count > 10) {
+      clearInterval(interval);
+      const result = Math.floor(Math.random() * 6) + 1;
+      dice.textContent = result;
+      dice.classList.remove('rolling');
+      setTimeout(() => moveTeam(result), 300);
+    }
+  }, 80);
+}
+
+function moveTeam(steps) {
+  const team = teams[currentTeamIndex];
+  const oldPos = team.position;
+  let newPos = Math.min(team.position + steps, BOARD_PATH.length - 1);
+
+  // Animate movement step by step
+  let current = oldPos;
+  const moveStep = () => {
+    if (current < newPos) {
+      current++;
+      team.position = current;
+      renderTokens();
+      setTimeout(moveStep, 200);
+    } else {
+      team.position = newPos;
+      renderTokens();
+      renderTeams();
+      handleSquareLanding(newPos);
+    }
+  };
+  moveStep();
+
+  addLog(`${team.name} saca un ${steps} y avanza a la casilla ${newPos + 1}`);
+}
+
+function handleSquareLanding(pos) {
+  const sqType = BOARD_PATH[pos];
+  const type = SQUARE_TYPES[sqType];
+
+  if (sqType === 'INICIO') {
+    showCard(type, '🏠 Estás en la casilla de inicio. ¡Buena suerte en tu camino por la ciudad!');
+  } else if (sqType === 'META') {
+    showCard(type, `🏆 ¡${teams[currentTeamIndex].name} ha llegado a la META! Suma +5 PP de bonificación.`);
+    teams[currentTeamIndex].score += 5;
+    renderTeams();
+  } else if (CARD_INSTRUCTIONS[sqType]) {
+    showCard(type, CARD_INSTRUCTIONS[sqType]);
+  }
+
+  // Enter "awaiting score" state — dice stays locked
+  awaitingScore = true;
+  isRolling = false;
+  document.getElementById('rollBtn').disabled = true;
+  document.getElementById('scoreControls').style.display = 'flex';
+  document.getElementById('nextTurnBtn').style.display = 'none';
+
+  // Remove any previous assigned label
+  const oldLabel = document.querySelector('.score-assigned-label');
+  if (oldLabel) oldLabel.remove();
+}
+
+function showCard(type, text) {
+  // Show in side panel
+  const cardContent = document.getElementById('cardContent');
+  cardContent.style.setProperty('--card-color', type.color);
+  cardContent.innerHTML = `
+    <div class="card-type-badge" style="background:${type.color}">${type.icon} ${type.label}</div>
+    <div class="card-text">${text.replace(/\n/g, '<br>')}</div>
+  `;
+
+  // Show modal
+  const modal = document.getElementById('modal');
+  const modalCard = document.getElementById('modalCard');
+  const modalType = document.getElementById('modalType');
+  const modalText = document.getElementById('modalText');
+
+  modalCard.style.setProperty('--modal-color', type.color);
+  modalType.style.background = type.color;
+  modalType.textContent = `${type.icon} ${type.label}`;
+  modalText.innerHTML = text.replace(/\n/g, '<br>');
+  modal.classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function onSquareClick(index) {
+  const sqType = BOARD_PATH[index];
+  const type = SQUARE_TYPES[sqType];
+  if (CARD_INSTRUCTIONS[sqType]) {
+    showCard(type, CARD_INSTRUCTIONS[sqType]);
+  } else {
+    showCard(type, `Casilla ${index + 1}: ${type.label}`);
+  }
+}
+
+// ═══ SCORING ═══
+function addScore(pts) {
+  if (teams.length === 0 || !awaitingScore) return;
+  const team = teams[currentTeamIndex];
+  team.score += pts;
+  if (team.score < 0) team.score = 0;
+  renderTeams();
+
+  if (pts !== 0) {
+    addLog(`${team.name} ${pts > 0 ? 'gana' : 'pierde'} ${Math.abs(pts)} PP (Total: ${team.score})`);
+  } else {
+    addLog(`${team.name} no gana ni pierde PP esta ronda (Total: ${team.score})`);
+  }
+
+  // Disable score buttons, show "Pasar turno"
+  document.getElementById('scoreControls').style.display = 'none';
+
+  // Show confirmation label
+  const oldLabel = document.querySelector('.score-assigned-label');
+  if (oldLabel) oldLabel.remove();
+  const label = document.createElement('div');
+  label.className = 'score-assigned-label';
+  label.textContent = pts !== 0 ? `✓ ${pts > 0 ? '+' : ''}${pts} PP asignados a ${team.name}` : `✓ 0 PP registrados para ${team.name}`;
+  document.getElementById('nextTurnBtn').insertAdjacentElement('beforebegin', label);
+
+  // Show next turn button
+  document.getElementById('nextTurnBtn').style.display = '';
+}
+
+// ═══ NEXT TURN (explicit) ═══
+function confirmNextTurn() {
+  awaitingScore = false;
+  document.getElementById('nextTurnBtn').style.display = 'none';
+  document.getElementById('scoreControls').style.display = 'none';
+
+  const oldLabel = document.querySelector('.score-assigned-label');
+  if (oldLabel) oldLabel.remove();
+
+  currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+  renderTeams();
+  updateTurnIndicator();
+
+  // Now enable dice for next team
+  isRolling = false;
+  document.getElementById('rollBtn').disabled = false;
+}
+
+// closeModal does NOT advance turn
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function updateTurnIndicator() {
+  if (teams.length === 0) return;
+  const team = teams[currentTeamIndex];
+  const indicator = document.getElementById('turnIndicator');
+  indicator.style.setProperty('--turn-color', team.color);
+  document.getElementById('turnTeamName').textContent = team.name;
+  document.getElementById('turnTeamName').style.color = team.color;
+}
+
+// ═══ LOG ═══
+function addLog(msg) {
+  const container = document.getElementById('logEntries');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  entry.innerHTML = `<strong>${time}</strong> ${msg}`;
+  container.prepend(entry);
+  // Keep max 30 entries
+  while (container.children.length > 30) container.removeChild(container.lastChild);
+}
+
+// ═══ RESET ═══
+function resetGame() {
+  teams.forEach(t => { t.score = 0; t.position = 0; });
+  currentTeamIndex = 0;
+  isRolling = false;
+  awaitingScore = false;
+  document.getElementById('rollBtn').disabled = false;
+  document.getElementById('scoreControls').style.display = 'none';
+  document.getElementById('nextTurnBtn').style.display = 'none';
+  const oldLabel = document.querySelector('.score-assigned-label');
+  if (oldLabel) oldLabel.remove();
+  document.getElementById('cardContent').innerHTML = '<div class="card-empty">Lanza el dado para comenzar</div>';
+  document.getElementById('logEntries').innerHTML = '<div class="log-entry">Partida reiniciada. ¡Buena suerte!</div>';
+  renderTeams();
+  renderTokens();
+  updateTurnIndicator();
+}
+
+// ═══ KEYBOARD SHORTCUT ═══
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !isRolling && !awaitingScore) {
+    e.preventDefault();
+    rollDice();
+  }
+});
+
+// Start!
+init();
+</script>
+</body>
+</html>
