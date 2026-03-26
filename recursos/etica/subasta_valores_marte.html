@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subasta de Valores — Marte 2150</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --mars-red: #c0392b;
+    --mars-orange: #e67e22;
+    --mars-dark: #1a0a00;
+    --mars-surface: #1e0f05;
+    --mars-panel: #2a1508;
+    --mars-border: #7a3a10;
+    --mars-glow: #e67e22;
+    --text-main: #f0d5b0;
+    --text-muted: #a07850;
+    --text-bright: #ffecd0;
+    --green: #27ae60;
+    --green-bright: #2ecc71;
+    --blue: #2980b9;
+    --blue-bright: #3498db;
+
+    --g1: #e74c3c; --g1b: #c0392b;
+    --g2: #3498db; --g2b: #2980b9;
+    --g3: #2ecc71; --g3b: #27ae60;
+    --g4: #f39c12; --g4b: #e67e22;
+    --g5: #9b59b6; --g5b: #8e44ad;
+    --g6: #1abc9c; --g6b: #16a085;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--mars-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 5% 50%, rgba(255,220,150,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 70% 75%, rgba(255,220,150,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ============ LAYOUT ============ */
+  #app { position: relative; z-index: 1; }
+
+  /* ============ HEADER ============ */
+  header {
+    background: linear-gradient(180deg, #300d00 0%, var(--mars-panel) 100%);
+    border-bottom: 2px solid var(--mars-border);
+    padding: 1rem 1.5rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .header-title { flex: 1; min-width: 200px; }
+  .header-title .subtitle {
+    font-size: 0.7rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--mars-orange);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .header-title h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text-bright);
+    line-height: 1.1;
+  }
+  .header-title h1 span { color: var(--mars-orange); }
+
+  .header-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--mars-border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    text-align: center;
+    min-width: 80px;
+  }
+  .stat-box .val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.4rem;
+    color: var(--mars-orange);
+    display: block;
+    line-height: 1;
+  }
+  .stat-box .lbl {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ============ PHASE BANNER ============ */
+  #phase-banner {
+    background: var(--mars-panel);
+    border-bottom: 1px solid var(--mars-border);
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .phase-indicator {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .phase-steps {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .phase-step {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid var(--mars-border);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .phase-step.active {
+    background: var(--mars-orange);
+    border-color: var(--mars-orange);
+    color: var(--mars-dark);
+    font-weight: 700;
+  }
+  .phase-step.done {
+    background: rgba(39,174,96,0.2);
+    border-color: var(--green);
+    color: var(--green-bright);
+  }
+
+  /* ============ GROUPS CONFIG ============ */
+  #setup-panel {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .setup-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .setup-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--mars-orange);
+    border-radius: 2px;
+  }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .group-config-card {
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .group-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .group-config-card input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--mars-border);
+    border-radius: 4px;
+    color: var(--text-bright);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .group-config-card input:focus { outline: 1px solid var(--mars-orange); }
+
+  .num-groups-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .num-groups-row label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .num-groups-row .ng-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    color: var(--text-main);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .num-groups-row .ng-btn:hover { background: var(--mars-border); }
+  .num-groups-row .ng-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--mars-orange);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .credits-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .credits-row label { font-size: 0.85rem; color: var(--text-muted); }
+  .credits-row input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--mars-border);
+    border-radius: 4px;
+    color: var(--mars-orange);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    padding: 0.3rem 0.7rem;
+    width: 90px;
+    text-align: center;
+  }
+  .credits-row input:focus { outline: 1px solid var(--mars-orange); }
+  .credits-row .hint { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--mars-orange);
+    color: var(--mars-dark);
+  }
+  .btn-primary:hover { background: #f0932b; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--mars-border);
+    color: var(--text-main);
+  }
+  .btn-secondary:hover { background: var(--mars-panel); }
+  .btn-danger {
+    background: var(--mars-red);
+    color: #fff;
+  }
+  .btn-danger:hover { background: #e74c3c; }
+  .btn-success {
+    background: var(--green);
+    color: #fff;
+  }
+  .btn-success:hover { background: var(--green-bright); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-lg { font-size: 1rem; padding: 0.8rem 2rem; }
+
+  /* ============ MAIN AUCTION VIEW ============ */
+  #auction-view { display: none; padding: 1rem 1.5rem 2rem; }
+
+  .auction-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Values grid */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .value-card {
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    border-radius: 10px;
+    padding: 0.9rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    text-align: center;
+  }
+  .value-card:hover:not(.sold):not(.active-auction) {
+    border-color: var(--mars-orange);
+    transform: translateY(-2px);
+  }
+  .value-card.active-auction {
+    border: 2px solid var(--mars-orange);
+    background: #2a1800;
+    box-shadow: 0 0 16px rgba(230,126,34,0.3);
+  }
+  .value-card.sold {
+    opacity: 0.55;
+    cursor: default;
+    background: rgba(0,0,0,0.3);
+  }
+  .value-card.sold::after {
+    content: 'ADJUDICADO';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--green-bright);
+    background: rgba(0,0,0,0.55);
+    border-radius: 10px;
+  }
+  .value-card .cat-badge {
+    display: inline-block;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
+  }
+  .value-card .v-icon { font-size: 1.6rem; margin-bottom: 0.3rem; display: block; }
+  .value-card .v-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+  }
+  .value-card .v-desc {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .value-card .v-starting {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+  }
+  .value-card .sold-tag {
+    display: none;
+    font-size: 0.65rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--green-bright);
+    margin-top: 0.3rem;
+    font-weight: 700;
+  }
+  .value-card.sold .sold-tag { display: block; }
+
+  /* Category colors */
+  .cat-moral { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .cat-economico { background: rgba(241,196,15,0.15); color: #f1c40f; }
+  .cat-social { background: rgba(52,152,219,0.15); color: #74b9ff; }
+  .cat-politico { background: rgba(155,89,182,0.15); color: #a29bfe; }
+  .cat-estetico { background: rgba(253,121,168,0.15); color: #fd79a8; }
+
+  /* ============ SIDE PANEL ============ */
+  .side-panel { display: flex; flex-direction: column; gap: 0.8rem; }
+
+  /* Active auction box */
+  .auction-box {
+    background: var(--mars-panel);
+    border: 2px solid var(--mars-orange);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 20px rgba(230,126,34,0.2);
+  }
+  .auction-box .ab-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--mars-orange);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .auction-box .ab-value-name {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--text-bright);
+    margin-bottom: 0.2rem;
+  }
+  .auction-box .ab-value-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+  .current-bid-display {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--mars-border);
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+  }
+  .current-bid-display .cbd-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .current-bid-display .cbd-amount {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.8rem;
+    color: var(--mars-orange);
+    line-height: 1;
+  }
+  .current-bid-display .cbd-leader {
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+  }
+
+  .bid-controls { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
+  .bid-controls select {
+    flex: 1;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--mars-border);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+  }
+  .bid-controls input {
+    width: 80px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--mars-border);
+    border-radius: 6px;
+    color: var(--mars-orange);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.5rem;
+    text-align: center;
+  }
+  .bid-controls input:focus, .bid-controls select:focus { outline: 1px solid var(--mars-orange); }
+
+  .bid-row { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; }
+
+  /* No active */
+  .no-auction {
+    background: var(--mars-panel);
+    border: 1px dashed var(--mars-border);
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  /* Groups scoreboard */
+  .scoreboard {
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+  .scoreboard h3 {
+    font-size: 0.7rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+  .sb-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.82rem;
+  }
+  .sb-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sb-name { flex: 1; color: var(--text-main); font-weight: 600; }
+  .sb-bar-wrap {
+    width: 80px;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .sb-bar { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .sb-credits {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--mars-orange);
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* Bid log */
+  .bid-log {
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .bid-log h3 {
+    font-size: 0.7rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .log-entry {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    line-height: 1.4;
+  }
+  .log-entry .le-group { font-weight: 700; }
+  .log-entry .le-amount { font-family: 'Share Tech Mono', monospace; color: var(--mars-orange); }
+  .log-entry .le-sold { color: var(--green-bright); font-weight: 700; }
+
+  /* ============ RESULTS VIEW ============ */
+  #results-view {
+    display: none;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .results-header h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-bright);
+    margin-bottom: 0.3rem;
+  }
+  .results-header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .result-group-card {
+    background: var(--mars-panel);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .rgc-header {
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .rgc-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .rgc-name { font-weight: 900; font-size: 1rem; flex: 1; }
+  .rgc-stats { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; text-align: right; }
+  .rgc-stats .spent { color: var(--mars-orange); }
+  .rgc-stats .remaining { color: var(--green-bright); }
+
+  .rgc-values { padding: 0.5rem 1rem 1rem; }
+  .rgc-value-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+  }
+  .rgc-value-row:last-child { border-bottom: none; }
+  .rgc-value-row .rvr-icon { font-size: 1rem; }
+  .rgc-value-row .rvr-name { flex: 1; color: var(--text-main); }
+  .rgc-value-row .rvr-cat { font-size: 0.62rem; padding: 0.1rem 0.4rem; border-radius: 10px; }
+  .rgc-value-row .rvr-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--mars-orange);
+    min-width: 40px;
+    text-align: right;
+  }
+  .rgc-empty { color: var(--text-muted); font-size: 0.8rem; padding: 0.5rem 0; font-style: italic; }
+
+  /* Unsold */
+  .unsold-section {
+    background: var(--mars-panel);
+    border: 1px solid var(--mars-border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .unsold-section h3 {
+    font-size: 0.8rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .unsold-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .unsold-pill {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--mars-border);
+    border-radius: 20px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* Analysis */
+  .analysis-box {
+    background: linear-gradient(135deg, #1a0a00, #2a1508);
+    border: 1px solid var(--mars-orange);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .analysis-box h3 {
+    font-size: 0.75rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--mars-orange);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .analysis-col h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+  }
+  .analysis-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    padding: 0.2rem 0;
+    color: var(--text-main);
+  }
+  .ai-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .auction-layout { grid-template-columns: 1fr; }
+    .side-panel { display: grid; grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    header { padding: 0.8rem 1rem; }
+    .header-title h1 { font-size: 1.2rem; }
+    .side-panel { grid-template-columns: 1fr; }
+    .analysis-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    z-index: 1000;
+    transition: transform 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Error shake */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-6px); }
+    40%,80% { transform: translateX(6px); }
+  }
+  .shake { animation: shake 0.4s; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<header>
+  <div class="header-title">
+    <div class="subtitle">&#x25C6; Actividad interactiva &middot; Filosofía 1º Bachillerato</div>
+    <h1>Subasta de Valores <span>// Marte 2150</span></h1>
+  </div>
+  <div class="header-stats">
+    <div class="stat-box">
+      <span class="val" id="stat-total">24</span>
+      <span class="lbl">Valores</span>
+    </div>
+    <div class="stat-box">
+      <span class="val" id="stat-sold">0</span>
+      <span class="lbl">Adjudicados</span>
+    </div>
+    <div class="stat-box">
+      <span class="val" id="stat-remaining">24</span>
+      <span class="lbl">Pendientes</span>
+    </div>
+    <button class="btn btn-secondary" onclick="resetAll()" id="btn-reset" style="display:none">↺ Reiniciar</button>
+    <button class="btn btn-primary btn-lg" onclick="goToResults()" id="btn-results" style="display:none">Ver resultados →</button>
+  </div>
+</header>
+
+<!-- PHASE BANNER -->
+<div id="phase-banner">
+  <span class="phase-indicator">Fase:</span>
+  <div class="phase-steps">
+    <span class="phase-step active" id="phase-0">Configuración</span>
+    <span class="phase-step" id="phase-1">Subasta</span>
+    <span class="phase-step" id="phase-2">Resultados</span>
+  </div>
+</div>
+
+<!-- SETUP PANEL -->
+<div id="setup-panel">
+  <div class="setup-title">Configurar grupos y créditos marcianos</div>
+
+  <div class="num-groups-row">
+    <label>Número de grupos:</label>
+    <button class="ng-btn" onclick="changeGroups(-1)">−</button>
+    <span class="ng-count" id="ng-display">5</span>
+    <button class="ng-btn" onclick="changeGroups(1)">+</button>
+  </div>
+
+  <div class="credits-row">
+    <label>Créditos marcianos por grupo:</label>
+    <input type="number" id="credits-input" value="100" min="50" max="500" step="10">
+    <span class="hint">(recomendado: 80–120 para 24 valores)</span>
+  </div>
+
+  <div class="groups-grid" id="groups-grid"></div>
+
+  <button class="btn btn-primary btn-lg" onclick="startAuction()">
+    Iniciar subasta →
+  </button>
+</div>
+
+<!-- AUCTION VIEW -->
+<div id="auction-view">
+  <div class="auction-layout">
+
+    <!-- Values grid -->
+    <div>
+      <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; flex-wrap:wrap;">
+        <span style="font-size:0.75rem; color:var(--text-muted); font-family:'Share Tech Mono',monospace; letter-spacing:0.08em; text-transform:uppercase;">Haz clic en un valor para abrir la puja</span>
+        <span style="margin-left:auto; display:flex; gap:0.4rem; flex-wrap:wrap;" id="cat-filters"></span>
+      </div>
+      <div class="values-grid" id="values-grid"></div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="side-panel">
+      <div id="auction-active-box">
+        <div class="no-auction">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">⬡</div>
+          Selecciona un valor del panel izquierdo para iniciar su puja
+        </div>
+      </div>
+
+      <div class="scoreboard" id="scoreboard"></div>
+      <div class="bid-log" id="bid-log">
+        <h3>Registro de pujas</h3>
+        <div id="log-entries"><div class="log-entry" style="color:var(--text-muted);font-style:italic;">Sin actividad aún</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS VIEW -->
+<div id="results-view">
+  <div class="results-header">
+    <h2>Constitución de Valores — Marte 2150</h2>
+    <p>Resumen final de la subasta. Cada grupo ha elegido los valores fundacionales de su colonia marciana.</p>
+  </div>
+
+  <div class="analysis-box" id="analysis-box"></div>
+  <div class="results-grid" id="results-grid"></div>
+  <div class="unsold-section" id="unsold-section"></div>
+
+  <div style="text-align:center; margin-top:1.5rem; display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
+    <button class="btn btn-secondary btn-lg" onclick="backToAuction()">← Volver a la subasta</button>
+    <button class="btn btn-danger btn-lg" onclick="resetAll()">↺ Nueva subasta</button>
+    <button class="btn btn-primary btn-lg" onclick="window.print()">🖨 Imprimir resultados</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const VALUES = [
+  // MORALES
+  { id:1, name:"Dignidad humana", icon:"🧬", cat:"moral", desc:"Toda persona merece respeto por el hecho de serlo, independientemente de su utilidad.", start:10 },
+  { id:2, name:"Justicia", icon:"⚖️", cat:"moral", desc:"Dar a cada quien lo que le corresponde; resolver conflictos de forma equitativa.", start:10 },
+  { id:3, name:"Solidaridad", icon:"🤝", cat:"moral", desc:"Apoyo mutuo entre los colonos, especialmente hacia los más vulnerables.", start:8 },
+  { id:4, name:"Honestidad", icon:"🔍", cat:"moral", desc:"Decir la verdad y actuar con transparencia en la colonia.", start:7 },
+  { id:5, name:"Compasión", icon:"💛", cat:"moral", desc:"Reconocer y aliviar el sufrimiento ajeno como un deber compartido.", start:6 },
+  { id:6, name:"Responsabilidad", icon:"🛡️", cat:"moral", desc:"Asumir las consecuencias de los propios actos en la comunidad.", start:7 },
+
+  // POLÍTICOS
+  { id:7, name:"Libertad de expresión", icon:"📢", cat:"politico", desc:"Derecho a opinar y discrepar sin censura en la colonia.", start:9 },
+  { id:8, name:"Democracia", icon:"🗳️", cat:"politico", desc:"El gobierno de la colonia se decide por votación de sus habitantes.", start:10 },
+  { id:9, name:"Igualdad ante la ley", icon:"🏛️", cat:"politico", desc:"Las mismas normas aplican para todos, sin privilegios por origen o riqueza.", start:9 },
+  { id:10, name:"Privacidad", icon:"🔐", cat:"politico", desc:"Cada persona controla su información personal y su espacio íntimo.", start:8 },
+
+  // ECONÓMICOS
+  { id:11, name:"Propiedad privada", icon:"🏠", cat:"economico", desc:"Derecho a poseer recursos, herramientas o territorio de forma exclusiva.", start:8 },
+  { id:12, name:"Libre mercado", icon:"📈", cat:"economico", desc:"Los precios y recursos se regulan por oferta y demanda, sin intervención.", start:7 },
+  { id:13, name:"Igualdad económica", icon:"💰", cat:"economico", desc:"Distribución equitativa de recursos entre todos los miembros de la colonia.", start:8 },
+  { id:14, name:"Innovación tecnológica", icon:"🚀", cat:"economico", desc:"Priorizar el desarrollo técnico para la supervivencia y prosperidad.", start:9 },
+  { id:15, name:"Sostenibilidad", icon:"🌱", cat:"economico", desc:"Usar los recursos marcianos sin comprometer las generaciones futuras.", start:8 },
+
+  // SOCIALES
+  { id:16, name:"Educación universal", icon:"📚", cat:"social", desc:"Todo colono tiene acceso a educación sin importar su origen o recursos.", start:9 },
+  { id:17, name:"Salud garantizada", icon:"⚕️", cat:"social", desc:"Asistencia médica básica asegurada para todos los habitantes.", start:10 },
+  { id:18, name:"Diversidad cultural", icon:"🌍", cat:"social", desc:"Convivencia y respeto entre colonos de distintas culturas y tradiciones.", start:7 },
+  { id:19, name:"Meritocracia", icon:"🏆", cat:"social", desc:"Las recompensas y posiciones se otorgan según el mérito y el esfuerzo.", start:7 },
+  { id:20, name:"Seguridad colectiva", icon:"🔒", cat:"social", desc:"Protección frente a amenazas externas e internas de la comunidad.", start:8 },
+
+  // ESTÉTICOS / ESPIRITUALES
+  { id:21, name:"Libertad religiosa", icon:"✨", cat:"estetico", desc:"Cada colono puede practicar su fe o ninguna, sin imposición.", start:6 },
+  { id:22, name:"Arte y cultura", icon:"🎨", cat:"estetico", desc:"Espacio para la creación artística y la expresión simbólica colectiva.", start:5 },
+  { id:23, name:"Armonía con la naturaleza", icon:"🪐", cat:"estetico", desc:"Relación respetuosa y contemplativa con el entorno marciano.", start:6 },
+  { id:24, name:"Memoria histórica", icon:"📜", cat:"estetico", desc:"Preservar el origen y la historia de la humanidad en Marte.", start:5 },
+];
+
+const CAT_LABELS = {
+  moral: "Moral",
+  politico: "Político",
+  economico: "Económico",
+  social: "Social",
+  estetico: "Estético/Espiritual"
+};
+
+const GROUP_COLORS = ["#e74c3c","#3498db","#2ecc71","#f39c12","#9b59b6","#1abc9c"];
+
+// STATE
+let numGroups = 5;
+let startCredits = 100;
+let groups = [];
+let activeValueId = null;
+let currentBid = 0;
+let currentLeader = null;
+let soldMap = {}; // valueId -> { groupIdx, price }
+let logEntries = [];
+let filterCat = null;
+
+// ============ SETUP ============
+function changeGroups(delta) {
+  numGroups = Math.max(2, Math.min(6, numGroups + delta));
+  document.getElementById('ng-display').textContent = numGroups;
+  renderGroupConfig();
+}
+
+function renderGroupConfig() {
+  const grid = document.getElementById('groups-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < numGroups; i++) {
+    const card = document.createElement('div');
+    card.className = 'group-config-card';
+    card.innerHTML = `
+      <div class="group-dot" style="background:${GROUP_COLORS[i]}"></div>
+      <input type="text" id="gname-${i}" placeholder="Colonia ${String.fromCharCode(65+i)}" value="Colonia ${String.fromCharCode(65+i)}">
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function startAuction() {
+  startCredits = parseInt(document.getElementById('credits-input').value) || 100;
+  groups = [];
+  for (let i = 0; i < numGroups; i++) {
+    const nameEl = document.getElementById(`gname-${i}`);
+    groups.push({
+      name: nameEl ? nameEl.value || `Colonia ${String.fromCharCode(65+i)}` : `Colonia ${String.fromCharCode(65+i)}`,
+      color: GROUP_COLORS[i],
+      credits: startCredits,
+      values: []
+    });
+  }
+  soldMap = {};
+  logEntries = [];
+  activeValueId = null;
+  currentBid = 0;
+  currentLeader = null;
+  filterCat = null;
+
+  document.getElementById('setup-panel').style.display = 'none';
+  document.getElementById('auction-view').style.display = 'block';
+  document.getElementById('btn-reset').style.display = '';
+  document.getElementById('btn-results').style.display = '';
+
+  setPhase(1);
+  renderCatFilters();
+  renderValuesGrid();
+  renderScoreboard();
+  renderLog();
+  updateStats();
+}
+
+// ============ AUCTION ============
+function renderCatFilters() {
+  const wrap = document.getElementById('cat-filters');
+  wrap.innerHTML = '';
+  const all = document.createElement('button');
+  all.className = `btn btn-secondary ${filterCat===null?'btn-primary':''}`;
+  all.style.cssText = 'font-size:0.65rem;padding:0.2rem 0.6rem;';
+  all.textContent = 'Todos';
+  all.onclick = () => { filterCat = null; renderCatFilters(); renderValuesGrid(); };
+  wrap.appendChild(all);
+
+  Object.entries(CAT_LABELS).forEach(([key, label]) => {
+    const b = document.createElement('button');
+    b.className = `btn btn-secondary ${filterCat===key?'btn-primary':''}`;
+    b.style.cssText = 'font-size:0.65rem;padding:0.2rem 0.6rem;';
+    b.textContent = label;
+    b.onclick = () => { filterCat = key; renderCatFilters(); renderValuesGrid(); };
+    wrap.appendChild(b);
+  });
+}
+
+function renderValuesGrid() {
+  const grid = document.getElementById('values-grid');
+  grid.innerHTML = '';
+  const filtered = filterCat ? VALUES.filter(v => v.cat === filterCat) : VALUES;
+
+  filtered.forEach(v => {
+    const sold = soldMap[v.id];
+    const isActive = activeValueId === v.id;
+    const card = document.createElement('div');
+    card.className = `value-card${sold?' sold':''}${isActive?' active-auction':''}`;
+    card.onclick = () => !sold && selectValue(v.id);
+
+    const catClass = `cat-${v.cat}`;
+    const soldInfo = sold ? `<div class="sold-tag">${groups[sold.groupIdx].name} · ${sold.price} cr.</div>` : '';
+
+    card.innerHTML = `
+      <span class="cat-badge ${catClass}">${CAT_LABELS[v.cat]}</span>
+      <span class="v-icon">${v.icon}</span>
+      <div class="v-name">${v.name}</div>
+      <div class="v-desc">${v.desc}</div>
+      <div class="v-starting">Salida: ${v.start} cr.</div>
+      ${soldInfo}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectValue(id) {
+  activeValueId = id;
+  const v = VALUES.find(x => x.id === id);
+  currentBid = v.start;
+  currentLeader = null;
+  renderActiveAuction(v);
+  renderValuesGrid();
+}
+
+function renderActiveAuction(v) {
+  const box = document.getElementById('auction-active-box');
+  const catClass = `cat-${v.cat}`;
+  const leaderText = currentLeader !== null
+    ? `<span style="color:${groups[currentLeader].color};font-weight:700">${groups[currentLeader].name}</span>`
+    : '<span style="color:var(--text-muted)">Sin pujas aún</span>';
+
+  box.innerHTML = `
+    <div class="auction-box">
+      <div class="ab-label">▶ En subasta ahora</div>
+      <div class="ab-value-name">${v.icon} ${v.name}</div>
+      <div class="ab-value-desc">${v.desc}</div>
+      <div class="current-bid-display">
+        <div class="cbd-label">Puja actual</div>
+        <div class="cbd-amount" id="bid-amount">${currentBid} cr.</div>
+        <div class="cbd-leader" id="bid-leader">${leaderText}</div>
+      </div>
+      <div class="bid-controls">
+        <select id="bid-group">
+          ${groups.map((g,i)=>`<option value="${i}">${g.name} (${g.credits} cr.)</option>`).join('')}
+        </select>
+        <input type="number" id="bid-value-input" value="${currentBid + 1}" min="${currentBid+1}" step="1" style="width:72px">
+      </div>
+      <div class="bid-row">
+        <button class="btn btn-primary" style="flex:1" onclick="placeBid()">Pujar →</button>
+        <button class="btn btn-success" style="flex:1" onclick="adjudicate()" ${currentLeader===null?'disabled':''} id="adj-btn">Adjudicar ✓</button>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:0.3rem;font-size:0.75rem" onclick="cancelAuction()">Cancelar / saltar este valor</button>
+    </div>
+  `;
+}
+
+function updateBidDisplay() {
+  const el = document.getElementById('bid-amount');
+  const le = document.getElementById('bid-leader');
+  const adj = document.getElementById('adj-btn');
+  if (el) el.textContent = `${currentBid} cr.`;
+  if (le) {
+    le.innerHTML = currentLeader !== null
+      ? `<span style="color:${groups[currentLeader].color};font-weight:700">${groups[currentLeader].name}</span>`
+      : '<span style="color:var(--text-muted)">Sin pujas aún</span>';
+  }
+  if (adj) adj.disabled = currentLeader === null;
+}
+
+function placeBid() {
+  const gIdx = parseInt(document.getElementById('bid-group').value);
+  const amount = parseInt(document.getElementById('bid-value-input').value);
+
+  if (isNaN(amount) || amount <= currentBid) {
+    showToast(`La puja debe superar ${currentBid} cr.`, true);
+    return;
+  }
+  if (amount > groups[gIdx].credits) {
+    showToast(`${groups[gIdx].name} no tiene suficientes créditos`, true);
+    return;
+  }
+
+  currentBid = amount;
+  currentLeader = gIdx;
+
+  addLog(`<span class="le-group" style="color:${groups[gIdx].color}">${groups[gIdx].name}</span> puja <span class="le-amount">${amount} cr.</span> por ${VALUES.find(x=>x.id===activeValueId).name}`);
+  updateBidDisplay();
+
+  const inp = document.getElementById('bid-value-input');
+  if (inp) inp.value = amount + 1;
+}
+
+function adjudicate() {
+  if (currentLeader === null || activeValueId === null) return;
+  const v = VALUES.find(x => x.id === activeValueId);
+  const gIdx = currentLeader;
+
+  groups[gIdx].credits -= currentBid;
+  groups[gIdx].values.push({ valueId: activeValueId, price: currentBid });
+  soldMap[activeValueId] = { groupIdx: gIdx, price: currentBid };
+
+  addLog(`<span class="le-sold">✓ ADJUDICADO</span> — ${v.icon} ${v.name} → <span class="le-group" style="color:${groups[gIdx].color}">${groups[gIdx].name}</span> por <span class="le-amount">${currentBid} cr.</span>`);
+
+  showToast(`${v.name} adjudicado a ${groups[gIdx].name}`);
+  cancelAuction();
+  renderValuesGrid();
+  renderScoreboard();
+  updateStats();
+  updateGroupSelect();
+}
+
+function cancelAuction() {
+  activeValueId = null;
+  currentBid = 0;
+  currentLeader = null;
+  document.getElementById('auction-active-box').innerHTML = `
+    <div class="no-auction">
+      <div style="font-size:1.5rem;margin-bottom:0.5rem">⬡</div>
+      Selecciona un valor del panel izquierdo para iniciar su puja
+    </div>
+  `;
+  renderValuesGrid();
+}
+
+function updateGroupSelect() {
+  const sel = document.getElementById('bid-group');
+  if (!sel) return;
+  const cur = parseInt(sel.value);
+  sel.innerHTML = groups.map((g,i) => `<option value="${i}" ${i===cur?'selected':''}>${g.name} (${g.credits} cr.)</option>`).join('');
+}
+
+function renderScoreboard() {
+  const sb = document.getElementById('scoreboard');
+  sb.innerHTML = '<h3>Créditos restantes</h3>';
+  groups.forEach((g, i) => {
+    const pct = Math.round((g.credits / startCredits) * 100);
+    const row = document.createElement('div');
+    row.className = 'sb-group';
+    row.innerHTML = `
+      <div class="sb-dot" style="background:${g.color}"></div>
+      <div class="sb-name">${g.name}</div>
+      <div class="sb-bar-wrap"><div class="sb-bar" style="width:${pct}%;background:${g.color}"></div></div>
+      <div class="sb-credits">${g.credits}</div>
+    `;
+    sb.appendChild(row);
+  });
+}
+
+function addLog(html) {
+  logEntries.unshift(html);
+  if (logEntries.length > 50) logEntries.pop();
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('log-entries');
+  if (!logEntries.length) {
+    el.innerHTML = '<div class="log-entry" style="color:var(--text-muted);font-style:italic;">Sin actividad aún</div>';
+    return;
+  }
+  el.innerHTML = logEntries.map(e => `<div class="log-entry">${e}</div>`).join('');
+}
+
+function updateStats() {
+  const sold = Object.keys(soldMap).length;
+  document.getElementById('stat-sold').textContent = sold;
+  document.getElementById('stat-remaining').textContent = VALUES.length - sold;
+}
+
+// ============ RESULTS ============
+function goToResults() {
+  document.getElementById('auction-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'block';
+  document.getElementById('btn-results').style.display = 'none';
+  setPhase(2);
+  renderResults();
+}
+
+function backToAuction() {
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('auction-view').style.display = 'block';
+  document.getElementById('btn-results').style.display = '';
+  setPhase(1);
+}
+
+function renderResults() {
+  // Analysis
+  const allSoldValues = Object.entries(soldMap);
+  const valueCounts = {};
+  allSoldValues.forEach(([vid]) => {
+    const v = VALUES.find(x => x.id == vid);
+    valueCounts[v.cat] = (valueCounts[v.cat]||0) + 1;
+  });
+
+  // Which values did ALL groups bid on (contested) or nobody (ignored)
+  const boughtByAll = VALUES.filter(v => {
+    const s = soldMap[v.id];
+    return s !== undefined;
+  });
+
+  // Values bought by multiple groups in bidding war (price > start * 1.5)
+  const hotValues = VALUES.filter(v => {
+    const s = soldMap[v.id];
+    return s && s.price >= v.start * 1.5;
+  });
+
+  // Unsold
+  const unsold = VALUES.filter(v => !soldMap[v.id]);
+
+  // Moral values everyone has
+  const moralBought = VALUES.filter(v => v.cat === 'moral' && soldMap[v.id]);
+
+  const analysisBox = document.getElementById('analysis-box');
+  analysisBox.innerHTML = `
+    <h3>⚡ Análisis: ¿Qué nos dice esta subasta?</h3>
+    <div class="analysis-grid">
+      <div class="analysis-col">
+        <h4>Valores más disputados (precio final ≥ 1.5× salida)</h4>
+        ${hotValues.length ? hotValues.map(v => `
+          <div class="analysis-item">
+            <div class="ai-dot" style="background:${groups[soldMap[v.id].groupIdx].color}"></div>
+            ${v.icon} ${v.name} — <strong style="color:var(--mars-orange)">${soldMap[v.id].price} cr.</strong>
+          </div>`).join('') : '<div style="color:var(--text-muted);font-size:0.8rem">Ninguno</div>'}
+      </div>
+      <div class="analysis-col">
+        <h4>Valores no adquiridos por nadie (¿prescindibles?)</h4>
+        ${unsold.length ? unsold.map(v => `
+          <div class="analysis-item">
+            <div class="ai-dot" style="background:var(--mars-border)"></div>
+            ${v.icon} ${v.name} <span style="font-size:0.7rem;color:var(--text-muted)">(${CAT_LABELS[v.cat]})</span>
+          </div>`).join('') : '<div style="color:var(--green-bright);font-size:0.8rem">Todos los valores fueron adquiridos ✓</div>'}
+        <div style="margin-top:0.8rem">
+          <h4>Valores morales adquiridos</h4>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:1.1rem;color:var(--green-bright)">
+            ${moralBought.length} / ${VALUES.filter(v=>v.cat==='moral').length}
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem">
+            → ¿Cuáles de estos son "mínimos irrenunciables"?
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Groups
+  const grid = document.getElementById('results-grid');
+  grid.innerHTML = '';
+  groups.forEach((g, gi) => {
+    const spent = startCredits - g.credits;
+    const card = document.createElement('div');
+    card.className = 'result-group-card';
+    card.style.border = `1px solid ${g.color}40`;
+
+    const valRows = g.values.length ? g.values.map(({ valueId, price }) => {
+      const v = VALUES.find(x => x.id === valueId);
+      return `<div class="rgc-value-row">
+        <span class="rvr-icon">${v.icon}</span>
+        <span class="rvr-name">${v.name}</span>
+        <span class="rvr-cat cat-${v.cat}">${CAT_LABELS[v.cat]}</span>
+        <span class="rvr-price">${price} cr.</span>
+      </div>`;
+    }).join('') : '<div class="rgc-empty">Sin valores adquiridos</div>';
+
+    card.innerHTML = `
+      <div class="rgc-header" style="background:${g.color}20;border-bottom:1px solid ${g.color}40">
+        <div class="rgc-dot" style="background:${g.color}"></div>
+        <div class="rgc-name">${g.name}</div>
+        <div class="rgc-stats">
+          <div class="spent">Gastado: ${spent} cr.</div>
+          <div class="remaining">Restante: ${g.credits} cr.</div>
+        </div>
+      </div>
+      <div class="rgc-values">${valRows}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Unsold section
+  const unsoldSec = document.getElementById('unsold-section');
+  if (unsold.length) {
+    unsoldSec.style.display = 'block';
+    unsoldSec.innerHTML = `
+      <h3>Valores no adquiridos por ningún grupo</h3>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem">
+        Pregunta para el debate: ¿son estos valores prescindibles para una sociedad justa? ¿O forman parte de los mínimos irrenunciables?
+      </p>
+      <div class="unsold-grid">
+        ${unsold.map(v => `<span class="unsold-pill">${v.icon} ${v.name}</span>`).join('')}
+      </div>
+    `;
+  } else {
+    unsoldSec.style.display = 'none';
+  }
+}
+
+// ============ UTILS ============
+function setPhase(n) {
+  [0,1,2].forEach(i => {
+    const el = document.getElementById(`phase-${i}`);
+    el.className = 'phase-step' + (i < n ? ' done' : i === n ? ' active' : '');
+  });
+}
+
+function showToast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = error ? 'var(--mars-red)' : 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function resetAll() {
+  if (!confirm('¿Reiniciar toda la subasta? Se perderán todos los datos.')) return;
+  soldMap = {};
+  logEntries = [];
+  groups = [];
+  activeValueId = null;
+
+  document.getElementById('setup-panel').style.display = 'block';
+  document.getElementById('auction-view').style.display = 'none';
+  document.getElementById('results-view').style.display = 'none';
+  document.getElementById('btn-reset').style.display = 'none';
+  document.getElementById('btn-results').style.display = 'none';
+  document.getElementById('stat-sold').textContent = '0';
+  document.getElementById('stat-remaining').textContent = VALUES.length;
+
+  setPhase(0);
+  renderGroupConfig();
+}
+
+// INIT
+document.getElementById('stat-total').textContent = VALUES.length;
+document.getElementById('stat-remaining').textContent = VALUES.length;
+renderGroupConfig();
+</script>
+</body>
+</html>
