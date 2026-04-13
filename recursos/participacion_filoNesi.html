@@ -441,7 +441,7 @@
       students.forEach(s => {
         const pos = events.filter(e=>e.name===s.name&&e.delta>0).length;
         const neg = events.filter(e=>e.name===s.name&&e.delta<0).length;
-        if (pos+neg>0) csv += `"${s.name}",${s.score},${pos},${neg}\n`;
+        csv += `"${s.name}",${s.score},${pos},${neg}\n`;
       });
       const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob); const a = document.createElement('a');
