@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Oca de la Sostenibilidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #2d6a4f;
+    --verde-claro: #52b788;
+    --verde-menta: #95d5b2;
+    --amarillo: #f4d03f;
+    --naranja: #e67e22;
+    --rojo: #c0392b;
+    --azul: #2980b9;
+    --azul-oceano: #1a6b8a;
+    --morado: #7d3c98;
+    --tierra: #a0522d;
+    --crema: #fefae0;
+    --gris: #f0f0f0;
+    --texto: #1a1a2e;
+    --blanco: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #1a3a2a 0%, #0d2818 50%, #1a3a2a 100%);
+    min-height: 100vh;
+    color: var(--texto);
+    overflow-x: hidden;
+  }
+
+  /* PANTALLA INICIO */
+  #pantalla-inicio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .titulo-juego {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--verde-menta);
+    text-shadow: 0 4px 20px rgba(82,183,136,0.4);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .subtitulo-juego {
+    font-size: 1.1rem;
+    color: var(--crema);
+    opacity: 0.8;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .setup-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(82,183,136,0.3);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 700px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+  }
+
+  .setup-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--verde-menta);
+    margin-bottom: 24px;
+  }
+
+  .equipos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .equipo-input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .equipo-input-wrap label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--verde-menta);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .equipo-input {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid rgba(82,183,136,0.3);
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: border-color 0.2s;
+  }
+
+  .equipo-input:focus {
+    outline: none;
+    border-color: var(--verde-claro);
+  }
+
+  .btn-principal {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    padding: 16px 48px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--verde-claro), var(--verde));
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 24px rgba(82,183,136,0.4);
+    margin-top: 8px;
+  }
+
+  .btn-principal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(82,183,136,0.5);
+  }
+
+  /* PANTALLA JUEGO */
+  #pantalla-juego { display: none; padding: 12px; }
+
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .game-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--verde-menta);
+  }
+
+  .marcadores {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .marcador {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 6px 14px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: white;
+    transition: all 0.3s;
+  }
+
+  .marcador.activo {
+    transform: scale(1.1);
+    box-shadow: 0 0 16px currentColor;
+  }
+
+  .game-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 12px;
+    align-items: start;
+  }
+
+  /* TABLERO */
+  .tablero-wrap {
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid rgba(82,183,136,0.2);
+  }
+
+  .tablero {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .casilla {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    padding: 4px;
+    border: 2px solid rgba(255,255,255,0.15);
+    font-size: 0.65rem;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    min-height: 64px;
+  }
+
+  .casilla:hover { transform: scale(1.08); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+
+  .casilla .num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    position: absolute;
+    top: 3px;
+    left: 5px;
+  }
+
+  .casilla .icono { font-size: 1.4rem; }
+  .casilla .etiqueta { font-size: 0.55rem; line-height: 1.1; margin-top: 2px; opacity: 0.9; }
+
+  /* Colores por tema */
+  .tema-1 { background: linear-gradient(135deg, #2d6a4f, #40916c); } /* Economía circular */
+  .tema-2 { background: linear-gradient(135deg, #7d3c98, #a569bd); } /* Ecofeminismo */
+  .tema-3 { background: linear-gradient(135deg, #1a6b8a, #2980b9); } /* Economía azul */
+  .tema-4 { background: linear-gradient(135deg, #b7950b, #d4ac0d); } /* ODS */
+  .tema-5 { background: linear-gradient(135deg, #1e8449, #27ae60); } /* Biocentrismo */
+  .tema-6 { background: linear-gradient(135deg, #922b21, #c0392b); } /* Derechos animales */
+
+  .tipo-facil { opacity: 1; }
+  .tipo-media { opacity: 1; }
+  .tipo-dificil { opacity: 1; }
+
+  .casilla-especial-salida { background: linear-gradient(135deg, #1a3a2a, #2d6a4f); border: 3px solid var(--verde-menta) !important; }
+  .casilla-especial-meta { background: linear-gradient(135deg, #b7950b, #f39c12); border: 3px solid gold !important; }
+  .casilla-especial-trampa { background: linear-gradient(135deg, #4a4a4a, #2c2c2c); }
+  .casilla-especial-puente { background: linear-gradient(135deg, #1a5276, #2980b9); }
+  .casilla-especial-comodin { background: linear-gradient(135deg, #6c3483, #9b59b6); }
+  .casilla-especial-reflexion { background: linear-gradient(135deg, #1a3a5c, #2471a3); border: 3px solid #85c1e9 !important; }
+
+  .casilla.visitada::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+  }
+
+  /* Fichas */
+  .ficha {
+    position: absolute;
+    width: 28px;
+    height: 36px;
+    z-index: 10;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.7));
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .ficha svg { width: 100%; height: 100%; }
+
+  @keyframes fichaAterriza {
+    0%   { transform: translateY(-24px) scale(1.3); opacity: 0.6; }
+    60%  { transform: translateY(3px) scale(0.92); opacity: 1; }
+    80%  { transform: translateY(-5px) scale(1.06); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  .ficha.nueva { animation: fichaAterriza 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+  /* PANEL LATERAL */
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .turno-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(82,183,136,0.3);
+    text-align: center;
+  }
+
+  .turno-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--verde-menta);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .turno-nombre {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 12px;
+  }
+
+  .dado-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+  }
+
+  .dado {
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: var(--texto);
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+
+  .dado:hover { transform: scale(1.05); }
+  .dado.girando { animation: girarDado 0.6s ease-in-out; }
+
+  @keyframes girarDado {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(180deg) scale(1.2); }
+    75% { transform: rotate(540deg) scale(0.9); }
+    100% { transform: rotate(720deg) scale(1); }
+  }
+
+  .btn-dado {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--verde-claro), var(--verde));
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(82,183,136,0.3);
+  }
+
+  .btn-dado:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-dado:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(82,183,136,0.4); }
+
+  .leyenda {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .leyenda-titulo {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--verde-menta);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 5px;
+  }
+
+  .leyenda-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .posiciones-lista {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .posiciones-titulo {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--verde-menta);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .posicion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: white;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+
+  .posicion-casilla {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+  }
+
+  /* MODAL PREGUNTA */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .overlay.activo { display: flex; }
+
+  .modal {
+    background: linear-gradient(135deg, #1a3a2a, #0d2818);
+    border-radius: 24px;
+    padding: 36px;
+    max-width: 580px;
+    width: 100%;
+    border: 2px solid rgba(82,183,136,0.4);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    animation: aparecer 0.3s ease-out;
+  }
+
+  @keyframes aparecer {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-tema-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    color: white;
+  }
+
+  .modal-dificultad {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .estrella { font-size: 1rem; }
+
+  .modal-pregunta {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.4;
+    margin-bottom: 24px;
+    min-height: 60px;
+  }
+
+  .modal-respuesta-wrap {
+    background: rgba(82,183,136,0.1);
+    border: 1px solid rgba(82,183,136,0.3);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .modal-respuesta-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--verde-menta);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .modal-respuesta-texto {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    display: none;
+  }
+
+  .modal-botones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-ver-respuesta {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid var(--verde-claro);
+    background: transparent;
+    color: var(--verde-claro);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ver-respuesta:hover { background: rgba(82,183,136,0.2); }
+
+  .btn-correcto {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-incorrecto {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #c0392b, #922b21);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-correcto:hover { transform: translateY(-2px); }
+  .btn-incorrecto:hover { transform: translateY(-2px); }
+
+  .modal-especial { text-align: center; }
+  .modal-especial-icono { font-size: 4rem; margin-bottom: 12px; }
+  .modal-especial-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .modal-especial-desc { color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 24px; }
+
+  .btn-cerrar {
+    padding: 12px 32px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--verde-claro), var(--verde));
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cerrar:hover { transform: translateY(-2px); }
+
+  /* MODAL EDITOR */
+  .modal-editor {
+    max-width: 750px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .editor-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--verde-menta);
+    margin-bottom: 20px;
+  }
+
+  .editor-grupo {
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .editor-grupo-titulo {
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .editor-casilla-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: start;
+  }
+
+  .editor-input {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    resize: vertical;
+    min-height: 36px;
+  }
+
+  .editor-input:focus { outline: none; border-color: var(--verde-claro); }
+  .editor-input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .dificultad-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+
+  .dif-facil { background: rgba(39,174,96,0.3); color: #2ecc71; }
+  .dif-media { background: rgba(243,156,18,0.3); color: #f39c12; }
+  .dif-dificil { background: rgba(192,57,43,0.3); color: #e74c3c; }
+
+  .editor-botones {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  /* MODAL VICTORIA */
+  .modal-victoria { text-align: center; }
+  .victoria-icono { font-size: 5rem; margin-bottom: 16px; animation: bounce 1s infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .victoria-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: var(--amarillo);
+    margin-bottom: 8px;
+  }
+  .victoria-nombre {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 16px;
+  }
+  .podio { margin: 20px 0; }
+  .podio-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .podio-1 { background: rgba(212,172,13,0.3); color: gold; }
+  .podio-2 { background: rgba(169,169,169,0.3); color: silver; }
+  .podio-3 { background: rgba(160,82,45,0.2); color: #cd7f32; }
+  .podio-otro { background: rgba(255,255,255,0.05); color: white; }
+
+  /* Btn editor flotante */
+  .btn-editor-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(82,183,136,0.4);
+    background: rgba(13,40,24,0.9);
+    color: var(--verde-menta);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+    display: none;
+  }
+
+  .btn-editor-flotante:hover { border-color: var(--verde-claro); }
+
+  /* Notificación */
+  .notif {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--verde);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    z-index: 200;
+    transition: transform 0.4s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  }
+  .notif.visible { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICACIÓN -->
+<div class="notif" id="notif"></div>
+
+<!-- PANTALLA INICIO -->
+<div id="pantalla-inicio">
+  <div class="titulo-juego">🌱 La Oca de la<br>Sostenibilidad</div>
+  <div class="subtitulo-juego">Valores Cívicos y Éticos · 2º ESO</div>
+
+  <div class="setup-card">
+    <div class="setup-titulo">⚡ Configura los equipos</div>
+    <div class="equipos-grid" id="inputs-equipos"></div>
+    <div style="text-align:center">
+      <button class="btn-principal" onclick="iniciarJuego()">🎲 ¡Comenzar el juego!</button>
+    </div>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.75rem; margin-top:16px; text-align:center;">
+      Puedes dejar equipos vacíos si hay menos de 6 grupos
+    </p>
+  </div>
+</div>
+
+<!-- PANTALLA JUEGO -->
+<div id="pantalla-juego">
+  <div class="game-header">
+    <div class="game-titulo">🌱 La Oca de la Sostenibilidad</div>
+    <div class="marcadores" id="marcadores"></div>
+  </div>
+
+  <div class="game-layout">
+    <div class="tablero-wrap">
+      <div class="tablero" id="tablero"></div>
+    </div>
+
+    <div class="panel">
+      <div class="turno-card">
+        <div class="turno-label">Turno de</div>
+        <div class="turno-nombre" id="turno-nombre">—</div>
+        <div class="dado-wrap">
+          <div class="dado" id="dado">🎲</div>
+        </div>
+        <button class="btn-dado" id="btn-tirar" onclick="tirarDado()">🎲 Tirar dado</button>
+      </div>
+
+      <div class="posiciones-lista">
+        <div class="posiciones-titulo">📍 Posiciones</div>
+        <div id="posiciones-lista"></div>
+      </div>
+
+      <div class="leyenda">
+        <div class="leyenda-titulo">Temas</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#2d6a4f"></div>Economía circular</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#7d3c98"></div>Ecofeminismo</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#1a6b8a"></div>Economía azul</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#b7950b"></div>ODS</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#1e8449"></div>Biocentrismo</div>
+        <div class="leyenda-item"><div class="leyenda-dot" style="background:#922b21"></div>Derechos animales</div>
+        <div style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:8px">
+          <div class="leyenda-item"><div class="leyenda-dot" style="background:#4a4a4a"></div>💀 Trampa (-3)</div>
+          <div class="leyenda-item"><div class="leyenda-dot" style="background:#1a5276"></div>🔄 Puente (+3)</div>
+          <div class="leyenda-item"><div class="leyenda-dot" style="background:#6c3483"></div>⭐ Comodín</div>
+          <div class="leyenda-item"><div class="leyenda-dot" style="background:#1a3a5c;border:1px solid #85c1e9"></div>💭 Reflexión final</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PREGUNTA -->
+<div class="overlay" id="overlay-pregunta">
+  <div class="modal" id="modal-pregunta">
+    <div class="modal-tema-badge" id="modal-badge"></div>
+    <div class="modal-dificultad" id="modal-dificultad"></div>
+    <div class="modal-pregunta" id="modal-pregunta-texto"></div>
+    <div class="modal-respuesta-wrap">
+      <div class="modal-respuesta-label">✅ Respuesta correcta</div>
+      <div class="modal-respuesta-texto" id="modal-respuesta-texto">—</div>
+      <button class="btn-ver-respuesta" id="btn-ver-respuesta" onclick="verRespuesta()">👁 Ver respuesta</button>
+    </div>
+    <div class="modal-botones">
+      <button class="btn-correcto" id="btn-correcto" onclick="responderPregunta(true)" style="display:none">✅ ¡Correcto! +pts</button>
+      <button class="btn-incorrecto" id="btn-incorrecto" onclick="responderPregunta(false)" style="display:none">❌ Incorrecto -3 casillas</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ESPECIAL -->
+<div class="overlay" id="overlay-especial">
+  <div class="modal modal-especial">
+    <div class="modal-especial-icono" id="especial-icono"></div>
+    <div class="modal-especial-titulo" id="especial-titulo"></div>
+    <div class="modal-especial-desc" id="especial-desc"></div>
+    <button class="btn-cerrar" onclick="cerrarEspecial()">Continuar ▶</button>
+  </div>
+</div>
+
+<!-- MODAL VICTORIA -->
+<div class="overlay" id="overlay-victoria">
+  <div class="modal modal-victoria">
+    <div class="victoria-icono">🏆</div>
+    <div class="victoria-titulo">¡Equipo ganador!</div>
+    <div class="victoria-nombre" id="victoria-nombre"></div>
+    <div class="podio" id="podio"></div>
+    <button class="btn-cerrar" onclick="reiniciarJuego()">🔄 Nueva partida</button>
+  </div>
+</div>
+
+<!-- MODAL EDITOR -->
+<div class="overlay" id="overlay-editor">
+  <div class="modal modal-editor">
+    <div class="editor-titulo">✏️ Editor de preguntas</div>
+    <div id="editor-contenido"></div>
+    <div class="editor-botones">
+      <button class="btn-correcto" onclick="guardarEditor()">💾 Guardar cambios</button>
+      <button class="btn-incorrecto" onclick="cerrarEditor()">✖ Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<button class="btn-editor-flotante" id="btn-editor" onclick="abrirEditor()">✏️ Editar preguntas</button>
+
+<script>
+// ===================== DATOS DEL JUEGO =====================
+
+const TEMAS = [
+  { nombre: "Economía Circular", color: "#2d6a4f", icono: "♻️", clase: "tema-1" },
+  { nombre: "Ecofeminismo", color: "#7d3c98", icono: "🌸", clase: "tema-2" },
+  { nombre: "Economía Azul", color: "#1a6b8a", icono: "🌊", clase: "tema-3" },
+  { nombre: "ODS", color: "#b7950b", icono: "🎯", clase: "tema-4" },
+  { nombre: "Biocentrismo", color: "#1e8449", icono: "🌿", clase: "tema-5" },
+  { nombre: "Derechos Animales", color: "#922b21", icono: "🐾", clase: "tema-6" },
+];
+
+// Preguntas por defecto: cada tema tiene 4 casillas (1 fácil, 2 medias, 1 difícil)
+let PREGUNTAS = [
+  // TEMA 1 - Economía Circular
+  { tema: 0, dificultad: 1, pregunta: "¿Qué significa que una economía sea 'circular'?", respuesta: "Que los productos se reutilizan, reparan o reciclan en lugar de tirarse, formando un ciclo cerrado sin residuos." },
+  { tema: 0, dificultad: 2, pregunta: "¿Cuál es la diferencia entre reciclar y reparar dentro de la economía circular?", respuesta: "Reparar alarga la vida útil del producto (mejor opción); reciclar transforma el material cuando ya no sirve (última opción antes de tirar)." },
+  { tema: 0, dificultad: 2, pregunta: "Menciona un ejemplo de producto diseñado según los principios de economía circular.", respuesta: "Ejemplos: móviles modulares reparables, ropa de segunda mano, envases retornables, compost a partir de residuos orgánicos." },
+  { tema: 0, dificultad: 3, pregunta: "¿Por qué la economía circular desafía el modelo económico capitalista tradicional?", respuesta: "Porque el capitalismo se basa en producir y consumir sin límite (economía lineal), mientras la circular prioriza durabilidad y menos consumo, lo que puede reducir beneficios empresariales." },
+
+  // TEMA 2 - Ecofeminismo
+  { tema: 1, dificultad: 1, pregunta: "¿Qué estudia el ecofeminismo?", respuesta: "La relación entre la opresión de las mujeres y la explotación de la naturaleza, argumentando que tienen el mismo origen: el patriarcado." },
+  { tema: 1, dificultad: 2, pregunta: "¿Qué propone la ética del cuidado en relación al medio ambiente?", respuesta: "Que debemos relacionarnos con la naturaleza desde el cuidado y la responsabilidad, no desde el dominio y la explotación." },
+  { tema: 1, dificultad: 2, pregunta: "¿Por qué las ecofeministas afirman que las mujeres son las más afectadas por la crisis climática?", respuesta: "Porque en muchos países son quienes cuidan la familia, gestionan los recursos naturales básicos (agua, comida) y tienen menos recursos para adaptarse al cambio climático." },
+  { tema: 1, dificultad: 3, pregunta: "¿En qué se parece la forma en que el patriarcado trata a las mujeres y la forma en que el capitalismo trata a la naturaleza, según el ecofeminismo?", respuesta: "En ambos casos se considera que son recursos para explotar: la mujer como fuerza de trabajo reproductivo no pagado y la naturaleza como materia prima sin valor propio." },
+
+  // TEMA 3 - Economía Azul
+  { tema: 2, dificultad: 1, pregunta: "¿Qué es la economía azul?", respuesta: "Un modelo económico basado en el uso sostenible de los océanos y los recursos marinos para el crecimiento económico y el bienestar social." },
+  { tema: 2, dificultad: 2, pregunta: "¿Cuáles son dos sectores económicos que pertenecen a la economía azul?", respuesta: "Pesca sostenible, energía marina (eólica, mareomotriz), turismo costero responsable, acuicultura, transporte marítimo limpio." },
+  { tema: 2, dificultad: 2, pregunta: "¿Qué amenazas enfrenta el océano que hacen necesaria la economía azul?", respuesta: "La contaminación plástica, la sobrepesca, la acidificación por CO₂, el calentamiento y la pérdida de biodiversidad marina." },
+  { tema: 2, dificultad: 3, pregunta: "¿Es posible que la economía azul sea realmente sostenible o es una contradicción explotar el océano y protegerlo al mismo tiempo?", respuesta: "Debate abierto: puede serlo si hay límites estrictos de explotación y gobernanza global; pero el riesgo es que el término 'azul' se use como greenwashing sin cambios reales." },
+
+  // TEMA 4 - ODS
+  { tema: 3, dificultad: 1, pregunta: "¿Cuántos Objetivos de Desarrollo Sostenible hay y quién los estableció?", respuesta: "17 ODS, establecidos por la ONU en 2015 como parte de la Agenda 2030." },
+  { tema: 3, dificultad: 2, pregunta: "¿Cuál es el ODS 13 y por qué es urgente?", respuesta: "Acción por el clima: adoptar medidas urgentes para combatir el cambio climático. Es urgente porque ya estamos experimentando sus consecuencias (sequías, inundaciones, pérdida de biodiversidad)." },
+  { tema: 3, dificultad: 2, pregunta: "¿Cómo se relacionan el ODS 4 (educación de calidad) y el ODS 10 (reducción de desigualdades)?", respuesta: "Una mejor educación reduce las desigualdades sociales y económicas, dando a personas de contextos desfavorecidos más oportunidades de vida." },
+  { tema: 3, dificultad: 3, pregunta: "¿Pueden los ODS alcanzarse sin cambiar el modelo económico capitalista global? Argumenta.", respuesta: "Es debatible: los ODS intentan ser compatibles con el crecimiento económico, pero muchos ecologistas argumentan que el crecimiento ilimitado es incompatible con la sostenibilidad ecológica (límites planetarios)." },
+
+  // TEMA 5 - Biocentrismo
+  { tema: 4, dificultad: 1, pregunta: "¿Qué afirma la teoría biocentrista?", respuesta: "Que todos los seres vivos tienen valor intrínseco, independientemente de su utilidad para los humanos. La vida en sí misma merece respeto." },
+  { tema: 4, dificultad: 2, pregunta: "¿En qué se diferencia el biocentrismo del antropocentrismo?", respuesta: "El antropocentrismo pone al ser humano en el centro y valora la naturaleza por su utilidad para nosotros; el biocentrismo considera que todos los seres vivos merecen consideración moral por igual." },
+  { tema: 4, dificultad: 2, pregunta: "¿Qué obligaciones éticas tendríamos si aceptamos el biocentrismo?", respuesta: "No dañar seres vivos innecesariamente, no interferir en los ecosistemas, restaurar los daños causados y defender a los seres vivos que no pueden defenderse solos." },
+  { tema: 4, dificultad: 3, pregunta: "¿Es posible vivir de forma coherente con el biocentrismo? ¿Cuáles serían sus límites prácticos?", respuesta: "Es muy difícil ser totalmente coherente (comer, construir, etc. implica dañar seres vivos). El biocentrismo sirve más como principio guía para minimizar el daño que como regla absoluta." },
+
+  // TEMA 6 - Derechos de Animales y Naturaleza
+  { tema: 5, dificultad: 1, pregunta: "¿Qué argumenta Peter Singer sobre los animales?", respuesta: "Que los animales que son capaces de sentir dolor (seres sintientes) merecen que se tenga en cuenta su sufrimiento. Ignorarlo es 'especismo', como el racismo o el sexismo." },
+  { tema: 5, dificultad: 2, pregunta: "¿Qué país reconoció primero los derechos de la naturaleza en su constitución?", respuesta: "Ecuador (2008), que reconoció en su Constitución los derechos de la Pachamama (Madre Tierra) a existir, regenerarse y ser restaurada." },
+  { tema: 5, dificultad: 2, pregunta: "¿Cuál es la diferencia entre proteger la naturaleza por su utilidad para nosotros y reconocerle derechos propios?", respuesta: "Protegerla por utilidad (antropocentrismo) significa que podemos destruirla si no nos sirve. Reconocerle derechos significa que tiene valor en sí misma, independientemente de lo que nos aporte." },
+  { tema: 5, dificultad: 3, pregunta: "¿Puede un río o un bosque tener derechos legales? ¿Qué problemas prácticos y filosóficos plantea?", respuesta: "Filosóficamente es posible (el derecho ya reconoce personas jurídicas como empresas). Problemas: quién los representa, cómo se aplican, conflictos con derechos humanos económicos. Casos reales: río Whanganui (NZ), Ganges (India)." },
+
+  // PREGUNTA DE REFLEXIÓN FINAL (idx: 24)
+  { tema: -1, dificultad: 0, pregunta: "Habéis recorrido todo el tablero aprendiendo sobre economía circular, ecofeminismo, economía azul, ODS, biocentrismo y derechos de la naturaleza. Ahora, como grupo, responded: ¿Qué cambio concreto podríais hacer en vuestra vida cotidiana que conecte al menos dos de los temas que habéis trabajado? Defended vuestra respuesta.", respuesta: "Respuesta abierta. Se valora: identificar al menos dos temas, proponer un cambio real y cotidiano (no abstracto), y argumentar la conexión entre ellos. Ejemplos posibles: reducir el consumo de carne (biocentrismo + economía circular), usar transporte público (ODS 11 + economía azul), consumir de segunda mano (economía circular + ecofeminismo del cuidado)." },
+];
+
+// Configuración del tablero (37 casillas)
+// Temas mezclados, ordenados por dificultad creciente:
+//   Casillas 1-9:   FÁCILES (⭐) — los 6 temas repartidos, con 2 especiales intercaladas
+//   Casillas 10-25: MEDIAS  (⭐⭐) — los 6 temas × 2 preguntas, con 3 especiales
+//   Casillas 26-34: DIFÍCILES (⭐⭐⭐) — los 6 temas, con 2 especiales
+//   Casilla 35:     META
+//
+// Índices PREGUNTAS por tema y dificultad:
+//   Fáciles  (dif 1): T0→0, T1→4, T2→8,  T3→12, T4→16, T5→20
+//   Medias   (dif 2): T0→1,2  T1→5,6  T2→9,10  T3→13,14  T4→17,18  T5→21,22
+//   Difíciles(dif 3): T0→3, T1→7, T2→11, T3→15, T4→19, T5→23
+
+const TABLERO = [
+  // ── SALIDA ──────────────────────────────────────────────────
+  { tipo: 'salida', etiqueta: 'SALIDA', icono: '🚀' },
+
+  // ── ZONA FÁCIL (⭐) ─ temas 0→5 mezclados ───────────────────
+  { tipo: 'pregunta', idx: 0  },  // T1 Ec.Circular   ⭐
+  { tipo: 'pregunta', idx: 4  },  // T2 Ecofeminismo  ⭐
+  { tipo: 'pregunta', idx: 8  },  // T3 Ec.Azul       ⭐
+  { tipo: 'puente',   etiqueta: 'Viento a favor', icono: '🔄', efecto: 2 },
+  { tipo: 'pregunta', idx: 12 },  // T4 ODS           ⭐
+  { tipo: 'pregunta', idx: 16 },  // T5 Biocentrismo  ⭐
+  { tipo: 'pregunta', idx: 20 },  // T6 Der.Animales  ⭐
+  { tipo: 'trampa',   etiqueta: 'Greenwashing', icono: '💀', efecto: -3 },
+
+  // ── ZONA MEDIA (⭐⭐) ─ 12 preguntas, 2 por tema ─────────────
+  { tipo: 'pregunta', idx: 1  },  // T1 media-1
+  { tipo: 'pregunta', idx: 5  },  // T2 media-1
+  { tipo: 'pregunta', idx: 9  },  // T3 media-1
+  { tipo: 'comodin',  etiqueta: 'Comodín', icono: '⭐' },
+  { tipo: 'pregunta', idx: 13 },  // T4 media-1
+  { tipo: 'pregunta', idx: 17 },  // T5 media-1
+  { tipo: 'pregunta', idx: 21 },  // T6 media-1
+  { tipo: 'trampa',   etiqueta: 'Marea negra', icono: '💀', efecto: -3 },
+  { tipo: 'pregunta', idx: 2  },  // T1 media-2
+  { tipo: 'pregunta', idx: 6  },  // T2 media-2
+  { tipo: 'pregunta', idx: 10 },  // T3 media-2
+  { tipo: 'puente',   etiqueta: 'Puente ODS', icono: '🔄', efecto: 3 },
+  { tipo: 'pregunta', idx: 14 },  // T4 media-2
+  { tipo: 'pregunta', idx: 18 },  // T5 media-2
+  { tipo: 'pregunta', idx: 22 },  // T6 media-2
+  { tipo: 'comodin',  etiqueta: 'Comodín', icono: '⭐' },
+
+  // ── ZONA DIFÍCIL (⭐⭐⭐) ─ 6 preguntas, 1 por tema ──────────
+  { tipo: 'pregunta', idx: 3  },  // T1 difícil
+  { tipo: 'pregunta', idx: 7  },  // T2 difícil
+  { tipo: 'trampa',   etiqueta: 'Especismo', icono: '💀', efecto: -4 },
+  { tipo: 'pregunta', idx: 11 },  // T3 difícil
+  { tipo: 'pregunta', idx: 15 },  // T4 difícil
+  { tipo: 'puente',   etiqueta: 'Acción climática', icono: '🔄', efecto: 2 },
+  { tipo: 'pregunta', idx: 19 },  // T5 difícil
+  { tipo: 'pregunta', idx: 23 },  // T6 difícil
+
+  // ── REFLEXIÓN FINAL ──────────────────────────────────────────
+  { tipo: 'reflexion', idx: 24, etiqueta: 'Reflexión final', icono: '💭' },
+
+  // ── META ─────────────────────────────────────────────────────
+  { tipo: 'meta', etiqueta: 'META', icono: '🏆' },
+];
+
+// ===================== ESTADO DEL JUEGO =====================
+let equipos = [];
+let turnoActual = 0;
+let esperandoRespuesta = false;
+let casillaActualModal = -1;
+let coloresEquipos = ['#e74c3c','#3498db','#f39c12','#9b59b6','#1abc9c','#e67e22'];
+
+// Genera nombres de equipos por defecto
+function generarInputsEquipos() {
+  const container = document.getElementById('inputs-equipos');
+  for (let i = 0; i < 6; i++) {
+    container.innerHTML += `
+      <div class="equipo-input-wrap">
+        <label style="color:${coloresEquipos[i]}">Equipo ${i+1}</label>
+        <input class="equipo-input" id="equipo-${i}" placeholder="Nombre del equipo" value="Equipo ${i+1}">
+      </div>`;
+  }
+}
+
+function iniciarJuego() {
+  equipos = [];
+  for (let i = 0; i < 6; i++) {
+    const val = document.getElementById(`equipo-${i}`).value.trim();
+    if (val) equipos.push({ nombre: val, pos: 0, puntos: 0, color: coloresEquipos[i], terminado: false });
+  }
+  if (equipos.length < 2) { mostrarNotif('⚠️ Añade al menos 2 equipos'); return; }
+  turnoActual = 0;
+
+  document.getElementById('pantalla-inicio').style.display = 'none';
+  document.getElementById('pantalla-juego').style.display = 'block';
+  document.getElementById('btn-editor').style.display = 'block';
+
+  renderMarcadores();
+  renderTablero();
+  renderPosiciones();
+  actualizarTurno();
+}
+
+function renderMarcadores() {
+  const c = document.getElementById('marcadores');
+  c.innerHTML = equipos.map((e,i) => `
+    <div class="marcador" id="marc-${i}" style="border-color:${e.color};color:${e.color}">
+      ${e.nombre}: <span id="pts-${i}">${e.puntos}</span> pts
+    </div>`).join('');
+}
+
+function actualizarMarcadores() {
+  equipos.forEach((e,i) => {
+    document.getElementById(`pts-${i}`).textContent = e.puntos;
+    const m = document.getElementById(`marc-${i}`);
+    m.classList.toggle('activo', i === turnoActual);
+  });
+}
+
+// ===================== TABLERO =====================
+function renderTablero() {
+  const t = document.getElementById('tablero');
+  t.innerHTML = '';
+
+  // Disposición en serpentina: 5 filas × 7 columnas
+  const orden = generarOrdenSerpentina(35, 7);
+
+  TABLERO.forEach((casilla, idx) => {
+    const posGrid = orden[idx];
+    const div = document.createElement('div');
+    div.className = 'casilla ' + clasesCasilla(casilla);
+    div.id = `cas-${idx}`;
+    div.style.gridColumn = posGrid.col + 1;
+    div.style.gridRow = posGrid.row + 1;
+    div.innerHTML = numeroCasilla(idx) + iconoCasilla(casilla) + etiquetaCasilla(casilla, idx);
+    div.onclick = () => clickCasilla(idx);
+    t.appendChild(div);
+  });
+
+  actualizarFichas();
+}
+
+function generarOrdenSerpentina(total, cols) {
+  const resultado = [];
+  let idx = 0;
+  const filas = Math.ceil(total / cols);
+  for (let f = 0; f < filas && idx < total; f++) {
+    const row = filas - 1 - f;
+    if (f % 2 === 0) {
+      for (let c = 0; c < cols && idx < total; c++) { resultado[idx++] = {row, col: c}; }
+    } else {
+      for (let c = cols-1; c >= 0 && idx < total; c--) { resultado[idx++] = {row, col: c}; }
+    }
+  }
+  return resultado;
+}
+
+function clasesCasilla(c) {
+  if (c.tipo === 'salida') return 'casilla-especial-salida';
+  if (c.tipo === 'meta') return 'casilla-especial-meta';
+  if (c.tipo === 'trampa') return 'casilla-especial-trampa';
+  if (c.tipo === 'puente') return 'casilla-especial-puente';
+  if (c.tipo === 'comodin') return 'casilla-especial-comodin';
+  if (c.tipo === 'reflexion') return 'casilla-especial-reflexion';
+  if (c.tipo === 'pregunta') {
+    const p = PREGUNTAS[c.idx];
+    return TEMAS[p.tema].clase + (p.dificultad === 1 ? ' tipo-facil' : p.dificultad === 2 ? ' tipo-media' : ' tipo-dificil');
+  }
+  return '';
+}
+
+function numeroCasilla(idx) {
+  return `<span class="num">${idx}</span>`;
+}
+
+function iconoCasilla(c) {
+  if (c.tipo === 'pregunta') {
+    const p = PREGUNTAS[c.idx];
+    const estrella = p.dificultad === 1 ? '⭐' : p.dificultad === 2 ? '⭐⭐' : '⭐⭐⭐';
+    return `<span class="icono">${TEMAS[p.tema] ? TEMAS[p.tema].icono : '💭'}</span><span style="font-size:0.45rem;opacity:0.8">${estrella}</span>`;
+  }
+  if (c.tipo === 'reflexion') return `<span class="icono">💭</span>`;
+  return `<span class="icono">${c.icono || ''}</span>`;
+}
+
+function etiquetaCasilla(c, idx) {
+  if (c.tipo === 'pregunta') {
+    const p = PREGUNTAS[c.idx];
+    return `<span class="etiqueta">${TEMAS[p.tema].nombre.split(' ')[0]}</span>`;
+  }
+  return `<span class="etiqueta">${c.etiqueta || ''}</span>`;
+}
+
+function actualizarFichas() {
+  document.querySelectorAll('.ficha').forEach(f => f.remove());
+
+  // Agrupar equipos por casilla
+  const porCasilla = {};
+  equipos.forEach((e, i) => {
+    if (!porCasilla[e.pos]) porCasilla[e.pos] = [];
+    porCasilla[e.pos].push({ equipo: e, idx: i });
+  });
+
+  // Grid de posiciones dentro de la casilla (máx 6 fichas, 3 columnas × 2 filas)
+  // En porcentaje respecto al ancho/alto de la casilla
+  const gridPos = [
+    { left: '8%',  bottom: '4%' },
+    { left: '38%', bottom: '4%' },
+    { left: '68%', bottom: '4%' },
+    { left: '8%',  bottom: '52%' },
+    { left: '38%', bottom: '52%' },
+    { left: '68%', bottom: '52%' },
+  ];
+
+  Object.entries(porCasilla).forEach(([posStr, items]) => {
+    const pos = parseInt(posStr);
+    const casDiv = document.getElementById(`cas-${pos}`);
+    if (!casDiv) return;
+
+    items.forEach(({ equipo: e, idx: i }, slot) => {
+      const gpos = gridPos[slot] || gridPos[0];
+      const letra = e.nombre.charAt(0).toUpperCase();
+      // Colores: base y versión más clara para gradiente
+      const color = e.color;
+
+      const ficha = document.createElement('div');
+      ficha.className = 'ficha nueva';
+      ficha.style.left = gpos.left;
+      ficha.style.bottom = gpos.bottom;
+
+      // SVG peón: base rectangular redondeada + cuerpo + cabeza + inicial
+      ficha.innerHTML = `
+        <svg viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="fg${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${lighten(color,40)}"/>
+              <stop offset="100%" stop-color="${color}"/>
+            </linearGradient>
+            <filter id="fs${i}" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="rgba(0,0,0,0.5)"/>
+            </filter>
+          </defs>
+          <!-- Sombra base -->
+          <ellipse cx="14" cy="36.5" rx="7" ry="1.5" fill="rgba(0,0,0,0.35)"/>
+          <!-- Base -->
+          <rect x="5" y="30" width="18" height="5" rx="2.5" fill="url(#fg${i})" filter="url(#fs${i})"/>
+          <!-- Tronco -->
+          <rect x="9" y="20" width="10" height="12" rx="2" fill="url(#fg${i})"/>
+          <!-- Cuello -->
+          <rect x="11" y="16" width="6" height="6" rx="1.5" fill="url(#fg${i})"/>
+          <!-- Cabeza -->
+          <circle cx="14" cy="11" r="7.5" fill="url(#fg${i})" filter="url(#fs${i})"/>
+          <!-- Brillo -->
+          <circle cx="11.5" cy="8.5" r="2.5" fill="rgba(255,255,255,0.25)"/>
+          <!-- Inicial -->
+          <text x="14" y="11.5" font-family="'Fredoka One',cursive" font-size="8.5" font-weight="900"
+            fill="white" text-anchor="middle" dominant-baseline="central"
+            style="text-shadow:0 1px 2px rgba(0,0,0,0.5)">${letra}</text>
+          <!-- Borde cabeza -->
+          <circle cx="14" cy="11" r="7.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        </svg>`;
+
+      casDiv.appendChild(ficha);
+
+      // Quitar clase 'nueva' después de la animación
+      setTimeout(() => ficha.classList.remove('nueva'), 600);
+    });
+  });
+}
+
+// Utilidad: aclara un color hex
+function lighten(hex, amount) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, (num >> 16) + amount);
+  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+  const b = Math.min(255, (num & 0xff) + amount);
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+function renderPosiciones() {
+  const c = document.getElementById('posiciones-lista');
+  c.innerHTML = equipos.map((e,i) =>
+    `<div class="posicion-item">
+      <span style="color:${e.color};font-weight:800">${e.nombre}</span>
+      <span class="posicion-casilla" style="color:${e.color}">Cas. ${e.pos}</span>
+    </div>`
+  ).join('');
+}
+
+// ===================== TURNO Y DADO =====================
+function actualizarTurno() {
+  const e = equipos[turnoActual];
+  document.getElementById('turno-nombre').textContent = e.nombre;
+  document.getElementById('turno-nombre').style.color = e.color;
+  document.getElementById('btn-tirar').disabled = false;
+  actualizarMarcadores();
+}
+
+function tirarDado() {
+  if (esperandoRespuesta) return;
+
+  const dado = document.getElementById('dado');
+  const btn = document.getElementById('btn-tirar');
+  btn.disabled = true;
+  dado.classList.add('girando');
+
+  const caras = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let contador = 0;
+  const intervalo = setInterval(() => {
+    dado.textContent = caras[Math.floor(Math.random()*6)];
+    contador++;
+    if (contador > 10) {
+      clearInterval(intervalo);
+      dado.classList.remove('girando');
+      const resultado = Math.floor(Math.random()*6)+1;
+      dado.textContent = caras[resultado-1];
+      moverEquipo(resultado);
+    }
+  }, 80);
+}
+
+function moverEquipo(pasos) {
+  const e = equipos[turnoActual];
+  let nuevaPos = Math.min(e.pos + pasos, TABLERO.length - 1);
+  e.pos = nuevaPos;
+  actualizarFichas();
+  renderPosiciones();
+
+  setTimeout(() => {
+    procesarCasilla(nuevaPos);
+  }, 500);
+}
+
+function procesarCasilla(pos) {
+  const c = TABLERO[pos];
+  const e = equipos[turnoActual];
+
+  if (c.tipo === 'meta') {
+    mostrarVictoria();
+    return;
+  }
+
+  if (c.tipo === 'pregunta') {
+    mostrarPregunta(pos);
+    return;
+  }
+
+  if (c.tipo === 'reflexion') {
+    mostrarReflexion(pos);
+    return;
+  }
+
+  if (c.tipo === 'trampa') {
+    const nuevaPos = Math.max(0, e.pos + c.efecto);
+    e.pos = nuevaPos;
+    actualizarFichas();
+    renderPosiciones();
+    mostrarEspecial(c.icono, `¡${c.etiqueta}!`, `Retrocedes ${Math.abs(c.efecto)} casillas. Ahora en casilla ${nuevaPos}.`);
+    return;
+  }
+
+  if (c.tipo === 'puente') {
+    const nuevaPos = Math.min(TABLERO.length-1, e.pos + c.efecto);
+    e.pos = nuevaPos;
+    actualizarFichas();
+    renderPosiciones();
+    mostrarEspecial(c.icono, `¡${c.etiqueta}!`, `Avanzas ${c.efecto} casillas extra. Ahora en casilla ${nuevaPos}.`);
+    return;
+  }
+
+  if (c.tipo === 'comodin') {
+    e.puntos += 5;
+    actualizarMarcadores();
+    mostrarEspecial('⭐', '¡Comodín de la Sostenibilidad!', `${e.nombre} gana 5 puntos extra. Total: ${e.puntos} pts.`);
+    return;
+  }
+
+  if (c.tipo === 'salida') {
+    mostrarEspecial('🚀', '¡En la salida!', 'Permaneces en la salida. ¡Prepárate!');
+    return;
+  }
+
+  pasarTurno();
+}
+
+// ===================== PREGUNTAS =====================
+function mostrarPregunta(casillaIdx) {
+  esperandoRespuesta = true;
+  casillaActualModal = casillaIdx;
+  const c = TABLERO[casillaIdx];
+  const p = PREGUNTAS[c.idx];
+  const tema = TEMAS[p.tema];
+
+  const badge = document.getElementById('modal-badge');
+  badge.textContent = tema.icono + ' ' + tema.nombre;
+  badge.style.background = tema.color;
+
+  const estrellas = '⭐'.repeat(p.dificultad) + '☆'.repeat(3 - p.dificultad);
+  document.getElementById('modal-dificultad').innerHTML =
+    `<span style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-right:4px">Dificultad:</span>${estrellas}`;
+
+  document.getElementById('modal-pregunta-texto').textContent = p.pregunta;
+  document.getElementById('modal-respuesta-texto').textContent = p.respuesta;
+  document.getElementById('modal-respuesta-texto').style.display = 'none';
+  document.getElementById('btn-ver-respuesta').style.display = 'block';
+  document.getElementById('btn-correcto').style.display = 'none';
+  document.getElementById('btn-incorrecto').style.display = 'none';
+
+  // Puntos según dificultad
+  const puntos = p.dificultad === 1 ? 5 : p.dificultad === 2 ? 10 : 15;
+  document.getElementById('btn-correcto').textContent = `✅ ¡Correcto! +${puntos} pts`;
+
+  document.getElementById('overlay-pregunta').classList.add('activo');
+}
+
+function mostrarReflexion(casillaIdx) {
+  esperandoRespuesta = true;
+  casillaActualModal = casillaIdx;
+  const c = TABLERO[casillaIdx];
+  const p = PREGUNTAS[c.idx];
+
+  const badge = document.getElementById('modal-badge');
+  badge.textContent = '💭 Reflexión final — todos los temas';
+  badge.style.background = '#1a6b8a';
+
+  document.getElementById('modal-dificultad').innerHTML =
+    `<span style="font-size:0.85rem;color:#85c1e9;font-weight:700">🌍 Pregunta abierta · debate grupal</span>`;
+
+  document.getElementById('modal-pregunta-texto').textContent = p.pregunta;
+
+  const respWrap = document.querySelector('.modal-respuesta-wrap');
+  respWrap.style.background = 'rgba(33,113,163,0.15)';
+  respWrap.style.borderColor = 'rgba(133,193,233,0.4)';
+  document.querySelector('.modal-respuesta-label').textContent = '💡 Orientaciones para la profe';
+  document.getElementById('modal-respuesta-texto').textContent = p.respuesta;
+  document.getElementById('modal-respuesta-texto').style.display = 'none';
+  document.getElementById('btn-ver-respuesta').textContent = '👁 Ver orientaciones';
+  document.getElementById('btn-ver-respuesta').style.display = 'block';
+  document.getElementById('btn-correcto').style.display = 'none';
+  document.getElementById('btn-incorrecto').style.display = 'none';
+
+  // Botón especial: cerrar reflexión y avanzar a meta
+  document.getElementById('btn-correcto').textContent = '✅ ¡Reflexión completada! Avanzar a Meta';
+  document.getElementById('btn-correcto').style.display = 'none';
+  document.getElementById('btn-incorrecto').style.display = 'none';
+
+  document.getElementById('overlay-pregunta').classList.add('activo');
+}
+
+function verRespuesta() {
+  document.getElementById('modal-respuesta-texto').style.display = 'block';
+  document.getElementById('btn-ver-respuesta').style.display = 'none';
+  const c = TABLERO[casillaActualModal];
+  if (c && c.tipo === 'reflexion') {
+    document.getElementById('btn-correcto').textContent = '✅ ¡Reflexión completada! Avanzar a Meta';
+    document.getElementById('btn-correcto').style.display = 'block';
+    document.getElementById('btn-incorrecto').style.display = 'none';
+  } else {
+    document.getElementById('btn-correcto').style.display = 'block';
+    document.getElementById('btn-incorrecto').style.display = 'block';
+  }
+}
+
+function responderPregunta(correcto) {
+  const c = TABLERO[casillaActualModal];
+  const p = PREGUNTAS[c.idx];
+  const e = equipos[turnoActual];
+
+  // Restaurar estilos del modal por si venimos de reflexión
+  const respWrap = document.querySelector('.modal-respuesta-wrap');
+  respWrap.style.background = '';
+  respWrap.style.borderColor = '';
+  document.querySelector('.modal-respuesta-label').textContent = '✅ Respuesta correcta';
+  document.getElementById('btn-ver-respuesta').textContent = '👁 Ver respuesta';
+
+  if (c.tipo === 'reflexion') {
+    // La reflexión da puntos a todos y avanza a la meta
+    equipos.forEach(eq => { eq.puntos += 10; });
+    e.pos = Math.min(e.pos + 1, TABLERO.length - 1);
+    actualizarFichas();
+    actualizarMarcadores();
+    renderPosiciones();
+    document.getElementById('overlay-pregunta').classList.remove('activo');
+    esperandoRespuesta = false;
+    setTimeout(() => {
+      mostrarEspecial('💭', '¡Reflexión completada!', '¡Todos los equipos ganan 10 puntos por participar en la reflexión final!');
+    }, 200);
+    return;
+  }
+
+  if (correcto) {
+    const puntos = p.dificultad === 1 ? 5 : p.dificultad === 2 ? 10 : 15;
+    e.puntos += puntos;
+    const avance = p.dificultad === 3 ? 2 : 1;
+    e.pos = Math.min(e.pos + avance, TABLERO.length - 1);
+    mostrarNotif(`✅ +${puntos} pts para ${e.nombre}!`);
+  } else {
+    e.pos = Math.max(0, e.pos - 3);
+    mostrarNotif(`❌ ${e.nombre} retrocede 3 casillas`);
+  }
+
+  actualizarFichas();
+  actualizarMarcadores();
+  renderPosiciones();
+  document.getElementById('overlay-pregunta').classList.remove('activo');
+  esperandoRespuesta = false;
+
+  if (e.pos === TABLERO.length - 1) {
+    setTimeout(mostrarVictoria, 400);
+  } else {
+    setTimeout(pasarTurno, 300);
+  }
+}
+
+// ===================== CASILLAS ESPECIALES =====================
+function mostrarEspecial(icono, titulo, desc) {
+  document.getElementById('especial-icono').textContent = icono;
+  document.getElementById('especial-titulo').textContent = titulo;
+  document.getElementById('especial-desc').textContent = desc;
+  document.getElementById('overlay-especial').classList.add('activo');
+}
+
+function cerrarEspecial() {
+  document.getElementById('overlay-especial').classList.remove('activo');
+  pasarTurno();
+}
+
+function clickCasilla(idx) {
+  // Permitir ver pregunta de cualquier casilla haciendo clic (para la profe)
+  if (TABLERO[idx].tipo === 'pregunta' && !esperandoRespuesta) {
+    // Solo mostrar info, no procesar turno
+    const p = PREGUNTAS[TABLERO[idx].idx];
+    const tema = TEMAS[p.tema];
+    mostrarNotif(`${tema.icono} ${tema.nombre} · Casilla ${idx}`);
+  }
+}
+
+// ===================== TURNO =====================
+function pasarTurno() {
+  let siguiente = (turnoActual + 1) % equipos.length;
+  let intentos = 0;
+  while (equipos[siguiente].terminado && intentos < equipos.length) {
+    siguiente = (siguiente + 1) % equipos.length;
+    intentos++;
+  }
+  turnoActual = siguiente;
+  actualizarTurno();
+  document.getElementById('btn-tirar').disabled = false;
+}
+
+// ===================== VICTORIA =====================
+function mostrarVictoria() {
+  const ganador = equipos[turnoActual];
+  document.getElementById('victoria-nombre').textContent = ganador.nombre;
+  document.getElementById('victoria-nombre').style.color = ganador.color;
+
+  const ordenados = [...equipos].sort((a,b) => b.puntos - a.puntos);
+  const podioClases = ['podio-1','podio-2','podio-3'];
+  const medallas = ['🥇','🥈','🥉'];
+
+  document.getElementById('podio').innerHTML = ordenados.map((e,i) => `
+    <div class="podio-item ${i < 3 ? podioClases[i] : 'podio-otro'}">
+      <span>${medallas[i] || (i+1)+'º'} ${e.nombre}</span>
+      <span>${e.puntos} pts</span>
+    </div>`).join('');
+
+  document.getElementById('overlay-victoria').classList.add('activo');
+}
+
+function reiniciarJuego() {
+  document.getElementById('overlay-victoria').classList.remove('activo');
+  document.getElementById('pantalla-juego').style.display = 'none';
+  document.getElementById('btn-editor').style.display = 'none';
+  document.getElementById('pantalla-inicio').style.display = 'flex';
+}
+
+// ===================== NOTIFICACIÓN =====================
+function mostrarNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('visible');
+  setTimeout(() => n.classList.remove('visible'), 2500);
+}
+
+// ===================== EDITOR DE PREGUNTAS =====================
+function abrirEditor() {
+  const c = document.getElementById('editor-contenido');
+  c.innerHTML = '';
+
+  TEMAS.forEach((tema, ti) => {
+    const preguntasTema = PREGUNTAS.map((p,i) => ({...p, globalIdx: i})).filter(p => p.tema === ti);
+    const difLabel = ['', '⭐ Fácil (+5pts)', '⭐⭐ Media (+10pts)', '⭐⭐⭐ Difícil (+15pts, +2 casillas)'];
+    const difClase = ['','dif-facil','dif-media','dif-dificil'];
+
+    c.innerHTML += `
+      <div class="editor-grupo">
+        <div class="editor-grupo-titulo" style="color:${tema.color}">
+          ${tema.icono} ${tema.nombre}
+        </div>
+        ${preguntasTema.map(p => `
+          <div style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <span class="dificultad-badge ${difClase[p.dificultad]}">${difLabel[p.dificultad]}</span>
+            </div>
+            <div class="editor-casilla-row">
+              <textarea class="editor-input" id="ed-preg-${p.globalIdx}" placeholder="Pregunta">${p.pregunta}</textarea>
+              <textarea class="editor-input" id="ed-resp-${p.globalIdx}" placeholder="Respuesta">${p.respuesta}</textarea>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  });
+
+  document.getElementById('overlay-editor').classList.add('activo');
+}
+
+function guardarEditor() {
+  PREGUNTAS.forEach((p, i) => {
+    const pEl = document.getElementById(`ed-preg-${i}`);
+    const rEl = document.getElementById(`ed-resp-${i}`);
+    if (pEl) p.pregunta = pEl.value.trim() || p.pregunta;
+    if (rEl) p.respuesta = rEl.value.trim() || p.respuesta;
+  });
+  cerrarEditor();
+  mostrarNotif('💾 Preguntas guardadas correctamente');
+}
+
+function cerrarEditor() {
+  document.getElementById('overlay-editor').classList.remove('activo');
+}
+
+// ===================== INIT =====================
+generarInputsEquipos();
+</script>
+</body>
+</html>
