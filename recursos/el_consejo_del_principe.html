@@ -1,0 +1,530 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Cinzel:wght@400;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parch: #f5edd8;
+    --parch-dark: #e8d9b8;
+    --parch-darker: #d4be94;
+    --ink: #2a1f0e;
+    --ink-mid: #4a3520;
+    --ink-light: #7a6045;
+    --red-seal: #8b1a1a;
+    --gold: #b8860b;
+    --gold-light: #d4a82a;
+    --border-ornate: #9a7a45;
+  }
+
+  body { background: transparent; font-family: 'IM Fell English', Georgia, serif; }
+
+  #game-root {
+    background: linear-gradient(160deg, #f7eed9 0%, #ede0c0 40%, #e0ccaa 100%);
+    min-height: 520px;
+    border: 3px double var(--border-ornate);
+    border-radius: 4px;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #game-root::before {
+    content: '';
+    position: absolute; inset: 6px;
+    border: 1px solid var(--border-ornate);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .screen { display: none; padding: 2rem 2.5rem; position: relative; z-index: 2; }
+  .screen.active { display: block; }
+
+  .header-bar {
+    background: var(--ink);
+    padding: 0.6rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 3;
+  }
+  .header-title {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-light);
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .header-stats { display: flex; gap: 2rem; }
+  .stat-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Cinzel', serif;
+    color: var(--parch-dark);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .stat-val { color: var(--gold-light); font-weight: 600; font-size: 14px; min-width: 20px; }
+  .hearts { color: var(--red-seal); font-size: 12px; letter-spacing: 1px; }
+
+  .title-crest { text-align: center; padding: 1.5rem 0 0.5rem; }
+  .title-ornament { font-family: 'Cinzel', serif; color: var(--border-ornate); font-size: 22px; letter-spacing: 4px; line-height: 1; }
+  .title-main { font-family: 'Cinzel', serif; color: var(--ink); font-size: 32px; font-weight: 600; letter-spacing: 2px; margin: 0.4rem 0 0.2rem; line-height: 1.1; }
+  .title-sub { font-family: 'Cinzel', serif; color: var(--ink-light); font-size: 14px; letter-spacing: 4px; }
+  .title-rule { width: 60%; height: 1px; background: var(--border-ornate); margin: 1rem auto; }
+  .title-intro { max-width: 580px; margin: 0 auto 1.5rem; color: var(--ink-mid); font-size: 15px; line-height: 1.8; text-align: center; font-style: italic; }
+  .title-setup { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; max-width: 620px; margin: 0 auto 1.8rem; }
+  .setup-card { background: rgba(42,31,14,0.06); border: 1px solid var(--border-ornate); border-radius: 3px; padding: 0.8rem; text-align: center; }
+  .setup-icon { font-size: 22px; margin-bottom: 4px; color: var(--ink-mid); }
+  .setup-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--ink-light); letter-spacing: 2px; text-transform: uppercase; }
+  .setup-val { font-size: 15px; color: var(--ink); margin-top: 2px; font-weight: bold; }
+
+  .btn-primary {
+    display: block; margin: 0 auto;
+    background: var(--ink); color: var(--gold-light);
+    border: 2px solid var(--gold);
+    font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    padding: 0.75rem 3rem; cursor: pointer; border-radius: 2px; transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--ink-mid); }
+
+  .btn-option {
+    width: 100%; background: rgba(42,31,14,0.04); border: 1.5px solid var(--border-ornate);
+    border-radius: 3px; padding: 0.9rem 1.1rem; cursor: pointer; text-align: left;
+    margin-bottom: 0.6rem; transition: background 0.15s, border-color 0.15s; position: relative;
+  }
+  .btn-option:hover { background: rgba(42,31,14,0.10); border-color: var(--ink-mid); }
+  .btn-option.selected { background: rgba(42,31,14,0.14); border-color: var(--ink); border-width: 2px; }
+  .btn-option.selected::after { content: '✦'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--gold); font-size: 14px; }
+  .opt-label { font-family: 'Cinzel', serif; color: var(--red-seal); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; }
+  .opt-text { color: var(--ink); font-size: 14px; line-height: 1.5; }
+  .opt-tag { display: inline-block; margin-top: 5px; background: rgba(139,26,26,0.1); border: 1px solid rgba(139,26,26,0.3); border-radius: 2px; padding: 1px 7px; font-size: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px; color: var(--red-seal); text-transform: uppercase; }
+  .opt-tag.zorro { background: rgba(184,134,11,0.1); border-color: rgba(184,134,11,0.4); color: var(--gold); }
+  .opt-tag.idealista { background: rgba(40,80,40,0.1); border-color: rgba(40,80,40,0.4); color: #2d5a2d; }
+  .opt-tag.astuto { background: rgba(30,50,100,0.1); border-color: rgba(30,50,100,0.4); color: #1e3264; }
+
+  .round-badge { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+  .round-num { font-family: 'Cinzel', serif; color: var(--ink-light); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; }
+  .round-name { font-family: 'Cinzel', serif; color: var(--ink); font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+  .round-rule { flex: 1; height: 1px; background: var(--border-ornate); }
+
+  .crisis-box { background: rgba(42,31,14,0.05); border: 1px solid var(--border-ornate); border-left: 4px solid var(--red-seal); border-radius: 0 3px 3px 0; padding: 1rem 1.2rem; margin-bottom: 1.4rem; font-style: italic; color: var(--ink-mid); font-size: 15px; line-height: 1.8; }
+  .crisis-label { font-family: 'Cinzel', serif; font-style: normal; font-size: 10px; letter-spacing: 3px; color: var(--red-seal); text-transform: uppercase; margin-bottom: 6px; }
+
+  .debate-hint { margin-top: 0.8rem; padding: 0.6rem 1rem; border: 1px dashed var(--border-ornate); border-radius: 3px; font-size: 12px; color: var(--ink-light); font-style: italic; text-align: center; }
+
+  .btn-confirm { display: block; margin: 1rem auto 0; background: var(--red-seal); color: var(--parch); border: none; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 0.65rem 2.5rem; cursor: pointer; border-radius: 2px; opacity: 0.4; transition: opacity 0.2s; pointer-events: none; }
+  .btn-confirm.ready { opacity: 1; pointer-events: all; }
+  .btn-confirm.ready:hover { background: #6e1414; }
+
+  .fortuna-center { text-align: center; padding: 1rem 0; }
+  .fortuna-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--ink); letter-spacing: 3px; margin-bottom: 0.3rem; }
+  .fortuna-sub { font-style: italic; color: var(--ink-light); font-size: 14px; margin-bottom: 2rem; }
+
+  .dice-container { margin: 1rem auto 1.5rem; width: 120px; }
+  .dice {
+    width: 100px; height: 100px;
+    background: #f2e8d0;
+    border: 2px solid var(--border-ornate);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: transform 0.1s;
+    user-select: none;
+    color: var(--ink);
+  }
+  .dice:hover { transform: scale(1.05); }
+  .dice.rolling { animation: rollDice 0.6s ease-out; }
+  @keyframes rollDice {
+    0% { transform: rotate(0deg) scale(1); }
+    20% { transform: rotate(-15deg) scale(1.1); }
+    40% { transform: rotate(20deg) scale(0.95); }
+    60% { transform: rotate(-10deg) scale(1.08); }
+    80% { transform: rotate(8deg) scale(0.98); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+  .dice-hint { font-size: 11px; color: var(--ink-light); font-family: 'Cinzel', serif; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+
+  .fortuna-result { display: none; max-width: 480px; margin: 0 auto; padding: 1rem 1.5rem; border: 1.5px solid var(--border-ornate); border-radius: 4px; background: rgba(42,31,14,0.05); }
+  .fortuna-result.show { display: block; animation: fadeIn 0.5s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .fortuna-verdict { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-ornate); }
+  .fortuna-adverse { color: var(--red-seal); }
+  .fortuna-favorable { color: #2d5a2d; }
+  .fortuna-effect { font-size: 14px; color: var(--ink-mid); line-height: 1.7; margin-bottom: 0.8rem; font-style: italic; }
+  .fortuna-virtu { font-size: 12px; padding: 0.4rem 0.8rem; border-radius: 2px; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+  .virtu-good { background: rgba(40,80,40,0.1); color: #2d5a2d; border: 1px solid rgba(40,80,40,0.3); }
+  .virtu-bad { background: rgba(139,26,26,0.1); color: var(--red-seal); border: 1px solid rgba(139,26,26,0.3); }
+
+  .btn-next { display: block; margin: 1.2rem auto 0; background: var(--ink); color: var(--gold-light); border: 1.5px solid var(--gold); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 0.6rem 2rem; cursor: pointer; border-radius: 2px; }
+  .btn-next:hover { background: var(--ink-mid); }
+
+  .resultado-header { text-align: center; padding: 1.5rem 0 1rem; }
+  .resultado-ornament { font-family: 'Cinzel', serif; color: var(--border-ornate); font-size: 20px; letter-spacing: 4px; }
+  .resultado-title { font-family: 'Cinzel', serif; font-size: 26px; color: var(--ink); margin: 0.3rem 0; }
+  .resultado-sub { font-style: italic; color: var(--ink-light); font-size: 14px; }
+
+  .tabla-reflexion { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 13px; }
+  .tabla-reflexion th { background: var(--ink); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 0.6rem 0.8rem; text-align: left; font-weight: 400; }
+  .tabla-reflexion td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--parch-darker); color: var(--ink-mid); vertical-align: top; line-height: 1.5; }
+  .tabla-reflexion tr:nth-child(even) td { background: rgba(42,31,14,0.04); }
+  .concepto { font-family: 'Cinzel', serif; font-weight: 600; color: var(--ink); font-size: 12px; letter-spacing: 1px; }
+
+  .debate-pregunta { background: var(--ink); color: var(--parch); border-radius: 3px; padding: 1.2rem 1.5rem; margin: 1.2rem 0; font-size: 15px; font-style: italic; line-height: 1.7; text-align: center; border: 2px solid var(--gold); }
+  .debate-pregunta-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.5rem; }
+
+  .score-display { display: flex; justify-content: center; gap: 2rem; margin: 1rem 0; }
+  .score-box { text-align: center; background: rgba(42,31,14,0.06); border: 1px solid var(--border-ornate); padding: 0.8rem 1.5rem; border-radius: 3px; }
+  .score-num { font-family: 'Cinzel', serif; font-size: 28px; color: var(--ink); font-weight: 600; }
+  .score-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; color: var(--ink-light); text-transform: uppercase; margin-top: 2px; }
+
+  .power-bar-wrap { margin: 0.5rem 0 1rem; }
+  .power-bar-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--ink-light); text-transform: uppercase; margin-bottom: 4px; }
+  .power-bar { height: 12px; background: var(--parch-darker); border-radius: 2px; overflow: hidden; border: 1px solid var(--border-ornate); }
+  .power-bar-fill { height: 100%; background: var(--ink); border-radius: 2px; transition: width 1s; }
+
+  .game-over-screen { text-align: center; }
+  .go-title { font-family: 'Cinzel', serif; font-size: 36px; color: var(--red-seal); margin: 1rem 0 0.5rem; }
+  .go-sub { font-style: italic; color: var(--ink-mid); font-size: 16px; margin-bottom: 1.5rem; }
+  .go-score { font-family: 'Cinzel', serif; font-size: 60px; color: var(--ink); font-weight: 600; }
+
+  .ronda-dots { display: flex; gap: 6px; margin-bottom: 0.8rem; }
+  .ronda-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--parch-darker); border: 1px solid var(--border-ornate); }
+  .ronda-dot.done { background: var(--ink); }
+  .ronda-dot.current { background: var(--red-seal); border-color: var(--red-seal); }
+</style>
+
+<div id="game-root">
+  <div class="header-bar">
+    <span class="header-title">El Consejo del Príncipe · Floralia</span>
+    <div class="header-stats">
+      <div class="stat-item">Ronda <span class="stat-val" id="hdr-ronda">—</span>/5</div>
+      <div class="stat-item">Poder <span class="stat-val" id="hdr-poder">—</span></div>
+      <div class="stat-item hearts" id="hdr-hearts">♦♦♦♦♦</div>
+    </div>
+  </div>
+
+  <div class="screen active" id="screen-title">
+    <div class="title-crest">
+      <div class="title-ornament">✦ ✦ ✦</div>
+      <div class="title-main">El Consejo del Príncipe</div>
+      <div class="title-sub">El Juego del Poder</div>
+      <div class="title-rule"></div>
+      <p class="title-intro">"Todos ven lo que tú pareces ser; pocos comprenden lo que realmente eres."<br><em>— Maquiavelo, El Príncipe</em></p>
+    </div>
+    <div class="title-setup">
+      <div class="setup-card"><div class="setup-icon">⚔</div><div class="setup-label">Rondas</div><div class="setup-val">5 años de gobierno</div></div>
+      <div class="setup-card"><div class="setup-icon">♦</div><div class="setup-label">Vidas</div><div class="setup-val">5 puntos de poder</div></div>
+      <div class="setup-card"><div class="setup-icon">⚄</div><div class="setup-label">Fortuna</div><div class="setup-val">1 tirada por ronda</div></div>
+    </div>
+    <button class="btn-primary" onclick="startGame()">Tomar el poder →</button>
+  </div>
+
+  <div class="screen" id="screen-crisis">
+    <div class="round-badge">
+      <div>
+        <div class="round-num" id="cr-ronda-num">Año I del Principado</div>
+        <div class="round-name" id="cr-crisis-nombre">—</div>
+      </div>
+      <div class="round-rule"></div>
+    </div>
+    <div class="ronda-dots" id="ronda-dots"></div>
+    <div class="crisis-box">
+      <div class="crisis-label">La Crisis</div>
+      <div id="cr-crisis-texto">—</div>
+    </div>
+    <div class="debate-hint">⟨ El Consejo debate — cuando hayáis decidido, marcad vuestra elección ⟩</div>
+    <div class="options-grid" id="options-container"></div>
+    <button class="btn-confirm" id="btn-confirm" onclick="confirmarDecision()">Ejecutar la decisión</button>
+  </div>
+
+  <div class="screen" id="screen-fortuna">
+    <div class="fortuna-center">
+      <div class="fortuna-title">La Rueda de la Fortuna</div>
+      <div class="fortuna-sub">"La fortuna es mujer, y hay que golpearla y empujarla si se quiere tenerla sumisa"</div>
+      <div class="dice-container">
+        <div class="dice" id="dice-el" onclick="lanzarDado()">⚄</div>
+        <div class="dice-hint" id="dice-hint-text">Haced clic para lanzar</div>
+      </div>
+      <div class="fortuna-result" id="fortuna-result">
+        <div class="fortuna-verdict" id="fortuna-verdict-title">—</div>
+        <div class="fortuna-effect" id="fortuna-effect-text">—</div>
+        <div class="fortuna-virtu" id="fortuna-virtu-text">—</div>
+        <button class="btn-next" id="btn-next-round" onclick="nextRound()" style="display:none">Siguiente año →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-resultado">
+    <div class="resultado-header">
+      <div class="resultado-ornament">✦ Crónica del Principado ✦</div>
+      <div class="resultado-title" id="res-title">—</div>
+      <div class="resultado-sub" id="res-sub">—</div>
+    </div>
+    <div class="score-display">
+      <div class="score-box"><div class="score-num" id="res-poder">0</div><div class="score-label">Poder Final</div></div>
+      <div class="score-box"><div class="score-num" id="res-virtu">0</div><div class="score-label">Decisiones con Virtù</div></div>
+      <div class="score-box"><div class="score-num" id="res-rondas">0</div><div class="score-label">Años Gobernados</div></div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label">Nivel de poder al final del principado</div>
+      <div class="power-bar"><div class="power-bar-fill" id="poder-bar-fill" style="width:0%"></div></div>
+    </div>
+    <table class="tabla-reflexion">
+      <thead><tr><th>Concepto maquiavélico</th><th>¿Cómo lo aplicasteis?</th><th>¿Qué resultó?</th></tr></thead>
+      <tbody id="tabla-body"></tbody>
+    </table>
+    <div class="debate-pregunta">
+      <div class="debate-pregunta-label">✦ Pregunta para el debate final ✦</div>
+      "Si el Príncipe logra la paz y la estabilidad del Estado usando el engaño y la crueldad, ¿es un buen gobernante o un hombre malvado?"
+    </div>
+    <button class="btn-primary" onclick="reiniciarJuego()" style="margin-top:0.5rem">Nueva partida →</button>
+  </div>
+
+  <div class="screen" id="screen-gameover">
+    <div class="game-over-screen">
+      <div class="resultado-ornament" style="margin-top:1.5rem">✦ FIN DEL PRINCIPADO ✦</div>
+      <div class="go-title">El Príncipe ha Caído</div>
+      <div class="go-sub">Floralia se hunde en el caos. Los súbditos os han derrocado.</div>
+      <div class="go-score" id="go-poder">0</div>
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--ink-light);text-transform:uppercase;margin-bottom:1.5rem">Poder al caer</div>
+      <p style="font-style:italic;color:var(--ink-mid);font-size:14px;max-width:440px;margin:0 auto 1.5rem;line-height:1.8">"Los hombres ofenden antes al que aman que al que temen." Debisteis ser más temidos.</p>
+      <button class="btn-primary" onclick="reiniciarJuego()">Reclamar el trono →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CRISES = [
+  {
+    nombre: "La Rebelión del Pan",
+    texto: "El pueblo protesta por el precio del trigo. Un noble muy querido, Ser Aldovino, azuza a las masas para ganar influencia y desestabilizar vuestro gobierno naciente.",
+    opciones: [
+      { letra: "A", tag: "El León", tagClass: "", texto: "Arrestar a Ser Aldovino públicamente y disolver la manifestación con la guardia armada.", virtu: true, efecto: "El pueblo teme al nuevo gobierno. Las protestas cesan, pero crece el resentimiento silencioso. Poder +2.", poderDelta: 2, tabla: { aplicacion: "Usasteis la fuerza bruta para resolver la crisis", resultado: "Generó obediencia a corto plazo, pero sembró odio latente" } },
+      { letra: "B", tag: "El Zorro", tagClass: "zorro", texto: "Invitar al noble a palacio 'para negociar', pero filtrar pruebas falsas de que roba al erario.", virtu: true, efecto: "Aldovino pierde credibilidad ante el pueblo. Su influencia se desvanece sin derramar sangre. Poder +3.", poderDelta: 3, tabla: { aplicacion: "Incumplísteis vuestra palabra de negociar de buena fe", resultado: "Eliminasteis una amenaza sin coste político aparente" } },
+      { letra: "C", tag: "El Idealista", tagClass: "idealista", texto: "Bajar los impuestos, pedir perdón públicamente y confiar en la gratitud del pueblo.", virtu: false, efecto: "El pueblo os aplaude hoy... pero mañana exigirá más. Aldovino sigue siendo poderoso. Poder +1.", poderDelta: 1, tabla: { aplicacion: "Prioricasteis ser amados antes que temidos", resultado: "Los súbditos interpretaron la bondad como debilidad" } }
+    ]
+  },
+  {
+    nombre: "La Traición del Condottiero",
+    texto: "Vuestro general de confianza, Gasparo el Mercenario, ha aceptado sobornos del Ducado enemigo. Conocéis la traición, pero aún no él lo sabe.",
+    opciones: [
+      { letra: "A", tag: "El León", tagClass: "", texto: "Ejecutar a Gasparo en la plaza pública como escarmiento para todo el ejército.", virtu: true, efecto: "El ejército entiende que la traición se paga con la vida. Nadie osa repetirlo. Poder +3.", poderDelta: 3, tabla: { aplicacion: "La crueldad concentrada en un acto ejemplar", resultado: "El miedo consolidó la lealtad del ejército" } },
+      { letra: "B", tag: "El Zorro", tagClass: "zorro", texto: "Ascender a Gasparo a un cargo honorífico sin mando real, mientras ponéis a otro general al frente.", virtu: true, efecto: "Gasparo queda neutralizado sin crear mártires. El Ducado pierde su agente. Poder +2.", poderDelta: 2, tabla: { aplicacion: "La astucia sobre la fuerza: neutralizar sin afrontar", resultado: "Evitasteis una trampa sin generar enemigos nuevos" } },
+      { letra: "C", tag: "Clemencia", tagClass: "idealista", texto: "Confrontar a Gasparo en privado y perdonarle si jura lealtad de nuevo.", virtu: false, efecto: "Gasparo os desprecia por no castigarle. El rumor de vuestra debilidad se extiende. Poder 0.", poderDelta: 0, tabla: { aplicacion: "Confiásteis en que los hombres son agradecidos", resultado: "Maquiavelo advirtió: son ingratos y volubles" } }
+    ]
+  },
+  {
+    nombre: "El Cardenal y la Iglesia",
+    texto: "El Cardenal Benvenuto acusa públicamente vuestro gobierno de impío. Sus sermones movilizan a parte del pueblo contra vos. La Iglesia tiene enorme poder.",
+    opciones: [
+      { letra: "A", tag: "El Zorro", tagClass: "zorro", texto: "Financiar en secreto la construcción de una nueva catedral y atribuirla a la devoción del Príncipe.", virtu: true, efecto: "La imagen piadosa del Príncipe eclipsa las acusaciones. El Cardenal queda desarmado. Poder +3.", poderDelta: 3, tabla: { aplicacion: "Apariencia de virtud sin poseerla necesariamente", resultado: "El pueblo ve lo que queréis que vea" } },
+      { letra: "B", tag: "Diplomacia", tagClass: "astuto", texto: "Negociar con el Cardenal en privado: concesiones fiscales a la Iglesia a cambio de silencio.", virtu: true, efecto: "El Cardenal calla. Pero la Iglesia sabe que puede presionaros. Poder +1.", poderDelta: 1, tabla: { aplicacion: "Alianzas basadas en interés mutuo, no en principios", resultado: "La paz tiene precio: perdisteis autonomía" } },
+      { letra: "C", tag: "El León", tagClass: "", texto: "Expulsar al Cardenal de Floralia y confiscar parte de los bienes eclesiásticos.", virtu: false, efecto: "El pueblo se horroriza. Roma responde con amenazas. La inestabilidad aumenta. Poder -1.", poderDelta: -1, tabla: { aplicacion: "Fuerza sin considerar las fuerzas auxiliares (la Iglesia)", resultado: "Creó enemigos demasiado poderosos para combatirlos" } }
+    ]
+  },
+  {
+    nombre: "La Conspiración de los Nobles",
+    texto: "Tres nobles ricos conspiran para derrocaros. Tenéis un confidente que os lo revela. Si actuáis demasiado pronto, no tenéis pruebas. Si esperáis, el golpe puede llegar.",
+    opciones: [
+      { letra: "A", tag: "El León", tagClass: "", texto: "Arrestar a los tres nobles esta misma noche, antes de que actúen, usando el poder de emergencia.", virtu: true, efecto: "La conspiración se deshace. Algunos nobles protestan, pero el golpe nunca llega. Poder +2.", poderDelta: 2, tabla: { aplicacion: "Virtù como previsión: cortar el mal en su raíz", resultado: "Quien prevé los problemas los resuelve con menor daño" } },
+      { letra: "B", tag: "El Zorro", tagClass: "zorro", texto: "Sembrar desconfianza entre los tres conspiradores hasta que se delaten mutuamente.", virtu: true, efecto: "Los nobles se acusan entre sí. Se destruyen solos. El Príncipe queda impecable. Poder +4.", poderDelta: 4, tabla: { aplicacion: "La astucia más pura: dejar que el enemigo se destruya", resultado: "La virtù intelectual supera a la fuerza bruta" } },
+      { letra: "C", tag: "Esperar", tagClass: "idealista", texto: "No actuar. Confiar en que los nobles recapaciten o que el pueblo os defienda si actúan.", virtu: false, efecto: "El golpe casi tiene éxito. Lográis sofocarlo pero a gran coste. Poder -2.", poderDelta: -2, tabla: { aplicacion: "Confiar en la bondad humana y en la providencia", resultado: "La fortuna favorece a quien actúa, no a quien espera" } }
+    ]
+  },
+  {
+    nombre: "La Guerra del Ducado Vecino",
+    texto: "El Ducado de Milvano declara la guerra. Vuestro ejército es más débil. Podéis combatir, negociar o buscar un aliado poderoso... que también querrá algo a cambio.",
+    opciones: [
+      { letra: "A", tag: "El Zorro", tagClass: "zorro", texto: "Aliarse con el Ducado de Ostia: ellos aportan tropas, vos cedéis un territorio fronterizo.", virtu: true, efecto: "Milvano retrocede. Pero Ostia ahora tiene un pie en Floralia. El poder tiene nueva forma. Poder +2.", poderDelta: 2, tabla: { aplicacion: "Alianzas por interés: el realismo político en acción", resultado: "La estabilidad tiene coste; las armas auxiliares tienen precio" } },
+      { letra: "B", tag: "Virtù Militar", tagClass: "", texto: "Rechazar alianzas externas. Reorganizar el ejército propio y resistir en defensa del territorio.", virtu: true, efecto: "La resistencia sorprende a Milvano. Negocian la paz respetando vuestra dignidad. Poder +3.", poderDelta: 3, tabla: { aplicacion: "El Príncipe debe tener ejércitos propios, no depender de otros", resultado: "La virtù militar dio credibilidad al Estado" } },
+      { letra: "C", tag: "Rendición", tagClass: "idealista", texto: "Negociar una rendición parcial: pagar tributo a Milvano para evitar derramamiento de sangre.", virtu: false, efecto: "Floralia se convierte en tributaria. El pueblo pierde la fe en el Príncipe. Poder -2.", poderDelta: -2, tabla: { aplicacion: "Evitar el conflicto a cualquier precio", resultado: "La humillación destruyó la autoridad del gobierno" } }
+    ]
+  }
+];
+
+const FORTUNA_EFECTOS = {
+  adverse: [
+    { titulo: "Fortuna Adversa — Plaga en la ciudad", efecto: "Una epidemia golpea Floralia en el peor momento. Los recursos se agotan y el pueblo busca culpables." },
+    { titulo: "Fortuna Adversa — Sequía prolongada", efecto: "Las cosechas fallan. El hambre reaparece y toda vuestra gestión política queda eclipsada." },
+    { titulo: "Fortuna Adversa — Incendio en el mercado", efecto: "El corazón económico de Floralia arde. Las arcas se vacían para reconstruir." }
+  ],
+  favorable: [
+    { titulo: "Fortuna Favorable — Buenas cosechas", efecto: "La abundancia de este año refuerza vuestra imagen de gobierno próspero." },
+    { titulo: "Fortuna Favorable — Ruta comercial", efecto: "Una nueva ruta mercantil llega a Floralia. El erario se llena sin esfuerzo político." },
+    { titulo: "Fortuna Favorable — Embajada extranjera", efecto: "Un reino lejano busca alianza con Floralia, dando prestigio al principado." }
+  ]
+};
+
+let state = { ronda: 0, poder: 5, maxPoder: 5, virtuCount: 0, historial: [], selectedOption: null, fortunaRolled: false };
+const ANOS = ["I","II","III","IV","V"];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function updateHeader() {
+  document.getElementById('hdr-ronda').textContent = state.ronda > 0 ? ANOS[state.ronda-1] : '—';
+  document.getElementById('hdr-poder').textContent = Math.max(0, state.poder);
+  const hearts = document.getElementById('hdr-hearts');
+  const filled = Math.max(0, state.poder);
+  const empty = state.maxPoder - filled;
+  hearts.textContent = '♦'.repeat(filled) + '◇'.repeat(Math.max(0, empty));
+}
+
+function startGame() {
+  state = { ronda: 1, poder: 5, maxPoder: 5, virtuCount: 0, historial: [], selectedOption: null, fortunaRolled: false };
+  updateHeader();
+  loadCrisis();
+  showScreen('crisis');
+}
+
+function loadCrisis() {
+  const crisis = CRISES[state.ronda - 1];
+  state.selectedOption = null;
+  state.fortunaRolled = false;
+  document.getElementById('cr-ronda-num').textContent = `Año ${ANOS[state.ronda-1]} del Principado`;
+  document.getElementById('cr-crisis-nombre').textContent = crisis.nombre;
+  document.getElementById('cr-crisis-texto').textContent = crisis.texto;
+  const dots = document.getElementById('ronda-dots');
+  dots.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const d = document.createElement('div');
+    d.className = 'ronda-dot' + (i < state.ronda ? ' done' : i === state.ronda ? ' current' : '');
+    dots.appendChild(d);
+  }
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  crisis.opciones.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.onclick = () => selectOption(idx);
+    btn.innerHTML = `<div class="opt-label">Opción ${opt.letra}</div><div class="opt-text">${opt.texto}</div><span class="opt-tag ${opt.tagClass}">${opt.tag}</span>`;
+    container.appendChild(btn);
+  });
+  document.getElementById('btn-confirm').classList.remove('ready');
+}
+
+function selectOption(idx) {
+  state.selectedOption = idx;
+  document.querySelectorAll('.btn-option').forEach((b, i) => b.classList.toggle('selected', i === idx));
+  document.getElementById('btn-confirm').classList.add('ready');
+}
+
+function confirmarDecision() {
+  if (state.selectedOption === null) return;
+  const opt = CRISES[state.ronda - 1].opciones[state.selectedOption];
+  state.historial.push({ crisis: CRISES[state.ronda-1].nombre, opcion: opt, ronda: state.ronda });
+  if (opt.virtu) state.virtuCount++;
+  document.getElementById('fortuna-result').classList.remove('show');
+  document.getElementById('dice-hint-text').textContent = 'Haced clic para lanzar';
+  document.getElementById('dice-el').textContent = '⚄';
+  document.getElementById('dice-el').style.pointerEvents = 'all';
+  document.getElementById('btn-next-round').style.display = 'none';
+  showScreen('fortuna');
+}
+
+const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+
+function lanzarDado() {
+  if (state.fortunaRolled) return;
+  state.fortunaRolled = true;
+  const dice = document.getElementById('dice-el');
+  dice.style.pointerEvents = 'none';
+  dice.classList.add('rolling');
+  let count = 0;
+  const interval = setInterval(() => {
+    dice.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+    count++;
+    if (count >= 8) {
+      clearInterval(interval);
+      dice.classList.remove('rolling');
+      const result = Math.floor(Math.random() * 6) + 1;
+      dice.textContent = DICE_FACES[result - 1];
+      document.getElementById('dice-hint-text').textContent = `Salió: ${result}`;
+      procesarFortuna(result);
+    }
+  }, 80);
+}
+
+function procesarFortuna(roll) {
+  const opt = CRISES[state.ronda - 1].opciones[state.selectedOption];
+  const isAdverse = roll <= 2;
+  let poderChange = opt.poderDelta;
+  const ef = (isAdverse ? FORTUNA_EFECTOS.adverse : FORTUNA_EFECTOS.favorable)[Math.floor(Math.random() * 3)];
+  let fortunaMsg = ef.efecto;
+  let virtuMsg = '';
+  let verdictClass = isAdverse ? 'fortuna-adverse' : 'fortuna-favorable';
+
+  if (isAdverse) {
+    if (opt.virtu) { poderChange = Math.max(-1, poderChange - 1); virtuMsg = 'Vuestra virtù amortigua el golpe de la fortuna. Pérdida reducida.'; fortunaMsg += ' Sin embargo, vuestra previsión limita los daños.'; }
+    else { poderChange -= 2; virtuMsg = 'Vuestra elección blanda no tenía escudo ante la adversidad.'; fortunaMsg += ' Como no habíais tomado medidas firmes, el golpe es doble.'; }
+  } else {
+    virtuMsg = opt.virtu ? 'Vuestra virtù y la fortuna se alinean. El principado se fortalece.' : 'La fortuna os sonríe hoy... pero no siempre será así.';
+  }
+
+  state.poder += poderChange;
+  updateHeader();
+
+  document.getElementById('fortuna-verdict-title').textContent = ef.titulo;
+  document.getElementById('fortuna-verdict-title').className = 'fortuna-verdict ' + verdictClass;
+  document.getElementById('fortuna-effect-text').textContent = fortunaMsg;
+  const ve = document.getElementById('fortuna-virtu-text');
+  ve.textContent = virtuMsg;
+  ve.className = 'fortuna-virtu ' + (opt.virtu ? 'virtu-good' : 'virtu-bad');
+
+  document.getElementById('fortuna-result').classList.add('show');
+  const btn = document.getElementById('btn-next-round');
+  btn.style.display = 'inline-block';
+
+  if (state.poder <= 0) {
+    btn.textContent = 'Ver el final del principado →';
+    btn.onclick = () => { document.getElementById('go-poder').textContent = 0; showScreen('gameover'); };
+  } else if (state.ronda >= 5) {
+    btn.textContent = 'Contemplar la crónica del principado →';
+    btn.onclick = mostrarResultado;
+  } else {
+    btn.textContent = `Afrontar el año ${ANOS[state.ronda]} →`;
+    btn.onclick = () => { state.ronda++; updateHeader(); loadCrisis(); showScreen('crisis'); };
+  }
+}
+
+function mostrarResultado() {
+  const poderFinal = Math.max(0, state.poder);
+  document.getElementById('res-poder').textContent = poderFinal;
+  document.getElementById('res-virtu').textContent = state.virtuCount;
+  document.getElementById('res-rondas').textContent = state.ronda;
+  let titulo, sub;
+  if (poderFinal >= 8) { titulo = "El Príncipe Inmortal"; sub = "Floralia os recordará como el fundador de una nueva era."; }
+  else if (poderFinal >= 5) { titulo = "El Príncipe Prudente"; sub = "Gobernasteis con habilidad. Maquiavelo os habría reconocido."; }
+  else if (poderFinal >= 3) { titulo = "El Príncipe Superviviente"; sub = "Os mantuvisteis en el poder, pero a duras penas."; }
+  else { titulo = "El Príncipe Débil"; sub = "Sobrevivisteis, pero Floralia está al borde del precipicio."; }
+  document.getElementById('res-title').textContent = titulo;
+  document.getElementById('res-sub').textContent = sub;
+  setTimeout(() => { document.getElementById('poder-bar-fill').style.width = Math.min(100, (poderFinal / (state.maxPoder + 5)) * 100) + '%'; }, 200);
+
+  const tablaBody = document.getElementById('tabla-body');
+  tablaBody.innerHTML = '';
+  const leones = state.historial.filter(h => h.opcion.tagClass === '').map(h => h.crisis);
+  const zorros = state.historial.filter(h => h.opcion.tagClass === 'zorro').map(h => h.crisis);
+  const idealistas = state.historial.filter(h => h.opcion.tagClass === 'idealista').map(h => h.crisis);
+  const virtus = state.historial.filter(h => h.opcion.virtu);
+  const rows = [
+    { concepto: "León (Fuerza)", aplicacion: leones.length > 0 ? `Usasteis la fuerza en: ${leones.join(', ')}` : "No usasteis medidas de fuerza directa", resultado: leones.length > 0 ? "¿Generó obediencia o resentimiento acumulado?" : "¿Os faltó contundencia cuando era necesaria?" },
+    { concepto: "Zorro (Astucia)", aplicacion: zorros.length > 0 ? `Usasteis la astucia en: ${zorros.join(', ')}` : "No recurrísteis al engaño ni la manipulación", resultado: zorros.length > 0 ? "¿Evitasteis una trampa o creásteis enemigos ocultos?" : "¿Fuisteis demasiado directos cuando pedía sutileza?" },
+    { concepto: "Temido vs. Amado", aplicacion: idealistas.length > 0 ? `Prioricasteis ser amados en ${idealistas.length} ronda(s)` : "Nunca prioricasteis la popularidad sobre la eficacia", resultado: idealistas.length > 0 ? "¿Os traicionaron los súbditos después de vuestra bondad?" : "¿El pueblo os teme? ¿Es eso suficiente para gobernar?" },
+    { concepto: "Virtù vs. Fortuna", aplicacion: `${virtus.length} de 5 decisiones fueron de virtù política`, resultado: virtus.length >= 3 ? "La virtù amortigua la fortuna adversa: lo comprobasteis" : "Confiásteis demasiado en la bondad y la suerte" }
+  ];
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="concepto">${r.concepto}</span></td><td>${r.aplicacion}</td><td>${r.resultado}</td>`;
+    tablaBody.appendChild(tr);
+  });
+  showScreen('resultado');
+}
+
+function reiniciarJuego() { showScreen('title'); }
+updateHeader();
+</script>
