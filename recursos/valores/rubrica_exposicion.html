@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rúbrica · El Futuro que Queremos · FiloNesi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0e0f0d; --bg2:#161812; --bg3:#1e2019;
+  --sur:#242620; --sur2:#2e3029;
+  --brd:rgba(255,255,255,0.08); --brd2:rgba(255,255,255,0.14);
+  --esm:#4ade80; --esmd:#22c55e; --esmdk:#166534; --esmgl:rgba(74,222,128,0.15);
+  --amb:#fbbf24; --roj:#f87171;
+  --txt:#e8e9e4; --txt2:#9a9c94; --txt3:#5a5c54;
+  --ins:#f87171; --suf:#fb923c; --not:#fbbf24; --exc:#4ade80;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(74,222,128,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(74,222,128,.015) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 80px;position:relative;z-index:1}
+
+/* HEADER */
+.page-header{
+  padding:48px 0 36px;border-bottom:1px solid var(--brd);margin-bottom:40px;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap
+}
+.logo-tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--esm);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;opacity:.8}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);
+  font-weight:700;line-height:1.1}
+.page-title em{font-style:italic;color:var(--esm)}
+.page-sub{font-size:.82rem;color:var(--txt2);margin-top:8px;font-weight:400}
+.nota-display{text-align:center;flex-shrink:0}
+.nota-numero{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:700;
+  line-height:1;color:var(--esm);display:block;text-shadow:0 0 40px var(--esmgl);transition:color .4s}
+.nota-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:2px;
+  color:var(--txt3);text-transform:uppercase;margin-top:2px}
+.nota-calif{font-size:.78rem;font-weight:600;margin-top:4px;min-height:20px;transition:color .3s}
+
+/* BLOQUES */
+.bloque{background:var(--bg2);border:1px solid var(--brd);border-radius:16px;padding:24px 28px;margin-bottom:24px}
+.bloque-titulo{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--esm);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.bloque-titulo::before{content:'';display:inline-block;width:20px;height:1px;background:var(--esm)}
+
+/* CAMPOS */
+.campos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.campo-wrap{display:flex;flex-direction:column;gap:6px}
+.campo-wrap label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--txt3)}
+.campo-input{background:var(--sur);border:1.5px solid var(--brd2);border-radius:8px;
+  padding:10px 14px;font-family:'Syne',sans-serif;font-size:.9rem;color:var(--txt);
+  outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.campo-input:focus{border-color:var(--esmd);box-shadow:0 0 0 3px var(--esmgl)}
+.campo-input::placeholder{color:var(--txt3)}
+select.campo-input{appearance:none;padding-right:32px;cursor:pointer}
+.sel-wrap{position:relative}
+.sel-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--txt3);pointer-events:none;font-size:.8rem}
+
+/* CHIPS */
+.chips-clase{display:flex;gap:8px;flex-wrap:wrap}
+.chip-clase{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--brd2);
+  background:var(--sur);color:var(--txt2);font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center}
+.chip-clase:hover{border-color:var(--esmd);color:var(--esm)}
+.chip-clase.sel{background:var(--esmdk);border-color:var(--esm);color:var(--esm);box-shadow:0 0 12px var(--esmgl)}
+
+/* PROGRESO */
+.progreso-wrap{background:var(--bg2);border:1px solid var(--brd);border-radius:16px;
+  padding:16px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
+.progreso-bar-outer{flex:1;height:8px;background:var(--sur2);border-radius:4px;overflow:hidden}
+.progreso-bar-inner{height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--esmd),var(--esm));
+  transition:width .4s ease;box-shadow:0 0 8px var(--esmgl);width:0%}
+.progreso-texto{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--txt3);white-space:nowrap}
+
+/* CRITERIOS */
+.criterios-lista{display:flex;flex-direction:column;gap:16px}
+.criterio-card{background:var(--bg2);border:1px solid var(--brd);border-radius:16px;overflow:hidden;transition:border-color .2s}
+.criterio-card.tiene-valor{border-color:rgba(74,222,128,.25)}
+.criterio-head{padding:18px 24px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.criterio-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:1.5px;color:var(--txt3);margin-bottom:4px}
+.criterio-nombre{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--txt);line-height:1.25}
+.criterio-peso{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--esm);
+  background:var(--esmgl);border:1px solid rgba(74,222,128,.2);border-radius:6px;padding:3px 9px;white-space:nowrap;flex-shrink:0}
+.niveles{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--brd)}
+.nivel-btn{padding:14px 10px;border:none;background:none;cursor:pointer;text-align:left;
+  border-right:1px solid var(--brd);transition:background .15s;position:relative}
+.nivel-btn:last-child{border-right:none}
+.nivel-btn:hover{background:var(--sur)}
+.nivel-puntos{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;
+  margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.nivel-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nivel-nombre{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.nivel-desc{font-size:.73rem;color:var(--txt2);line-height:1.4;font-weight:400}
+.nivel-ins .nivel-puntos,.nivel-ins .nivel-nombre{color:var(--ins)} .nivel-ins .nivel-dot{background:var(--ins)}
+.nivel-suf .nivel-puntos,.nivel-suf .nivel-nombre{color:var(--suf)} .nivel-suf .nivel-dot{background:var(--suf)}
+.nivel-not .nivel-puntos,.nivel-not .nivel-nombre{color:var(--not)} .nivel-not .nivel-dot{background:var(--not)}
+.nivel-exc .nivel-puntos,.nivel-exc .nivel-nombre{color:var(--exc)} .nivel-exc .nivel-dot{background:var(--exc)}
+.nivel-btn.sel-ins{background:rgba(248,113,113,.09)}
+.nivel-btn.sel-suf{background:rgba(251,146,60,.09)}
+.nivel-btn.sel-not{background:rgba(251,191,36,.09)}
+.nivel-btn.sel-exc{background:rgba(74,222,128,.09)}
+.nivel-btn.sel-ins::after,.nivel-btn.sel-suf::after,.nivel-btn.sel-not::after,.nivel-btn.sel-exc::after{
+  content:'✓';position:absolute;top:8px;right:10px;font-size:.75rem;font-weight:700}
+.nivel-btn.sel-ins::after{color:var(--ins)} .nivel-btn.sel-suf::after{color:var(--suf)}
+.nivel-btn.sel-not::after{color:var(--not)} .nivel-btn.sel-exc::after{color:var(--exc)}
+
+/* OBSERVACIONES */
+.obs-textarea{width:100%;background:var(--sur);border:1.5px solid var(--brd2);border-radius:10px;
+  padding:14px 16px;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--txt);
+  resize:vertical;min-height:90px;outline:none;transition:border-color .2s}
+.obs-textarea:focus{border-color:var(--esmd)}
+.obs-textarea::placeholder{color:var(--txt3);font-style:italic}
+
+/* BOTONES */
+.acciones{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;
+  border:none;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
+  cursor:pointer;transition:all .18s;letter-spacing:.3px}
+.btn-primary{background:var(--esm);color:#0e0f0d;box-shadow:0 4px 20px var(--esmgl)}
+.btn-primary:hover{background:#6ee7a0;transform:translateY(-2px);box-shadow:0 8px 28px rgba(74,222,128,.3)}
+.btn-secondary{background:var(--sur2);color:var(--txt);border:1px solid var(--brd2)}
+.btn-secondary:hover{border-color:var(--esm);color:var(--esm)}
+
+/* MODAL */
+.modal-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.82);
+  z-index:9999;
+  align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.abierto{display:flex}
+
+.modal-box{
+  background:#1a1c18;
+  border:1px solid rgba(74,222,128,.3);
+  border-radius:20px;padding:32px;
+  max-width:680px;width:100%;
+  box-shadow:0 32px 80px rgba(0,0,0,.8);
+  position:relative;
+  animation:entrar .28s cubic-bezier(.34,1.56,.64,1)
+}
+@keyframes entrar{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.modal-titulo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--txt)}
+.modal-cerrar{background:var(--sur2);border:1px solid var(--brd2);color:var(--txt2);
+  font-size:1rem;cursor:pointer;border-radius:8px;padding:4px 10px;transition:all .15s;line-height:1.4}
+.modal-cerrar:hover{color:var(--txt);border-color:var(--esm)}
+
+.modal-sub{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--txt3);margin-bottom:16px}
+.modal-sub b{color:var(--esm)}
+
+.csv-box{
+  background:var(--bg);border:1px solid var(--brd2);border-radius:10px;
+  padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  color:#7a9e7a;white-space:pre;overflow:auto;max-height:150px;line-height:1.7;
+  user-select:all;cursor:text;margin-bottom:20px
+}
+
+.modal-pasos{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.modal-paso{display:flex;align-items:flex-start;gap:10px;font-size:.84rem;color:var(--txt2);line-height:1.5}
+.paso-bola{width:24px;height:24px;border-radius:50%;background:var(--sur2);
+  border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  color:var(--esm);flex-shrink:0;margin-top:1px}
+.modal-paso strong{color:var(--txt)}
+kbd{background:var(--sur2);border:1px solid var(--brd2);border-radius:4px;
+  padding:1px 7px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--txt2)}
+
+.modal-botones{display:flex;gap:10px;flex-wrap:wrap}
+.btn-copiar{background:var(--esm);color:#0e0f0d;box-shadow:0 4px 16px var(--esmgl)}
+.btn-copiar:hover{background:#6ee7a0;transform:translateY(-2px)}
+.btn-copiar.ok{background:#166534;color:var(--esm);pointer-events:none}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--esm);color:#0e0f0d;
+  padding:12px 24px;border-radius:50px;
+  font-weight:700;font-size:.85rem;
+  z-index:99999;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 32px rgba(74,222,128,.3);
+  white-space:nowrap;pointer-events:none
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* ANIM NOTA */
+@keyframes pop{0%{transform:scale(1.3)}60%{transform:scale(.92)}100%{transform:scale(1)}}
+.pop{animation:pop .35s ease}
+
+@media(max-width:640px){
+  .niveles{grid-template-columns:repeat(2,1fr)}
+  .nivel-btn{border-bottom:1px solid var(--brd)}
+  .page-header{flex-direction:column;align-items:flex-start}
+  .campos-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="page-header">
+    <div>
+      <div class="logo-tag">FiloNesi · Valores Cívicos y Éticos · 2.º ESO</div>
+      <h1 class="page-title"><em>Rúbrica</em> de evaluación<br>Exposición oral</h1>
+      <p class="page-sub">El Futuro que Queremos · Expertos en Sostenibilidad</p>
+    </div>
+    <div class="nota-display">
+      <span class="nota-numero" id="nota-num">—</span>
+      <div class="nota-label">Nota final (0–10)</div>
+      <div class="nota-calif" id="nota-calif" style="color:var(--txt3)">Sin evaluar</div>
+    </div>
+  </header>
+
+  <div class="bloque">
+    <div class="bloque-titulo">Datos del grupo</div>
+    <div class="campos-grid">
+      <div class="campo-wrap">
+        <label>Grupo-clase</label>
+        <div class="chips-clase">
+          <button class="chip-clase" onclick="selClase(this,'A')">A</button>
+          <button class="chip-clase" onclick="selClase(this,'B')">B</button>
+          <button class="chip-clase" onclick="selClase(this,'C')">C</button>
+          <button class="chip-clase" onclick="selClase(this,'D')">D</button>
+        </div>
+      </div>
+      <div class="campo-wrap">
+        <label>Tema expuesto</label>
+        <div class="sel-wrap">
+          <select class="campo-input" id="tema">
+            <option value="">— Selecciona —</option>
+            <option>Ecofeminismo y ética del cuidado</option>
+            <option>Economía circular</option>
+            <option>Economía azul</option>
+            <option>ODS</option>
+            <option>Teoría biocentrista</option>
+            <option>Derechos de los animales y la naturaleza</option>
+          </select>
+        </div>
+      </div>
+      <div class="campo-wrap">
+        <label>Alumno/a 1 <span style="color:var(--esm)">*</span></label>
+        <input class="campo-input" id="a1" type="text" placeholder="Apellido, Nombre">
+      </div>
+      <div class="campo-wrap">
+        <label>Alumno/a 2</label>
+        <input class="campo-input" id="a2" type="text" placeholder="Apellido, Nombre">
+      </div>
+      <div class="campo-wrap">
+        <label>Alumno/a 3</label>
+        <input class="campo-input" id="a3" type="text" placeholder="Apellido, Nombre">
+      </div>
+      <div class="campo-wrap">
+        <label>Fecha</label>
+        <input class="campo-input" id="fecha" type="date">
+      </div>
+    </div>
+  </div>
+
+  <div class="progreso-wrap">
+    <div class="progreso-bar-outer">
+      <div class="progreso-bar-inner" id="barra"></div>
+    </div>
+    <div class="progreso-texto" id="prog-txt">0 / 5 criterios evaluados</div>
+  </div>
+
+  <div class="criterios-lista" id="criterios"></div>
+
+  <div class="bloque" style="margin-top:24px">
+    <div class="bloque-titulo">Observaciones</div>
+    <textarea class="obs-textarea" id="obs" placeholder="Comentarios cualitativos, aspectos a mejorar, puntos fuertes…"></textarea>
+  </div>
+
+  <div class="acciones">
+    <button class="btn btn-primary" onclick="abrirModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V10L14,3M19,19H5V5H13V11H19V19M17,13V17H7V15H15V13H17Z"/></svg>
+      Exportar CSV
+    </button>
+    <button class="btn btn-secondary" onclick="limpiar()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/></svg>
+      Limpiar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL — fuera del .wrap, z-index propio -->
+<div class="modal-overlay" id="modal" onclick="clickFuera(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-titulo">Exportar resultado</div>
+      <button class="modal-cerrar" onclick="cerrarModal()">✕ Cerrar</button>
+    </div>
+    <div class="modal-sub">Archivo: <b id="m-nombre"></b></div>
+
+    <div class="csv-box" id="csv-box"></div>
+
+    <div class="modal-pasos">
+      <div class="modal-paso">
+        <div class="paso-bola">1</div>
+        <span>Pulsa <strong>Copiar contenido</strong> — el CSV se copia al portapapeles.</span>
+      </div>
+      <div class="modal-paso">
+        <div class="paso-bola">2</div>
+        <span>Abre <strong>Excel o Google Sheets</strong>, crea un libro nuevo y pega con <kbd>Ctrl+V</kbd> (o <kbd>⌘V</kbd>).</span>
+      </div>
+      <div class="modal-paso">
+        <div class="paso-bola">3</div>
+        <span>Guarda el archivo con el nombre <strong id="m-nombre2" style="color:var(--esm);font-family:'JetBrains Mono',monospace;font-size:.82rem"></strong></span>
+      </div>
+    </div>
+
+    <div class="modal-botones">
+      <button class="btn btn-copiar" id="btn-copiar" onclick="copiar()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/></svg>
+        Copiar contenido
+      </button>
+      <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CRITERIOS = [
+  { id:'contenido', nombre:'Contenido y rigor', peso:25, niveles:[
+    { v:1,c:'ins',n:'Insuficiente',d:'Información incorrecta o muy escasa. No responde a las preguntas guía.' },
+    { v:5,c:'suf',n:'Suficiente',  d:'Cubre los puntos básicos pero con poca profundidad o sin ejemplos.' },
+    { v:7,c:'not',n:'Notable',     d:'Contenido completo, con ejemplos reales y datos contrastados.' },
+    { v:9,c:'exc',n:'Excelente',   d:'Profundo, crítico y con fuentes fiables. Va más allá del dossier.' },
+  ]},
+  { id:'estructura', nombre:'Estructura y claridad', peso:20, niveles:[
+    { v:1,c:'ins',n:'Insuficiente',d:'Desorganizado, difícil de seguir. No respeta la estructura de diapositivas.' },
+    { v:5,c:'suf',n:'Suficiente',  d:'Sigue la estructura mínima pero de forma mecánica, sin hilo conductor.' },
+    { v:7,c:'not',n:'Notable',     d:'Fluido, ordenado y con transiciones claras entre secciones.' },
+    { v:9,c:'exc',n:'Excelente',   d:'Estructura original y memorable. El hilo conductor es muy claro.' },
+  ]},
+  { id:'oral', nombre:'Expresión oral', peso:20, niveles:[
+    { v:1,c:'ins',n:'Insuficiente',d:'Lee en todo momento. No mira al público. Voz inaudible o muy monótona.' },
+    { v:5,c:'suf',n:'Suficiente',  d:'Combina lectura y explicación. Contacto visual ocasional.' },
+    { v:7,c:'not',n:'Notable',     d:'Explica con sus propias palabras. Buen ritmo y claridad expositiva.' },
+    { v:9,c:'exc',n:'Excelente',   d:'Domina el tema. Responde preguntas con soltura y naturalidad.' },
+  ]},
+  { id:'conexion', nombre:'Conexión entre temas', peso:20, niveles:[
+    { v:1,c:'ins',n:'Insuficiente',d:'No aparece ninguna conexión con otros temas del proyecto.' },
+    { v:5,c:'suf',n:'Suficiente',  d:'Mencionada superficialmente pero sin desarrollar.' },
+    { v:7,c:'not',n:'Notable',     d:'Explicada con un ejemplo concreto y pertinente.' },
+    { v:9,c:'exc',n:'Excelente',   d:'Integrada de forma creativa, con argumentación clara y visual.' },
+  ]},
+  { id:'visual', nombre:'Materiales visuales', peso:15, niveles:[
+    { v:1,c:'ins',n:'Insuficiente',d:'Solo texto copiado. Sin imágenes o con imágenes no relacionadas.' },
+    { v:5,c:'suf',n:'Suficiente',  d:'Imágenes descargadas de internet, sin elaboración propia.' },
+    { v:7,c:'not',n:'Notable',     d:'Incluye al menos una infografía o esquema propio y pertinente.' },
+    { v:9,c:'exc',n:'Excelente',   d:'Diseño cuidado y coherente. Los visuales explican lo que las palabras no.' },
+  ]},
+];
+
+const S = { clase:'', sel:{} };
+
+// INIT
+window.addEventListener('load', function() {
+  document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+  renderCriterios();
+  actualizarProgreso();
+});
+
+function renderCriterios() {
+  const lista = document.getElementById('criterios');
+  CRITERIOS.forEach(function(cr, ci) {
+    const card = document.createElement('div');
+    card.className = 'criterio-card';
+    card.id = 'cr-' + cr.id;
+    let nivelesHtml = '';
+    cr.niveles.forEach(function(n) {
+      nivelesHtml +=
+        '<button class="nivel-btn nivel-' + n.c + '" ' +
+        'onclick="selNivel(\'' + cr.id + '\',' + n.v + ',\'' + n.c + '\',this)">' +
+        '<div class="nivel-puntos"><span class="nivel-dot"></span>' + n.v + '/10</div>' +
+        '<div class="nivel-nombre">' + n.n + '</div>' +
+        '<div class="nivel-desc">' + n.d + '</div>' +
+        '</button>';
+    });
+    card.innerHTML =
+      '<div class="criterio-head">' +
+        '<div>' +
+          '<div class="criterio-num">Criterio ' + String(ci+1).padStart(2,'0') + '</div>' +
+          '<div class="criterio-nombre">' + cr.nombre + '</div>' +
+        '</div>' +
+        '<div class="criterio-peso">Peso: ' + cr.peso + '%</div>' +
+      '</div>' +
+      '<div class="niveles">' + nivelesHtml + '</div>';
+    lista.appendChild(card);
+  });
+}
+
+function selNivel(id, v, c, btn) {
+  var btns = document.querySelectorAll('#cr-' + id + ' .nivel-btn');
+  for (var i=0; i<btns.length; i++) {
+    btns[i].classList.remove('sel-ins','sel-suf','sel-not','sel-exc');
+  }
+  btn.classList.add('sel-' + c);
+  S.sel[id] = { v:v, c:c };
+  document.getElementById('cr-' + id).classList.add('tiene-valor');
+  actualizarNota();
+  actualizarProgreso();
+}
+
+function selClase(btn, c) {
+  var chips = document.querySelectorAll('.chip-clase');
+  for (var i=0; i<chips.length; i++) chips[i].classList.remove('sel');
+  btn.classList.add('sel');
+  S.clase = c;
+}
+
+function calcularNota() {
+  var suma = 0, pesoTotal = 0;
+  CRITERIOS.forEach(function(cr) {
+    if (S.sel[cr.id]) {
+      suma += S.sel[cr.id].v * (cr.peso / 100);
+      pesoTotal += cr.peso;
+    }
+  });
+  if (!pesoTotal) return null;
+  return Math.round(suma / (pesoTotal / 100) * 10) / 10;
+}
+
+function actualizarNota() {
+  var nota = calcularNota();
+  var el = document.getElementById('nota-num');
+  var ca = document.getElementById('nota-calif');
+  if (nota === null) {
+    el.textContent = '—'; el.style.color = 'var(--esm)';
+    ca.textContent = 'Sin evaluar'; ca.style.color = 'var(--txt3)';
+    return;
+  }
+  el.classList.remove('pop');
+  setTimeout(function(){ el.classList.add('pop'); }, 10);
+  el.textContent = nota.toFixed(1);
+  var col, txt;
+  if      (nota < 5) { col='var(--ins)'; txt='Insuficiente'; }
+  else if (nota < 6) { col='var(--suf)'; txt='Suficiente'; }
+  else if (nota < 7) { col='var(--suf)'; txt='Bien'; }
+  else if (nota < 9) { col='var(--not)'; txt='Notable'; }
+  else               { col='var(--exc)'; txt='Sobresaliente'; }
+  el.style.color = col; ca.textContent = txt; ca.style.color = col;
+}
+
+function actualizarProgreso() {
+  var n = Object.keys(S.sel).length;
+  document.getElementById('barra').style.width = (n / CRITERIOS.length * 100) + '%';
+  document.getElementById('prog-txt').textContent = n + ' / ' + CRITERIOS.length + ' criterios evaluados';
+}
+
+// MODAL
+function abrirModal() {
+  var a1 = document.getElementById('a1').value.trim();
+  if (!a1) { showToast('⚠️ Introduce el nombre del Alumno/a 1'); return; }
+
+  var a2    = document.getElementById('a2').value.trim();
+  var a3    = document.getElementById('a3').value.trim();
+  var fecha = document.getElementById('fecha').value;
+  var tema  = document.getElementById('tema').value;
+  var obs   = document.getElementById('obs').value.replace(/\n/g,' ').replace(/"/g,'""');
+  var nota  = calcularNota();
+
+  var mapa = { ins:'Insuficiente', suf:'Suficiente', not:'Notable', exc:'Excelente' };
+  var calif = nota===null?'': nota<5?'Insuficiente': nota<6?'Suficiente': nota<7?'Bien': nota<9?'Notable':'Sobresaliente';
+
+  var cols = ['Fecha','Clase','Tema','Alumno/a 1','Alumno/a 2','Alumno/a 3'];
+  CRITERIOS.forEach(function(c){ cols.push(c.nombre+' ('+c.peso+'%)'); });
+  CRITERIOS.forEach(function(c){ cols.push(c.nombre+' — nivel'); });
+  cols.push('Nota final','Calificación','Observaciones');
+
+  var vals = [], nivs = [];
+  CRITERIOS.forEach(function(c){
+    vals.push(S.sel[c.id] ? S.sel[c.id].v : '');
+    nivs.push(S.sel[c.id] ? mapa[S.sel[c.id].c] : '');
+  });
+
+  var fila = [fecha, S.clase, tema, a1, a2, a3]
+    .concat(vals).concat(nivs)
+    .concat([nota!==null?nota.toFixed(1):'', calif, '"'+obs+'"']);
+
+  var csv = cols.join(';') + '\r\n' + fila.join(';');
+
+  var nombre = a1
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-zA-Z0-9\s,_-]/g,'')
+    .replace(/[\s,]+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'')
+    || 'rubrica';
+
+  window._csv    = csv;
+  window._nombre = nombre;
+
+  document.getElementById('csv-box').textContent  = csv;
+  document.getElementById('m-nombre').textContent  = nombre + '.csv';
+  document.getElementById('m-nombre2').textContent = nombre + '.csv';
+
+  var bc = document.getElementById('btn-copiar');
+  bc.classList.remove('ok');
+  bc.textContent = '📋 Copiar contenido';
+
+  document.getElementById('modal').classList.add('abierto');
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('abierto');
+}
+
+function clickFuera(e) {
+  if (e.target === document.getElementById('modal')) cerrarModal();
+}
+
+function copiar() {
+  var txt = window._csv || '';
+  var bc  = document.getElementById('btn-copiar');
+
+  function exito() {
+    bc.classList.add('ok');
+    bc.textContent = '✓ ¡Copiado!';
+    showToast('✅ CSV copiado al portapapeles');
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(exito).catch(function(){ fallback(txt, exito); });
+  } else {
+    fallback(txt, exito);
+  }
+}
+
+function fallback(txt, cb) {
+  var ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.setAttribute('readonly','');
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); cb(); }
+  catch(e){ showToast('⚠️ No se pudo copiar. Selecciona el texto y copia manualmente.'); }
+  document.body.removeChild(ta);
+}
+
+function limpiar() {
+  if (!confirm('¿Limpiar toda la rúbrica?')) return;
+  S.sel = {}; S.clase = '';
+  ['a1','a2','a3','obs'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('tema').value = '';
+  document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('.chip-clase').forEach(function(b){ b.classList.remove('sel'); });
+  document.querySelectorAll('.nivel-btn').forEach(function(b){
+    b.classList.remove('sel-ins','sel-suf','sel-not','sel-exc');
+  });
+  document.querySelectorAll('.criterio-card').forEach(function(c){ c.classList.remove('tiene-valor'); });
+  var el = document.getElementById('nota-num');
+  el.textContent='—'; el.style.color='var(--esm)';
+  document.getElementById('nota-calif').textContent='Sin evaluar';
+  document.getElementById('nota-calif').style.color='var(--txt3)';
+  actualizarProgreso();
+  showToast('🗑 Rúbrica limpiada');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(function(){ t.classList.remove('on'); }, 2800);
+}
+</script>
+</body>
+</html>
