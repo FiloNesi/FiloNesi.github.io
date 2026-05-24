@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El expediente Arendt — Escape Room Filosófico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1714;
+    --ink-mid: #4a4540;
+    --ink-soft: #8a8078;
+    --paper: #f5f0e8;
+    --paper-dark: #ede7d9;
+    --paper-darker: #d9d0be;
+    --accent: #8b2c2c;
+    --accent-light: #f5e8e8;
+    --success: #1a4a2e;
+    --success-light: #e8f5ec;
+    --gold: #b8860b;
+    --gold-light: #fdf6e3;
+    --phase2: #2c4a8b;
+    --phase2-light: #e8eef5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.03) 27px, rgba(0,0,0,0.03) 28px);
+  }
+
+  .page-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* SETUP SCREEN */
+  .setup-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    padding: 2rem;
+  }
+  .setup-card {
+    background: #fff;
+    border: 1px solid var(--paper-darker);
+    border-radius: 6px;
+    padding: 3rem 2.5rem;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 2px 0 var(--paper-darker);
+  }
+  .setup-stamp {
+    display: inline-block;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    opacity: 0.85;
+    transform: rotate(-1deg);
+  }
+  .setup-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+  .setup-title em { font-style: italic; color: var(--accent); }
+  .setup-sub {
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 2rem;
+  }
+  .setup-question {
+    font-size: 14px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    color: var(--ink-mid);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .group-picker {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .group-btn {
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--paper-darker);
+    background: var(--paper);
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .group-btn:hover { border-color: var(--ink-mid); color: var(--ink); }
+  .group-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .setup-duration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .setup-duration label {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .setup-duration select {
+    background: var(--paper);
+    border: 1px solid var(--paper-darker);
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .btn-launch {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 3px;
+    padding: 14px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-launch:hover { background: var(--ink-mid); }
+  .btn-launch:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* HEADER */
+  .site-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--paper-darker);
+  }
+  .stamp {
+    display: inline-block;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+    transform: rotate(-1deg);
+  }
+  .site-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .site-title em { font-style: italic; color: var(--accent); }
+  .site-subtitle {
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* COUNTDOWN */
+  .countdown-section {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .countdown-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--paper-darker);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .countdown-display {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 52px);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--paper);
+    transition: color 0.3s;
+  }
+  .countdown-display.warning { color: #f5c842; }
+  .countdown-display.danger  { color: #e87070; }
+  .countdown-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .cd-row { display: flex; gap: 8px; align-items: center; }
+  .cd-label { font-size: 12px; color: var(--paper-darker); font-family: 'DM Mono', monospace; }
+  .btn-cd {
+    background: transparent;
+    border: 1px solid var(--paper-darker);
+    color: var(--paper);
+    border-radius: 3px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-cd:hover { background: var(--ink-mid); }
+  .btn-cd.active { background: var(--accent); border-color: var(--accent); }
+
+  /* PHASE INDICATOR */
+  .phase-indicator {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 1px solid var(--paper-darker);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .phase-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--paper-dark);
+    border-right: 1px solid var(--paper-darker);
+    transition: all 0.3s;
+  }
+  .phase-tab:last-child { border-right: none; }
+  .phase-tab.active-phase1 { background: var(--success-light); color: var(--success); font-weight: 500; }
+  .phase-tab.active-phase2 { background: var(--phase2-light); color: var(--phase2); font-weight: 500; }
+  .phase-tab.completed { background: var(--success-light); color: var(--success); }
+
+  /* PROGRESS */
+  .progress-section {
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 108px;
+    z-index: 9;
+    background: var(--paper);
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.03) 27px, rgba(0,0,0,0.03) 28px);
+  }
+  .section-heading {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .prog-grid {
+    display: grid;
+    gap: 6px;
+  }
+  .prog-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr;
+    gap: 6px;
+    align-items: center;
+  }
+  .prog-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    text-align: center;
+  }
+  .prog-cell {
+    background: var(--paper-dark);
+    border: 1px solid var(--paper-darker);
+    border-radius: 3px;
+    padding: 8px 10px;
+    text-align: center;
+    transition: all 0.3s;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+  .prog-cell.phase1-done { background: var(--success-light); border-color: #6aad82; color: var(--success); }
+  .prog-cell.phase2-done { background: var(--phase2-light); border-color: #8aaddb; color: var(--phase2); }
+  .prog-cell.hidden-cell { opacity: 0.3; }
+
+  /* INPUT CARD */
+  .input-card {
+    background: #fff;
+    border: 1px solid var(--paper-darker);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 0 var(--paper-darker);
+  }
+  .input-card.phase2-card { border-top: 3px solid var(--phase2); }
+  .field-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  select, input[type=text] {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--paper-darker);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  select:focus, input[type=text]:focus { border-color: var(--ink-mid); }
+  input[type=text] {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  input[type=text]::placeholder {
+    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--paper-darker);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-check {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 3px;
+    padding: 12px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-check:hover { background: var(--ink-mid); }
+  .btn-check:active { transform: scale(0.99); }
+  .btn-check.phase2-btn { background: var(--phase2); }
+  .btn-check.phase2-btn:hover { background: #1e3a6e; }
+
+  /* RESULT */
+  .result-box {
+    margin-top: 14px;
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .result-ok { background: var(--success-light); border: 1px solid #6aad82; border-left: 4px solid var(--success); }
+  .result-ok-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .result-ok-badge {
+    font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em;
+    background: var(--success); color: #e8f5ec; padding: 3px 8px; border-radius: 2px; text-transform: uppercase;
+  }
+  .result-ok-group { font-size: 13px; font-weight: 500; color: var(--success); }
+  .result-enigma {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 15px;
+    color: var(--success); line-height: 1.8; border-top: 1px solid #b2d9bc; padding-top: 10px;
+  }
+  .result-ok2 { background: var(--phase2-light); border: 1px solid #8aaddb; border-left: 4px solid var(--phase2); }
+  .result-ok2 .result-ok-badge { background: var(--phase2); }
+  .result-ok2 .result-ok-group { color: var(--phase2); }
+  .result-ok2 .result-enigma { color: var(--phase2); border-top-color: #b2c9e8; }
+  .result-err { background: var(--accent-light); border: 1px solid #d4a0a0; border-left: 4px solid var(--accent); }
+  .result-err-header { font-size: 13px; font-family: 'DM Mono', monospace; font-weight: 500; color: var(--accent); margin-bottom: 4px; }
+  .result-err-sub { font-size: 13px; color: #7a3030; }
+
+  /* LOCKED PHASE 2 */
+  .phase2-locked {
+    background: var(--paper-dark);
+    border: 1px dashed var(--paper-darker);
+    border-radius: 4px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .phase2-locked-icon { font-size: 32px; margin-bottom: 0.75rem; }
+  .phase2-locked-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 0.5rem;
+  }
+  .phase2-locked-sub { font-size: 12px; color: var(--ink-soft); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+  .phase2-progress-bar {
+    margin-top: 1rem;
+    height: 4px;
+    background: var(--paper-darker);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .phase2-progress-fill {
+    height: 100%;
+    background: var(--success);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* LOG */
+  .log-section { }
+  .log-item {
+    display: grid;
+    grid-template-columns: 70px 80px 1fr 90px 60px;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--paper-dark);
+    font-size: 13px;
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-group { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink); }
+  .log-phase-tag {
+    font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: 0.05em;
+    padding: 2px 6px; border-radius: 2px; text-align: center;
+  }
+  .log-phase-tag.p1 { background: var(--success-light); color: var(--success); }
+  .log-phase-tag.p2 { background: var(--phase2-light); color: var(--phase2); }
+  .log-word { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-mid); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .log-badge-ok { font-size: 10px; font-family: 'DM Mono', monospace; background: var(--success-light); color: var(--success); padding: 2px 8px; border-radius: 2px; text-align: center; letter-spacing: 0.05em; }
+  .log-badge-err { font-size: 10px; font-family: 'DM Mono', monospace; background: var(--accent-light); color: var(--accent); padding: 2px 8px; border-radius: 2px; text-align: center; letter-spacing: 0.05em; }
+  .log-time { font-size: 11px; color: var(--ink-soft); font-family: 'DM Mono', monospace; text-align: right; }
+  .log-empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 8px 0; font-family: 'Playfair Display', serif; }
+
+  .rule { border: none; border-top: 1px solid var(--paper-darker); margin: 2rem 0; }
+
+  /* FOOTER */
+  .site-footer { text-align: center; margin-top: 3rem; font-size: 11px; color: var(--ink-soft); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+
+  /* FASE 2 UNLOCK OVERLAY */
+  .unlock-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: var(--phase2);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+  .unlock-overlay.show { display: flex; }
+
+  .unlock-flicker {
+    animation: unlockFlicker 0.15s steps(1) 3;
+  }
+  @keyframes unlockFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .unlock-top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--gold);
+    animation: unlockBarGrow 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  @keyframes unlockBarGrow { to { transform: scaleX(1); } }
+
+  .unlock-bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--gold);
+    animation: unlockBarGrow 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+    transform-origin: right;
+    transform: scaleX(0);
+  }
+
+  .unlock-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.4s 0.3s both;
+  }
+  .unlock-icon {
+    font-size: 56px;
+    margin-bottom: 1rem;
+    animation: unlockIconPop 0.5s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes unlockIconPop {
+    0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .unlock-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 0.4s 0.4s both;
+  }
+  .unlock-title em { color: var(--gold); font-style: italic; }
+  .unlock-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(14px, 2.5vw, 18px);
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 2.5rem;
+    animation: fadeIn 0.4s 0.55s both;
+  }
+  .unlock-instruction {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    max-width: 420px;
+    animation: fadeIn 0.4s 0.7s both;
+  }
+  .unlock-arrow {
+    font-size: 24px;
+    animation: arrowBounce 0.8s 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes arrowBounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(6px); }
+  }
+  .unlock-instruction-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: #fff;
+    text-align: left;
+    line-height: 1.5;
+  }
+  .unlock-instruction-text strong {
+    color: var(--gold);
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .unlock-countdown {
+    margin-top: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    animation: fadeIn 0.4s 1s both;
+  }
+  .unlock-progress {
+    margin-top: 8px;
+    width: 120px;
+    height: 2px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 1px;
+    overflow: hidden;
+    animation: fadeIn 0.4s 1s both;
+  }
+  .unlock-progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 1px;
+    animation: unlockProgress 3s 1s linear forwards;
+    width: 0%;
+  }
+  @keyframes unlockProgress { to { width: 100%; } }
+
+  /* VICTORY SCREEN */
+  .victory-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--ink);
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .victory-screen.show { display: flex; }
+
+  /* Particles */
+  .particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: particleFall linear infinite;
+    opacity: 0;
+  }
+  @keyframes particleFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Gold lines */
+  .gold-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    animation: goldPulse 3s ease-in-out infinite;
+    opacity: 0.4;
+  }
+  @keyframes goldPulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.6; } }
+
+  .victory-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 620px;
+    animation: victoryReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+  @keyframes victoryReveal {
+    0% { opacity: 0; transform: scale(0.85) translateY(30px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .victory-ornament {
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.5s 0.8s both;
+  }
+  .victory-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: 600;
+    color: var(--paper);
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 0.5s 1s both;
+  }
+  .victory-title em { color: var(--gold); font-style: italic; }
+  .victory-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(16px, 3vw, 22px);
+    color: var(--paper-darker);
+    margin-bottom: 2.5rem;
+    animation: fadeIn 0.5s 1.2s both;
+  }
+  .victory-quote {
+    border: 1px solid rgba(184,134,11,0.3);
+    border-left: 3px solid var(--gold);
+    padding: 1.2rem 1.5rem;
+    margin: 0 auto 2.5rem;
+    max-width: 480px;
+    animation: fadeIn 0.5s 1.4s both;
+  }
+  .victory-quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--paper);
+    line-height: 1.7;
+    margin-bottom: 0.5rem;
+  }
+  .victory-quote-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .victory-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--paper-darker);
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.5s 1.6s both;
+  }
+  .victory-time span { color: var(--gold); font-size: 18px; }
+  .victory-groups {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.5s 1.8s both;
+  }
+  .victory-group-badge {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .btn-victory-close {
+    background: transparent;
+    border: 1px solid var(--paper-darker);
+    color: var(--paper-darker);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    padding: 8px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    animation: fadeIn 0.5s 2s both;
+  }
+  .btn-victory-close:hover { border-color: var(--paper); color: var(--paper); }
+
+  /* Scanning line animation on victory */
+  .scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(184,134,11,0.5), transparent);
+    animation: scanDown 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scanDown {
+    0% { top: -2px; }
+    100% { top: 100%; }
+  }
+
+  @media (max-width: 500px) {
+    .countdown-section { flex-direction: column; align-items: flex-start; }
+    .countdown-controls { align-items: flex-start; }
+    .prog-row { grid-template-columns: 40px 1fr 1fr; }
+    .log-item { grid-template-columns: 55px 60px 1fr 70px; }
+    .log-time { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen" class="setup-screen">
+  <div class="setup-card">
+    <div class="setup-stamp">Expediente clasificado</div>
+    <h1 class="setup-title">El expediente <em>Arendt</em></h1>
+    <p class="setup-sub">Escape room filosófico · 1º Bachillerato · FiloNesi</p>
+    <div class="setup-question">¿Cuántos grupos participan hoy?</div>
+    <div class="group-picker">
+      <button class="group-btn" onclick="selectGroups(1)">1</button>
+      <button class="group-btn" onclick="selectGroups(2)">2</button>
+      <button class="group-btn" onclick="selectGroups(3)">3</button>
+      <button class="group-btn" onclick="selectGroups(4)">4</button>
+      <button class="group-btn" onclick="selectGroups(5)">5</button>
+      <button class="group-btn" onclick="selectGroups(6)">6</button>
+    </div>
+    <div class="setup-duration">
+      <label for="setup-dur">Duración</label>
+      <select id="setup-dur">
+        <option value="35">35 min</option>
+        <option value="40">40 min</option>
+        <option value="45" selected>45 min</option>
+      </select>
+    </div>
+    <button class="btn-launch" id="btn-launch" onclick="launchGame()" disabled>
+      Comenzar →
+    </button>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen" style="display:none">
+<div class="page-wrap">
+
+  <header class="site-header">
+    <div class="stamp">Expediente clasificado</div>
+    <h1 class="site-title">El expediente <em>Arendt</em></h1>
+    <p class="site-subtitle">Escape room filosófico · 1º Bachillerato · FiloNesi</p>
+  </header>
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-section" aria-label="Cuenta atrás">
+    <div>
+      <div class="countdown-label">Tiempo restante</div>
+      <div class="countdown-display" id="cd-display">45:00</div>
+    </div>
+    <div class="countdown-controls">
+      <div class="cd-row">
+        <button class="btn-cd" id="btn-start" onclick="startTimer()">▶ Iniciar</button>
+        <button class="btn-cd" onclick="pauseTimer()">⏸ Pausar</button>
+        <button class="btn-cd" onclick="resetTimer()">↺ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE INDICATOR -->
+  <div class="phase-indicator" id="phase-indicator">
+    <div class="phase-tab active-phase1" id="phase-tab-1">Fase I — Palabra secreta</div>
+    <div class="phase-tab" id="phase-tab-2">Fase II — Código final</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <section class="progress-section">
+    <div class="section-heading">Progreso de los grupos</div>
+    <div class="prog-grid" id="prog-grid">
+      <!-- rows rendered by JS -->
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- FASE 1 INPUT -->
+  <section id="fase1-section">
+    <div class="section-heading">Fase I · Comprobar palabra secreta</div>
+    <div class="input-card">
+      <label class="field-label" for="sel-grupo">Grupo</label>
+      <select id="sel-grupo">
+        <option value="">— Selecciona el grupo —</option>
+      </select>
+
+      <label class="field-label" for="inp-palabra">Palabra secreta</label>
+      <input type="text" id="inp-palabra" placeholder="Escribe la palabra secreta..." autocomplete="off" autocorrect="off" spellcheck="false">
+
+      <button class="btn-check" onclick="comprobarFase1()">Comprobar →</button>
+
+      <div class="result-box result-ok" id="res-ok">
+        <div class="result-ok-header">
+          <span class="result-ok-badge">Correcto</span>
+          <span class="result-ok-group" id="res-grupo-ok"></span>
+        </div>
+        <div class="result-enigma" id="res-enigma"></div>
+      </div>
+      <div class="result-box result-err" id="res-err">
+        <div class="result-err-header">Palabra incorrecta</div>
+        <div class="result-err-sub">Revisad el crucigrama e intentadlo de nuevo.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- FASE 2 -->
+  <section id="fase2-section">
+    <div class="section-heading">Fase II · Código final</div>
+
+    <!-- Locked state -->
+    <div class="phase2-locked" id="fase2-locked">
+      <div class="phase2-locked-icon">🔐</div>
+      <div class="phase2-locked-title">Fase II bloqueada</div>
+      <div class="phase2-locked-sub">Se desbloqueará cuando todos los grupos completen la Fase I</div>
+      <div class="phase2-progress-bar">
+        <div class="phase2-progress-fill" id="fase2-progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Unlocked state -->
+    <div class="input-card phase2-card" id="fase2-input" style="display:none">
+      <div style="margin-bottom:1rem; padding:0.75rem 1rem; background:var(--phase2-light); border-radius:3px; border-left:3px solid var(--phase2);">
+        <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:13px; color:var(--phase2); line-height:1.6; margin-bottom:0.3rem;">
+          "Ningún mundo humano podrá sobrevivir si los hombres se niegan a hacer lo que Heródoto fue el primero en asumir: <em>legein ta eonta</em>, decir lo que existe."
+        </div>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--phase2); letter-spacing:0.08em;">— Hannah Arendt, Verdad y política, 1967</div>
+      </div>
+      <div style="font-size:12px; color:var(--ink-soft); font-family:'DM Mono',monospace; letter-spacing:0.05em; margin-bottom:1rem;">
+        Introduce en la app la respuesta correcta.
+      </div>
+
+      <label class="field-label" for="sel-grupo2">Grupo</label>
+      <select id="sel-grupo2">
+        <option value="">— Selecciona el grupo —</option>
+      </select>
+
+      <label class="field-label" for="inp-codigo">Código final</label>
+      <input type="text" id="inp-codigo" placeholder="Introduce el código..." autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric">
+
+      <button class="btn-check phase2-btn" onclick="comprobarFase2()">Verificar código →</button>
+
+      <div class="result-box result-ok2" id="res2-ok">
+        <div class="result-ok-header">
+          <span class="result-ok-badge">¡Código correcto!</span>
+          <span class="result-ok-group" id="res2-grupo-ok"></span>
+        </div>
+        <div class="result-enigma" id="res2-msg" style="color:var(--phase2); border-top-color:#b2c9e8;">
+          ¡Excelente trabajo filosófico!
+        </div>
+      </div>
+      <div class="result-box result-err" id="res2-err">
+        <div class="result-err-header">Código incorrecto</div>
+        <div class="result-err-sub">Revisad vuestras respuestas de verdadero/falso e intentadlo de nuevo.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- LOG -->
+  <section class="log-section">
+    <div class="section-heading">Registro de intentos</div>
+    <div id="log-list">
+      <div class="log-empty" id="log-empty">Aún no hay intentos registrados.</div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>FiloNesi · 1º Bachillerato · Filosofía · Hannah Arendt</p>
+  </footer>
+
+</div><!-- .page-wrap -->
+</div><!-- #game-screen -->
+
+<!-- FASE 2 UNLOCK OVERLAY -->
+<div id="unlock-overlay" class="unlock-overlay">
+  <div class="unlock-top-bar"></div>
+  <div class="unlock-bottom-bar"></div>
+  <div class="unlock-badge">Expediente Arendt · Alerta de misión</div>
+  <div class="unlock-icon">🔓</div>
+  <h2 class="unlock-title">Fase <em>II</em><br>desbloqueada</h2>
+  <p class="unlock-subtitle">Todos los grupos han superado la Fase I</p>
+  <div class="unlock-instruction">
+    <div class="unlock-arrow">↓</div>
+    <div class="unlock-instruction-text">
+      <strong>Siguiente paso</strong>
+      Desplazad la pantalla hacia abajo e introducid el código final de cada grupo
+    </div>
+  </div>
+  <div class="unlock-countdown">Continuando en 4 segundos…</div>
+  <div class="unlock-progress"><div class="unlock-progress-fill"></div></div>
+</div>
+
+<!-- VICTORY SCREEN -->
+<div id="victory-screen" class="victory-screen">
+  <div class="particles" id="particles"></div>
+  <div class="scan-line"></div>
+  <div class="gold-line" style="top:20%; width:100%;"></div>
+  <div class="gold-line" style="top:60%; width:100%; animation-delay:1.5s;"></div>
+
+  <div class="victory-content">
+    <div class="victory-ornament">✦ &nbsp; El expediente Arendt &nbsp; ✦</div>
+    <h1 class="victory-title">Misión<br><em>completada</em></h1>
+    <p class="victory-subtitle">Habéis descifrado el expediente</p>
+
+    <div class="victory-quote">
+      <div class="victory-quote-text">
+        "La acción, la única actividad que se da entre los hombres sin la mediación de cosas o materia, corresponde a la condición humana de la pluralidad."
+      </div>
+      <div class="victory-quote-author">— Hannah Arendt, La condición humana, 1958</div>
+    </div>
+
+    <div class="victory-time">
+      Tiempo empleado: <span id="victory-time-used">—</span>
+    </div>
+
+    <div class="victory-groups" id="victory-groups"></div>
+
+    <button class="btn-victory-close" onclick="closeVictory()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const CLAVES_FASE1 = {
+  "1": { palabra: "DEMOCRACIA",  enigma: "Arendt decía que el pensamiento comienza cuando dejamos de actuar y nos retiramos. Ve al lugar donde quien guía el pensamiento guarda lo que no se muestra." },
+  "2": { palabra: "REPUBLICA",   enigma: "Arendt creía que el pensamiento necesita un lugar donde depositarse. Busca el lugar donde los más jóvenes, que este año abren la puerta de Filosofía, atesoran sus reflexiones escritas. Recuerda: empieza por la primera." },
+  "3": { palabra: "CIUDADANIA",  enigma: "Arendt nos enseñó que la pluralidad es la condición de toda vida política: nadie ocupa el lugar del otro. Encuentra el lugar donde los más jóvenes, que este año abren la puerta de Filosofía, guardan sus pensamientos. Pero no la primera: la que le sigue según el orden del mundo." },
+  "4": { palabra: "SOBERANIA",   enigma: "El totalitarismo borra las diferencias, aplana lo plural en uno solo. Pero debéis resistirlo: aunque todos los recipientes de reflexiones parecen iguales y han sucumbido a la unidad, buscad aquel que ocupa el tercer lugar." },
+  "5": { palabra: "LEGITIMIDAD", enigma: "Natalidad es comenzar algo nuevo. Donde el último grupo de segundo guarda sus reflexiones encontrarás tu oportunidad de empezar algo nuevo." },
+  "6": { palabra: "CONTRATO",    enigma: "Platón encadenó a los prisioneros mirando sombras. Arendt los liberó con la acción. Ve donde las sombras de la caverna tienen forma y busca entre ellas." },
+};
+
+const CLAVES_FASE2 = {
+  "1": {
+    codigo: "1246",
+    afirmaciones: [
+      "La banalidad del mal implica que el mal extremo puede ser ejecutado por personas que obedecen órdenes sin pensar.",
+      "Para Arendt, la participación activa en los asuntos públicos es la forma más elevada de libertad.",
+      "Arendt defendía que la política ideal se sustenta en la voz de un líder sabio que representa a todos.",
+      "La natalidad en Arendt expresa que cada ser humano trae consigo la capacidad de comenzar algo nuevo.",
+      "Según Arendt, la acción política más valiosa es la que realiza el individuo en solitario, alejado del espacio público.",
+      "La labor es la actividad cíclica ligada a las necesidades biológicas del cuerpo, sin dejar huella duradera.",
+    ],
+    verdaderas: [1, 2, 4, 6],
+  },
+  "2": {
+    codigo: "2356",
+    afirmaciones: [
+      "Arendt consideraba que el diálogo socrático era el modelo directo de participación política.",
+      "Para Arendt, la participación activa en los asuntos públicos es la forma más elevada de libertad.",
+      "El trabajo, a diferencia de la labor, produce objetos duraderos que construyen un mundo común.",
+      "Arendt creía que la natalidad era irrelevante para la política, pues lo nuevo siempre repite lo antiguo.",
+      "La pluralidad significa que todos los seres humanos son distintos y esa diferencia es condición de la política.",
+      "Según Arendt, el totalitarismo se distingue porque aspira a transformar la naturaleza humana.",
+    ],
+    verdaderas: [2, 3, 5, 6],
+  },
+  "3": {
+    codigo: "1345",
+    afirmaciones: [
+      "Para Arendt, la acción es la única actividad humana que se da directamente entre los hombres, sin mediación de objetos.",
+      "La banalidad del mal implica que Eichmann era un monstruo psicópata que disfrutaba del sufrimiento ajeno.",
+      "Arendt distingue entre labor, trabajo y acción como tres actividades fundamentales de la vida activa.",
+      "El totalitarismo destruye el espacio público porque elimina la pluralidad y convierte a las personas en seres superfluos.",
+      "La natalidad es para Arendt la condición de la acción: cada persona puede iniciar algo radicalmente nuevo.",
+      "Arendt pensaba que el diálogo entre ciudadanos debía sustituirse por expertos técnicos en las democracias.",
+    ],
+    verdaderas: [1, 3, 4, 5],
+  },
+  "4": {
+    codigo: "2456",
+    afirmaciones: [
+      "Según Arendt, la labor es la actividad más elevada porque transforma el mundo y deja una huella permanente.",
+      "La participación política es, para Arendt, donde los seres humanos ejercen su libertad de forma más plena.",
+      "El pensamiento crítico no tiene ningún papel en la prevención del mal, según se desprende del caso Eichmann.",
+      "Para Arendt, la pluralidad no es un obstáculo sino la condición misma de la política.",
+      "El totalitarismo convierte a las personas en seres prescindibles, despojándolas de toda singularidad.",
+      "La natalidad garantiza que el futuro nunca está completamente determinado por el pasado.",
+    ],
+    verdaderas: [2, 4, 5, 6],
+  },
+  "5": {
+    codigo: "1356",
+    afirmaciones: [
+      "Arendt veía en la Revolución americana un ejemplo de fundación política basada en la acción colectiva.",
+      "La labor, al estar ligada al ciclo biológico, produce objetos que perduran y conforman el mundo humano.",
+      "Para Arendt, el mal totalitario es grave porque hace que el crimen parezca normal y burocrático.",
+      "Arendt rechazaba la participación ciudadana directa por considerarla caótica e ineficiente.",
+      "La pluralidad implica que cada persona es única e irrepetible, lo que hace posible la novedad en el mundo.",
+      "El trabajo, a diferencia de la labor, crea un mundo de objetos que sobrevive a quienes los fabrican.",
+    ],
+    verdaderas: [1, 3, 5, 6],
+  },
+  "6": {
+    codigo: "2346",
+    afirmaciones: [
+      "Arendt creía que el pensamiento y la acción son lo mismo: pensar ya es actuar políticamente.",
+      "La banalidad del mal muestra que la ausencia de pensamiento crítico puede tener consecuencias devastadoras.",
+      "Para Arendt, el diálogo genuino requiere reconocer al otro como un igual con perspectivas diferentes.",
+      "La natalidad, como categoría filosófica, expresa que el ser humano tiene capacidad de comenzar algo nuevo.",
+      "El totalitarismo puede surgir en cualquier sociedad que simplemente abandone la tradición cultural.",
+      "La participación en los asuntos comunes es, para Arendt, lo que distingue una vida verdaderamente humana.",
+    ],
+    verdaderas: [2, 3, 4, 6],
+  },
+};
+
+/* ===== STATE ===== */
+let numGroups = 0;
+let selectedDuration = 45;
+let solvedFase1 = {};
+let solvedFase2 = {};
+let log = [];
+let timerInterval = null;
+let secondsLeft = 45 * 60;
+let running = false;
+let gameStartSeconds = null;
+
+/* ===== SETUP ===== */
+function selectGroups(n) {
+  numGroups = n;
+  document.querySelectorAll('.group-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === n);
+  });
+  document.getElementById('btn-launch').disabled = false;
+}
+
+function launchGame() {
+  if (!numGroups) return;
+  selectedDuration = parseInt(document.getElementById('setup-dur').value);
+  secondsLeft = selectedDuration * 60;
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+
+  buildProgressGrid();
+  buildGroupSelects();
+  updateDisplay();
+  // Ajustar posición sticky del progreso bajo el cronómetro
+  requestAnimationFrame(() => {
+    const cd = document.querySelector('.countdown-section');
+    const prog = document.querySelector('.progress-section');
+    if (cd && prog) prog.style.top = cd.offsetHeight + 'px';
+  });
+}
+
+function buildProgressGrid() {
+  const grid = document.getElementById('prog-grid');
+  // Header
+  let html = `<div class="prog-row">
+    <div class="prog-label" style="font-size:9px;color:var(--ink-soft);"></div>
+    <div style="text-align:center;font-size:9px;font-family:'DM Mono',monospace;color:var(--ink-soft);letter-spacing:0.1em;text-transform:uppercase;">Fase I</div>
+    <div style="text-align:center;font-size:9px;font-family:'DM Mono',monospace;color:var(--ink-soft);letter-spacing:0.1em;text-transform:uppercase;">Fase II</div>
+  </div>`;
+  for (let i = 1; i <= numGroups; i++) {
+    html += `<div class="prog-row">
+      <div class="prog-label">G${i}</div>
+      <div class="prog-cell" id="prog-${i}-f1">🔒</div>
+      <div class="prog-cell hidden-cell" id="prog-${i}-f2">🔒</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function buildGroupSelects() {
+  const sel1 = document.getElementById('sel-grupo');
+  const sel2 = document.getElementById('sel-grupo2');
+  sel1.innerHTML = '<option value="">— Selecciona el grupo —</option>';
+  sel2.innerHTML = '<option value="">— Selecciona el grupo —</option>';
+  for (let i = 1; i <= numGroups; i++) {
+    sel1.innerHTML += `<option value="${i}">Grupo ${i}</option>`;
+    sel2.innerHTML += `<option value="${i}">Grupo ${i}</option>`;
+  }
+}
+
+/* ===== FASE 1 ===== */
+function comprobarFase1() {
+  const grupo = document.getElementById('sel-grupo').value;
+  const palabra = document.getElementById('inp-palabra').value;
+  const resOk = document.getElementById('res-ok');
+  const resErr = document.getElementById('res-err');
+  if (!resOk || !resErr) { console.error('res-ok o res-err es null'); return; }
+  resOk.style.display = 'none';
+  resErr.style.display = 'none';
+  if (!grupo) { alert('Selecciona primero el grupo.'); return; }
+  if (!palabra.trim()) { alert('Escribe la palabra secreta.'); return; }
+  if (solvedFase1[grupo]) { alert('Este grupo ya completó la Fase I.'); return; }
+
+  const clave = CLAVES_FASE1[grupo];
+  if (!clave) { console.error('No hay clave para grupo', grupo); return; }
+  const correcto = normalizar(palabra) === normalizar(clave.palabra);
+  addLog(grupo, 'F1', palabra.trim().toUpperCase(), correcto);
+
+  if (correcto) {
+    solvedFase1[grupo] = true;
+    const elGrupoOk = document.getElementById('res-grupo-ok');
+    const elEnigma  = document.getElementById('res-enigma');
+    if (elGrupoOk) elGrupoOk.textContent = 'Grupo ' + grupo + ' — palabra correcta';
+    if (elEnigma)  elEnigma.textContent  = clave.enigma;
+    resOk.style.display = 'block';
+    actualizarProgreso();
+    document.getElementById('inp-palabra').value = '';
+    document.getElementById('sel-grupo').value = '';
+    checkFase2Unlock();
+  } else {
+    resErr.style.display = 'block';
+  }
+}
+
+/* ===== FASE 2 ===== */
+function checkFase2Unlock() {
+  const total = numGroups;
+  const done = Object.keys(solvedFase1).filter(k => parseInt(k) <= numGroups).length;
+  const pct = (done / total) * 100;
+  const fill = document.getElementById('fase2-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+
+  if (done >= total) {
+    // Mostrar overlay espectacular
+    const overlay = document.getElementById('unlock-overlay');
+    overlay.classList.add('show');
+    // Recrear barras y progreso para reiniciar animaciones
+    overlay.innerHTML = `
+      <div class="unlock-top-bar"></div>
+      <div class="unlock-bottom-bar"></div>
+      <div class="unlock-badge">Expediente Arendt · Alerta de misión</div>
+      <div class="unlock-icon">🔓</div>
+      <h2 class="unlock-title">Fase <em>II</em><br>desbloqueada</h2>
+      <p class="unlock-subtitle">Todos los grupos han superado la Fase I</p>
+      <div class="unlock-instruction">
+        <div class="unlock-arrow">↓</div>
+        <div class="unlock-instruction-text">
+          <strong>Siguiente paso</strong>
+          Desplazad la pantalla hacia abajo e introducid el código final de cada grupo
+        </div>
+      </div>
+      <div class="unlock-countdown">Continuando en 4 segundos…</div>
+      <div class="unlock-progress"><div class="unlock-progress-fill"></div></div>
+    `;
+
+    // Después de 4s, ocultar overlay y desbloquear Fase II
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      const locked = document.getElementById('fase2-locked');
+      const input  = document.getElementById('fase2-input');
+      const tab1   = document.getElementById('phase-tab-1');
+      const tab2   = document.getElementById('phase-tab-2');
+      if (locked) locked.style.display = 'none';
+      if (input)  {
+        input.style.display = 'block';
+        // Scroll suave hacia la Fase II
+        setTimeout(() => input.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+      }
+      if (tab1) { tab1.classList.remove('active-phase1'); tab1.classList.add('completed'); }
+      if (tab2)   tab2.classList.add('active-phase2');
+      for (let i = 1; i <= numGroups; i++) {
+        const cell = document.getElementById('prog-' + i + '-f2');
+        if (cell) cell.classList.remove('hidden-cell');
+      }
+    }, 4000);
+  }
+}
+
+function comprobarFase2() {
+  const grupo = document.getElementById('sel-grupo2').value;
+  const codigo = document.getElementById('inp-codigo').value;
+  const resOk = document.getElementById('res2-ok');
+  const resErr = document.getElementById('res2-err');
+  resOk.style.display = 'none';
+  resErr.style.display = 'none';
+  if (!grupo) { alert('Selecciona primero el grupo.'); return; }
+  if (!codigo.trim()) { alert('Introduce el código.'); return; }
+  if (solvedFase2[grupo]) { alert('Este grupo ya completó la Fase II.'); return; }
+
+  const clave = CLAVES_FASE2[grupo];
+  const correcto = codigo.trim().replace(/\s/g, '') === clave.codigo;
+  addLog(grupo, 'F2', codigo.trim(), correcto);
+
+  if (correcto) {
+    solvedFase2[grupo] = true;
+    document.getElementById('res2-grupo-ok').textContent = 'Grupo ' + grupo + ' — ¡expediente descifrado!';
+    resOk.style.display = 'block';
+    actualizarProgreso();
+    document.getElementById('inp-codigo').value = '';
+    document.getElementById('sel-grupo2').value = '';
+    checkVictory();
+  } else {
+    resErr.style.display = 'block';
+  }
+}
+
+function checkVictory() {
+  const done2 = Object.keys(solvedFase2).filter(k => parseInt(k) <= numGroups).length;
+  if (done2 >= numGroups) {
+    setTimeout(showVictory, 600);
+  }
+}
+
+/* ===== PROGRESS ===== */
+function actualizarProgreso() {
+  for (let i = 1; i <= numGroups; i++) {
+    const c1 = document.getElementById('prog-' + i + '-f1');
+    const c2 = document.getElementById('prog-' + i + '-f2');
+    if (c1 && solvedFase1[String(i)]) {
+      c1.classList.add('phase1-done');
+      c1.textContent = '✓';
+    }
+    if (c2 && solvedFase2[String(i)]) {
+      c2.classList.add('phase2-done');
+      c2.textContent = '✓';
+    }
+  }
+}
+
+/* ===== LOG ===== */
+function addLog(grupo, fase, valor, correcto) {
+  log.unshift({ grupo, fase, valor, correcto, hora: timestamp() });
+  renderLog();
+}
+
+function renderLog() {
+  const list = document.getElementById('log-list');
+  const empty = document.getElementById('log-empty');
+  if (!list) return;
+  if (log.length === 0) { if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = log.map(e => `
+    <div class="log-item">
+      <span class="log-group">Grupo ${e.grupo}</span>
+      <span class="log-phase-tag ${e.fase === 'F1' ? 'p1' : 'p2'}">${e.fase === 'F1' ? 'Fase I' : 'Fase II'}</span>
+      <span class="log-word">${e.valor}</span>
+      <span class="${e.correcto ? 'log-badge-ok' : 'log-badge-err'}">${e.correcto ? 'correcto' : 'incorrecto'}</span>
+      <span class="log-time">${e.hora}</span>
+    </div>`).join('');
+}
+
+/* ===== VICTORY ===== */
+function showVictory() {
+  pauseTimer();
+  const elapsed = selectedDuration * 60 - secondsLeft;
+  const mm = Math.floor(elapsed / 60).toString().padStart(2, '0');
+  const ss = (elapsed % 60).toString().padStart(2, '0');
+  document.getElementById('victory-time-used').textContent = mm + ':' + ss;
+
+  const vg = document.getElementById('victory-groups');
+  vg.innerHTML = '';
+  for (let i = 1; i <= numGroups; i++) {
+    const b = document.createElement('div');
+    b.className = 'victory-group-badge';
+    b.textContent = 'Grupo ' + i + ' ✓';
+    vg.appendChild(b);
+  }
+
+  spawnParticles();
+  document.getElementById('victory-screen').classList.add('show');
+}
+
+function closeVictory() {
+  document.getElementById('victory-screen').classList.remove('show');
+}
+
+function spawnParticles() {
+  const container = document.getElementById('particles');
+  container.innerHTML = '';
+  const colors = ['#b8860b', '#f5c842', '#e8f5ec', '#fdf6e3', '#8b2c2c', '#2c4a8b', '#fff'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = (Math.random() * 6 + 3) + 'px';
+    p.style.height = p.style.width;
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    p.style.animationDelay = (Math.random() * 3) + 's';
+    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(p);
+  }
+}
+
+/* ===== TIMER ===== */
+function formatTime(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = (s % 60).toString().padStart(2, '0');
+  return m + ':' + sec;
+}
+
+function updateDisplay() {
+  const el = document.getElementById('cd-display');
+  if (!el) return;
+  el.textContent = formatTime(secondsLeft);
+  el.className = 'countdown-display';
+  if (secondsLeft <= 60) el.classList.add('danger');
+  else if (secondsLeft <= 300) el.classList.add('warning');
+}
+
+function startTimer() {
+  if (running) return;
+  running = true;
+  document.getElementById('btn-start').classList.add('active');
+  timerInterval = setInterval(() => {
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      running = false;
+      document.getElementById('cd-display').textContent = '00:00';
+      document.getElementById('cd-display').classList.add('danger');
+      return;
+    }
+    secondsLeft--;
+    updateDisplay();
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  running = false;
+  const btn = document.getElementById('btn-start');
+  if (btn) btn.classList.remove('active');
+}
+
+function resetTimer() {
+  pauseTimer();
+  secondsLeft = selectedDuration * 60;
+  updateDisplay();
+}
+
+/* ===== UTILS ===== */
+function normalizar(str) {
+  return str.trim().toUpperCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function timestamp() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' +
+         d.getMinutes().toString().padStart(2,'0') + ':' +
+         d.getSeconds().toString().padStart(2,'0');
+}
+
+/* ===== KEY EVENTS ===== */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const fase2Visible = document.getElementById('fase2-input') && document.getElementById('fase2-input').style.display !== 'none';
+    if (document.activeElement === document.getElementById('inp-codigo') && fase2Visible) {
+      comprobarFase2();
+    } else if (document.activeElement === document.getElementById('inp-palabra')) {
+      comprobarFase1();
+    }
+  }
+});
+</script>
+</body>
+</html>
