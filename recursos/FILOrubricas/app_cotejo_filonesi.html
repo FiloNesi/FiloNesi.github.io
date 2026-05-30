@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FiloNesi · Listas de cotejo — 1.º Bachillerato Filosofía</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f7f6f2;--bg3:#f0efe9;
+  --txt:#1a1a1a;--txt2:#555550;--txt3:#888880;
+  --brd:#e0dfd8;--brd2:#c8c7bf;
+  --indigo:#2B3A6B;--indigo-light:#eef0f7;
+  --green-bg:#eaf3de;--green-txt:#27500a;
+  --amber-bg:#faeeda;--amber-txt:#633806;
+  --red-bg:#fcebeb;--red-txt:#791f1f;
+  --teal-bg:#e1f5ee;--teal-txt:#085041;
+  --blue-bg:#e6f1fb;--blue-txt:#0c447c;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
+  --txt:#f0efea;--txt2:#aeada8;--txt3:#6e6e72;
+  --brd:#3a3a3c;--brd2:#48484a;
+  --indigo-light:#1e2235;
+  --green-bg:#173404;--green-txt:#c0dd97;
+  --amber-bg:#412402;--amber-txt:#fac775;
+  --red-bg:#501313;--red-txt:#f09595;
+  --teal-bg:#04342c;--teal-txt:#9fe1cb;
+  --blue-bg:#042c53;--blue-txt:#85b7eb;
+}}
+
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:230px;flex-shrink:0;border-right:1px solid var(--brd);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden}
+.sidebar-header{padding:16px 14px 10px;border-bottom:1px solid var(--brd)}
+.brand{font-size:13px;font-weight:700;color:var(--indigo);letter-spacing:.02em}
+.brand-sub{font-size:11px;color:var(--txt3);margin-top:1px}
+.nav-wrap{flex:1;overflow-y:auto;padding:6px 0}
+.nav-item{display:flex;align-items:center;gap:6px;padding:7px 14px;border:none;background:none;cursor:pointer;width:100%;text-align:left;position:relative;transition:background .12s}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg);border-right:2px solid var(--indigo)}
+.nav-label{font-size:12px;color:var(--txt);line-height:1.35;flex:1}
+.nav-item.active .nav-label{font-weight:600;color:var(--indigo)}
+.nav-nota{font-size:12px;font-weight:700;min-width:30px;text-align:right}
+.nav-sep{height:1px;background:var(--brd);margin:4px 14px}
+
+/* MAIN */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--brd);gap:10px;flex-shrink:0}
+.topbar-left{flex:1;min-width:0}
+.topbar-title{font-size:15px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-meta{font-size:11px;color:var(--txt3);margin-top:2px}
+.topbar-right{display:flex;gap:8px;flex-shrink:0}
+.btn{font-size:12px;font-weight:500;color:var(--txt2);background:var(--bg2);border:1px solid var(--brd2);border-radius:var(--radius);cursor:pointer;padding:5px 12px;transition:background .12s,color .12s;white-space:nowrap}
+.btn:hover{background:var(--bg3);color:var(--txt)}
+.btn-primary{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.btn-primary:hover{background:#1e2b52;color:#fff}
+
+/* SCORE PANEL */
+.score-panel{display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:1px solid var(--brd);background:var(--bg2);flex-shrink:0}
+.nota-block{text-align:center;min-width:56px}
+.nota-num{font-size:32px;font-weight:700;line-height:1;transition:color .2s}
+.nota-den{font-size:12px;color:var(--txt3)}
+.nota-lbl{font-size:10px;color:var(--txt3);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.bars-block{flex:1;display:flex;flex-direction:column;gap:5px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-lbl{font-size:11px;color:var(--txt3);min-width:80px}
+.bar-track{flex:1;height:5px;background:var(--brd);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.bf-clave{background:var(--indigo)}
+.bf-val{background:#3B6D11}
+.bf-err{background:#A32D2D}
+.bar-pct{font-size:11px;color:var(--txt3);min-width:32px;text-align:right}
+
+/* LEGEND */
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:7px 20px;border-bottom:1px solid var(--brd);background:var(--bg2);flex-shrink:0}
+.leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--txt3)}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;white-space:nowrap}
+.t-imp{background:var(--amber-bg);color:var(--amber-txt)}
+.t-comp{background:var(--teal-bg);color:var(--teal-txt)}
+.t-err{background:var(--red-bg);color:var(--red-txt)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:14px 20px 24px}
+
+.block{margin-bottom:10px;border:1px solid var(--brd);border-radius:var(--radius-lg);overflow:hidden}
+.block-head{padding:8px 12px;background:var(--bg2);display:flex;align-items:center;justify-content:space-between;gap:6px;border-bottom:1px solid var(--brd)}
+.block-name{font-size:12px;font-weight:600;color:var(--txt);flex:1}
+.block-score{font-size:11px;color:var(--txt3);white-space:nowrap}
+.nivel{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;margin-left:5px}
+.n1{background:#FFF3CD;color:#7A4F00}
+.n2{background:#D4EDDA;color:#145523}
+.n3{background:#D1ECF1;color:#0C5460}
+.pts-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:var(--blue-bg);color:var(--blue-txt);margin-left:5px}
+
+.row{display:flex;align-items:flex-start;gap:10px;padding:7px 12px;cursor:pointer;border:none;background:none;width:100%;text-align:left;border-top:1px solid var(--brd);transition:background .1s}
+.row:first-of-type{border-top:none}
+.row:hover{background:var(--bg2)}
+.row.ok{background:#edf7ed}
+.row.bad{background:#fdf1f1}
+.row.err-hint{background:#fef8f8}
+@media(prefers-color-scheme:dark){
+  .row.ok{background:#1a2e1a}
+  .row.bad{background:#2e1a1a}
+  .row.err-hint{background:#251515}
+}
+.cb{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--brd2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:11px;font-weight:700;transition:background .12s,border-color .12s}
+.row.ok .cb{background:#3B6D11;border-color:#3B6D11;color:#fff}
+.row.bad .cb{background:#A32D2D;border-color:#A32D2D;color:#fff}
+.row-body{flex:1;font-size:13px;color:var(--txt);line-height:1.5}
+.row.ok .row-body,.row.bad .row-body{color:var(--txt2)}
+
+.note-box{margin-top:12px;padding:10px 14px;border-left:3px solid var(--indigo);background:var(--indigo-light)}
+.note-title{font-size:10px;font-weight:700;color:var(--indigo);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.note-text{font-size:12px;color:var(--txt2);line-height:1.65;margin:0 0 5px}
+.note-text:last-child{margin:0}
+
+/* PRINT / EXPORT OVERRIDES */
+@media print{
+  .sidebar,.topbar-right,.legend,.score-panel{display:none!important}
+  .main{overflow:visible}
+  .content{overflow:visible;padding:0}
+  .app{height:auto;display:block}
+  .block{break-inside:avoid;margin-bottom:12px}
+  .row{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">FiloNesi</div>
+    <div class="brand-sub">Listas de cotejo · 1.º Bach.</div>
+  </div>
+  <div class="nav-wrap" id="nav"></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="main-title">—</div>
+      <div class="topbar-meta" id="main-meta"></div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn" onclick="resetCurrent()">Limpiar</button>
+      <button class="btn btn-primary" onclick="exportHTML()">Exportar HTML</button>
+    </div>
+  </div>
+  <div class="score-panel">
+    <div class="nota-block">
+      <div class="nota-num" id="nota-num" style="color:var(--txt3)">—</div>
+      <div class="nota-den">/10</div>
+      <div class="nota-lbl">nota estimada</div>
+    </div>
+    <div class="bars-block">
+      <div class="bar-row">
+        <span class="bar-lbl">Clave <strong id="ct">0/0</strong></span>
+        <div class="bar-track"><div class="bar-fill bf-clave" id="bc" style="width:0%"></div></div>
+        <span class="bar-pct" id="bd">0%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-lbl">Valorable <strong id="vt">0/0</strong></span>
+        <div class="bar-track"><div class="bar-fill bf-val" id="bv" style="width:0%"></div></div>
+        <span class="bar-pct" id="vd">0%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-lbl">Errores <strong id="et">0</strong></span>
+        <div class="bar-track"><div class="bar-fill bf-err" id="be" style="width:0%"></div></div>
+        <span class="bar-pct" id="ed">0%</span>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="leg"><span class="tag t-imp">clave</span> peso ×3</div>
+    <div class="leg"><span class="tag t-comp">contraste</span> peso ×2</div>
+    <div class="leg">sin etiqueta → ×1</div>
+    <div class="leg"><span class="tag t-err">error</span> penaliza −1,5 pts</div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+
+<script>
+const QUESTS=[
+  {id:'platon',short:'Intelectualismo político · Platón',title:'Intelectualismo político de Platón',meta:'Desarrollo ~150 palabras',
+   note:'Sin el bloque 4 (alma, Estado, virtudes, justicia) el desarrollo es incompleto aunque sea fluido. Los ítems de contraste discriminan el 7 del 9.',
+   blocks:[
+    {h:'1. Crítica a la democracia ateniense',items:[
+      {t:'Identifica que la democracia asumía que cualquier ciudadano puede gobernar',g:'imp'},
+      {t:'Menciona que «lo justo es lo que la asamblea designa»'},
+      {t:'Establece la oposición de Platón a la democracia como punto de partida'},
+    ]},
+    {h:'2. El principio del intelectualismo político',items:[
+      {t:'Enuncia la tesis: solo quien sabe debe gobernar',g:'imp'},
+      {t:'Relaciona el intelectualismo político con el intelectualismo moral de Sócrates',g:'imp'},
+      {t:'Explica que el mal gobierno se debe a que ni los sabios gobiernan ni los gobernantes se hacen sabios'},
+      {t:'Conecta con el antirelativismo socrático frente a los sofistas'},
+    ]},
+    {h:'3. El filósofo-gobernante',items:[
+      {t:'Explica quién es el «filósofo»: el que se dirige al conocimiento de la justicia',g:'imp'},
+      {t:'Distingue saber teórico del saber práctico (saber hacer)',g:'imp'},
+      {t:'Argumenta que solo el filósofo puede aplicar la justicia al gobierno de la polis'},
+      {t:'Menciona la Carta VII como fuente del ideal filosófico-político'},
+    ]},
+    {h:'4. Justicia, alma y Estado en la República',items:[
+      {t:'Menciona que Platón trata la justicia en la República',g:'imp'},
+      {t:'Indica la correspondencia entre las partes del alma y las partes del Estado',g:'imp'},
+      {t:'Nombra los tres estamentos: gobernantes (prudencia), guardianes (valentía), productores (templanza)',g:'imp'},
+      {t:'Define la justicia platónica: «que cada cual haga lo suyo» / armonía entre las partes',g:'imp'},
+      {t:'Señala que la justicia genera armonía y felicidad'},
+    ]},
+    {h:'5. Expresión y estructura',items:[
+      {t:'Extensión aproximada de 150 palabras (±20 %)'},
+      {t:'Cohesión argumental'},
+      {t:'Vocabulario filosófico preciso'},
+    ]},
+   ]},
+  {id:'mill',short:'Libertad individual · Mill',title:'La libertad individual de John Stuart Mill',meta:'Desarrollo ~150 palabras',
+   note:'Sin la crítica a Smith/Ricardo y la libertad formal del trabajador el desarrollo es incompleto. La distinción socialismo/comunismo discrimina el 7 del 9.',
+   blocks:[
+    {h:'1. Mill y el utilitarismo',items:[
+      {t:'Sitúa a Mill como representante del utilitarismo ético',g:'imp'},
+      {t:'La libertad individual es un bien en sí mismo',g:'imp'},
+      {t:'La libertad también beneficia a la sociedad en su conjunto',g:'imp'},
+    ]},
+    {h:'2. Principio del daño y liberalismo',items:[
+      {t:'La libertad solo puede limitarse cuando se daña a otros',g:'imp'},
+      {t:'Encuadra a Mill en el liberalismo político'},
+      {t:'Relaciona libertad con progreso intelectual, científico y artístico'},
+    ]},
+    {h:'3. Crítica al liberalismo clásico',items:[
+      {t:'Contrapone a Mill con Adam Smith y/o David Ricardo',g:'imp'},
+      {t:'Explica el laissez-faire: no intervención del Estado',g:'imp'},
+      {t:'Menciona la «mano invisible» de Adam Smith'},
+      {t:'Señala el problema: parte de la población queda desprotegida',g:'imp'},
+    ]},
+    {h:'4. Intervención del Estado y libertad formal',items:[
+      {t:'Mill defiende la intervención estatal para proteger a las clases desfavorecidas',g:'imp'},
+      {t:'La libertad contractual del trabajador es solo formal',g:'imp'},
+      {t:'Mill llama «socialismo» a esta intervención correctora'},
+      {t:'Distingue socialismo de comunismo (el comunismo suprime la libertad)'},
+    ]},
+    {h:'5. Límites al poder del Estado',items:[
+      {t:'Cita o alude al ensayo Sobre la libertad (1859)'},
+      {t:'Riesgo del poder burocrático de restringir libertades',g:'imp'},
+      {t:'La intervención debe estar limitada para salvaguardar la libertad',g:'imp'},
+    ]},
+    {h:'6. Expresión',items:[
+      {t:'Extensión aproximada de 150 palabras'},
+      {t:'Cohesión argumental'},
+      {t:'Vocabulario preciso'},
+    ]},
+   ]},
+  {id:'defs',short:'Definiciones breves (~30 palabras)',title:'Definiciones breves — 6 términos',meta:'~30 palabras por término',
+   note:'A 30 palabras los errores conceptuales pesan mucho. Los ítems sin etiqueta son valorables pero su ausencia no penaliza.',
+   blocks:[
+    {h:'1. Intelectualismo moral',items:[
+      {t:'Identifica a Sócrates como autor de referencia',g:'imp'},
+      {t:'Saber = virtud: quien sabe el bien, lo practica',g:'imp'},
+      {t:'El mal es siempre ignorancia, nadie obra mal a sabiendas',g:'imp'},
+      {t:'Error: confundirlo con el intelectualismo político de Platón',g:'err'},
+    ]},
+    {h:'2. Eudemonismo',items:[
+      {t:'Eudaimonía (felicidad / florecimiento) como fin último de la acción moral',g:'imp'},
+      {t:'Aristóteles como representante principal',g:'imp'},
+      {t:'Felicidad mediante virtudes / vida conforme a la razón',g:'imp'},
+      {t:'Error: reducirlo a «hacer lo que te hace feliz» sin vincular a virtud',g:'err'},
+    ]},
+    {h:'3. Emotivismo',items:[
+      {t:'Los juicios morales expresan emociones o actitudes, no describen hechos',g:'imp'},
+      {t:'Los enunciados morales no son verdaderos ni falsos',g:'imp'},
+      {t:'Puede citar a Ayer o Stevenson'},
+      {t:'Error: confundirlo con el relativismo moral',g:'err'},
+    ]},
+    {h:'4. Estado de naturaleza',items:[
+      {t:'Situación hipotética previa al contrato social y al Estado',g:'imp'},
+      {t:'Distingue al menos dos versiones: conflictiva (Hobbes) o pacífica (Rousseau)',g:'imp'},
+      {t:'Relaciona con la justificación del poder político'},
+      {t:'Error: presentarlo como un periodo histórico real',g:'err'},
+    ]},
+    {h:'5. Realismo político',items:[
+      {t:'Doctrina que separa la política de la moral',g:'imp'},
+      {t:'Maquiavelo como figura fundacional',g:'imp'},
+      {t:'El criterio del gobernante es la eficacia / conservación del poder',g:'imp'},
+      {t:'Error: confundirlo con «ser realista» en sentido coloquial',g:'err'},
+    ]},
+    {h:'6. Legitimidad',items:[
+      {t:'Distingue legitimidad de legalidad',g:'imp'},
+      {t:'Poder legítimo = aceptado como justificado por quienes se someten',g:'imp'},
+      {t:'Puede mencionar las fuentes de legitimidad de Weber'},
+      {t:'Error: usar «legítimo» y «legal» como sinónimos',g:'err'},
+    ]},
+   ]},
+  {id:'hr',short:'Hobbes y Rousseau: visiones opuestas',title:'Hobbes y Rousseau: dos visiones opuestas',meta:'Comparación y contraste',
+   note:'No basta con exponer cada autor por separado: hay que confrontarlos. Sin los ítems de CONTRASTE el desarrollo es incompleto.',
+   blocks:[
+    {h:'0. Marco contractualista común',items:[
+      {t:'Ambos contractualistas: el Estado surge de un pacto',g:'imp'},
+      {t:'Rasgo común: pacto + estado de naturaleza',g:'imp'},
+      {t:'El Estado es artificial, no natural como en Aristóteles'},
+    ]},
+    {h:'1. Visión del ser humano en el estado de naturaleza',items:[
+      {t:'Hobbes: egoísta y violento — «guerra de todos contra todos»',g:'imp'},
+      {t:'Rousseau: bueno por naturaleza, libre y solidario',g:'imp'},
+      {t:'Oposición explícita: naturaleza conflictiva (H) vs. bondad natural (R)',g:'comp'},
+      {t:'Error: atribuir a Rousseau la visión pesimista o a Hobbes la optimista',g:'err'},
+    ]},
+    {h:'2. Razones para salir del estado de naturaleza',items:[
+      {t:'Hobbes: miedo a la muerte e inseguridad permanente',g:'imp'},
+      {t:'Rousseau: la sociedad corrompe al ser humano',g:'imp'},
+      {t:'Contraste: en Hobbes la naturaleza es insoportable; en Rousseau es la sociedad lo que corrompe',g:'comp'},
+    ]},
+    {h:'3. Términos del contrato',items:[
+      {t:'Hobbes: cesión total de derechos; pacto incondicional e irreversible',g:'imp'},
+      {t:'Rousseau: sometimiento libre a la voluntad general para preservar la libertad',g:'imp'},
+      {t:'Contraste: cesión total (H) vs. sometimiento libre a la voluntad general (R)',g:'comp'},
+      {t:'Error: confundir la voluntad general de Rousseau con el soberano hobbesiano',g:'err'},
+    ]},
+    {h:'4. Forma de gobierno resultante',items:[
+      {t:'Hobbes: Estado autoritario / monarquía absoluta',g:'imp'},
+      {t:'Rousseau: democracia directa e igualitaria regida por la voluntad general',g:'imp'},
+      {t:'Contraste: autoritarismo que garantiza la seguridad (H) vs. democracia directa (R)',g:'comp'},
+    ]},
+    {h:'5. Expresión y estructura',items:[
+      {t:'Confronta a los autores explícitamente',g:'imp'},
+      {t:'Vocabulario preciso: estado de naturaleza, contrato social, voluntad general…'},
+      {t:'Coherencia entre los ejes'},
+    ]},
+   ]},
+  {id:'kant',short:'Imperativo categórico · Kant',title:'El imperativo categórico de Kant',meta:'Desarrollo ≥150 palabras',
+   note:'Sin el bloque 2 (distinción hipotético/categórico) el desarrollo es incompleto. «Nunca como medio» vs. «nunca meramente como medio» discrimina el 8 del 10.',
+   blocks:[
+    {h:'1. Ética formal vs. éticas materiales',items:[
+      {t:'Sitúa a Kant en el siglo XVIII como autor del formalismo moral',g:'imp'},
+      {t:'Distingue materia (contenido) y forma (función moral)',g:'imp'},
+      {t:'Las éticas materiales tienen contenido concreto → no pueden ser universales',g:'imp'},
+      {t:'La ética kantiana es solo formal → aspira a ser universal',g:'imp'},
+    ]},
+    {h:'2. Imperativo hipotético vs. categórico',items:[
+      {t:'Define el hipotético: mandato condicionado a un fin',g:'imp'},
+      {t:'Define el categórico: mandato incondicional, independiente de las consecuencias',g:'imp'},
+      {t:'El categórico aporta un criterio, no dice qué hacer',g:'imp'},
+      {t:'Lo vincula con la buena voluntad y el respeto al deber',g:'imp'},
+      {t:'Error: confundirlo con una norma de conducta concreta',g:'err'},
+    ]},
+    {h:'3. Las dos formulaciones',items:[
+      {t:'1.ª formulación: la máxima debe poder valer como ley universal',g:'imp'},
+      {t:'Explica la 1.ª: una norma es moral si puede convertirse en deber universal',g:'imp'},
+      {t:'2.ª formulación: tratar a la humanidad siempre como fin, nunca meramente como medio',g:'imp'},
+      {t:'Explica la 2.ª: el ser humano es un fin en sí mismo',g:'imp'},
+      {t:'Error: reproducir la formulación sin mostrar comprensión',g:'err'},
+      {t:'Error: confundir «nunca como medio» con «nunca meramente como medio»',g:'err'},
+    ]},
+    {h:'4. Universalidad como aspiración central',items:[
+      {t:'El categórico es el único válido para una ética universal',g:'imp'},
+      {t:'La universalidad se debe a la ausencia de contenido concreto'},
+    ]},
+    {h:'5. Expresión',items:[
+      {t:'Extensión ≥150 palabras',g:'imp'},
+      {t:'Cohesión: ética formal → imperativo → formulaciones'},
+      {t:'Vocabulario: formalismo, imperativo hipotético/categórico, máxima, ley universal, deber…'},
+    ]},
+   ]},
+  {id:'rawls',short:'Justicia como imparcialidad · Rawls',title:'Justicia como imparcialidad: Rawls',meta:'Desarrollo ≥150 palabras',
+   note:'El velo y los dos principios son los tres pilares. Sin el principio de la diferencia con la distinción contingencia/responsabilidad, queda reducido a igualitarismo genérico.',
+   blocks:[
+    {h:'1. Marco general',items:[
+      {t:'Rawls: ética pública basada en consenso y diálogo',g:'imp'},
+      {t:'Justicia como imparcialidad: principios aceptables por todos',g:'imp'},
+      {t:'Los principios los elaboran sus propios destinatarios',g:'imp'},
+    ]},
+    {h:'2. El velo de la ignorancia',items:[
+      {t:'Procedimiento: los participantes desconocen sus características personales',g:'imp'},
+      {t:'Especifica qué se desconoce: sexo, raza, CI, estatus social…',g:'imp'},
+      {t:'Lógica: al ignorar tu posición, tiendes a acordar principios justos para todos',g:'imp'},
+      {t:'Resultado: acuerdo sobre mínimos exigibles'},
+      {t:'Error: confundirlo con el estado de naturaleza contractualista',g:'err'},
+      {t:'Error: presentarlo como situación histórica real',g:'err'},
+    ]},
+    {h:'3. Principio de la igualdad',items:[
+      {t:'Todos somos libres e iguales, con los mismos derechos y libertades',g:'imp'},
+      {t:'Es el primer principio (prioritario sobre el de la diferencia)'},
+    ]},
+    {h:'4. Principio de la diferencia',items:[
+      {t:'El Estado interviene a favor de quienes padecen contingencias sin responsabilidad propia',g:'imp'},
+      {t:'Distingue responsabilidad propia de contingencia',g:'imp'},
+      {t:'Busca igualdad de oportunidades, no de resultados',g:'imp'},
+      {t:'El Estado no puede premiar ni victimizar por características dependientes de la suerte'},
+      {t:'Error: reducirlo a igualitarismo genérico sin la distinción contingencia/responsabilidad',g:'err'},
+      {t:'Error: confundir igualdad de oportunidades con igualdad de resultados',g:'err'},
+    ]},
+    {h:'5. Consenso racional',items:[
+      {t:'Principios más razonables, no más verdaderos (consenso)',g:'imp'},
+      {t:'Relaciona con consenso y diálogo como base de legitimidad'},
+    ]},
+    {h:'6. Expresión',items:[
+      {t:'Extensión ≥150 palabras',g:'imp'},
+      {t:'Cohesión: el velo genera los principios'},
+      {t:'Vocabulario preciso'},
+    ]},
+   ]},
+  {id:'kohlberg',short:'Kohlberg · Dilema de la pulsera',title:'Dilema de la pulsera — Estadios de Kohlberg',meta:'2–3 líneas por estadio · 6 estadios',
+   note:'Lo que se evalúa no es la postura sino la coherencia del razonamiento con la lógica del estadio. La distinción 5–6 separa el 8 del 10.',
+   blocks:[
+    {h:'Estadio 1 — Obediencia y castigo',nivel:'n1',items:[
+      {t:'Razona desde el miedo al castigo / evitar consecuencias negativas para sí mismo',g:'imp'},
+      {t:'Acepta/rechaza según lo digan los adultos con autoridad, no por razones propias',g:'imp'},
+      {t:'No menciona derechos, normas sociales ni principios',g:'imp'},
+      {t:'Error: usar argumentos de normas o leyes (corresponde al estadio 4)',g:'err'},
+    ]},
+    {h:'Estadio 2 — Interés propio e intercambio',nivel:'n1',items:[
+      {t:'Razona desde el interés personal: ¿qué gano/pierdo yo?',g:'imp'},
+      {t:'Acepta si le evita preocupaciones; rechaza si le supone más conflictos',g:'imp'},
+      {t:'Puede aparecer reciprocidad instrumental'},
+      {t:'Error: mostrar preocupación genuina por la abuela como fin en sí misma (eso es estadio 3)',g:'err'},
+    ]},
+    {h:'Estadio 3 — Relaciones y aprobación social',nivel:'n2',items:[
+      {t:'Razona desde el deseo de ser buen nieto/a y mantener relaciones armoniosas',g:'imp'},
+      {t:'Acepta porque «la familia y los médicos saben lo que es mejor»',g:'imp'},
+      {t:'Puede aparecer empatía, pero el criterio final es la aprobación del grupo cercano'},
+      {t:'Error: apelar a leyes o normas institucionales como argumento central (estadio 4)',g:'err'},
+    ]},
+    {h:'Estadio 4 — Ley, orden y sistema social',nivel:'n2',items:[
+      {t:'Razona desde el respeto a normas, protocolos o legislación vigente',g:'imp'},
+      {t:'Acepta porque el protocolo lo recomienda y hay un deber de seguir las normas',g:'imp'},
+      {t:'Puede mencionar la tutela legal o responsabilidad institucional'},
+      {t:'Error: cuestionar las normas o apelar a derechos por encima de la ley (postconvencional)',g:'err'},
+    ]},
+    {h:'Estadio 5 — Contrato social y derechos',nivel:'n3',items:[
+      {t:'Razona desde derechos individuales: la abuela tiene derecho a la autonomía',g:'imp'},
+      {t:'Reconoce y delibera el conflicto entre seguridad vs. autonomía/dignidad',g:'imp'},
+      {t:'Se basa en derechos reconocidos socialmente y el bien común'},
+      {t:'Error: confundirlo con el estadio 6 — el 5 razona desde derechos reconocidos, no principios propios',g:'err'},
+    ]},
+    {h:'Estadio 6 — Principios éticos universales',nivel:'n3',items:[
+      {t:'Razona desde principios propios universales: dignidad y autonomía como valores absolutos',g:'imp'},
+      {t:'La dignidad de la abuela tiene valor absoluto aunque implique riesgo',g:'imp'},
+      {t:'El razonamiento trasciende normas y derechos reconocidos',g:'imp'},
+      {t:'Error: citar solo derechos legales o consenso social sin trascenderlos (eso es estadio 5)',g:'err'},
+    ]},
+    {h:'Criterios formales',items:[
+      {t:'Desarrolla los 6 estadios con argumento propio, no solo etiqueta',g:'imp'},
+      {t:'Cada estadio ocupa 2–3 líneas con razonamiento coherente',g:'imp'},
+      {t:'La coherencia interna no puede variar entre estadios',g:'imp'},
+      {t:'Usa terminología de Kohlberg'},
+    ]},
+   ]},
+  {id:'leg',short:'Legalidad, legitimidad · 6.1',title:'Cuestión 6.1 — Legalidad, legitimidad y desobediencia civil',meta:'Texto sobre el alquiler · 0,5 pts cada subcuestión',
+   note:'La 6.1.2 no tiene respuesta única correcta, pero sí criterios de calidad argumental. «Si la ley es injusta» sin especificar condiciones es insuficiente.',
+   blocks:[
+    {h:'6.1.1 — Legalidad vs. legitimidad',pts:true,items:[
+      {t:'Define legalidad: conformidad con el ordenamiento jurídico vigente',g:'imp'},
+      {t:'Define legitimidad: reconocimiento moral o social del derecho a mandar',g:'imp'},
+      {t:'Establece la diferencia explícitamente: legal ≠ legítimo',g:'imp'},
+      {t:'Aporta un ejemplo coherente',g:'imp'},
+      {t:'El ejemplo está explicado, no solo enunciado',g:'imp'},
+      {t:'Error: usar «legítimo» y «legal» como sinónimos',g:'err'},
+      {t:'Error: confundir legitimidad con popularidad o mayoría',g:'err'},
+      {t:'Conecta con la cita del texto'},
+    ]},
+    {h:'6.1.2 — Condiciones para la desobediencia civil',pts:true,items:[
+      {t:'Toma una postura clara y la sostiene con argumentos',g:'imp'},
+      {t:'Establece al menos una condición concreta',g:'imp'},
+      {t:'La(s) condición(es) está(n) razonada(s)',g:'imp'},
+      {t:'Contempla algún límite o criterio de proporcionalidad',g:'imp'},
+      {t:'Coherencia interna',g:'imp'},
+      {t:'Error: responder «nunca» o «siempre» sin argumentar',g:'err'},
+      {t:'Error: confundir desobediencia civil con cualquier acto ilegal',g:'err'},
+      {t:'Conecta con el caso del texto'},
+      {t:'Menciona referentes filosóficos del curso'},
+    ]},
+   ]},
+  {id:'cont',short:'Contractualistas · Locke y Rousseau',title:'Los contractualistas: Locke y Rousseau ante la crisis del alquiler',meta:'Texto sobre el alquiler',
+   note:'La pregunta exige tres cosas: aplicar cada autor al caso, responder las dos preguntas del enunciado, y señalar al menos una diferencia significativa.',
+   blocks:[
+    {h:'1. Marco contractualista común',items:[
+      {t:'Ambos contractualistas: el Estado surge de un pacto',g:'imp'},
+      {t:'Si el Estado incumple, el pacto puede considerarse roto',g:'imp'},
+      {t:'Aplica al texto: la situación del alquiler como posible incumplimiento',g:'imp'},
+    ]},
+    {h:'2. Locke: ¿se ha roto el pacto?',items:[
+      {t:'Para Locke el pacto es condicional: defender los derechos individuales',g:'imp'},
+      {t:'Aplica: si el Estado no protege el acceso a la vivienda, incumple el pacto',g:'imp'},
+      {t:'El pacto se rompe cuando el gobierno actúa contra los intereses de quienes lo legitimaron',g:'imp'},
+    ]},
+    {h:'3. Locke: derecho de resistencia',items:[
+      {t:'Locke reconoce explícitamente el derecho de resistencia',g:'imp'},
+      {t:'Aplica: los inquilinos podrían estar justificados para resistir o exigir cambio político',g:'imp'},
+      {t:'Error: afirmar que Locke avala cualquier desobediencia individual; es colectiva y último recurso',g:'err'},
+    ]},
+    {h:'4. Rousseau: ¿se ha roto el pacto?',items:[
+      {t:'Para Rousseau el pacto se basa en la voluntad general: el bien común de todos',g:'imp'},
+      {t:'Aplica: el mercado del alquiler va contra la voluntad general',g:'imp'},
+      {t:'La propiedad privada desigual es fuente de corrupción (Rousseau)'},
+    ]},
+    {h:'5. Rousseau: derecho de resistencia',items:[
+      {t:'La legitimidad depende de que el poder represente la voluntad general',g:'imp'},
+      {t:'Aplica: la movilización masiva puede ser expresión de la voluntad general',g:'imp'},
+      {t:'Error: equiparar el derecho de resistencia de Rousseau al de Locke',g:'err'},
+    ]},
+    {h:'6. Diferencia significativa (exigida por el enunciado)',items:[
+      {t:'Señala al menos una diferencia significativa',g:'imp'},
+      {t:'La diferencia está argumentada, no solo enunciada',g:'imp'},
+      {t:'Contraste: Locke = derechos individuales; Rousseau = bien común y voluntad general',g:'comp'},
+      {t:'Contraste: Locke = el Estado incumple; Rousseau = problema estructural (propiedad, mercado)',g:'comp'},
+      {t:'Contraste: resistencia en Locke = frente al abuso; en Rousseau = reconstitución de la voluntad general',g:'comp'},
+      {t:'Error: tratar a Locke y Rousseau como equivalentes',g:'err'},
+      {t:'Error: confundir a Rousseau con un defensor del comunismo',g:'err'},
+    ]},
+    {h:'7. Expresión y estructura',items:[
+      {t:'Responde explícitamente a las dos preguntas del enunciado',g:'imp'},
+      {t:'Estructura por autor'},
+      {t:'Vocabulario: pacto social, voluntad general, derecho de resistencia, bien común…'},
+    ]},
+   ]},
+  {id:'maq',short:'Maquiavelo · Movilización por el alquiler',title:'Maquiavelo ante la movilización por el alquiler',meta:'Texto sobre el alquiler',
+   note:'La trampa: responder lo que haría un gobernante «justo». El criterio es siempre la eficacia y la conservación del poder. El bloque 4 discrimina el 7 del 9.',
+   blocks:[
+    {h:'1. Marco teórico: realismo político',items:[
+      {t:'Maquiavelo como fundador del realismo político y autor de El Príncipe',g:'imp'},
+      {t:'Principio central: política separada de la moral; criterio = eficacia y conservación del poder',g:'imp'},
+      {t:'La virtù: adaptarse a las circunstancias (fortuna) para mantener el poder',g:'imp'},
+      {t:'Error: confundir el realismo político con cinismo sin lógica coherente',g:'err'},
+    ]},
+    {h:'2. Diagnóstico maquiaveliano',items:[
+      {t:'Una movilización de «decenas de miles» señala debilidad del gobernante',g:'imp'},
+      {t:'Maquiavelo: no ser odiado por el pueblo es fundamental',g:'imp'},
+      {t:'Dilema: sin respuesta = debilidad; con exceso de fuerza = más odio',g:'imp'},
+    ]},
+    {h:'3. Recomendación: combinación león / zorro',items:[
+      {t:'Introduce la metáfora del león (fuerza) y el zorro (astucia)',g:'imp'},
+      {t:'Recomendaría actuar como zorro: concesiones para desactivar el conflicto sin ceder el control',g:'imp'},
+      {t:'La represión directa (solo el león) sería contraproducente',g:'imp'},
+      {t:'La respuesta ideal es gestionar la percepción'},
+      {t:'Error: afirmar que Maquiavelo recomendaría solo represión o solo capitulación',g:'err'},
+    ]},
+    {h:'4. Apariencia vs. realidad',items:[
+      {t:'El gobernante debe parecer virtuoso aunque no lo sea',g:'imp'},
+      {t:'Aplica: anunciar medidas para el alquiler puede ser más eficaz que resolverlo de verdad',g:'imp'},
+      {t:'Error: interpretar esto como aprobación moral de la manipulación',g:'err'},
+    ]},
+    {h:'5. Expresión y calidad argumental',items:[
+      {t:'Deduce la recomendación a partir de los principios, no solo parafrasea al autor',g:'imp'},
+      {t:'Conecta explícitamente los principios con el caso concreto',g:'imp'},
+      {t:'Vocabulario: realismo político, virtù, fortuna, león/zorro, conservación del poder…'},
+      {t:'Valorable: contrasta con contractualistas o Rawls'},
+    ]},
+   ]},
+];
+
+const W={imp:3,comp:2,val:1};
+const ERR_PEN=1.5;
+let cur=0;
+const state={};
+
+function sk(q,b,i){return q+'_'+b+'_'+i}
+function ld(k){try{return localStorage.getItem('filo_'+k)||'0'}catch(e){return'0'}}
+function sv(k,v){try{localStorage.setItem('filo_'+k,v)}catch(e){}}
+
+function calcNota(qi){
+  const q=QUESTS[qi];
+  let wC=0,wCM=0,wV=0,wVM=0,nE=0,eM=0;
+  q.blocks.forEach((b,bi)=>b.items.forEach((item,ii)=>{
+    const v=state[sk(q.id,bi,ii)]||ld(sk(q.id,bi,ii));
+    if(item.g==='err'){eM++;if(v==='2')nE++;}
+    else if(item.g==='imp'||item.g==='comp'){const w=item.g==='imp'?W.imp:W.comp;wCM+=w;if(v==='1')wC+=w;}
+    else{wVM+=W.val;if(v==='1')wV+=W.val;}
+  }));
+  const tot=wCM+wVM;
+  if(tot===0)return{nota:null,pc:0,pv:0,pe:0,wC,wCM,wV,wVM,nE};
+  const raw=(wC+wV)/tot;
+  const pen=nE*ERR_PEN/10;
+  const nota=Math.max(1,Math.min(10,Math.round((raw*9+1-pen)*10)/10));
+  return{nota,pc:wCM>0?Math.round(wC/wCM*100):0,pv:wVM>0?Math.round(wV/wVM*100):0,pe:eM>0?Math.round(nE/eM*100):0,wC,wCM,wV,wVM,nE};
+}
+
+function nc(n){
+  if(n===null)return'#888';
+  if(n>=9)return'#3B6D11';if(n>=7)return'#185FA5';if(n>=5)return'#BA7517';return'#A32D2D';
+}
+
+function buildNav(){
+  const nav=document.getElementById('nav');nav.innerHTML='';
+  QUESTS.forEach((q,qi)=>{
+    const btn=document.createElement('button');
+    btn.className='nav-item'+(qi===cur?' active':'');
+    const {nota}=calcNota(qi);
+    btn.innerHTML=`<span class="nav-label">${q.short}</span><span class="nav-nota" style="color:${nc(nota)}">${nota!==null?nota.toFixed(1):'—'}</span>`;
+    btn.onclick=()=>goto(qi);
+    nav.appendChild(btn);
+    if(qi<QUESTS.length-1){const s=document.createElement('div');s.className='nav-sep';nav.appendChild(s);}
+  });
+}
+
+function goto(qi){cur=qi;buildNav();buildContent();}
+
+function buildContent(){
+  const q=QUESTS[cur];
+  document.getElementById('main-title').textContent=q.title;
+  document.getElementById('main-meta').textContent=q.meta;
+  const content=document.getElementById('content');content.innerHTML='';
+  q.blocks.forEach((blk,bi)=>{
+    const div=document.createElement('div');div.className='block';
+    const head=document.createElement('div');head.className='block-head';
+    let hh=`<span class="block-name">${blk.h}`;
+    if(blk.nivel)hh+=`<span class="nivel ${blk.nivel}">${blk.nivel==='n1'?'N1 · Preconv.':blk.nivel==='n2'?'N2 · Conv.':'N3 · Postconv.'}</span>`;
+    if(blk.pts)hh+=`<span class="pts-badge">0,5 pts</span>`;
+    hh+=`</span><span class="block-score" id="bs_${bi}"></span>`;
+    head.innerHTML=hh;div.appendChild(head);
+    blk.items.forEach((item,ii)=>{
+      const k=sk(q.id,bi,ii);const v=ld(k);state[k]=v;
+      const isErr=item.g==='err';
+      const btn=document.createElement('button');
+      btn.className='row'+(v==='1'?' ok':v==='2'?' bad':'')+(isErr&&v==='0'?' err-hint':'');
+      const tagHtml=item.g==='imp'?'<span class="tag t-imp">clave</span>':item.g==='comp'?'<span class="tag t-comp">contraste</span>':item.g==='err'?'<span class="tag t-err">error</span>':'';
+      btn.innerHTML=`<div class="cb">${v==='1'?'✓':v==='2'?'✗':''}</div><div class="row-body">${item.t}${tagHtml}</div>`;
+      btn.onclick=()=>toggleRow(btn,k,isErr,bi,q.id);
+      div.appendChild(btn);
+    });
+    content.appendChild(div);updateBS(bi,q.id);
+  });
+  if(q.note){const nb=document.createElement('div');nb.className='note-box';nb.innerHTML=`<div class="note-title">Notas de corrección</div><p class="note-text">${q.note}</p>`;content.appendChild(nb);}
+  updatePanel();
+}
+
+function toggleRow(btn,k,isErr,bi,qid){
+  const cv=state[k];const next=cv==='0'?(isErr?'2':'1'):'0';
+  state[k]=next;sv(k,next);
+  btn.className='row'+(next==='1'?' ok':next==='2'?' bad':'')+(isErr&&next==='0'?' err-hint':'');
+  btn.querySelector('.cb').textContent=next==='1'?'✓':next==='2'?'✗':'';
+  updateBS(bi,qid);updatePanel();buildNav();
+}
+
+function updateBS(bi,qid){
+  const q=QUESTS.find(q=>q.id===qid);let ok=0,bad=0;
+  q.blocks[bi].items.forEach((_,ii)=>{const v=state[sk(qid,bi,ii)]||'0';if(v==='1')ok++;if(v==='2')bad++;});
+  const el=document.getElementById('bs_'+bi);if(!el)return;
+  el.textContent=ok>0&&bad>0?`✓${ok} ✗${bad}`:ok>0?`✓${ok}`:bad>0?`✗${bad}`:'';
+}
+
+function updatePanel(){
+  const {nota,pc,pv,pe,wC,wCM,wV,wVM,nE}=calcNota(cur);
+  const nn=document.getElementById('nota-num');
+  nn.textContent=nota!==null?nota.toFixed(1):'—';nn.style.color=nc(nota);
+  document.getElementById('ct').textContent=`${wC}/${wCM}`;
+  document.getElementById('vt').textContent=`${wV}/${wVM}`;
+  document.getElementById('et').textContent=nE;
+  document.getElementById('bc').style.width=pc+'%';
+  document.getElementById('bv').style.width=pv+'%';
+  document.getElementById('be').style.width=pe+'%';
+  document.getElementById('bd').textContent=pc+'%';
+  document.getElementById('vd').textContent=pv+'%';
+  document.getElementById('ed').textContent=pe>0?'-'+pe+'%':'0%';
+}
+
+function resetCurrent(){
+  const q=QUESTS[cur];
+  q.blocks.forEach((b,bi)=>b.items.forEach((_,ii)=>{const k=sk(q.id,bi,ii);state[k]='0';sv(k,'0');}));
+  buildContent();buildNav();
+}
+
+function exportHTML(){
+  const q=QUESTS[cur];
+  const {nota,pc,pv,pe,wC,wCM,wV,wVM,nE}=calcNota(cur);
+  const notaStr=nota!==null?nota.toFixed(1):'—';
+  const color=nc(nota);
+  let rows='';
+  q.blocks.forEach((blk,bi)=>{
+    rows+=`<div class="block"><div class="block-head"><span class="block-name">${blk.h}${blk.nivel?`<span class="nivel ${blk.nivel}">${blk.nivel==='n1'?'N1':blk.nivel==='n2'?'N2':'N3'}</span>`:''}${blk.pts?'<span class="pts-badge">0,5 pts</span>':''}</span></div>`;
+    blk.items.forEach((item,ii)=>{
+      const v=state[sk(q.id,bi,ii)]||'0';
+      const cls='row'+(v==='1'?' ok':v==='2'?' bad':'')+(item.g==='err'&&v==='0'?' err-hint':'');
+      const tagHtml=item.g==='imp'?'<span class="tag t-imp">clave</span>':item.g==='comp'?'<span class="tag t-comp">contraste</span>':item.g==='err'?'<span class="tag t-err">error</span>':'';
+      const sym=v==='1'?'✓':v==='2'?'✗':'';
+      const cbcls='cb'+(v==='1'?' cb-ok':v==='2'?' cb-bad':'');
+      rows+=`<div class="${cls}"><div class="${cbcls}">${sym}</div><div class="row-body">${item.t}${tagHtml}</div></div>`;
+    });
+    rows+='</div>';
+  });
+  const noteHtml=q.note?`<div class="note-box"><div class="note-title">Notas de corrección</div><p class="note-text">${q.note}</p></div>`:'';
+
+  const html=`<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FiloNesi · ${q.title}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1a1a1a;padding:24px;max-width:800px;margin:0 auto}
+h1{font-size:18px;font-weight:700;color:#2B3A6B;margin-bottom:4px}
+.meta{font-size:12px;color:#888;margin-bottom:16px}
+.score-panel{display:flex;align-items:center;gap:16px;padding:12px 16px;border:1px solid #e0dfd8;border-radius:10px;background:#f7f6f2;margin-bottom:16px}
+.nota-block{text-align:center;min-width:56px}
+.nota-num{font-size:32px;font-weight:700;line-height:1;color:${color}}
+.nota-den{font-size:12px;color:#888}
+.nota-lbl{font-size:10px;color:#888;margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.bars-block{flex:1;display:flex;flex-direction:column;gap:6px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-lbl{font-size:11px;color:#555;min-width:90px}
+.bar-track{flex:1;height:5px;background:#e0dfd8;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bf-clave{background:#2B3A6B}
+.bf-val{background:#3B6D11}
+.bf-err{background:#A32D2D}
+.bar-pct{font-size:11px;color:#888;min-width:32px;text-align:right}
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #e0dfd8;margin-bottom:14px;font-size:11px;color:#666}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px}
+.t-imp{background:#faeeda;color:#633806}
+.t-comp{background:#e1f5ee;color:#085041}
+.t-err{background:#fcebeb;color:#791f1f}
+.block{margin-bottom:10px;border:1px solid #e0dfd8;border-radius:10px;overflow:hidden}
+.block-head{padding:8px 12px;background:#f7f6f2;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e0dfd8}
+.block-name{font-size:12px;font-weight:600;color:#1a1a1a}
+.nivel{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;margin-left:5px}
+.n1{background:#FFF3CD;color:#7A4F00}.n2{background:#D4EDDA;color:#145523}.n3{background:#D1ECF1;color:#0C5460}
+.pts-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#e6f1fb;color:#0c447c;margin-left:5px}
+.row{display:flex;align-items:flex-start;gap:10px;padding:7px 12px;border-top:1px solid #e0dfd8}
+.row.ok{background:#edf7ed}.row.bad{background:#fdf1f1}.row.err-hint{background:#fef8f8}
+.cb{width:17px;height:17px;border-radius:4px;border:1.5px solid #c8c7bf;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#fff}
+.cb-ok{background:#3B6D11;border-color:#3B6D11;color:#fff}
+.cb-bad{background:#A32D2D;border-color:#A32D2D;color:#fff}
+.row-body{flex:1;font-size:13px;color:#1a1a1a;line-height:1.5}
+.row.ok .row-body,.row.bad .row-body{color:#555}
+.note-box{margin-top:12px;padding:10px 14px;border-left:3px solid #2B3A6B;background:#eef0f7}
+.note-title{font-size:10px;font-weight:700;color:#2B3A6B;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.note-text{font-size:12px;color:#444;line-height:1.65}
+.footer{margin-top:24px;padding-top:12px;border-top:1px solid #e0dfd8;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
+@media print{body{padding:12px}.score-panel{break-inside:avoid}.block{break-inside:avoid}}
+</style>
+</head>
+<body>
+<h1>${q.title}</h1>
+<div class="meta">${q.meta} · FiloNesi · 1.º Bachillerato Filosofía</div>
+<div class="score-panel">
+  <div class="nota-block">
+    <div class="nota-num">${notaStr}</div>
+    <div class="nota-den">/10</div>
+    <div class="nota-lbl">nota estimada</div>
+  </div>
+  <div class="bars-block">
+    <div class="bar-row"><span class="bar-lbl">Clave ${wC}/${wCM}</span><div class="bar-track"><div class="bar-fill bf-clave" style="width:${pc}%"></div></div><span class="bar-pct">${pc}%</span></div>
+    <div class="bar-row"><span class="bar-lbl">Valorable ${wV}/${wVM}</span><div class="bar-track"><div class="bar-fill bf-val" style="width:${pv}%"></div></div><span class="bar-pct">${pv}%</span></div>
+    <div class="bar-row"><span class="bar-lbl">Errores ${nE}</span><div class="bar-track"><div class="bar-fill bf-err" style="width:${pe}%"></div></div><span class="bar-pct">${pe>0?'-'+pe+'%':'0%'}</span></div>
+  </div>
+</div>
+<div class="legend">
+  <span class="tag t-imp">clave</span> peso ×3 &nbsp;
+  <span class="tag t-comp">contraste</span> peso ×2 &nbsp;
+  sin etiqueta → ×1 &nbsp;
+  <span class="tag t-err">error</span> penaliza −1,5 pts
+</div>
+${rows}${noteHtml}
+<div class="footer"><span>FiloNesi · 1.º Bachillerato Filosofía</span><span>Exportado el ${new Date().toLocaleDateString('es-ES')}</span></div>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`cotejo_${q.id}_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+buildNav();buildContent();
+</script>
+</body>
+</html>
