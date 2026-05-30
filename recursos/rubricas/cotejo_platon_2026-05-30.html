@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FiloNesi · Intelectualismo político de Platón</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1a1a1a;padding:24px;max-width:800px;margin:0 auto}
+h1{font-size:18px;font-weight:700;color:#2B3A6B;margin-bottom:4px}
+.meta{font-size:12px;color:#888;margin-bottom:16px}
+.score-panel{display:flex;align-items:center;gap:16px;padding:12px 16px;border:1px solid #e0dfd8;border-radius:10px;background:#f7f6f2;margin-bottom:16px}
+.nota-block{text-align:center;min-width:56px}
+.nota-num{font-size:32px;font-weight:700;line-height:1;color:#A32D2D}
+.nota-den{font-size:12px;color:#888}
+.nota-lbl{font-size:10px;color:#888;margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.bars-block{flex:1;display:flex;flex-direction:column;gap:6px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-lbl{font-size:11px;color:#555;min-width:90px}
+.bar-track{flex:1;height:5px;background:#e0dfd8;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bf-clave{background:#2B3A6B}
+.bf-val{background:#3B6D11}
+.bf-err{background:#A32D2D}
+.bar-pct{font-size:11px;color:#888;min-width:32px;text-align:right}
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #e0dfd8;margin-bottom:14px;font-size:11px;color:#666}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px}
+.t-imp{background:#faeeda;color:#633806}
+.t-comp{background:#e1f5ee;color:#085041}
+.t-err{background:#fcebeb;color:#791f1f}
+.block{margin-bottom:10px;border:1px solid #e0dfd8;border-radius:10px;overflow:hidden}
+.block-head{padding:8px 12px;background:#f7f6f2;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e0dfd8}
+.block-name{font-size:12px;font-weight:600;color:#1a1a1a}
+.nivel{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;margin-left:5px}
+.n1{background:#FFF3CD;color:#7A4F00}.n2{background:#D4EDDA;color:#145523}.n3{background:#D1ECF1;color:#0C5460}
+.pts-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;background:#e6f1fb;color:#0c447c;margin-left:5px}
+.row{display:flex;align-items:flex-start;gap:10px;padding:7px 12px;border-top:1px solid #e0dfd8}
+.row.ok{background:#edf7ed}.row.bad{background:#fdf1f1}.row.err-hint{background:#fef8f8}
+.cb{width:17px;height:17px;border-radius:4px;border:1.5px solid #c8c7bf;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#fff}
+.cb-ok{background:#3B6D11;border-color:#3B6D11;color:#fff}
+.cb-bad{background:#A32D2D;border-color:#A32D2D;color:#fff}
+.row-body{flex:1;font-size:13px;color:#1a1a1a;line-height:1.5}
+.row.ok .row-body,.row.bad .row-body{color:#555}
+.note-box{margin-top:12px;padding:10px 14px;border-left:3px solid #2B3A6B;background:#eef0f7}
+.note-title{font-size:10px;font-weight:700;color:#2B3A6B;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.note-text{font-size:12px;color:#444;line-height:1.65}
+.footer{margin-top:24px;padding-top:12px;border-top:1px solid #e0dfd8;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
+@media print{body{padding:12px}.score-panel{break-inside:avoid}.block{break-inside:avoid}}
+</style>
+</head>
+<body>
+<h1>Intelectualismo político de Platón</h1>
+<div class="meta">Desarrollo ~150 palabras · FiloNesi · 1.º Bachillerato Filosofía</div>
+<div class="score-panel">
+  <div class="nota-block">
+    <div class="nota-num">1.0</div>
+    <div class="nota-den">/10</div>
+    <div class="nota-lbl">nota estimada</div>
+  </div>
+  <div class="bars-block">
+    <div class="bar-row"><span class="bar-lbl">Clave 0/27</span><div class="bar-track"><div class="bar-fill bf-clave" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
+    <div class="bar-row"><span class="bar-lbl">Valorable 0/10</span><div class="bar-track"><div class="bar-fill bf-val" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
+    <div class="bar-row"><span class="bar-lbl">Errores 0</span><div class="bar-track"><div class="bar-fill bf-err" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
+  </div>
+</div>
+<div class="legend">
+  <span class="tag t-imp">clave</span> peso ×3 &nbsp;
+  <span class="tag t-comp">contraste</span> peso ×2 &nbsp;
+  sin etiqueta → ×1 &nbsp;
+  <span class="tag t-err">error</span> penaliza −1,5 pts
+</div>
+<div class="block"><div class="block-head"><span class="block-name">1. Crítica a la democracia ateniense</span></div><div class="row"><div class="cb"></div><div class="row-body">Identifica que la democracia asumía que cualquier ciudadano puede gobernar<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Menciona que «lo justo es lo que la asamblea designa»</div></div><div class="row"><div class="cb"></div><div class="row-body">Establece la oposición de Platón a la democracia como punto de partida</div></div></div><div class="block"><div class="block-head"><span class="block-name">2. El principio del intelectualismo político</span></div><div class="row"><div class="cb"></div><div class="row-body">Enuncia la tesis: solo quien sabe debe gobernar<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Relaciona el intelectualismo político con el intelectualismo moral de Sócrates<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Explica que el mal gobierno se debe a que ni los sabios gobiernan ni los gobernantes se hacen sabios</div></div><div class="row"><div class="cb"></div><div class="row-body">Conecta con el antirelativismo socrático frente a los sofistas</div></div></div><div class="block"><div class="block-head"><span class="block-name">3. El filósofo-gobernante</span></div><div class="row"><div class="cb"></div><div class="row-body">Explica quién es el «filósofo»: el que se dirige al conocimiento de la justicia<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Distingue saber teórico del saber práctico (saber hacer)<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Argumenta que solo el filósofo puede aplicar la justicia al gobierno de la polis</div></div><div class="row"><div class="cb"></div><div class="row-body">Menciona la Carta VII como fuente del ideal filosófico-político</div></div></div><div class="block"><div class="block-head"><span class="block-name">4. Justicia, alma y Estado en la República</span></div><div class="row"><div class="cb"></div><div class="row-body">Menciona que Platón trata la justicia en la República<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Indica la correspondencia entre las partes del alma y las partes del Estado<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Nombra los tres estamentos: gobernantes (prudencia), guardianes (valentía), productores (templanza)<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Define la justicia platónica: «que cada cual haga lo suyo» / armonía entre las partes<span class="tag t-imp">clave</span></div></div><div class="row"><div class="cb"></div><div class="row-body">Señala que la justicia genera armonía y felicidad</div></div></div><div class="block"><div class="block-head"><span class="block-name">5. Expresión y estructura</span></div><div class="row"><div class="cb"></div><div class="row-body">Extensión aproximada de 150 palabras (±20 %)</div></div><div class="row"><div class="cb"></div><div class="row-body">Cohesión argumental</div></div><div class="row"><div class="cb"></div><div class="row-body">Vocabulario filosófico preciso</div></div></div><div class="note-box"><div class="note-title">Notas de corrección</div><p class="note-text">Sin el bloque 4 (alma, Estado, virtudes, justicia) el desarrollo es incompleto aunque sea fluido. Los ítems de contraste discriminan el 7 del 9.</p></div>
+<div class="footer"><span>FiloNesi · 1.º Bachillerato Filosofía</span><span>Exportado el 30/5/2026</span></div>
+</body></html>
