@@ -1,1 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U1 · Sesión 1 — ¿Confío en mis talentos? · Cuaderno MAE</title>
+<meta name="description" content="Cuaderno de trabajo del alumnado. Atención Educativa. Unidad 1: ¿Confío en mis talentos? Sesión 1: el caso de Lytos, síntesis y coaching.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --carmin:       #A81436;
+    --carmin-medio: #C3395A;
+    --carmin-claro: #E9A9B8;
+    --carmin-pale:  #FAEDF0;
+    --carmin-bg:    #FDF7F8;
+    --tinta:        #22201F;
+    --tinta-media:  #4C4846;
+    --tinta-suave:  #7A7370;
+    --papel:        #FFFFFF;
+    --fondo:        #F6F2EE;
+    --borde:        #E7DED8;
+    --pauta:        #C9BFB8;
+    --ocre:         #8A6100;
+    --ocre-pale:    #FFF6E2;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-size: 17px;
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── BARRA DEL CUADERNO ─────────────────────────────────── */
+  .cuaderno-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--borde);
+  }
+  .cuaderno-bar .inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 10px 28px;
+    display: flex; align-items: center; gap: 20px;
+    flex-wrap: wrap;
+  }
+  .marca {
+    display: flex; align-items: baseline; gap: 9px;
+    flex-shrink: 0;
+  }
+  .marca b {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: 15px;
+    color: var(--carmin); letter-spacing: .01em;
+  }
+  .marca span {
+    font-size: 12px; color: var(--tinta-suave);
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  nav.sesiones {
+    display: flex; align-items: center; gap: 5px;
+    margin-left: auto; flex-wrap: wrap;
+  }
+  nav.sesiones a, nav.sesiones span.prox {
+    font-size: 12.5px; font-weight: 500;
+    padding: 5px 12px; border-radius: 30px;
+    text-decoration: none; letter-spacing: .02em;
+    border: 1px solid var(--borde);
+    color: var(--tinta-suave); background: transparent;
+    transition: all .18s;
+  }
+  nav.sesiones a:hover { border-color: var(--carmin-claro); color: var(--carmin); background: var(--carmin-pale); }
+  nav.sesiones a.actual {
+    background: var(--carmin); border-color: var(--carmin); color: #fff;
+  }
+  nav.sesiones span.prox { opacity: .45; cursor: default; }
+
+  /* ── HOJA ───────────────────────────────────────────────── */
+  .hoja {
+    max-width: 1080px; margin: 0 auto;
+    background: var(--papel);
+    border-left: 1px solid var(--borde);
+    border-right: 1px solid var(--borde);
+    padding: 0 0 80px;
+  }
+  .contenido { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── PORTADA DE SESIÓN ──────────────────────────────────── */
+  header.portada {
+    background: var(--carmin-bg);
+    border-bottom: 3px solid var(--carmin);
+    padding: 54px 28px 40px;
+    margin-bottom: 46px;
+  }
+  header.portada .contenido { padding: 0 0; }
+  .kicker {
+    font-size: 12.5px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--carmin-medio);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: clamp(34px, 5.4vw, 50px);
+    line-height: 1.08; letter-spacing: -.02em;
+    color: var(--carmin); margin-bottom: 16px;
+  }
+  .talento {
+    display: inline-block;
+    font-size: 13.5px; font-weight: 500; letter-spacing: .05em;
+    text-transform: uppercase;
+    background: #fff; color: var(--carmin);
+    border: 1px solid var(--carmin-claro);
+    padding: 6px 16px; border-radius: 30px;
+  }
+  .identificacion {
+    margin-top: 34px; display: flex; gap: 28px; flex-wrap: wrap;
+    font-size: 13.5px; color: var(--tinta-suave);
+  }
+  .identificacion .campo { flex: 1 1 200px; }
+  .identificacion .campo em {
+    font-style: normal; letter-spacing: .06em; text-transform: uppercase;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .identificacion .campo .linea {
+    margin-top: 6px; border-bottom: 1.5px dotted var(--pauta); height: 22px;
+  }
+
+  /* ── SECCIONES ──────────────────────────────────────────── */
+  section { margin-bottom: 56px; }
+  .rotulo {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .rotulo h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--carmin);
+    white-space: nowrap;
+  }
+  .rotulo .pagina {
+    font-size: 12px; color: var(--tinta-suave); letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .rotulo .filete { flex: 1; height: 1px; background: var(--carmin-claro); }
+
+  h3.titular {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600; font-size: clamp(23px, 3.2vw, 30px);
+    line-height: 1.24; color: var(--tinta);
+    margin-bottom: 26px; letter-spacing: -.01em;
+  }
+
+  p { margin-bottom: 17px; text-align: justify; hyphens: auto; }
+  p strong { font-weight: 700; color: var(--carmin); }
+  p em { font-style: italic; }
+
+  .fuente {
+    font-size: 14px; color: var(--tinta-suave);
+    border-top: 1px solid var(--borde);
+    padding-top: 14px; margin-top: 26px; text-align: left;
+  }
+  .fuente a { color: var(--carmin-medio); word-break: break-all; }
+
+  /* ── ENLACE AL VÍDEO ────────────────────────────────────── */
+  .video-aviso {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--ocre-pale);
+    border: 1px solid #F0DFB4; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 30px;
+    font-size: 14.5px;
+  }
+  .video-aviso svg { flex-shrink: 0; }
+  .video-aviso a { color: var(--ocre); font-weight: 500; }
+  .video-aviso .url-impresa { display: none; }
+
+  /* ── CITA DESTACADA ─────────────────────────────────────── */
+  blockquote.cita {
+    background: var(--carmin-pale);
+    border-radius: 12px;
+    padding: 30px 34px;
+    margin: 32px 0;
+    text-align: center;
+  }
+  blockquote.cita p {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: clamp(19px, 2.6vw, 23px); line-height: 1.42;
+    color: var(--carmin); text-align: center; margin: 0;
+  }
+
+  /* ── SÍNTESIS ───────────────────────────────────────────── */
+  .sintesis-texto {
+    border-left: 4px solid var(--carmin-claro);
+    padding-left: 22px;
+    font-size: 17.5px;
+  }
+
+  /* ── ACTIVIDADES ────────────────────────────────────────── */
+  .actividad { margin-top: 30px; }
+  .actividad-enunciado {
+    display: flex; gap: 15px; align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .num {
+    flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--carmin); color: #fff;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .actividad-enunciado p { margin: 0; text-align: left; }
+
+  /* ── PAUTAS PARA ESCRIBIR A MANO ────────────────────────── */
+  .pautas { margin: 8px 0 4px; }
+  .pautas .renglon {
+    border-bottom: 1.5px dotted var(--pauta);
+    height: 34px;
+  }
+  .pautas.numeradas { counter-reset: paso; }
+  .pautas.numeradas .renglon {
+    display: flex; align-items: flex-end; gap: 10px;
+  }
+  .pautas.numeradas .renglon::before {
+    counter-increment: paso;
+    content: counter(paso) ".";
+    font-size: 14px; font-weight: 500; color: var(--carmin-medio);
+    padding-bottom: 5px;
+  }
+
+  /* ── TABLA DE COACHING ──────────────────────────────────── */
+  .tabla-wrap { overflow-x: auto; margin: 8px 0 6px; }
+  table.coaching {
+    width: 100%; border-collapse: collapse;
+    min-width: 560px;
+  }
+  table.coaching th {
+    background: var(--carmin-pale);
+    border-bottom: 2px solid var(--carmin);
+    color: var(--tinta);
+    font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 13px 14px; text-align: center;
+    width: 33.33%;
+  }
+  table.coaching td {
+    border-bottom: 1.5px dotted var(--pauta);
+    border-right: 1px solid var(--borde);
+    height: 40px; padding: 0 10px;
+  }
+  table.coaching td:last-child { border-right: none; }
+
+  /* ── PASOS POR PAREJAS ──────────────────────────────────── */
+  .parejas {
+    background: var(--fondo);
+    border: 1px solid var(--borde); border-radius: 12px;
+    padding: 26px 28px; margin-top: 34px;
+  }
+  .parejas > p.intro { margin-bottom: 20px; text-align: left; }
+  ol.pasos-parejas { list-style: none; counter-reset: pp; }
+  ol.pasos-parejas > li {
+    counter-increment: pp;
+    padding-left: 44px; position: relative;
+    margin-bottom: 18px;
+  }
+  ol.pasos-parejas > li:last-child { margin-bottom: 0; }
+  ol.pasos-parejas > li::before {
+    content: counter(pp) ".º";
+    position: absolute; left: 0; top: 0;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 17px; font-weight: 700; color: var(--carmin);
+  }
+  ol.pasos-parejas > li > b { font-weight: 700; }
+  ol.pasos-parejas ul { margin: 8px 0 0 20px; }
+  ol.pasos-parejas ul li { margin-bottom: 5px; font-size: 16px; color: var(--tinta-media); }
+
+  /* ── CAJA GUARDADO ──────────────────────────────────────── */
+  .guardado {
+    margin-top: 44px;
+    background: var(--carmin-pale);
+    border: 1px solid var(--carmin-claro);
+    border-radius: 14px;
+    padding: 34px 30px 28px;
+    position: relative;
+    text-align: center;
+  }
+  .guardado .sello {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--papel); border: 1.5px solid var(--carmin-claro);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .guardado h4 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600; font-size: 20px; color: var(--carmin);
+    margin: 6px 0 22px;
+  }
+  .guardado .pautas .renglon { border-bottom-color: var(--carmin-claro); }
+
+  /* ── PIE ────────────────────────────────────────────────── */
+  footer.pie {
+    max-width: 1080px; margin: 0 auto;
+    padding: 26px 28px 60px;
+    font-size: 13px; color: var(--tinta-suave);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  footer.pie a { color: var(--carmin-medio); }
+
+  /* ── MÓVIL ──────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    header.portada { padding: 38px 20px 32px; }
+    .contenido { padding: 0 20px; }
+    p { text-align: left; }
+    .marca span { display: none; }
+  }
+
+  /* ── IMPRESIÓN ──────────────────────────────────────────── */
+  @media print {
+    @page { size: A4; margin: 16mm 15mm; }
+    body { background: #fff; font-size: 11.2pt; line-height: 1.5; }
+    .cuaderno-bar, footer.pie { display: none; }
+    .hoja { max-width: none; border: none; padding: 0; }
+    .contenido { max-width: none; padding: 0; }
+    header.portada {
+      background: none; padding: 0 0 18px; margin-bottom: 26px;
+      border-bottom: 2.5px solid var(--carmin);
+    }
+    h1 { font-size: 27pt; }
+    section { margin-bottom: 26px; page-break-inside: avoid; }
+    .video-aviso { background: none; border: 1px solid #ccc; }
+    .video-aviso .url-impresa { display: inline; }
+    blockquote.cita, .guardado, .parejas { background: none; }
+    .pautas .renglon { height: 26px; }
+    table.coaching th { background: none; }
+    .corte { page-break-before: always; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cuaderno-bar">
+  <div class="inner">
+    <div class="marca">
+      <b>Cuaderno de trabajo</b>
+      <span>Atención Educativa</span>
+    </div>
+    <nav class="sesiones" aria-label="Sesiones del cuaderno">
+      <a href="#" class="actual" aria-current="page">U1 · Sesión 1</a>
+      <span class="prox">Sesión 2</span>
+      <span class="prox">Sesión 3</span>
+      <span class="prox">Sesión 4</span>
+    </nav>
+  </div>
+</div>
+
+<main class="hoja">
+
+  <header class="portada">
+    <div class="contenido">
+      <div class="kicker">Unidad 1 · Sesión 1</div>
+      <h1>¿Confío en mis talentos?</h1>
+      <div class="talento">Talento: confianza</div>
+
+      <div class="identificacion">
+        <div class="campo">
+          <em>Nombre y apellidos</em>
+          <div class="linea"></div>
+        </div>
+        <div class="campo">
+          <em>Grupo</em>
+          <div class="linea"></div>
+        </div>
+        <div class="campo">
+          <em>Fecha</em>
+          <div class="linea"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="contenido">
+
+    <!-- ══════════ CASO ══════════ -->
+    <section id="caso">
+      <div class="rotulo">
+        <h2>El caso</h2>
+        <div class="filete"></div>
+      </div>
+
+      <div class="video-aviso">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A6100" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+          <path d="M10 9l5 3-5 3V9z" fill="#8A6100" stroke="none"></path>
+        </svg>
+        <div>
+          Antes de leer, ve el vídeo:
+          <a href="https://youtu.be/OSM5JQ3tC-s" target="_blank" rel="noopener">Lytos, <em>¿Arrogancia o confianza? La balanza</em></a><span class="url-impresa"> — youtu.be/OSM5JQ3tC-s</span>
+        </div>
+      </div>
+
+      <h3 class="titular">«La confianza ayuda y recibe ayuda de los demás para crecer juntos»</h3>
+
+      <p>Debido al estilo de vida que he llevado durante los últimos años, he conocido a muchísima gente de muchos países distintos; con diferentes trabajos, aficiones; más y menos famosos. Pero algo que me llamó mucho la atención de todas las personas que tenían éxito en sus respectivos campos era lo poco que les importaba la opinión de la gente, y la <strong>confianza que tenían en ellos mismos</strong>.</p>
+
+      <p>En mi opinión, la gente con éxito se separa en dos grandes grupos, que son básicamente: los que están por enchufe, por dinero, y que han escalado sin ningún tipo de esfuerzo más allá de su labor principal; y los que se lo han tenido que trabajar desde cero, o casi de cero: formándose, siendo autodidactas, trasnochándose sin parar, <strong>trabajando durísimo para alcanzar las metas</strong> que se habían propuesto, para cumplir sus aspiraciones y sus sueños.</p>
+
+      <p>Algo que estoy cansado de escuchar sobre la gente conocida, famosa o que simplemente ha tenido éxito es que «se le subió a la cabeza», «es un creído», «tiene mucho talento, pero le falta humildad». Y, aunque estoy de acuerdo en que a la gente que ha llegado alto, sin mucho esfuerzo, le puede resultar más fácil ser arrogante, la gente etiqueta demasiado rápido, sin siquiera detenerse a pensar en que quizás se confunden, porque su autoestima es el problema.</p>
+
+      <p>Yo mismo me voy a poner como ejemplo. He tenido etapas de muy baja autoestima, de creer que no valía nada, de mirar a los que estaban más arriba con envidia, de no querer echar para adelante. <strong>Siempre poniéndome excusas</strong>: que si «me falta el ordenador», que si «mi inglés no es suficiente», «mis letras no son tan buenas como para sacarlas todavía», y un largo etcétera de bla, bla, bla, que no tenía sentido.</p>
+
+      <p>¿Y saben qué es lo que hice? Pues, pagándolo a plazos, yo mismo me armé mi propio ordenador; aprendí inglés escribiendo mis letras y hablando con turistas; escribí durante años, poniéndome metas cada vez más y más complicadas. Todo lo que ganaba lo invertía en mi <em>home studio</em>. Me formé yo solo y terminé trabajando en un estudio profesional de producción, hasta que llegó un momento en que me di cuenta de que nunca era lo suficientemente bueno. Porque <strong>no lo estaba haciendo por mí, sino para demostrarle a los demás lo bueno que era</strong>.</p>
+
+      <p>Cuando conseguí darme cuenta de eso, <strong>comencé a valorar mi talento y no lo que la gente pensaba de él</strong>. Fue entonces cuando comencé a tener confianza en mí mismo, a admirar mi esfuerzo. Cuando compartía con los demás mi trabajo, lo hacía con ilusión y con un entusiasmo que muchos confundían con arrogancia o prepotencia. Al principio, no lo entendía. No entendía el porqué, hasta que recordé que sentía lo mismo cuando todavía tenía los ojos vendados y no veía más allá de mi nariz.</p>
+
+      <p>En mi opinión, <strong>el secreto está en tener equilibrada la balanza</strong>. Ser realista contigo mismo: saber cuáles son tus virtudes y usarlas en tu beneficio, y cuáles son tus debilidades, para trabajar en ellas. No te quejes de lo que no tienes; usa lo que tienes para hacerlo lo mejor que puedas. Y, por muy bueno que seas en algo, jamás te creas mejor que nadie, porque la arrogancia pasa por encima de los demás para seguir adelante. Pero <strong>la confianza ayuda y recibe ayuda de los demás para crecer juntos</strong>.</p>
+
+      <p class="fuente">
+        <em>Fuente: canal de YouTube Lytos. (2015). ¿Arrogancia o confianza? La balanza. Versión adaptada.</em>
+        <a href="https://youtu.be/OSM5JQ3tC-s" target="_blank" rel="noopener">youtu.be/OSM5JQ3tC-s</a>
+      </p>
+    </section>
+
+    <!-- ══════════ SÍNTESIS ══════════ -->
+    <section id="sintesis">
+      <div class="rotulo">
+        <h2>Síntesis</h2>
+        <div class="filete"></div>
+        <div class="pagina">Pág. 12</div>
+      </div>
+
+      <p class="sintesis-texto">Sin confianza es muy difícil aprovechar tus cualidades para hacer lo que te gusta. Por eso, has de creer en ti mismo, descubrir tus talentos y no creerte mejor que nadie. Simplemente ayudar y dejarte ayudar.</p>
+
+      <div class="actividad">
+        <div class="actividad-enunciado">
+          <div class="num">1</div>
+          <p>Selecciona las frases de Lytos que más te gustaron y únelas de manera que tengan un sentido para ti. Puede ser en una canción, un poema, un esquema, una infografía… También puedes ordenar las frases como quieras, añadir conectores, ejemplos, etc.</p>
+        </div>
+
+        <blockquote class="cita">
+          <p>«Saber cuáles son tus virtudes y usarlas en tu beneficio, y cuáles son tus debilidades, para trabajar en ellas»</p>
+        </blockquote>
+
+        <div class="pautas">
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ COACHING ══════════ -->
+    <section id="coaching" class="corte">
+      <div class="rotulo">
+        <h2>Coaching</h2>
+        <div class="filete"></div>
+        <div class="pagina">Pág. 13</div>
+      </div>
+
+      <div class="actividad">
+        <div class="actividad-enunciado">
+          <div class="num">2</div>
+          <p>Escribe uno de tus sueños o metas en la primera columna. Después, anota en la segunda columna qué obstáculos crees que encontrarás hasta conseguirlo. En la tercera columna, escribe las acciones o esfuerzos que tendrás que hacer para superar esas dificultades, como hizo Lytos.</p>
+        </div>
+
+        <div class="tabla-wrap">
+          <table class="coaching">
+            <thead>
+              <tr>
+                <th scope="col">Sueño</th>
+                <th scope="col">Obstáculos</th>
+                <th scope="col">Esfuerzos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="parejas">
+        <p class="intro">Después, por parejas, aconseja a tu compañero o compañera siguiendo estos pasos:</p>
+        <ol class="pasos-parejas">
+          <li>
+            <b>Ayúdale a descubrir y comprobar:</b>
+            <ul>
+              <li>Que ese sueño le ilusiona lo suficiente como para querer esforzarse todo lo que haga falta.</li>
+              <li>Que tiene un talento que le permite conseguir ese sueño. Por ejemplo, si quiere ser cantante, tiene que tener una buena voz.</li>
+            </ul>
+          </li>
+          <li><b>Reflexiona y comenta otras ideas o modos de superar los obstáculos que escribió.</b></li>
+          <li><b>Piensa con él o con ella pasos o pequeñas metas concretas que puede hacer para ir construyendo ese sueño.</b></li>
+        </ol>
+
+        <div class="pautas numeradas" style="margin-top:22px">
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+        </div>
+      </div>
+
+      <div class="guardado">
+        <div class="sello" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#A81436" aria-hidden="true">
+            <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4.6L5 22V3a1 1 0 0 1 1-1z"></path>
+          </svg>
+        </div>
+        <h4>¿Qué idea de esta sesión quieres guardar?</h4>
+        <div class="pautas">
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="pie">
+  <div>Cuaderno de trabajo del alumnado · Atención Educativa · U1, sesión 1</div>
+  <div>Materiales de <a href="https://filonesi.github.io" target="_blank" rel="noopener">FiloNesi</a></div>
+</footer>
+
+</body>
+</html>
