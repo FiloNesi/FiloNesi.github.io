@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U1 · Sesión 2 — Talento y confianza · Cuaderno MAE</title>
+<meta name="description" content="Cuaderno de trabajo del alumnado. Atención Educativa. Unidad 1, sesión 2: la biografía de Gillian Lynne, la teoría del talento y la confianza, y las actividades.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --carmin:       #A81436;
+    --carmin-medio: #C3395A;
+    --carmin-claro: #E9A9B8;
+    --carmin-pale:  #FAEDF0;
+    --carmin-bg:    #FDF7F8;
+    --tinta:        #22201F;
+    --tinta-media:  #4C4846;
+    --tinta-suave:  #7A7370;
+    --papel:        #FFFFFF;
+    --fondo:        #F6F2EE;
+    --borde:        #E7DED8;
+    --pauta:        #C9BFB8;
+    --ocre:         #8A6100;
+    --ocre-pale:    #FFF6E2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-size: 17px;
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── BARRA DEL CUADERNO ─────────────────────────────────── */
+  .cuaderno-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--borde);
+  }
+  .cuaderno-bar .inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 10px 28px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .marca { display: flex; align-items: baseline; gap: 9px; flex-shrink: 0; }
+  .marca b {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: 15px;
+    color: var(--carmin); letter-spacing: .01em;
+  }
+  .marca span {
+    font-size: 12px; color: var(--tinta-suave);
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  nav.sesiones { display: flex; align-items: center; gap: 5px; margin-left: auto; flex-wrap: wrap; }
+  nav.sesiones a, nav.sesiones span.prox {
+    font-size: 12.5px; font-weight: 500;
+    padding: 5px 12px; border-radius: 30px;
+    text-decoration: none; letter-spacing: .02em;
+    border: 1px solid var(--borde);
+    color: var(--tinta-suave); background: transparent;
+    transition: all .18s;
+  }
+  nav.sesiones a:hover { border-color: var(--carmin-claro); color: var(--carmin); background: var(--carmin-pale); }
+  nav.sesiones a.actual { background: var(--carmin); border-color: var(--carmin); color: #fff; }
+  nav.sesiones span.prox { opacity: .45; cursor: default; }
+
+  /* ── HOJA ───────────────────────────────────────────────── */
+  .hoja {
+    max-width: 1080px; margin: 0 auto;
+    background: var(--papel);
+    border-left: 1px solid var(--borde);
+    border-right: 1px solid var(--borde);
+    padding: 0 0 80px;
+  }
+  .contenido { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── PORTADA ────────────────────────────────────────────── */
+  header.portada {
+    background: var(--carmin-bg);
+    border-bottom: 3px solid var(--carmin);
+    padding: 54px 28px 40px;
+    margin-bottom: 46px;
+  }
+  header.portada .contenido { padding: 0; }
+  .kicker {
+    font-size: 12.5px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--carmin-medio);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: clamp(34px, 5.4vw, 50px);
+    line-height: 1.08; letter-spacing: -.02em;
+    color: var(--carmin); margin-bottom: 10px;
+  }
+  .subtitulo-sesion {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: clamp(19px, 2.6vw, 24px);
+    color: var(--tinta-media); margin-bottom: 18px;
+  }
+  .talento {
+    display: inline-block;
+    font-size: 13.5px; font-weight: 500; letter-spacing: .05em;
+    text-transform: uppercase;
+    background: #fff; color: var(--carmin);
+    border: 1px solid var(--carmin-claro);
+    padding: 6px 16px; border-radius: 30px;
+  }
+  .identificacion {
+    margin-top: 34px; display: flex; gap: 28px; flex-wrap: wrap;
+    font-size: 13.5px; color: var(--tinta-suave);
+  }
+  .identificacion .campo { flex: 1 1 200px; }
+  .identificacion .campo em {
+    font-style: normal; letter-spacing: .06em; text-transform: uppercase;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .identificacion .campo .linea {
+    margin-top: 6px; border-bottom: 1.5px dotted var(--pauta); height: 22px;
+  }
+
+  /* ── SECCIONES ──────────────────────────────────────────── */
+  section { margin-bottom: 56px; }
+  .rotulo { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .rotulo h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--carmin); white-space: nowrap;
+  }
+  .rotulo .pagina { font-size: 12px; color: var(--tinta-suave); letter-spacing: .04em; white-space: nowrap; }
+  .rotulo .filete { flex: 1; height: 1px; background: var(--carmin-claro); }
+
+  h3.titular {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600; font-size: clamp(23px, 3.2vw, 30px);
+    line-height: 1.24; color: var(--tinta);
+    margin-bottom: 26px; letter-spacing: -.01em;
+  }
+  h4.apartado {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--carmin);
+    margin: 34px 0 14px;
+  }
+  h5.bloque {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 20px; font-weight: 600; color: var(--tinta);
+    margin: 38px 0 6px;
+  }
+
+  p { margin-bottom: 17px; text-align: justify; hyphens: auto; }
+  p strong { font-weight: 700; color: var(--carmin); }
+  p em { font-style: italic; }
+  p.dialogo { margin-bottom: 10px; }
+
+  .capitular::first-letter {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; color: var(--carmin);
+    float: left; font-size: 62px; line-height: .82;
+    padding: 6px 10px 0 0;
+  }
+
+  .fuente {
+    font-size: 14px; color: var(--tinta-suave);
+    border-top: 1px solid var(--borde);
+    padding-top: 14px; margin-top: 26px; text-align: left;
+  }
+
+  /* ── BOCADILLO DEL PERSONAJE ────────────────────────────── */
+  .bocadillo {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--carmin-pale);
+    border-radius: 14px; padding: 20px 24px;
+    margin-bottom: 30px;
+  }
+  .bocadillo .avatar {
+    flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--papel); border: 1.5px solid var(--carmin-claro);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bocadillo p {
+    margin: 0; font-style: italic; text-align: left;
+    font-size: 16px; color: var(--tinta-media);
+  }
+
+  /* ── ESQUEMA ────────────────────────────────────────────── */
+  figure.esquema {
+    margin: 10px 0 34px;
+    background: var(--fondo);
+    border: 1px solid var(--borde); border-radius: 14px;
+    padding: 22px 18px 14px;
+  }
+  figure.esquema svg { width: 100%; height: auto; display: block; }
+  figure.esquema figcaption {
+    margin-top: 10px; text-align: center;
+    font-size: 13px; color: var(--tinta-suave);
+  }
+
+  /* ── FÓRMULA ────────────────────────────────────────────── */
+  .formula {
+    margin: 26px auto; text-align: center;
+    background: var(--carmin-pale); border-radius: 12px;
+    padding: 22px 20px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(20px, 3vw, 26px); font-weight: 600;
+    color: var(--carmin); letter-spacing: .01em;
+  }
+
+  /* ── LISTAS ─────────────────────────────────────────────── */
+  ul.ventajas { list-style: none; margin: 4px 0 20px; }
+  ul.ventajas li {
+    position: relative; padding-left: 26px; margin-bottom: 9px;
+  }
+  ul.ventajas li::before {
+    content: ""; position: absolute; left: 4px; top: 12px;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--carmin-claro);
+  }
+  ol.propositos { list-style: none; counter-reset: pr; margin: 6px 0 20px; }
+  ol.propositos li {
+    counter-increment: pr; position: relative;
+    padding-left: 42px; margin-bottom: 13px;
+  }
+  ol.propositos li::before {
+    content: counter(pr);
+    position: absolute; left: 0; top: 1px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--carmin-pale); color: var(--carmin);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── ACTIVIDADES ────────────────────────────────────────── */
+  .actividad { margin-top: 26px; }
+  .actividad-enunciado { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 20px; }
+  .num {
+    flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--carmin); color: #fff;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; margin-top: 2px;
+  }
+  .actividad-enunciado p { margin: 0; text-align: left; }
+
+  ol.preguntas { list-style: none; counter-reset: pg; }
+  ol.preguntas li { counter-increment: pg; margin-bottom: 20px; }
+  ol.preguntas li .pregunta {
+    display: flex; gap: 12px; align-items: baseline; margin-bottom: 4px;
+  }
+  ol.preguntas li .pregunta::before {
+    content: counter(pg) ".";
+    flex-shrink: 0; width: 22px;
+    font-weight: 700; color: var(--carmin-medio); font-size: 15px;
+  }
+  ol.preguntas li .pregunta span { font-weight: 500; }
+  ol.preguntas li .pautas { margin-left: 34px; }
+  ol.preguntas li.libre .pregunta::after {
+    content: ""; flex: 1; border-bottom: 1.5px dotted var(--pauta); transform: translateY(-4px);
+  }
+
+  /* ── PAUTAS ─────────────────────────────────────────────── */
+  .pautas { margin: 6px 0 4px; }
+  .pautas .renglon { border-bottom: 1.5px dotted var(--pauta); height: 34px; }
+  .pautas.numeradas { counter-reset: paso; }
+  .pautas.numeradas .renglon { display: flex; align-items: flex-end; gap: 10px; }
+  .pautas.numeradas .renglon::before {
+    counter-increment: paso; content: counter(paso) ".";
+    font-size: 14px; font-weight: 500; color: var(--carmin-medio); padding-bottom: 5px;
+  }
+
+  /* ── NOTA DE AULA ───────────────────────────────────────── */
+  .nota-aula {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--ocre-pale); border: 1px solid #F0DFB4;
+    border-radius: 10px; padding: 15px 18px; margin: 26px 0;
+    font-size: 15.5px; color: var(--tinta-media);
+  }
+  .nota-aula svg { flex-shrink: 0; margin-top: 3px; }
+  .nota-aula p { margin: 0; text-align: left; }
+
+  /* ── TABLAS ─────────────────────────────────────────────── */
+  .tabla-wrap { overflow-x: auto; margin: 10px 0 26px; }
+  table.herramienta { width: 100%; border-collapse: collapse; min-width: 520px; }
+  table.herramienta th {
+    background: var(--carmin-pale);
+    border-bottom: 2px solid var(--carmin);
+    color: var(--tinta);
+    font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; padding: 13px 14px; text-align: center; width: 50%;
+  }
+  table.herramienta td {
+    border-bottom: 1.5px dotted var(--pauta);
+    border-right: 1px solid var(--borde);
+    height: 42px; padding: 8px 12px; vertical-align: middle;
+  }
+  table.herramienta td:last-child { border-right: none; }
+  table.herramienta tr.ejemplo td {
+    background: #FBF9F7; font-style: italic;
+    color: var(--tinta-suave); font-size: 15px; height: auto;
+  }
+
+  /* ── TOP 1 ──────────────────────────────────────────────── */
+  .top1 {
+    margin: 38px 0;
+    border: 1.5px solid var(--carmin-claro); border-radius: 14px;
+    padding: 26px 30px 24px; text-align: center; position: relative;
+  }
+  .top1 .etiqueta {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: var(--carmin); color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: .16em;
+    padding: 3px 14px; border-radius: 30px;
+  }
+  .top1 p {
+    margin: 6px 0 0; text-align: center;
+    font-family: 'Fraunces', Georgia, serif; font-style: italic;
+    font-size: clamp(19px, 2.6vw, 23px); line-height: 1.4; color: var(--carmin);
+  }
+
+  /* ── CAJA GUARDADO ──────────────────────────────────────── */
+  .guardado {
+    margin-top: 44px;
+    background: var(--carmin-pale); border: 1px solid var(--carmin-claro);
+    border-radius: 14px; padding: 34px 30px 28px;
+    position: relative; text-align: center;
+  }
+  .guardado .sello {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--papel); border: 1.5px solid var(--carmin-claro);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .guardado h4 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600; font-size: 20px; color: var(--carmin);
+    margin: 6px 0 22px;
+  }
+  .guardado .pautas .renglon { border-bottom-color: var(--carmin-claro); }
+
+  /* ── PIE ────────────────────────────────────────────────── */
+  footer.pie {
+    max-width: 1080px; margin: 0 auto;
+    padding: 26px 28px 60px;
+    font-size: 13px; color: var(--tinta-suave);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  footer.pie a { color: var(--carmin-medio); }
+
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    header.portada { padding: 38px 20px 32px; }
+    .contenido { padding: 0 20px; }
+    p { text-align: left; }
+    .marca span { display: none; }
+    .capitular::first-letter { font-size: 50px; }
+  }
+
+  /* ── IMPRESIÓN ──────────────────────────────────────────── */
+  @media print {
+    @page { size: A4; margin: 16mm 15mm; }
+    body { background: #fff; font-size: 11.2pt; line-height: 1.5; }
+    .cuaderno-bar, footer.pie { display: none; }
+    .hoja { max-width: none; border: none; padding: 0; }
+    .contenido { max-width: none; padding: 0; }
+    header.portada {
+      background: none; padding: 0 0 18px; margin-bottom: 26px;
+      border-bottom: 2.5px solid var(--carmin);
+    }
+    h1 { font-size: 27pt; }
+    section { margin-bottom: 26px; }
+    .bocadillo, .formula, .top1, .guardado, .nota-aula, figure.esquema { background: none; }
+    table.herramienta th { background: none; }
+    table.herramienta tr.ejemplo td { background: none; }
+    .pautas .renglon { height: 26px; }
+    .corte { page-break-before: always; }
+    figure.esquema, .top1, .guardado, table.herramienta, .bocadillo { page-break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cuaderno-bar">
+  <div class="inner">
+    <div class="marca">
+      <b>Cuaderno de trabajo</b>
+      <span>Atención Educativa</span>
+    </div>
+    <nav class="sesiones" aria-label="Sesiones del cuaderno">
+      <a href="mae-talentum-u1-sesion1.html">U1 · Sesión 1</a>
+      <a href="#" class="actual" aria-current="page">Sesión 2</a>
+      <span class="prox">Sesión 3</span>
+      <span class="prox">Sesión 4</span>
+    </nav>
+  </div>
+</div>
+
+<main class="hoja">
+
+  <header class="portada">
+    <div class="contenido">
+      <div class="kicker">Unidad 1 · Sesión 2</div>
+      <h1>¿Confío en mis talentos?</h1>
+      <div class="subtitulo-sesion">Talento y confianza</div>
+      <div class="talento">Talento: confianza</div>
+
+      <div class="identificacion">
+        <div class="campo"><em>Nombre y apellidos</em><div class="linea"></div></div>
+        <div class="campo"><em>Grupo</em><div class="linea"></div></div>
+        <div class="campo"><em>Fecha</em><div class="linea"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="contenido">
+
+    <!-- ══════════ BIOGRAFÍA ══════════ -->
+    <section id="biografia">
+      <div class="rotulo">
+        <h2>Biografía</h2>
+        <div class="filete"></div>
+      </div>
+
+      <div class="bocadillo">
+        <div class="avatar" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A81436" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M20 20l-4.2-4.2"></path>
+          </svg>
+        </div>
+        <p>Hace poco descubrí la historia de Gillian Lynne, una famosa coreógrafa en quien nadie creía de pequeña. Y me recordó que yo también puedo soñar en grande y lograr mis sueños con esfuerzo y trabajo.</p>
+      </div>
+
+      <h3 class="titular">Descubriendo el talento de Gillian Lynne</h3>
+
+      <p class="capitular">Gillian solo tenía ocho años, pero su futuro ya estaba en peligro. Sus tareas escolares eran un desastre, al menos según sus profesores. Entregaba los deberes tarde, su caligrafía era horrible y aprobaba a duras penas. No solo eso, además, causaba grandes molestias al resto de los alumnos: se movía nerviosa haciendo ruido, miraba por la ventana […]. A ella todo esto no le preocupaba […], pero sus profesores estaban muy preocupados. Hasta tal punto que un día decidieron dirigirse a sus padres.</p>
+
+      <p>[…] Los padres de Gillian recibieron la carta del colegio con gran preocupación y se pusieron en marcha. Su madre […] la llevó al psicólogo para que la evaluara. […] [Cuando] la madre de Gillian y el psicólogo terminaron de hablar, el hombre se levantó del escritorio, caminó hacia el sofá y se sentó al lado de la pequeña.</p>
+
+      <p class="dialogo">—Gillian, has tenido mucha paciencia y te doy las gracias por ello —dijo—, pero me temo que tendrás que seguir teniendo paciencia durante un ratito más. […]</p>
+
+      <p>Gillian asintió, intranquila, y los dos adultos la dejaron allí sentada, sola. Pero antes de marcharse de la habitación, el psicólogo se reclinó sobre el escritorio y encendió la radio.</p>
+
+      <p>En cuanto salieron y llegaron al pasillo, el doctor le dijo a la madre de Gillian:</p>
+
+      <p class="dialogo">—Quédese aquí un momento y observe lo que hace.</p>
+
+      <p>Se quedaron de pie al lado de una ventana de la habitación que daba al pasillo, desde donde Gillian no podía verlos. Casi de inmediato, Gillian se levantó y comenzó a moverse por toda la estancia siguiendo el ritmo de la música. Los dos adultos la observaron en silencio durante unos minutos, deslumbrados por la gracia de la niña. Cualquiera se habría dado cuenta de que había algo natural —incluso primigenio— en los movimientos de Gillian. Y cualquiera se habría percatado de la expresión de absoluto placer de su cara.</p>
+
+      <p>Por fin, el psicólogo se volvió hacia la madre de Gillian y dijo:</p>
+
+      <p class="dialogo">—Señora Lynne, Gillian [no tiene ningún trastorno de conducta]. Es bailarina. Llévela a una escuela de danza.</p>
+
+      <p>Le pregunté a Gillian qué pasó a continuación. Me explicó que su madre hizo lo que le habían recomendado. «Me resulta imposible expresar lo maravilloso que fue —me contó Gillian—. Entré en esa habitación llena de gente como yo. Personas que no podían permanecer sentadas sin moverse. Personas que tenían que moverse para poder pensar».</p>
+
+      <p>Iba a la escuela de danza una vez por semana y practicaba todos los días en casa. Con el tiempo, hizo una prueba para el Royal Ballet School de Londres y la aceptaron. Siguió adelante hasta ingresar en la Royal Ballet Company, donde llegó a ser solista y bailó por todo el mundo. Cuando esta parte de su carrera terminó, Gillian formó su propia compañía de teatro musical y produjo una serie de espectáculos en Londres y en Nueva York que tuvieron mucho éxito. Con el tiempo, conoció a Andrew Lloyd Webber y crearon juntos algunas de las más célebres producciones musicales para teatro de todos los tiempos, entre ellas <em>Cats</em> y <em>El fantasma de la ópera</em>.</p>
+
+      <p>La pequeña Gillian, la niña cuyo futuro estaba en peligro, llegó a ser conocida en todo el mundo como Gillian Lynne, una de las coreógrafas de mayor éxito de nuestro tiempo, alguien que hizo disfrutar a millones de personas y que ganó millones de dólares. […] Porque Gillian solo necesitaba ser quien era realmente.</p>
+
+      <p class="fuente"><strong style="color:var(--tinta)">Fuente:</strong> Sir Ken Robinson. (2000). <em>El Elemento</em>. Barcelona: Penguin Random House Editorial. Págs. 19-22. Versión adaptada.</p>
+    </section>
+
+    <!-- ══════════ TEORÍA ══════════ -->
+    <section id="teoria" class="corte">
+      <div class="rotulo">
+        <h2>Teoría</h2>
+        <div class="filete"></div>
+      </div>
+
+      <h3 class="titular">Talento y confianza</h3>
+
+      <figure class="esquema">
+        <svg viewBox="0 0 900 400" role="img" aria-label="Esquema del círculo virtuoso: la humildad lleva a descubrir el talento; el talento, con inversión de tiempo y esfuerzo, conduce al éxito real, que devuelve confianza y autoestima al talento.">
+          <defs>
+            <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#C3395A"></path>
+            </marker>
+          </defs>
+
+          <!-- cajas -->
+          <g>
+            <rect x="14" y="118" width="182" height="100" rx="14" fill="#FFFFFF" stroke="#E9A9B8" stroke-width="1.6"></rect>
+            <text x="105" y="156" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="22" font-weight="700" fill="#A81436">HUMILDAD</text>
+            <text x="105" y="182" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">límites</text>
+            <text x="105" y="201" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">habilidades</text>
+          </g>
+          <g>
+            <rect x="250" y="118" width="182" height="100" rx="14" fill="#FAEDF0" stroke="#A81436" stroke-width="2"></rect>
+            <text x="341" y="166" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="700" fill="#A81436">TALENTO</text>
+            <text x="341" y="190" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">capacidad especial</text>
+          </g>
+          <g>
+            <rect x="486" y="118" width="182" height="100" rx="14" fill="#FFFFFF" stroke="#E9A9B8" stroke-width="1.6"></rect>
+            <text x="577" y="166" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="22" font-weight="700" fill="#A81436">ESFUERZO</text>
+            <text x="577" y="190" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">práctica y tiempo</text>
+          </g>
+          <g>
+            <rect x="722" y="118" width="164" height="100" rx="14" fill="#FFFFFF" stroke="#E9A9B8" stroke-width="1.6"></rect>
+            <text x="804" y="156" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="21" font-weight="700" fill="#A81436">ÉXITO REAL</text>
+            <text x="804" y="182" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">confianza</text>
+            <text x="804" y="201" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" fill="#7A7370">autoestima</text>
+          </g>
+
+          <!-- flechas horizontales -->
+          <path d="M200 168 L244 168" stroke="#C3395A" stroke-width="2" marker-end="url(#flecha)" fill="none"></path>
+          <text x="222" y="104" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#7A7370">descubre</text>
+
+          <path d="M436 168 L480 168" stroke="#C3395A" stroke-width="2" marker-end="url(#flecha)" fill="none"></path>
+          <text x="458" y="104" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#7A7370">inversión</text>
+
+          <path d="M672 168 L716 168" stroke="#C3395A" stroke-width="2" marker-end="url(#flecha)" fill="none"></path>
+          <text x="694" y="104" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#7A7370">lleva al</text>
+
+          <!-- arco de retorno -->
+          <path d="M804 224 C 804 320, 620 330, 480 330 C 420 330, 380 330, 341 330 L341 226"
+                stroke="#C3395A" stroke-width="2" fill="none" stroke-dasharray="7 5" marker-end="url(#flecha)"></path>
+          <text x="572" y="356" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="500" fill="#A81436">la confianza y la autoestima alimentan el talento</text>
+
+          <!-- etiqueta superior -->
+          <text x="450" y="58" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#C3395A">CÍRCULO VIRTUOSO</text>
+          <path d="M300 74 L600 74" stroke="#E9A9B8" stroke-width="1"></path>
+        </svg>
+        <figcaption>El círculo virtuoso del talento.</figcaption>
+      </figure>
+
+      <h4 class="apartado">1. Ser humilde</h4>
+
+      <p>La humildad es una virtud por la que reconocemos nuestros puntos débiles, nuestras limitaciones, y, sobre todo, nuestros puntos fuertes o talentos. La humildad tiene algunas ventajas, como estas:</p>
+
+      <ul class="ventajas">
+        <li>Te hace ser «realista» y que te adecúes a la realidad.</li>
+        <li>Te lleva a conocerte, aceptarte y quererte como eres.</li>
+        <li>Te abre, paradójicamente, a lo más grande, a proyectos grandes.</li>
+      </ul>
+
+      <p>Una de esas nuevas realidades a las que te abres es al descubrimiento de tus talentos. Un talento es la capacidad especial de una persona para hacer algo extraordinario. Y, curiosamente, un talento necesita de mucho esfuerzo para que lo vaya puliendo y desarrollando. Por eso, se podría decir que una fórmula del éxito es la siguiente:</p>
+
+      <div class="formula">TALENTO + ESFUERZO = ÉXITO</div>
+
+      <p>Piensa, por ejemplo, en un videojuego. Aprender a jugar y pasar de nivel lleva tiempo y esfuerzo, pero, en realidad, si te gusta, lo haces con ganas y motivación, «no te cuesta». Para dominarlo, tendrás que invertir tiempo. Y si ves que tienes talento para eso, cada vez practicarás más e irás mejorando. Así, crecerá la confianza en ti mismo y en tu capacidad de esforzarte. Además, cada vez te atreverás con niveles y videojuegos más difíciles.</p>
+
+      <p>En resumen, cuando descubres un talento, entras en un <strong>círculo virtuoso</strong>, como muestra el gráfico. Inviertes tiempo y esfuerzo en ese talento que se te da bien y vas ganando confianza y autoestima. Te sigues esforzando y cada vez se te da mejor; ese es el círculo virtuoso. Si tienes esto, encontraste la fórmula del éxito, y la puedes aplicar a cualquier aspecto de tu vida.</p>
+
+      <h4 class="apartado">2. Cosechar el éxito</h4>
+
+      <p>Esto es lo que Lytos llama <strong>«éxito real»</strong>, el triunfo humilde, porque hay otro éxito que depende de la opinión de los demás. Y otras veces, se logra un reconocimiento sin esfuerzo, con el que es fácil que surjan la arrogancia y la vanidad. Estas son las actitudes contrarias a la humildad, porque no reconocen las limitaciones.</p>
+
+      <p>Los mayores éxitos se logran con <strong>talento + esfuerzo</strong>. El talento, sumado a la capacidad de trabajar y esforzarse, marca la diferencia. De hecho, esa fórmula del éxito nos puede llevar a lograr estos tres propósitos que Lytos distingue en su vídeo:</p>
+
+      <ol class="propositos">
+        <li><strong>Hacer el trabajo bien, con calidad.</strong> Lytos compone canciones, pero cada uno tendrá su trabajo.</li>
+        <li><strong>Mejorarse con el trabajo.</strong> Ir mejorando y perfeccionando nuestras habilidades, destrezas, virtudes y confianza.</li>
+        <li><strong>Mejorar a los demás con nuestro trabajo.</strong> Ayudar a los demás y dejarse ayudar.</li>
+      </ol>
+
+      <p>El éxito puede llegar de diferentes formas: a veces es el reconocimiento de los demás; otras, nuestra mejora y la satisfacción personal que sentimos al hacer las cosas muy bien. Y, por supuesto, disfrutar del camino también es parte del éxito.</p>
+    </section>
+
+    <!-- ══════════ ACTIVIDADES ══════════ -->
+    <section id="actividades" class="corte">
+      <div class="rotulo">
+        <h2>Actividades</h2>
+        <div class="filete"></div>
+      </div>
+
+      <h4 class="apartado">Entrevista al personaje</h4>
+
+      <div class="bocadillo">
+        <div class="avatar" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A81436" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h4l1.5-2h7L17 8h4v11H3z"></path>
+            <circle cx="12" cy="13" r="3.4"></circle>
+          </svg>
+        </div>
+        <p>Hace poco empecé a tomar fotografías artísticas, y se me da bastante bien. ¿Que si es mi talento? No lo sé aún, pero me gusta. De momento, voy practicando… y a ver a dónde me lleva.</p>
+      </div>
+
+      <div class="actividad">
+        <div class="actividad-enunciado">
+          <div class="num">1</div>
+          <p>Imagina que entrevistas a Gillian Lynne. Responde con tu grupo estas cinco preguntas. ¡Tiene que parecer que contesta ella de verdad! Después, añade y contesta otras tres preguntas.</p>
+        </div>
+
+        <ol class="preguntas">
+          <li>
+            <div class="pregunta"><span>¿Cuándo y cómo supiste que bailar era tu talento?</span></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li>
+            <div class="pregunta"><span>Tuviste que esforzarte mucho para lograr el éxito. ¿Te costaba hacerlo?</span></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li>
+            <div class="pregunta"><span>¿Pensaste alguna vez en dejarlo? ¿Cómo evolucionó la confianza en ti misma?</span></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li>
+            <div class="pregunta"><span>Cuando empezaste a tener éxito, ¿te sentías por encima de los demás?</span></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li>
+            <div class="pregunta"><span>¿Cuál fue el mayor problema de tu vida? ¿Cómo conseguiste superarlo?</span></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li class="libre">
+            <div class="pregunta"></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li class="libre">
+            <div class="pregunta"></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+          <li class="libre">
+            <div class="pregunta"></div>
+            <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+          </li>
+        </ol>
+
+        <div class="nota-aula">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A6100" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="8" r="3.2"></circle>
+            <path d="M2.5 20c0-3.3 2.9-5.6 6.5-5.6s6.5 2.3 6.5 5.6"></path>
+            <path d="M17 5.2a3.2 3.2 0 0 1 0 5.9"></path>
+            <path d="M19.2 14.9c1.4.9 2.3 2.4 2.3 4.1"></path>
+          </svg>
+          <p>Cada grupo debe escoger a una persona, que hará el papel de Gillian Lynne y responderá delante de todos una pregunta.</p>
+        </div>
+
+        <p style="text-align:left"><strong style="color:var(--tinta)">Por último, anota aquí tres ideas de la entrevista que te sirvan para tu vida:</strong></p>
+
+        <div class="pautas numeradas">
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+        </div>
+      </div>
+
+      <h4 class="apartado">Para profundizar</h4>
+
+      <ol class="preguntas">
+        <li>
+          <div class="pregunta"><span>¿Qué es la humildad?</span></div>
+          <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+        </li>
+        <li>
+          <div class="pregunta"><span>Define con tus palabras qué es el talento.</span></div>
+          <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+        </li>
+        <li>
+          <div class="pregunta"><span>Explica qué se necesita para descubrir y desarrollar un talento.</span></div>
+          <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+        </li>
+        <li>
+          <div class="pregunta"><span>¿Qué diferencias hay entre el «éxito real» y el que depende de la opinión de los demás?</span></div>
+          <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+        </li>
+        <li>
+          <div class="pregunta"><span>¿Cómo se puede ganar confianza en uno mismo?</span></div>
+          <div class="pautas"><div class="renglon"></div><div class="renglon"></div></div>
+        </li>
+      </ol>
+
+      <h4 class="apartado">Herramienta</h4>
+
+      <div class="actividad">
+        <div class="actividad-enunciado">
+          <div class="num">2</div>
+          <p><strong style="color:var(--tinta)">¿Te conoces bien?</strong> Escribe en la primera columna tres de tus puntos fuertes o habilidades, y tres puntos débiles. Después, anota en la segunda columna cómo puedes potenciar y mejorar esas aptitudes, y qué oportunidades tienes gracias a esas limitaciones.</p>
+        </div>
+
+        <div class="tabla-wrap">
+          <table class="herramienta">
+            <thead>
+              <tr>
+                <th scope="col">Puntos fuertes</th>
+                <th scope="col">Mejoras</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ejemplo">
+                <td>Se me da muy bien tocar la guitarra.</td>
+                <td>Voy a perfeccionar mi técnica tocando cada vez canciones más complicadas.</td>
+              </tr>
+              <tr><td></td><td></td></tr>
+              <tr><td></td><td></td></tr>
+              <tr><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tabla-wrap">
+          <table class="herramienta">
+            <thead>
+              <tr>
+                <th scope="col">Puntos débiles</th>
+                <th scope="col">Oportunidades</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ejemplo">
+                <td>Me cuesta hablar con los demás.</td>
+                <td>Voy a probar primero a escribir lo que siento y pienso.</td>
+              </tr>
+              <tr><td></td><td></td></tr>
+              <tr><td></td><td></td></tr>
+              <tr><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="top1">
+        <div class="etiqueta">TOP 1</div>
+        <p>«El secreto está en ser realista contigo mismo»</p>
+      </div>
+
+      <div class="guardado">
+        <div class="sello" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#A81436" aria-hidden="true">
+            <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4.6L5 22V3a1 1 0 0 1 1-1z"></path>
+          </svg>
+        </div>
+        <h4>¿Qué mensaje te das a ti mismo para ganar confianza en tus talentos?</h4>
+        <div class="pautas">
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+          <div class="renglon"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="pie">
+  <div>Cuaderno de trabajo del alumnado · Atención Educativa · U1, sesión 2</div>
+  <div>Materiales de <a href="https://filonesi.github.io" target="_blank" rel="noopener">FiloNesi</a></div>
+</footer>
+
+</body>
+</html>
