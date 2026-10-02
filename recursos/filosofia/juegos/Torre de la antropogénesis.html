@@ -1,0 +1,597 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Torre de la antropogénesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: una torre de Jenga de tres pisos (rojo abajo, azul en medio, blanco arriba) con las flechas de dependencia dibujadas encima; panel de la tarjeta a la derecha. */
+:root{
+  --bg:#E8EBEE; --surface:#F6F7F8; --surface-2:#EEF1F3; --ink:#16202A; --muted:#58646F; --line:#C7CED5;
+  --rojo:#B5352B; --rojo-ink:#FFF6F4; --azul:#2A5B9B; --azul-ink:#F3F7FD;
+  --blanco:#FDFDFB; --blanco-ink:#16202A; --blanco-line:#A9B3BC;
+  --vuelta:#C8711C; --up:#5A6672; --ok:#2C7A57; --danger:#A3322A;
+  --display:'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+  --body:'IBM Plex Sans', 'Segoe UI', Verdana, sans-serif;
+  --mono:'IBM Plex Mono', 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F151B; --surface:#18202A; --surface-2:#1E2833; --ink:#E6EBEF; --muted:#9BA8B4; --line:#2E3A46;
+  --rojo:#C4473C; --rojo-ink:#FFF6F4; --azul:#3A6FB3; --azul-ink:#F3F7FD;
+  --blanco:#E9ECEE; --blanco-ink:#16202A; --blanco-line:#7F8C98;
+  --vuelta:#F0A04B; --up:#A6B2BD; --ok:#5DBB8E; --danger:#E5776C; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0F151B; --surface:#18202A; --surface-2:#1E2833; --ink:#E6EBEF; --muted:#9BA8B4; --line:#2E3A46;
+  --rojo:#C4473C; --rojo-ink:#FFF6F4; --azul:#3A6FB3; --azul-ink:#F3F7FD;
+  --blanco:#E9ECEE; --blanco-ink:#16202A; --blanco-line:#7F8C98;
+  --vuelta:#F0A04B; --up:#A6B2BD; --ok:#5DBB8E; --danger:#E5776C; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.45; padding-inline:16px; padding-block:12px}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible, input:focus-visible, textarea:focus-visible, .tile:focus-visible{outline:3px solid var(--azul); outline-offset:2px}
+.app{display:grid; grid-template-rows:auto 1fr; gap:12px; height:100%; max-width:1880px; margin-inline:auto}
+
+/* Cabecera */
+header{display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 16px}
+.brand{display:flex; flex-direction:column; min-width:0}
+.brand h1{font-family:var(--display); font-weight:800; font-size:1.45rem; line-height:1.05; margin:0; letter-spacing:-.01em}
+.brand span{font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em}
+.teams{display:flex; flex-wrap:wrap; gap:8px; flex:1; min-width:0}
+.team{display:flex; align-items:baseline; gap:8px; border:1px solid var(--line); border-radius:999px; padding:5px 12px; background:var(--surface-2); font-size:.92rem}
+.team b{font-family:var(--mono); font-size:1.05rem; font-variant-numeric:tabular-nums}
+.team.active{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.dice{display:flex; align-items:center; gap:8px}
+.chip{border:2px solid var(--line); border-radius:8px; padding:6px 10px; font-size:.85rem; font-weight:600; background:var(--surface-2)}
+.chip[data-c="R"]{--c:var(--rojo)} .chip[data-c="A"]{--c:var(--azul)} .chip[data-c="B"]{--c:var(--blanco-line)}
+.chip.on{border-color:var(--c); box-shadow:inset 0 -4px 0 var(--c)}
+.die-face{width:44px; height:44px; border-radius:10px; border:2px solid var(--line); display:grid; place-items:center; font-family:var(--mono); font-weight:600; font-size:.8rem; background:var(--surface-2)}
+.die-face.R{background:var(--rojo); color:var(--rojo-ink); border-color:var(--rojo)}
+.die-face.A{background:var(--azul); color:var(--azul-ink); border-color:var(--azul)}
+.die-face.B{background:var(--blanco); color:var(--blanco-ink); border-color:var(--blanco-line)}
+.btn{border:1px solid var(--line); background:var(--surface-2); border-radius:10px; padding:8px 14px; font-weight:600; font-size:.92rem}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.btn.warn{color:var(--danger); border-color:var(--danger)}
+.btn.vuelta{background:var(--vuelta); border-color:var(--vuelta); color:#1A1206}
+.actions{display:flex; flex-wrap:wrap; gap:8px}
+
+/* Principal */
+main{display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:12px; min-height:0}
+.board{background:var(--surface); border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; min-width:0; min-height:0}
+.board-head{display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px; padding:14px 18px 0}
+.board-head p{margin:0; color:var(--muted); font-size:.92rem}
+.mode-banner{background:var(--ink); color:var(--surface); border-radius:10px; padding:8px 14px; font-weight:600; font-size:.95rem}
+.tower-wrap{overflow-x:auto; flex:1; padding:6px 18px 10px}
+.tower{position:relative; min-width:980px; display:flex; flex-direction:column; gap:58px; padding:34px 0 18px}
+.row{display:grid; grid-template-columns:118px repeat(10, minmax(0,1fr)); gap:8px; align-items:stretch; position:relative; z-index:1}
+.row-label{display:flex; flex-direction:column; justify-content:center; font-size:.78rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:600; line-height:1.2}
+.row-label b{font-family:var(--display); font-size:1.05rem; text-transform:none; letter-spacing:0; color:var(--ink)}
+.tile{position:relative; border-radius:8px; padding:8px 8px 10px; min-height:88px; text-align:left; display:flex; flex-direction:column; gap:4px; border:2px solid transparent; transition:transform .15s, opacity .2s; box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.tile .num{font-family:var(--mono); font-weight:600; font-size:.95rem}
+.tile .t{font-size:.83rem; line-height:1.2; font-weight:500}
+.tile.R{background:var(--rojo); color:var(--rojo-ink)}
+.tile.A{background:var(--azul); color:var(--azul-ink)}
+.tile.B{background:var(--blanco); color:var(--blanco-ink); border-color:var(--blanco-line)}
+.tile:hover{transform:translateY(-2px)}
+.tile.dim{opacity:.32}
+.tile.played{opacity:.5; background-image:repeating-linear-gradient(135deg, transparent 0 9px, rgba(127,127,127,.28) 9px 11px); box-shadow:none}
+.tile.played .num::after{content:" · fuera"; font-family:var(--body); font-weight:500; font-size:.72rem}
+.tile.sel{opacity:1; outline:4px solid var(--vuelta); outline-offset:2px; transform:translateY(-3px)}
+.tile.target{outline:3px dashed var(--ink); outline-offset:2px}
+svg.arrows{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; overflow:visible}
+svg.arrows path{fill:none; stroke-linecap:round}
+svg.arrows path.up{stroke:var(--up); stroke-width:2.5}
+svg.arrows path.misma{stroke:var(--up); stroke-width:2.5; stroke-dasharray:6 6}
+svg.arrows path.vuelta{stroke:var(--vuelta); stroke-width:4.5}
+svg.arrows path.faded{opacity:.15}
+.counts{display:flex; flex-wrap:wrap; gap:8px 22px; padding:12px 18px 14px; border-top:1px solid var(--line); font-size:.95rem}
+.counts span{display:flex; align-items:center; gap:8px}
+.counts b{font-family:var(--mono); font-size:1.15rem; font-variant-numeric:tabular-nums}
+.key{display:inline-block; width:26px; height:0; border-top:3px solid var(--up)}
+.key.vuelta{border-top:5px solid var(--vuelta)}
+.key.misma{border-top:3px dashed var(--up)}
+
+/* Panel */
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; min-height:0; overflow:auto}
+.card-band{padding:18px 20px 16px; border-radius:13px 13px 0 0}
+.card-band.R{background:var(--rojo); color:var(--rojo-ink)}
+.card-band.A{background:var(--azul); color:var(--azul-ink)}
+.card-band.B{background:var(--blanco); color:var(--blanco-ink); border-bottom:2px solid var(--blanco-line)}
+.card-band .cat{font-size:.78rem; text-transform:uppercase; letter-spacing:.09em; font-weight:600; opacity:.92}
+.card-band .big{display:flex; align-items:baseline; gap:12px; margin-top:4px}
+.card-band .big .n{font-family:var(--mono); font-weight:600; font-size:2rem}
+.card-band h2{font-family:var(--display); font-weight:700; font-size:1.65rem; line-height:1.1; margin:0; text-wrap:balance}
+.badge{display:inline-block; margin-top:10px; font-size:.75rem; font-weight:600; border:1px solid currentColor; border-radius:999px; padding:2px 10px}
+.panel-body{padding:16px 20px 20px; display:flex; flex-direction:column; gap:14px}
+.panel-body p{margin:0}
+.desc{font-size:1.05rem}
+.dato{font-size:.93rem; color:var(--muted); border-left:3px solid var(--line); padding-left:12px}
+.task{background:var(--surface-2); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px}
+.task h3{margin:0; font-family:var(--display); font-size:1.1rem}
+.task .actions .btn{flex:1}
+.timer{display:flex; align-items:center; gap:10px}
+.timer .bar{flex:1; height:8px; border-radius:99px; background:var(--line); overflow:hidden}
+.timer .bar i{display:block; height:100%; background:var(--ink); width:100%; transition:width .25s linear}
+.timer .bar i.low{background:var(--danger)}
+.timer output{font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums; min-width:3.2em; text-align:right}
+.confirm{border:2px solid var(--ink); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px}
+.confirm .link{font-weight:600; font-size:1.02rem}
+.confirm .kind{font-size:.9rem}
+.confirm .kind.vuelta{color:var(--vuelta); font-weight:700}
+details.hint{border:1px dashed var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem}
+details.hint summary{cursor:pointer; color:var(--muted); font-weight:600}
+details.hint p{margin-top:8px}
+.mylinks{font-size:.9rem; color:var(--muted); display:flex; flex-direction:column; gap:4px}
+.mini{background:none; border:none; padding:0; color:var(--muted); text-decoration:underline; font-size:.88rem; text-align:left}
+.howto h2{font-family:var(--display); font-size:1.5rem; margin:0}
+.howto ol{margin:0; padding-left:1.25em; display:flex; flex-direction:column; gap:8px}
+.howto .points{display:grid; grid-template-columns:auto 1fr; gap:6px 12px; align-items:center; font-size:.95rem}
+.howto .points b{font-family:var(--mono)}
+
+/* Superposiciones */
+.overlay{position:fixed; inset:0; background:rgba(10,14,18,.62); display:grid; place-items:center; padding:16px; z-index:20}
+.sheet{background:var(--surface); color:var(--ink); border-radius:16px; max-width:900px; width:100%; max-height:92vh; overflow:auto; padding:28px; display:flex; flex-direction:column; gap:16px; border:1px solid var(--line)}
+.sheet h2{font-family:var(--display); font-weight:800; font-size:2rem; line-height:1.1; margin:0; text-wrap:balance}
+.sheet.fall{background:var(--rojo); color:var(--rojo-ink); border-color:var(--rojo)}
+.sheet.fall h2{font-size:2.6rem}
+.sheet .stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:10px}
+.sheet .stat{background:var(--surface-2); border-radius:12px; padding:12px 14px}
+.sheet .stat b{display:block; font-family:var(--mono); font-size:2rem; font-variant-numeric:tabular-nums}
+.sheet ol{margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:8px; font-size:1.08rem}
+.sheet textarea{width:100%; min-height:160px; font-family:var(--mono); font-size:.85rem; background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:10px}
+.sheet label{font-weight:600; font-size:.92rem}
+.sheet input{font:inherit; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:6px 10px}
+.names{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px}
+.toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--ink); color:var(--surface); padding:10px 18px; border-radius:10px; font-weight:600; z-index:30}
+
+@media (max-width: 1100px){ main{grid-template-columns:1fr} .panel{max-height:none} }
+@media (max-width: 600px){ .brand h1{font-size:1.2rem} .sheet{padding:18px} .sheet h2{font-size:1.5rem} .sheet.fall h2{font-size:1.8rem} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand"><span>FIL02 · 2.3 · Juego de aula</span><h1>Torre de la antropogénesis</h1></div>
+    <div class="teams" id="teams" aria-label="Marcador"></div>
+    <div class="dice" aria-label="Dado">
+      <button class="btn" id="roll" type="button">Tirar dado</button>
+      <div class="die-face" id="dieFace" aria-live="polite">–</div>
+      <button class="chip" data-c="R" type="button">Rojo</button>
+      <button class="chip" data-c="A" type="button">Azul</button>
+      <button class="chip" data-c="B" type="button">Blanco</button>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="next" type="button">Siguiente turno</button>
+      <button class="btn warn" id="fall" type="button">La torre se ha caído</button>
+      <button class="btn" id="debrief" type="button">Puesta en común</button>
+      <button class="btn" id="settings" type="button">Equipos</button>
+    </div>
+  </header>
+  <main>
+    <section class="board" aria-label="La torre">
+      <div class="board-head">
+        <p id="boardHint">Pulsa el bloque que ha sacado el equipo para abrir su tarjeta.</p>
+      </div>
+      <div class="tower-wrap"><div class="tower" id="tower"><svg class="arrows" id="arrows" aria-hidden="true"></svg></div></div>
+      <div class="counts" id="counts"></div>
+    </section>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </main>
+</div>
+<div id="overlayRoot"></div>
+
+<script>
+const CATS = {
+  R:{name:'Hominización', sub:'Evolución biológica', rank:0},
+  A:{name:'Humanización', sub:'Capacidades y procesos', rank:1},
+  B:{name:'Productos culturales', sub:'Objetos y prácticas', rank:2}
+};
+const CARDS = [
+ {id:'R1',short:'Posición erguida',title:'Posición erguida',libro:true,
+  desc:'Caminar sobre las dos piernas. Permitió más amplitud de visión y liberó las manos.',
+  hint:'Hace posibles A1 (con las manos libres llega la técnica) y B5 (ver más lejos y cargar con armas al cazar). También se relaciona con A8: según una hipótesis, la pelvis adaptada a caminar erguido complica el parto y hace falta ayuda.'},
+ {id:'R2',short:'Manos libres',title:'Liberación de las manos',libro:true,
+  desc:'Las extremidades superiores dejan de servir para desplazarse y quedan libres para defenderse, manipular y fabricar objetos.',
+  hint:'Junto con el desarrollo cerebral, hace posibles A1 (técnica) y B1 (piedra tallada).'},
+ {id:'R3',short:'Pinza de precisión',title:'Pinza de precisión',libro:false,
+  desc:'Oponer el pulgar a la yema de los demás dedos para sujetar objetos pequeños con fuerza y control.',
+  hint:'Hace posible B1. Flecha de vuelta: B1 → R3. Tallar y usar herramientas durante generaciones favoreció manos cada vez más precisas.'},
+ {id:'R4',short:'Desarrollo cerebral',title:'Desarrollo cerebral',libro:true,
+  desc:'Aumento del tamaño y la complejidad del cerebro. Sin él, unas manos libres no fabrican nada.',
+  hint:'Hace posibles A1, A2, A3 y A4. Flecha de vuelta discutida: B4 → R4 (hipótesis de Richard Wrangham: la comida cocinada aporta más energía con menos digestión).'},
+ {id:'R5',short:'Amplitud de visión',title:'Amplitud de visión',libro:true,
+  desc:'Al erguirse, la mirada alcanza más lejos: se ve venir el peligro y se localizan presas y recursos.',
+  hint:'Hace posibles B5 (localizar presas a distancia) y A6 (coordinarse con el grupo a la vista).'},
+ {id:'R6',short:'Mandíbula y dientes',title:'Reducción de mandíbula y dientes',libro:false,
+  desc:'Mandíbulas y dientes más pequeños que los de los homínidos anteriores.',
+  hint:'Flechas de vuelta: B4 → R6 y B1 → R6. Cortar y cocinar los alimentos fuera de la boca reduce el trabajo de masticar.'},
+ {id:'R7',short:'Aparato fonador',title:'Aparato fonador',libro:false,
+  desc:'La forma de la garganta y la posición de la laringe permiten articular una gran variedad de sonidos.',
+  hint:'Hace posible A3 (lenguaje). Pregunta para el tribunal: ¿basta con tener el aparato para hablar? Víctor de Aveyron, que creció sin grupo, nunca aprendió a hablar.'},
+ {id:'R8',short:'Infancia prolongada',title:'Infancia prolongada',libro:false,
+  desc:'Las crías humanas dependen de los adultos durante muchos años. Es el dato del argumento de Anaximandro.',
+  hint:'Hace posibles A5 (educación) y A8 (cuidado): hay tiempo para aprender. Flecha de vuelta: A8 → R8, solo un grupo que cuida puede sacar adelante crías tan dependientes.'},
+ {id:'R9',short:'Poco vello, mucho sudor',title:'Pérdida de vello y sudoración',libro:false,
+  desc:'Piel con poco pelo y muchas glándulas sudoríparas: el cuerpo se enfría bien al moverse mucho rato con calor.',
+  hint:'Según una hipótesis, favoreció la caza por agotamiento (R9 → B5). Pregunta para el tribunal: la ropa (B6) compensa la falta de pelo en climas fríos; ¿cuenta como flecha de vuelta?'},
+ {id:'R10',short:'Parto difícil',title:'Parto difícil y pelvis estrecha',libro:false,
+  desc:'Una pelvis adaptada a caminar erguido y una cabeza grande hacen el parto difícil, y las crías nacen muy inmaduras. Es una hipótesis discutida.',
+  hint:'Hace posibles A8 (cuidado) y A6 (cooperación): el parto y la crianza necesitan la ayuda del grupo.'},
+
+ {id:'A1',short:'Capacidad técnica',title:'Capacidad técnica',libro:true,
+  desc:'Capacidad para fabricar herramientas. Gracias a ella, el ser humano, más que adaptarse al medio, adapta el medio a sí mismo.',
+  hint:'Depende de R2, R3 y R4. Hace posibles B1, B2, B3, B6 y B10.'},
+ {id:'A2',short:'Capacidad simbólica',title:'Capacidad simbólica',libro:true,
+  desc:'Capacidad de crear símbolos: signos que sustituyen a otras realidades.',
+  hint:'Depende de R4. Hace posibles B2 (una forma imaginada antes de tallarla), B7, B8 y B9.'},
+ {id:'A3',short:'Lenguaje articulado',title:'Lenguaje articulado',libro:true,
+  desc:'Sus símbolos, las palabras, son convencionales: la relación entre «g-a-t-o» y el gato real es inventada. Permite hablar de lo presente, lo pasado, lo futuro y lo imaginario.',
+  hint:'Depende de R7 y R4. Hace posible B5 (planificar la cacería) y que técnicas como B1 o B2 se puedan explicar a otros.'},
+ {id:'A4',short:'Autoconciencia',title:'Autoconciencia',libro:true,
+  desc:'Conocimiento inmediato de la propia existencia e individualidad. El ser humano deja de ser un elemento más del paisaje y se vuelve un extraño en él.',
+  hint:'Depende de R4. Hace posible B7 (enterramientos).'},
+ {id:'A5',short:'Educación',title:'Educación y transmisión',libro:false,
+  desc:'Lo que una generación aprende pasa a la siguiente porque se enseña, no por herencia biológica.',
+  dato:'Recordad a Lamarck: los caracteres adquiridos no se heredan por los genes, pero sí se transmiten por la cultura.',
+  hint:'Depende de R8. Hace que B1, B2 o B3 no tengan que reinventarse en cada generación.'},
+ {id:'A6',short:'Cooperación',title:'Cooperación y división del trabajo',libro:false,
+  desc:'Repartir tareas dentro del grupo y coordinarse para conseguir lo que nadie lograría solo.',
+  hint:'Depende de R5 y R10. Hace posibles B5 y B10.'},
+ {id:'A7',short:'Normas del grupo',title:'Normas del grupo',libro:false,
+  desc:'Reglas compartidas sobre lo que se debe y no se debe hacer.',
+  hint:'Depende de R4. Se ve en B10: los poblados estables necesitan reglas para repartir la tierra, el trabajo y la cosecha.'},
+ {id:'A8',short:'Cuidado de los débiles',title:'Cuidado de los débiles',libro:false,
+  desc:'Atender a heridos, enfermos, ancianos y crías.',
+  dato:'En la Sima de los Huesos (Atapuerca) apareció el cráneo de una niña de hace unos 430.000 años, «Benjamina», con una malformación craneal. Sobrevivió varios años, y se interpreta como posible indicio de que el grupo la cuidó.',
+  hint:'Depende de R8 y R10. Flecha de vuelta: A8 → R8, el cuidado del grupo hace viable una infancia tan larga.'},
+ {id:'A9',short:'Conciencia de la muerte',title:'Conciencia de la muerte',libro:false,
+  desc:'Saber que vamos a morir, y que los demás también.',
+  hint:'Depende de R4. Hace posible B7 (enterramientos).'},
+ {id:'A10',short:'Pensamiento mítico',title:'Pensamiento mítico',libro:false,
+  desc:'Explicar el origen del mundo y el sentido de la vida mediante relatos. Lo visteis en el paso del mito al logos.',
+  hint:'Depende de R4. Se expresa en B7 y B8.'},
+
+ {id:'B1',short:'Piedra tallada',title:'Herramientas de piedra tallada',libro:true,
+  desc:'Golpear una piedra con otra para obtener un filo. Las más antiguas conocidas tienen más de dos millones y medio de años.',
+  hint:'Depende de R2, R3 y A1. Flechas de vuelta: B1 → R3 (manos) y B1 → R6 (mandíbula).'},
+ {id:'B2',short:'Bifaz',title:'Bifaz',libro:false,
+  desc:'Herramienta tallada por las dos caras con una forma simétrica que hay que tener en la cabeza antes de empezar.',
+  dato:'En la Sima de los Huesos (Atapuerca) apareció «Excalibur», un bifaz de cuarcita rojiza. Algunos investigadores lo interpretan como una ofrenda; la interpretación se discute.',
+  hint:'Depende de A1 y también de A2: tallar una forma planificada exige imaginar lo que todavía no existe.'},
+ {id:'B3',short:'Dominio del fuego',title:'Dominio del fuego',libro:false,
+  desc:'Conservar o producir fuego para tener luz, calor y protección. Cuándo empezó se sigue discutiendo.',
+  hint:'Depende de A1 y A6. Alarga el día: más tiempo para hablar junto al fuego (A3, A10).'},
+ {id:'B4',short:'Cocina',title:'Cocina',libro:false,
+  desc:'Transformar los alimentos con el fuego: son más fáciles de masticar y de digerir.',
+  hint:'Depende de A1. Flechas de vuelta: B4 → R6 (mandíbula) y, como hipótesis discutida, B4 → R4 (cerebro).'},
+ {id:'B5',short:'Lanza y caza',title:'Lanza y caza organizada',libro:false,
+  desc:'Armas para cazar y cacerías que exigen planificar y coordinarse.',
+  dato:'Las lanzas de madera de Schöningen (Alemania) están entre las más antiguas conservadas; un estudio de 2025 las data en unos 200.000 años.',
+  hint:'Depende de R5, A1, A6 y A3 (planificar la cacería).'},
+ {id:'B6',short:'Ropa y aguja',title:'Ropa y aguja de hueso',libro:false,
+  desc:'Coser pieles para protegerse del frío. Permite vivir en climas que el cuerpo solo no soportaría.',
+  hint:'Depende de A1. Es un ejemplo claro de técnica que adapta el medio al ser humano. Se relaciona con R9: compensa la falta de pelo en climas fríos.'},
+ {id:'B7',short:'Enterramientos',title:'Enterramientos',libro:false,
+  desc:'Tratar los cuerpos de los muertos de forma intencionada.',
+  dato:'La acumulación de cuerpos en la Sima de los Huesos (Atapuerca) se ha interpretado como un posible depósito intencionado; es una hipótesis discutida.',
+  hint:'Depende de A9, A2 y A4.'},
+ {id:'B8',short:'Pintura rupestre',title:'Pintura rupestre',libro:false,
+  desc:'Imágenes pintadas o grabadas en las paredes de las cuevas. En España, Altamira (Cantabria) es el ejemplo más conocido.',
+  hint:'Depende de A2. Se conecta con A10 y con A5: ¿se pintaba también para enseñar?'},
+ {id:'B9',short:'Música',title:'Instrumentos musicales',libro:false,
+  desc:'Las flautas de hueso de hace unos 40.000 años halladas en Alemania están entre los instrumentos más antiguos conocidos.',
+  hint:'Depende de A1 y A2. Pregunta: ¿para qué sirve la música si no ayuda a comer? Quizá para A6, la cohesión del grupo.'},
+ {id:'B10',short:'Agricultura',title:'Agricultura y ganadería',libro:false,
+  desc:'Cultivar plantas y domesticar animales. Empieza hace unos 10.000 años, en el Neolítico, y lleva a vivir en poblados estables.',
+  hint:'Depende de A6 y A1. Es el mejor ejemplo de que la cultura cambia los genes: en los pueblos ganaderos que bebían leche se extendió la capacidad de digerir la lactosa en la edad adulta. No hay tarjeta roja de la digestión; si el equipo lo propone, el tribunal puede aceptar la idea aunque no tenga flecha.'}
+];
+const BY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
+const cat = id => id[0];
+const rank = id => CATS[cat(id)].rank;
+const kindOf = (f,t) => rank(f)<rank(t)?'up':'vuelta';
+const PTS = {up:1, vuelta:3};
+const KIND_TXT = {up:'De la biología hacia la cultura · +1', vuelta:'Flecha de vuelta: de la cultura hacia la biología · +3'};
+const TURN_SECONDS = 60;
+const KEY = 'torre-antropogenesis-v1';
+
+function freshState(n=5, names){
+  return {teams:Array.from({length:n},(_,i)=>({name:(names&&names[i])||('Equipo '+(i+1)), score:0})),
+          turn:0, die:null, played:[], links:[], selected:null, mode:null, pending:null, last:null};
+}
+let S = freshState();
+try{ const raw = localStorage.getItem(KEY); if(raw){ const p = JSON.parse(raw); if(p && Array.isArray(p.teams)){ S = Object.assign(freshState(), p, {mode:null, pending:null}); S.links = S.links.filter(l=>cat(l.from)!==cat(l.to)); } } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const esc = s => String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const $ = s => document.querySelector(s);
+
+/* ---------- Torre ---------- */
+const tower = $('#tower'), svg = $('#arrows');
+['B','A','R'].forEach(c=>{
+  const row = document.createElement('div'); row.className='row'; row.dataset.c=c;
+  row.innerHTML = `<div class="row-label">${c==='R'?'Base · rojo':c==='A'?'Medio · azul':'Arriba · blanco'}<b>${CATS[c].name}</b></div>`;
+  CARDS.filter(k=>cat(k.id)===c).forEach(k=>{
+    const b = document.createElement('button'); b.type='button'; b.className='tile '+c; b.dataset.id=k.id;
+    b.innerHTML = `<span class="num">${k.id}</span><span class="t">${esc(k.short)}</span>`;
+    b.setAttribute('aria-label', `${k.id}: ${k.title}`);
+    b.addEventListener('click', ()=>onTile(k.id));
+    row.appendChild(b);
+  });
+  tower.appendChild(row);
+});
+
+function onTile(id){
+  if((S.mode==='from' || S.mode==='to') && S.selected){
+    if(cat(id)===cat(S.selected)){ toast('Elegid una tarjeta de otro color'); return; }
+    const pair = S.mode==='from' ? {from:id, to:S.selected} : {from:S.selected, to:id};
+    S.pending = pair; S.mode = null; render(); return;
+  }
+  S.selected = id; S.mode=null; S.pending=null;
+  if(!S.played.includes(id)){ S.played.push(id); S.last = id; startTimer(); }
+  render();
+}
+
+/* ---------- Flechas ---------- */
+function drawArrows(){
+  const tr = tower.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${tr.width} ${tr.height}`);
+  let html = `<defs>
+    <marker id="mUp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--up)"/></marker>
+    <marker id="mV" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--vuelta)"/></marker></defs>`;
+  const box = id => { const r = tower.querySelector(`.tile[data-id="${id}"]`).getBoundingClientRect();
+    return {x:r.left-tr.left+r.width/2, top:r.top-tr.top, bottom:r.bottom-tr.top, h:r.height, w:r.width}; };
+  const draw = (l, extra) => {
+    const a = box(l.from), b = box(l.to), k = kindOf(l.from,l.to);
+    let d;
+    if(rank(l.from)===rank(l.to)){
+      const lift = 26 + Math.min(Math.abs(a.x-b.x)*0.12, 30);
+      d = `M${a.x} ${a.top-2} C ${a.x} ${a.top-lift}, ${b.x} ${b.top-lift}, ${b.x} ${b.top-4}`;
+    } else {
+      const goingUp = rank(l.to) > rank(l.from);
+      const y1 = goingUp ? a.top-2 : a.bottom+2, y2 = goingUp ? b.bottom+4 : b.top-4;
+      const my = (y1+y2)/2, bend = (a.x<b.x?1:-1)*18;
+      d = `M${a.x} ${y1} C ${a.x+bend} ${my}, ${b.x-bend} ${my}, ${b.x} ${y2}`;
+    }
+    const sel = S.selected, faded = sel && l.from!==sel && l.to!==sel ? ' faded' : '';
+    return `<path class="${k}${faded}${extra||''}" d="${d}" marker-end="url(#${k==='vuelta'?'mV':'mUp'})"/>`;
+  };
+  S.links.forEach(l=>{ html += draw(l); });
+  if(S.pending) html += draw(S.pending);
+  svg.innerHTML = html;
+}
+
+/* ---------- Temporizador ---------- */
+let tLeft = TURN_SECONDS, tRun = false, tInt = null;
+function startTimer(){ tLeft = TURN_SECONDS; tRun = true; clearInterval(tInt); tInt = setInterval(()=>{ if(!tRun) return; tLeft = Math.max(0,tLeft-1); paintTimer(); if(tLeft===0){ tRun=false; } },1000); }
+function stopTimer(){ tRun=false; clearInterval(tInt); tLeft = TURN_SECONDS; }
+function paintTimer(){
+  const o = $('#tOut'), i = $('#tBar'); if(!o) return;
+  o.textContent = tLeft===0 ? '¡Tiempo!' : `0:${String(tLeft).padStart(2,'0')}`;
+  i.style.width = (tLeft/TURN_SECONDS*100)+'%'; i.classList.toggle('low', tLeft<=10);
+  const p = $('#tPause'); if(p) p.textContent = tRun ? 'Pausa' : (tLeft===0?'Otra vez':'Seguir');
+}
+
+/* ---------- Render ---------- */
+function render(){
+  // Marcador
+  $('#teams').innerHTML = S.teams.map((t,i)=>`<div class="team${i===S.turn?' active':''}"${i===S.turn?' aria-current="true"':''}>${esc(t.name)} <b>${t.score}</b></div>`).join('');
+  // Dado
+  const df = $('#dieFace'); df.className = 'die-face' + (S.die?' '+S.die:''); df.textContent = S.die ? {R:'ROJO',A:'AZUL',B:'BLANCO'}[S.die].slice(0,4) : '–';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c.dataset.c===S.die));
+  // Fichas
+  tower.querySelectorAll('.tile').forEach(t=>{
+    const id = t.dataset.id;
+    t.classList.toggle('played', S.played.includes(id));
+    t.classList.toggle('sel', id===S.selected);
+    t.classList.toggle('dim', S.mode ? cat(id)===cat(S.selected) && id!==S.selected : (!!S.die && cat(id)!==S.die && id!==S.selected));
+    t.classList.toggle('target', !!S.mode && cat(id)!==cat(S.selected));
+  });
+  // Aviso del tablero
+  const bh = $('#boardHint');
+  if(S.mode){ const c = BY[S.selected]; bh.innerHTML = `<span class="mode-banner">${S.mode==='from'?'¿De qué depende':'¿Qué hace posible'} «${esc(c.title)}»? Pulsa una tarjeta de otro color.</span>`; }
+  else bh.textContent = S.die ? `Le toca a ${S.teams[S.turn].name}: saca un bloque ${({R:'rojo',A:'azul',B:'blanco'})[S.die]} y pulsa su número.` : `Le toca a ${S.teams[S.turn].name}: tirad el dado.`;
+  renderPanel(); renderCounts(); drawArrows(); save();
+}
+
+function counts(){
+  const c = {up:0, vuelta:0}; S.links.forEach(l=>c[kindOf(l.from,l.to)]++); return c;
+}
+function renderCounts(){
+  const c = counts();
+  $('#counts').innerHTML = `<span><i class="key"></i>De la biología a la cultura <b>${c.up}</b></span>
+   <span><i class="key vuelta"></i>Flechas de vuelta <b>${c.vuelta}</b></span>
+   <span>Bloques fuera de la torre <b>${S.played.length}/30</b></span>`;
+}
+
+function renderPanel(){
+  const P = $('#panel');
+  if(!S.selected){
+    P.innerHTML = `<div class="panel-body howto">
+      <h2>Cómo se juega</h2>
+      <ol>
+        <li>El equipo tira el dado: el color indica de qué piso de la torre tiene que sacar el bloque.</li>
+        <li>Saca un bloque de ese color, mira el número de su extremo y lo pulsa aquí.</li>
+        <li>Se lee la tarjeta y el equipo tiene un minuto para conectarla con una tarjeta <b>de otro color</b>: <b>de qué depende</b> o <b>qué hace posible</b>.</li>
+        <li>El tribunal (el resto de la clase) acepta o rechaza la conexión. Si se acepta, la flecha queda en la torre.</li>
+        <li>El bloque se coloca arriba y pasa el turno.</li>
+      </ol>
+      <div class="points"><b>+1</b><span>Flecha de la biología hacia la cultura (de rojo a azul o blanco, de azul a blanco)</span><b>+3</b><span>Flecha de vuelta: de la cultura hacia la biología (hacia abajo en la torre)</span></div>
+      <p class="dato">Las tarjetas marcadas «Para saber más» amplían lo que trae el libro.</p>
+    </div>`;
+    return;
+  }
+  const c = BY[S.selected], k = cat(c.id);
+  const mine = S.links.filter(l=>l.from===c.id || l.to===c.id);
+  let task;
+  if(S.pending){
+    const kd = kindOf(S.pending.from, S.pending.to), dup = S.links.some(l=>l.from===S.pending.from && l.to===S.pending.to);
+    task = `<div class="confirm">
+      <p class="link">${S.pending.from} ${esc(BY[S.pending.from].title)} → ${S.pending.to} ${esc(BY[S.pending.to].title)}</p>
+      <p class="kind${kd==='vuelta'?' vuelta':''}">${KIND_TXT[kd]}</p>
+      ${dup?'<p class="kind">Esta conexión ya está en la torre.</p>':''}
+      <p>${esc(S.teams[S.turn].name)} explica la conexión. ¿La acepta el tribunal?</p>
+      <div class="actions">
+        <button class="btn ${kd==='vuelta'?'vuelta':'primary'}" id="accept" type="button"${dup?' disabled':''}>Aceptar</button>
+        <button class="btn" id="reject" type="button">Rechazar</button>
+        <button class="btn" id="swap" type="button">Invertir flecha</button>
+      </div></div>`;
+  } else if(S.mode){
+    task = `<div class="confirm"><p class="link">Pulsa en la torre una tarjeta de otro color: ${S.mode==='from'?'aquella de la que depende':'la que hace posible'}.</p>
+      <div class="actions"><button class="btn" id="cancel" type="button">Cancelar</button></div></div>`;
+  } else {
+    task = `<div class="task"><h3>Conectadla con una tarjeta de otro color</h3>
+      <div class="actions">
+        <button class="btn primary" id="from" type="button">← Depende de…</button>
+        <button class="btn primary" id="to" type="button">Hace posible… →</button>
+      </div>
+      <div class="timer"><div class="bar"><i id="tBar"></i></div><output id="tOut"></output><button class="mini" id="tPause" type="button">Pausa</button></div>
+    </div>`;
+  }
+  P.innerHTML = `<div class="card-band ${k}">
+      <div class="cat">${CATS[k].name} · ${CATS[k].sub}</div>
+      <div class="big"><span class="n">${c.id}</span><h2>${esc(c.title)}</h2></div>
+      ${c.libro?'':'<span class="badge">Para saber más</span>'}
+    </div>
+    <div class="panel-body">
+      <p class="desc">${esc(c.desc)}</p>
+      ${c.dato?`<p class="dato">${esc(c.dato)}</p>`:''}
+      ${task}
+      ${mine.length?`<div class="mylinks"><b>Conexiones de esta tarjeta</b>${mine.map(l=>`<span>${l.from} → ${l.to} · ${esc(S.teams[l.team]?S.teams[l.team].name:'')}</span>`).join('')}</div>`:''}
+      <details class="hint"><summary>Pista para el docente</summary><p>${esc(c.hint)}</p></details>
+      <div class="actions">
+        <button class="mini" id="close" type="button">Cerrar tarjeta</button>
+        ${S.links.length?'<button class="mini" id="undo" type="button">Deshacer la última conexión</button>':''}
+        <button class="mini" id="unplay" type="button">Devolver el bloque a la torre</button>
+      </div>
+    </div>`;
+  const on = (id,fn)=>{ const e = document.getElementById(id); if(e) e.addEventListener('click',fn); };
+  on('from', ()=>{ S.mode='from'; render(); });
+  on('to', ()=>{ S.mode='to'; render(); });
+  on('cancel', ()=>{ S.mode=null; render(); });
+  on('accept', acceptLink);
+  on('reject', ()=>{ S.pending=null; toast('Conexión rechazada por el tribunal'); render(); });
+  on('swap', ()=>{ S.pending = {from:S.pending.to, to:S.pending.from}; render(); });
+  on('close', ()=>{ S.selected=null; S.mode=null; S.pending=null; render(); });
+  on('undo', undoLink);
+  on('unplay', ()=>{ S.played = S.played.filter(x=>x!==c.id); S.selected=null; stopTimer(); render(); });
+  on('tPause', ()=>{ if(tLeft===0){ startTimer(); } else { tRun=!tRun; } paintTimer(); });
+  paintTimer();
+}
+
+function acceptLink(){
+  const p = S.pending, kd = kindOf(p.from,p.to), pts = PTS[kd];
+  S.links.push({from:p.from, to:p.to, team:S.turn});
+  S.teams[S.turn].score += pts; S.pending = null; tRun=false;
+  toast(`${kd==='vuelta'?'¡Flecha de vuelta! ':''}+${pts} para ${S.teams[S.turn].name}`);
+  render();
+}
+function undoLink(){
+  const l = S.links.pop(); if(!l) return;
+  if(S.teams[l.team]) S.teams[l.team].score -= PTS[kindOf(l.from,l.to)];
+  toast('Última conexión deshecha'); render();
+}
+
+/* ---------- Cabecera ---------- */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#roll').addEventListener('click', ()=>{
+  const faces = ['R','R','A','A','B','B'], final = faces[Math.floor(Math.random()*6)];
+  if(reduce){ S.die = final; render(); return; }
+  let n = 0; const iv = setInterval(()=>{ S.die = faces[n%6]; render(); if(++n>9){ clearInterval(iv); S.die = final; render(); } }, 70);
+});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click', ()=>{ S.die = S.die===c.dataset.c ? null : c.dataset.c; render(); }));
+$('#next').addEventListener('click', ()=>{
+  S.turn = (S.turn+1) % S.teams.length; S.die=null; S.selected=null; S.mode=null; S.pending=null; stopTimer(); render();
+  toast(`Turno de ${S.teams[S.turn].name}`);
+});
+
+/* ---------- Superposiciones ---------- */
+function overlay(html, cls){
+  const root = $('#overlayRoot');
+  root.innerHTML = `<div class="overlay" role="dialog" aria-modal="true"><div class="sheet ${cls||''}">${html}</div></div>`;
+  const ov = root.firstElementChild;
+  ov.addEventListener('click', e=>{ if(e.target===ov) closeOverlay(); });
+  root.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click', closeOverlay));
+  const f = root.querySelector('button, input'); if(f) f.focus();
+  return root;
+}
+function closeOverlay(){ $('#overlayRoot').innerHTML=''; }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ if($('#overlayRoot').innerHTML) closeOverlay(); else if(S.mode||S.pending){ S.mode=null; S.pending=null; render(); } } });
+
+$('#fall').addEventListener('click', ()=>{
+  const last = S.last ? BY[S.last] : null; stopTimer();
+  overlay(`<p style="text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin:0">La torre se ha caído</p>
+    <h2>¿Qué parte de la humanización se derrumbaría sin el último bloque que sacasteis?</h2>
+    ${last?`<p style="font-size:1.25rem;margin:0">Último bloque: <b>${last.id} · ${esc(last.title)}</b></p>`:''}
+    <p style="margin:0">Responde el equipo que la ha tirado. Después, reconstruid la torre y seguid jugando.</p>
+    <div class="actions"><button class="btn" data-close type="button">Reconstruir y seguir</button></div>`, 'fall');
+});
+
+function exportText(){
+  const lines = ['Torre de la antropogénesis · mapa de conexiones', ''];
+  S.links.forEach(l=>lines.push(`${l.from} ${BY[l.from].title} → ${l.to} ${BY[l.to].title} (${({up:'hacia la cultura',vuelta:'de vuelta'})[kindOf(l.from,l.to)]}; ${S.teams[l.team]?S.teams[l.team].name:''})`));
+  lines.push('', 'Marcador: ' + S.teams.map(t=>`${t.name} ${t.score}`).join(' · '));
+  return lines.join('\n');
+}
+$('#debrief').addEventListener('click', ()=>{
+  const c = counts(), left = CARDS.filter(k=>!S.played.includes(k.id));
+  const rk = [...S.teams].sort((a,b)=>b.score-a.score);
+  const root = overlay(`<h2>Puesta en común</h2>
+    <div class="stats">
+      <div class="stat"><b>${c.up}</b>De la biología hacia la cultura</div>
+      <div class="stat"><b>${c.vuelta}</b>Flechas de vuelta</div>
+      <div class="stat"><b>${rk[0]?esc(rk[0].name):'–'}</b>${rk[0]?rk[0].score+' puntos':''}</div>
+    </div>
+    <ol>
+      <li>¿Hacia dónde van la mayoría de las flechas? ¿Qué flechas de vuelta habéis encontrado?</li>
+      <li>En el Jenga, lo de abajo sostiene lo de arriba y nunca al revés. ¿Funciona así la relación entre hominización y humanización?</li>
+      <li>¿Cómo cambiaríais el juego para que represente mejor que son procesos simultáneos y complementarios?</li>
+    </ol>
+    ${left.length?`<p style="margin:0;color:var(--muted)">Tarjetas que se quedaron en la torre: ${left.map(k=>k.id+' '+esc(k.short)).join(' · ')}</p>`:''}
+    <label for="exportBox">Mapa de conexiones (para copiar al diario o al aula virtual)</label>
+    <textarea id="exportBox" readonly>${esc(exportText())}</textarea>
+    <div class="actions"><button class="btn primary" id="copy" type="button">Copiar el mapa</button><button class="btn" data-close type="button">Volver a la torre</button></div>`);
+  root.querySelector('#copy').addEventListener('click', ()=>{
+    const ta = root.querySelector('#exportBox');
+    const fallback = ()=>{ ta.focus(); ta.select(); toast('Texto seleccionado: cópialo con Ctrl+C o Cmd+C'); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(()=>toast('Mapa copiado'), fallback); } else fallback();
+  });
+});
+
+$('#settings').addEventListener('click', ()=>{
+  const root = overlay(`<h2>Equipos</h2>
+    <div style="display:flex;gap:10px;align-items:center"><label for="nTeams">Número de equipos</label><input id="nTeams" type="number" min="2" max="6" value="${S.teams.length}" style="width:5em"></div>
+    <div class="names" id="names"></div>
+    <div class="actions"><button class="btn primary" id="saveTeams" type="button">Guardar equipos</button><button class="btn" data-close type="button">Cancelar</button></div>
+    <hr style="border:none;border-top:1px solid var(--line);width:100%">
+    <p style="margin:0">Empezar de cero borra los puntos, las conexiones y los bloques sacados.</p>
+    <div class="actions"><button class="btn warn" id="reset" type="button">Nueva partida</button></div>`);
+  const names = root.querySelector('#names'), nIn = root.querySelector('#nTeams');
+  const paint = ()=>{ const n = Math.min(6, Math.max(2, +nIn.value||2)); const cur = [...names.querySelectorAll('input')].map(i=>i.value);
+    names.innerHTML = Array.from({length:n},(_,i)=>`<input id="team${i}" aria-label="Nombre del equipo ${i+1}" value="${esc(cur[i] ?? (S.teams[i]?S.teams[i].name:'Equipo '+(i+1)))}">`).join(''); };
+  paint(); nIn.addEventListener('input', paint);
+  root.querySelector('#saveTeams').addEventListener('click', ()=>{
+    const vals = [...names.querySelectorAll('input')].map((i,ix)=>i.value.trim()||('Equipo '+(ix+1)));
+    S.teams = vals.map((n,i)=>({name:n, score:S.teams[i]?S.teams[i].score:0}));
+    if(S.turn>=S.teams.length) S.turn=0;
+    S.links = S.links.filter(l=>l.team<S.teams.length);
+    closeOverlay(); render();
+  });
+  const rb = root.querySelector('#reset');
+  rb.addEventListener('click', ()=>{
+    if(rb.dataset.armed){ const nm = S.teams.map(t=>t.name); S = freshState(nm.length, nm); stopTimer(); closeOverlay(); render(); toast('Nueva partida'); }
+    else { rb.dataset.armed='1'; rb.textContent='Sí, borrar la partida'; }
+  });
+});
+
+let toastT;
+function toast(msg){
+  let t = document.querySelector('.toast'); if(!t){ t = document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+  t.textContent = msg; clearTimeout(toastT); toastT = setTimeout(()=>t.remove(), 2400);
+}
+
+new ResizeObserver(()=>drawArrows()).observe(tower);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(drawArrows);
+render();
+</script>
+
+</body></html>
