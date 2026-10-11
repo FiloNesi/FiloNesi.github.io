@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f3e46">
+<title>Puntos</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#f6f4ee; --panel:#ffffff; --ink:#1f2a30; --muted:#7a8288; --line:#e4e0d6;
+  --accent:#2f3e46; --pos:#2e7d4f; --neg:#b3452f; --hl:#fdf3d0; --btn:#4a4f53;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:var(--accent);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px}
+header h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .sub{font-size:14px;opacity:.85}
+header button{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:15px}
+main{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.card h2{font-size:17px;margin:0 0 12px}
+label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+input[type=date],input[type=text]{font-size:18px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:10px;padding:12px 16px;font-size:16px;background:var(--accent);color:#fff;cursor:pointer}
+.btn.sec{background:#e9e6dd;color:var(--ink)}
+.btn.danger{background:#f3dcd6;color:var(--neg)}
+.btn.small{padding:8px 12px;font-size:14px}
+.clases{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.clase{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;display:flex;flex-direction:column;gap:10px}
+.clase .nom{font-size:20px;font-weight:700}
+.clase .info{font-size:13px;color:var(--muted)}
+.clase .go{font-size:18px;padding:14px}
+.clase .acts{display:flex;gap:6px;flex-wrap:wrap}
+.empty{color:var(--muted);text-align:center;padding:24px}
+/* Lista de puntuación */
+.lista{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cab,.al{display:grid;grid-template-columns:1fr 44px 140px 70px;align-items:center}
+.top{position:sticky;top:0;z-index:5;background:var(--bg)}.top header{position:static}
+.cab{background:#efece3;font-size:13px;color:var(--muted);font-weight:600;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}
+.lista{border-radius:0 0 14px 14px}
+.cabwrap{padding:12px 16px 0;max-width:900px;margin:0 auto}
+.cab div{padding:10px 8px}
+.cab .fecha{color:var(--ink);text-align:center;background:var(--hl)}
+.al{border-top:1px solid var(--line);min-height:68px}
+.al .n{padding:8px 12px;font-weight:650;font-size:18px;line-height:1.2}
+.al .num{color:#b7bcbf;font-size:20px;font-weight:600;text-align:center;border-right:2px solid #6c7377;align-self:stretch;display:flex;align-items:center;justify-content:center}
+.al .hoy{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--hl);align-self:stretch}
+.al .tot{text-align:center;font-size:18px;font-weight:700}
+.pm{width:48px;height:48px;border-radius:50%;border:0;background:var(--btn);color:#fff;font-size:28px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.pm:active{transform:scale(.92)}
+.val{min-width:30px;text-align:center;font-size:20px;font-weight:700}
+.pos{color:var(--pos)} .neg{color:var(--neg)} .cero{color:#c3c6c8}
+.tot.pos{color:var(--pos)}
+dialog{border:0;border-radius:16px;padding:20px;max-width:560px;width:92%}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.prev{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:15px;margin:10px 0}
+.prev ol{margin:0;padding-left:22px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:15px;opacity:0;transition:.25s;pointer-events:none;z-index:20}
+.toast.on{opacity:1}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}
+@media (max-width:560px){.cab,.al{grid-template-columns:1fr 34px 128px 52px}.al .n{font-size:16px}.pm{width:44px;height:44px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<dialog id="dlgImport">
+  <h2 style="margin-top:0">Nueva clase</h2>
+  <label for="nomClase">Nombre de la clase</label>
+  <input type="text" id="nomClase" placeholder="Ej.: 1º Bach B">
+  <div style="height:12px"></div>
+  <label>Lista de alumnado (archivo .csv, un alumno por fila)</label>
+  <input type="file" id="fileCsv" accept=".csv,text/csv,text/plain">
+  <div id="prevImport"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:12px">
+    <button class="btn sec" id="cancelImport">Cancelar</button>
+    <button class="btn" id="okImport" disabled>Crear clase</button>
+  </div>
+</dialog>
+
+<input type="file" id="fileBackup" accept=".json,application/json" hidden>
+
+<script>
+const KEY = 'puntos_v1';
+let db = cargar();
+let estado = { vista:'inicio', claseId:null, fecha:hoyISO() };
+let importPend = null;
+
+function cargar(){
+  try { return JSON.parse(localStorage.getItem(KEY)) || {clases:{}}; }
+  catch(e){ return {clases:{}}; }
+}
+function guardar(){
+  try { localStorage.setItem(KEY, JSON.stringify(db)); }
+  catch(e){ toast('No se ha podido guardar'); }
+}
+function hoyISO(){
+  const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function fechaES(iso){ const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function fechaLarga(iso){
+  const [y,m,d]=iso.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+}
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('on'),1800); }
+
+function total(clase, alId){
+  let s=0; for(const f in clase.puntos){ s+= clase.puntos[f][alId]||0; } return s;
+}
+function clsVal(v){ return v>0?'pos':v<0?'neg':'cero'; }
+function fmt(v){ return v>0?'+'+v:String(v); }
+
+/* ---------- Vistas ---------- */
+function render(){
+  const app=document.getElementById('app');
+  if(estado.vista==='lista' && db.clases[estado.claseId]) return renderLista(app);
+  estado.vista='inicio'; renderInicio(app);
+}
+
+function renderInicio(app){
+  const ids=Object.keys(db.clases).sort((a,b)=>db.clases[a].nombre.localeCompare(db.clases[b].nombre,'es',{numeric:true}));
+  app.innerHTML=`
+  <header><h1>Puntos</h1></header>
+  <main>
+    <div class="card">
+      <h2>Fecha de la sesión</h2>
+      <div class="row">
+        <input type="date" id="fecha" value="${estado.fecha}" style="max-width:240px">
+        <button class="btn sec small" id="btnHoy">Hoy</button>
+      </div>
+      <div class="hint">Se pone sola en la fecha de hoy. Cámbiala solo si vas a puntuar otro día.</div>
+    </div>
+    <div class="card">
+      <h2>¿Qué clase vas a puntuar?</h2>
+      ${ids.length? `<div class="clases">${ids.map(id=>{
+        const c=db.clases[id]; const nd=Object.keys(c.puntos).length;
+        return `<div class="clase">
+          <div class="nom">${esc(c.nombre)}</div>
+          <div class="info">${c.alumnos.length} alumnos · ${nd} ${nd===1?'día':'días'} con puntos</div>
+          <button class="btn go" data-go="${id}">Puntuar</button>
+          <div class="acts">
+            <button class="btn sec small" data-csv="${id}">Exportar CSV</button>
+            <button class="btn danger small" data-del="${id}">Borrar</button>
+          </div>
+        </div>`;}).join('')}</div>` : `<div class="empty">Todavía no hay clases. Crea una importando la lista en CSV.</div>`}
+      <div style="height:14px"></div>
+      <button class="btn" id="btnNueva">+ Nueva clase desde CSV</button>
+    </div>
+    <div class="card">
+      <h2>Copia de seguridad</h2>
+      <div class="row">
+        <button class="btn sec" id="btnBk">Guardar copia (.json)</button>
+        <button class="btn sec" id="btnRest">Restaurar copia</button>
+      </div>
+      <div class="hint">Los datos se guardan en esta tableta. Si borras los datos del navegador se pierden, así que conviene guardar una copia de vez en cuando.</div>
+    </div>
+  </main>`;
+  app.querySelector('#fecha').onchange=e=>{ estado.fecha=e.target.value||hoyISO(); };
+  app.querySelector('#btnHoy').onclick=()=>{ estado.fecha=hoyISO(); render(); };
+  app.querySelector('#btnNueva').onclick=abrirImport;
+  app.querySelector('#btnBk').onclick=backup;
+  app.querySelector('#btnRest').onclick=()=>document.getElementById('fileBackup').click();
+  app.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ estado.claseId=b.dataset.go; estado.vista='lista'; render(); window.scrollTo(0,0); });
+  app.querySelectorAll('[data-csv]').forEach(b=>b.onclick=()=>exportCSV(b.dataset.csv));
+  app.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    const c=db.clases[b.dataset.del];
+    if(confirm(`¿Borrar la clase "${c.nombre}" y todas sus puntuaciones? No se puede deshacer.`)){
+      delete db.clases[b.dataset.del]; guardar(); render();
+    }
+  });
+}
+
+function renderLista(app){
+  const c=db.clases[estado.claseId], f=estado.fecha;
+  const dia=c.puntos[f]||{};
+  app.innerHTML=`
+  <div class="top"><header>
+    <button id="volver">‹ Clases</button>
+    <div style="flex:1;min-width:0"><h1>${esc(c.nombre)}</h1><div class="sub">${fechaLarga(f)}</div></div>
+    <button id="exp">CSV</button>
+  </header>
+  <div class="cabwrap"><div class="cab"><div>Alumno/a</div><div style="text-align:center">#</div><div class="fecha">${fechaES(f)}</div><div style="text-align:center">Total</div></div></div></div>
+  <main style="padding-top:0">
+    <div class="lista">
+      ${c.alumnos.map((a,i)=>{const v=dia[a.id]||0, t=total(c,a.id);
+        return `<div class="al" data-id="${a.id}">
+          <div class="n">${esc(a.nombre)}</div>
+          <div class="num">${i+1}</div>
+          <div class="hoy">
+            <button class="pm" data-d="-1" aria-label="Restar">−</button>
+            <span class="val ${clsVal(v)}">${v?fmt(v):'·'}</span>
+            <button class="pm" data-d="1" aria-label="Sumar">+</button>
+          </div>
+          <div class="tot ${clsVal(t)}">${fmt(t)}</div>
+        </div>`;}).join('')}
+    </div>
+  </main>`;
+  app.querySelector('#volver').onclick=()=>{ estado.vista='inicio'; render(); };
+  app.querySelector('#exp').onclick=()=>exportCSV(estado.claseId);
+  app.querySelectorAll('.al').forEach(row=>{
+    row.querySelectorAll('.pm').forEach(btn=>btn.onclick=()=>{
+      const id=row.dataset.id, d=+btn.dataset.d;
+      c.puntos[f]=c.puntos[f]||{};
+      const nv=(c.puntos[f][id]||0)+d;
+      if(nv===0) delete c.puntos[f][id]; else c.puntos[f][id]=nv;
+      if(!Object.keys(c.puntos[f]).length) delete c.puntos[f];
+      guardar();
+      const vEl=row.querySelector('.val'), tEl=row.querySelector('.tot'), t=total(c,id);
+      vEl.className='val '+clsVal(nv); vEl.textContent=nv?fmt(nv):'·';
+      tEl.className='tot '+clsVal(t); tEl.textContent=fmt(t);
+      if(navigator.vibrate) navigator.vibrate(15);
+    });
+  });
+}
+
+/* ---------- Importar CSV ---------- */
+function parseCSV(txt){
+  txt=txt.replace(/^﻿/,'');
+  const primera=txt.split(/\r?\n/)[0]||'';
+  const sep=[';','\t',','].map(s=>[s,primera.split(s).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const filas=[]; let fila=[], campo='', q=false;
+  for(let i=0;i<txt.length;i++){
+    const ch=txt[i];
+    if(q){ if(ch==='"'){ if(txt[i+1]==='"'){campo+='"';i++;} else q=false; } else campo+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===sep){ fila.push(campo); campo=''; }
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&txt[i+1]==='\n') i++; fila.push(campo); filas.push(fila); fila=[]; campo=''; }
+    else campo+=ch;
+  }
+  if(campo||fila.length){ fila.push(campo); filas.push(fila); }
+  const nombres=[];
+  filas.forEach((f,idx)=>{
+    const celdas=f.map(x=>x.trim()).filter(x=>x && !/^\d+$/.test(x));
+    if(!celdas.length) return;
+    const linea=celdas.join(' ');
+    if(idx===0 && /^(nombre|alumn|apellido|estudiante)/i.test(celdas[0])) return; // cabecera
+    nombres.push(linea.replace(/\s+/g,' '));
+  });
+  return nombres;
+}
+function abrirImport(){
+  importPend=null;
+  document.getElementById('nomClase').value='';
+  document.getElementById('fileCsv').value='';
+  document.getElementById('prevImport').innerHTML='';
+  document.getElementById('okImport').disabled=true;
+  document.getElementById('dlgImport').showModal();
+}
+document.getElementById('fileCsv').onchange=async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  let txt=await file.text();
+  if(txt.includes('�')){ // probable ANSI/Latin-1 (Excel en Windows)
+    txt=new TextDecoder('windows-1252').decode(await file.arrayBuffer());
+  }
+  importPend=parseCSV(txt);
+  const nc=document.getElementById('nomClase');
+  if(!nc.value) nc.value=file.name.replace(/\.[^.]+$/,'');
+  document.getElementById('prevImport').innerHTML = importPend.length
+    ? `<div class="prev"><b>${importPend.length} alumnos</b><ol>${importPend.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>`
+    : `<div class="prev">No he encontrado nombres en el archivo.</div>`;
+  document.getElementById('okImport').disabled=!importPend.length;
+};
+document.getElementById('cancelImport').onclick=()=>document.getElementById('dlgImport').close();
+document.getElementById('okImport').onclick=()=>{
+  const nombre=document.getElementById('nomClase').value.trim()||'Clase sin nombre';
+  const id=uid();
+  db.clases[id]={nombre, alumnos:importPend.map(n=>({id:uid(),nombre:n})), puntos:{}};
+  guardar(); document.getElementById('dlgImport').close(); toast('Clase creada'); render();
+};
+
+/* ---------- Exportar ---------- */
+function descargar(nombre, contenido, tipo){
+  const blob=new Blob([contenido],{type:tipo});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function exportCSV(id){
+  const c=db.clases[id];
+  const fechas=Object.keys(c.puntos).sort();
+  const q=s=>`"${String(s).replace(/"/g,'""')}"`;
+  const lineas=[[q('Alumno/a'),...fechas.map(f=>q(fechaES(f))),q('Total')].join(';')];
+  c.alumnos.forEach(a=>{
+    lineas.push([q(a.nombre),...fechas.map(f=>c.puntos[f][a.id]??''),total(c,a.id)].join(';'));
+  });
+  const nom=c.nombre.replace(/[^\wáéíóúñÁÉÍÓÚÑº ]+/g,'').trim().replace(/\s+/g,'_')||'clase';
+  descargar(`puntos_${nom}_${hoyISO()}.csv`, '﻿'+lineas.join('\r\n'), 'text/csv;charset=utf-8');
+}
+function backup(){
+  descargar(`puntos_copia_${hoyISO()}.json`, JSON.stringify(db,null,1), 'application/json');
+}
+document.getElementById('fileBackup').onchange=async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  try{
+    const d=JSON.parse(await file.text());
+    if(!d.clases) throw 0;
+    if(confirm('Esto sustituye todos los datos actuales por los de la copia. ¿Continuar?')){
+      db=d; guardar(); toast('Copia restaurada'); render();
+    }
+  }catch(_){ alert('El archivo no es una copia válida de Puntos.'); }
+  e.target.value='';
+};
+
+/* ---------- Arranque ---------- */
+render();
+if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
