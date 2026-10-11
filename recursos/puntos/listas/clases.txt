@@ -1,0 +1,14 @@
+# Una línea por cada archivo .csv de esta carpeta.
+# Formato:  archivo.csv | Nombre que verás en la app
+# (si quitas la parte de "| ...", la clase se llama como el archivo)
+# Las líneas que empiezan por # no se tienen en cuenta.
+
+FIL_1B.csv | Filosofía 1º Bach B
+FIL_1C.csv | Filosofía 1º Bach C
+FIL_1D.csv | Filosofía 1º Bach D
+HFIL_2B.csv | Historia de la Filosofía 2º Bach B
+FIL_4_ESO.csv | Filosofía 4º ESO
+MAE_1BACH.csv | MAE 1º Bach
+MAE_3_A.csv | MAE 3º ESO A
+MAE_3_B.csv | MAE 3º ESO B
+MAE_4_B-C.csv | MAE 4º ESO B-C
