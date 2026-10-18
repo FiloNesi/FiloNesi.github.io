@@ -1,4 +1,8 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lógica de pasillo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -127,6 +131,9 @@ mark{background:linear-gradient(transparent 52%, var(--mark) 52%);color:inherit;
 .dots i.on{width:28px;background:var(--ink)}
 .dots i.done{background:var(--muted)}
 .deck p{margin:auto 0;font-family:var(--f-display);font-weight:600;font-size:clamp(19px,3.6vw,23px);text-align:center;text-wrap:balance}
+.deck .ct{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.deck .ct p{margin:0}
+.deck .ct small{color:var(--muted);font-size:14px;text-wrap:balance}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .two .opt{text-align:center;font-weight:700}
 .review{display:flex;flex-direction:column;gap:8px}
@@ -177,6 +184,24 @@ mark{background:linear-gradient(transparent 52%, var(--mark) 52%);color:inherit;
 
 /* Menú */
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.blocks{display:flex;flex-direction:column;gap:16px;margin-top:6px}
+.block{--g:var(--c2);display:flex;flex-direction:column;gap:8px;text-align:left;padding:18px 20px;background:color-mix(in srgb,var(--g) 9%,var(--surface));border:2px solid color-mix(in srgb,var(--g) 40%,var(--line));border-radius:20px;box-shadow:0 5px 0 color-mix(in srgb,var(--g) 40%,var(--line));transition:transform .08s}
+.block:hover{border-color:var(--g)}
+.block:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--g) 40%,var(--line))}
+.block p{margin:0;color:var(--muted)}
+.b-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.b-name{font-family:var(--f-display);font-weight:800;font-size:26px;color:color-mix(in srgb,var(--g) 75%,var(--ink))}
+.b-count{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.block .b-list{color:var(--ink);font-size:14.5px}
+.pips{display:flex;gap:6px;margin-top:2px}
+.pips i{width:26px;height:7px;border-radius:9px;background:color-mix(in srgb,var(--g) 22%,var(--line))}
+.pips i.on{background:var(--g)}
+.back{align-self:flex-start;background:none;border:0;color:var(--muted);font-weight:700;font-size:15px;padding:4px 0}
+.back:hover{color:var(--ink)}
+.groups{display:flex;flex-direction:column;gap:28px;margin-top:6px}
+.g-head{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+.g-name{font-size:22px}
+.g-head small{color:var(--muted);font-size:14px}
 .lessons{display:flex;flex-direction:column;gap:14px;margin-top:6px}
 .lesson{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center}
 .lesson .num{width:48px;height:48px;border-radius:14px;background:var(--sel);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:22px}
@@ -214,7 +239,9 @@ footer{position:sticky;bottom:0;background:var(--paper);padding-block:10px calc(
 .fade{animation:fade .25s ease both}
 @keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
-
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <div id="app">
   <header class="top" id="top" hidden>
     <button id="close" type="button" aria-label="Volver al menú">×</button>
@@ -458,8 +485,135 @@ const LESSONS=[
   {t:'summary',lead:'Ya sabes cómo se cuela el sesgo de confirmación al buscar, al recordar y al interpretar, y cómo frenarlo yendo a por lo que te contradice.',
     rule:'Antes de dar algo por cierto, pregúntate: «¿Qué prueba me haría cambiar de idea?». Y luego ve a buscarla de verdad.',
     biblio:'Raymond S. Nickerson, «Confirmation bias: A ubiquitous phenomenon in many guises», Review of General Psychology (1998). Lord, Ross y Lepper (1979), sobre cómo juzgamos los estudios según nos den o no la razón. Lord, Lepper y Preston (1984), sobre la estrategia de «considerar lo contrario».'}
+]},
+{ title:'Lo que se da por supuesto', sub:'Premisas ocultas', steps:[
+  {t:'intro',kicker:'Lección 5',title:'Lo que se da por supuesto',text:'El punto flojo de un argumento suele estar en lo que no dice. Hoy aprendes a sacarlo a la luz.',cast:['iker','nora','vega','pili','papa']},
+  {t:'chat',title:'Pandilla',members:['iker','nora','vega'],msgs:[
+    {who:'iker',text:'Estoy en la puerta del kebab nuevo. Ahí no entramos: está vacío.'},
+    {who:'nora',text:'¿Y qué tiene de malo que esté vacío?'},
+    {who:'iker',text:'Pues que será malo. Si fuera bueno, estaría lleno.'},
+    {who:'vega',text:'Iker, son las cinco de la tarde. Vacíos están todos.'}],
+    note:'Iker da algo por supuesto sin decirlo. Vega lo ha pillado.'},
+  {t:'theory',title:'Premisa oculta',text:'Es una afirmación que el argumento necesita para sostenerse pero que no dice. Funciona porque la aceptas sin examinarla.',ordered:true,items:[
+    {k:'Razón dicha',v:'«Está vacío».'},
+    {k:'Premisa oculta (no dicha)',v:'«Si un sitio es bueno, siempre está lleno».'},
+    {k:'Conclusión',v:'«Será malo».'}],
+    foot:'En cuanto la dices en voz alta, se ve que no aguanta: a las cinco de la tarde no hay nadie en ningún sitio.'},
+  {t:'versus',q:'«Ha sacado la mejor nota del examen de Física, así que es la que más sabe de Física». ¿Quién ha detectado el supuesto?',a:{who:'nora',text:'Da por hecho que la nota de un examen mide todo lo que sabes de una materia.'},b:{who:'vega',text:'Da por hecho que los exámenes son siempre justos.'},correct:'a',
+    exp:'Para pasar de «la mejor nota» a «la que más sabe» hace falta suponer que un examen mide todo lo que sabes. Y un examen solo recoge una parte, y en un día concreto. Que los exámenes sean justos es otra cuestión: no es lo que une la razón con la conclusión.',sol:'Nora: supone que la nota mide todo lo que se sabe.'},
+  {t:'theory',title:'Cómo se caza',text:'Pregúntate qué tendría que ser verdad para pasar de la razón a la conclusión. Lo que rellena ese hueco es la premisa oculta.',ordered:true,items:[
+    {k:'¿Cuál es la conclusión?',v:'Lo que te quieren hacer creer.'},
+    {k:'¿Cuál es la razón dicha?',v:'El dato o el motivo que sí aparece.'},
+    {k:'¿Qué falta para saltar de una a otra?',v:'Eso es la premisa oculta. Ahora júzgala por separado.'}]},
+  {t:'chatPick',q:'¿Qué mensaje se apoya en un supuesto que no aguanta?',title:'Familia',members:['lia','pili','papa','carmen'],msgs:[
+    {who:'lia',text:'Mañana hay huelga de metro. Salid antes, que irá lleno a reventar.'},
+    {who:'pili',text:'Y ha refrescado mucho: abrigaos para la cena del sábado.'},
+    {who:'papa',text:'Para la cena, el restaurante que salió en la tele. Si sale en la tele, se come de maravilla.'},
+    {who:'carmen',text:'Hijo, en la tele también salen los anuncios de las tres de la mañana.'}],correct:2,
+    exp:'Lía y Tía Pili se apoyan en supuestos razonables: con huelga, los pocos trenes que circulan van llenos; si refresca, conviene abrigarse. Papá supone que salir en la tele garantiza calidad, y eso no aguanta: en la tele sale cualquiera que pague o que llame la atención.',sol:'El mensaje de Papá (salir en la tele no garantiza nada).'},
+  {t:'cards',q:'¿El supuesto aguanta?',labels:['No aguanta','Aguanta'],items:[
+    {x:'«En los institutos donde más se usan tablets hay mejores notas: las tablets suben las notas».',sub:'supone: si dos cosas van juntas, una causa la otra',a:0},
+    {x:'«Ha salido cara cinco veces seguidas: ahora toca cruz».',sub:'supone: la moneda compensa las rachas',a:0},
+    {x:'«El puente lleva cien años en pie y pasó la revisión el mes pasado: mañana aguantará».',sub:'supone: lo que aguanta y pasa revisiones no se cae de un día para otro',a:1},
+    {x:'«Tose y tiene fiebre: estará malo».',sub:'supone: la fiebre y la tos indican una enfermedad',a:1},
+    {x:'«Firmó la autorización de la excursión: acepta sus condiciones».',sub:'supone: firmar algo implica aceptar lo firmado',a:1}],
+    exp:'Que dos cosas vayan juntas no prueba que una cause la otra: los institutos con más tablets pueden tener también más recursos de todo tipo. Y una moneda no tiene memoria: cada tirada es independiente. Los otros tres supuestos son razonables, aunque no sean infalibles.',sol:'No aguantan: el de las tablets y el de la moneda. Aguantan: el puente, la fiebre y la autorización.'},
+  {t:'fill',pre:'«No sigas a esa cuenta de noticias: la financia un partido». Esto da por supuesto que esa cuenta',post:'por definición.',opts:[
+    'tiene una línea editorial',
+    'no es de fiar',
+    'tiene menos seguidores que las demás'],correct:1,
+    exp:'El argumento salta de «la financia un partido» a «no la sigas». Para dar ese salto tiene que suponer que, por eso, todo lo que publique es falso. Puede ser un buen motivo para leerla con cuidado, pero no basta para descartarla sin mirar lo que dice.',sol:'«No es de fiar».'},
+  {t:'multi',q:'¿Qué se da por supuesto sin decirlo?',quote:'«Hay que prohibir el móvil en clase: en el país con mejores notas de Europa está prohibido».',opts:[
+    'Ese país tiene buenas notas.',
+    'En ese país el móvil está prohibido en clase.',
+    'Lo que funciona en un país funcionará igual aquí.',
+    'La prohibición del móvil es la causa de esas notas.'],correct:[2,3],
+    exp:'Las dos primeras están dichas: son la razón. Lo que no se dice es que esas notas se deban a la prohibición (podría haber muchas otras causas) y que, además, lo que funciona allí funcionará aquí.',sol:'Que lo de allí funcionará aquí y que la prohibición causa las notas.'},
+  {t:'build',q:'Coloca las tres piezas.',hint:'Toca las fichas para colocarlas. Sobra una.',quote:'«Ese youtuber acertó quién ganaría la última Liga, así que hay que hacer caso a su próxima predicción».',
+    slots:['r','h','c'],labels:['Razón dicha','Premisa oculta','Conclusión'],chips:[
+    {x:'El fútbol es difícil de predecir.',r:'x'},
+    {x:'Quien acierta una vez acertará la siguiente.',r:'h'},
+    {x:'Hay que hacer caso a su próxima predicción.',r:'c'},
+    {x:'Acertó quién ganaría la última Liga.',r:'r'}],
+    exp:'La razón dicha es el acierto. La conclusión es hacerle caso. Lo que las une sin decirse es que quien acierta una vez acertará la siguiente, y eso no aguanta: un acierto puede ser suerte. Lo de que el fútbol es difícil de predecir no forma parte del argumento; de hecho, va en su contra.',sol:'Razón: acertó la última Liga. Premisa oculta: quien acierta una vez acertará la siguiente. Conclusión: hay que hacerle caso.'},
+  {t:'match',q:'Une cada frase con lo que da por supuesto.',hint:'Toca una frase y luego su supuesto.',left:[
+    '«Es una marca muy grande, será fiable».',
+    '«Lo pienso yo y lo piensa todo el mundo, será cierto».',
+    '«En el insti siempre se ha hecho así, es lo correcto».'],right:['Lo que mucha gente cree es verdad','El tamaño garantiza la fiabilidad','Lo tradicional es lo correcto'],pairs:[1,0,2],
+    exp:'Cada frase se apoya en un supuesto que, dicho en voz alta, se puede discutir: las empresas grandes también fallan, la mayoría se equivoca a veces y lo de siempre no es correcto solo por ser lo de siempre. Verás estos tres supuestos como falacias propias más adelante.',sol:'Marca grande: el tamaño garantiza fiabilidad. Todo el mundo: lo que mucha gente cree es verdad. Siempre así: lo tradicional es lo correcto.'},
+  {t:'mcq',q:'«Es legal, así que no tiene nada de malo». ¿Qué se da por supuesto?',opts:[
+    'Todo lo que es legal está bien.',
+    'Hay una ley que lo permite.',
+    'Todo lo que es ilegal está mal.'],correct:0,
+    exp:'Que haya una ley que lo permite es la razón dicha. Para saltar a «no tiene nada de malo» hay que suponer que lo legal y lo bueno coinciden siempre, y no es así: hay cosas legales que pueden hacer daño. «Lo ilegal está mal» es otra idea distinta, que este argumento no necesita.',sol:'Que todo lo que es legal está bien.'},
+  {t:'summary',lead:'Ya sacas a la luz lo que un argumento calla y lo juzgas aparte. Muchas falacias son justo eso: un supuesto escondido que no aguanta.',
+    rule:'Casi todo argumento se apoya en algo que no dice. Antes de aceptarlo, saca el supuesto a la luz y júzgalo por separado.',
+    biblio:'Eric Dayton y Kristin Rodier, Critical Thinking, Logic, and Argument (AU Press). Anthony Weston, Las claves de la argumentación (Ariel).'}
+]},
+{ title:'El hombre de paja', sub:'Deformar para tumbar', steps:[
+  {t:'intro',title:'El hombre de paja',text:'Hay quien no discute lo que dices, sino un muñeco con tu cara, mucho más fácil de tumbar. Hoy aprendes a verlo venir y a desmontarlo.',cast:['papa','pili','carmen','lia','iker']},
+  {t:'chat',title:'Familia',members:['lia','papa','pili','carmen'],msgs:[
+    {who:'lia',text:'Estaría bien comer un poco menos de carne, ¿no?'},
+    {who:'papa',text:'¡O sea, que quieres prohibirla y que comamos todos lechuga!'},
+    {who:'pili',text:'¿Que van a prohibir las barbacoas? Esto lo reenvío ahora mismo al grupo de las vecinas.'},
+    {who:'carmen',text:'Hijo, qué bien discutes con lo que nadie ha dicho.'}],
+    note:'Lía ha propuesto una cosa. Papá está discutiendo otra.'},
+  {t:'theory',title:'Primero te deforman, luego te atacan',text:'El hombre de paja consiste en cambiar el argumento del otro por una versión más débil o exagerada y atacar esa versión, no la real.',
+    foot:'Es como pelearte con un muñeco que has montado tú: es fácil de tumbar, pero no es tu rival.'},
+  {t:'mcq',q:'Papá convierte «comer un poco menos de carne» en «prohibir la carne». ¿Qué ha hecho?',opts:[
+    'Rebatir la idea de Lía con un dato.',
+    'Exagerar la idea de Lía y atacar esa versión.',
+    'Atacar a Lía en vez de a su idea.'],correct:1,
+    exp:'Papá no aporta ningún dato ni critica a Lía como persona: cambia «un poco menos» por «prohibir» y discute contra eso. Atacar a la persona en vez de a su idea es otra falacia distinta, que verás más adelante.',sol:'Exagerar su idea y atacar esa versión.'},
+  {t:'theory',title:'Cómo se monta el muñeco',text:'Casi siempre basta con uno de estos tres retoques.',ordered:true,items:[
+    {k:'Exagerar',v:'Convierte «un poco» en «del todo»: «menos carne» pasa a ser «nada de carne».'},
+    {k:'Simplificar',v:'Quita los matices y deja solo la versión más tosca.'},
+    {k:'Inventar',v:'Te atribuye una intención que nunca expresaste: «lo que quieres es que pasemos hambre».'}]},
+  {t:'mcq',row:true,q:'Un hombre de paja es simplemente burlarse o reírse de la idea del otro. ¿Verdadero o falso?',opts:['Verdadero','Falso'],correct:1,
+    exp:'Puedes burlarte de una idea sin deformarla, y puedes deformarla muy en serio, sin una sola broma. Lo que define al hombre de paja es el cambio: se discute una versión que el otro no ha defendido.',sol:'Falso: lo que lo define es deformar la idea, no burlarse.'},
+  {t:'match',q:'Empareja cada propuesta con la versión deformada que alguien le montó encima.',hint:'Toca una propuesta y luego su versión deformada.',left:[
+    '«Deberíamos revisar cuánto tiempo pasamos con el móvil».',
+    '«Me gustaría que repartiéramos mejor las tareas de casa».',
+    '«Podríamos gastar con más cabeza este mes».'],right:[
+    '«¡Así que no puedo comprarme nunca nada!»',
+    '«¡Quieres que vivamos sin tecnología, como en la Edad Media!»',
+    '«¡O sea que yo no hago nada en esta casa!»'],pairs:[1,2,0],
+    exp:'En los tres casos la respuesta exagera la propuesta («revisar» se convierte en «vivir sin tecnología», «gastar con cabeza» en «no comprar nunca nada») o le añade una acusación que nadie ha hecho («tú no haces nada»).',sol:'Móvil: sin tecnología. Tareas: «yo no hago nada». Gastar con cabeza: «no puedo comprarme nada».'},
+  {t:'cards',q:'Vega dice: «Deberíamos organizar mejor el viaje de fin de curso». ¿Cada respuesta trata lo que dijo o le monta un hombre de paja?',labels:['Responde a su idea','Hombre de paja'],items:[
+    {x:'«O sea, que según tú el delegado lo ha hecho todo fatal».',a:1},
+    {x:'«Claro, tú quieres un horario para cada minuto del viaje».',a:1},
+    {x:'«Yo no lo veo: improvisar también tiene su gracia».',a:0},
+    {x:'«¡De acuerdo! Hagamos una lista con fechas y presupuesto».',a:0}],
+    exp:'No estar de acuerdo no es hacer un hombre de paja. «Improvisar también tiene su gracia» discrepa de lo que Vega dijo de verdad. Las dos primeras, en cambio, le atribuyen algo que no ha dicho: una acusación al delegado y un horario minuto a minuto.',sol:'Hombre de paja: «el delegado lo ha hecho fatal» y «un horario para cada minuto». Responden a su idea: las otras dos.'},
+  {t:'chatPick',q:'¿Qué mensaje le monta un hombre de paja a Nora?',title:'Trabajo de Historia',members:['nora','iker','samu'],msgs:[
+    {who:'nora',text:'¿Y si un día a la semana quedamos por videollamada? Nos ahorramos el autobús.'},
+    {who:'iker',text:'O sea, que no quieres volver a vernos nunca. Muy bonito, Nora.'},
+    {who:'samu',text:'Yo prefiero en persona: por videollamada siempre falla la conexión de alguien.'}],correct:1,
+    exp:'Nora propone un día a la semana, e Iker lo convierte en «no vernos nunca» y además le añade mala intención. Samu no está de acuerdo, pero responde a lo que Nora dijo de verdad y da una razón.',sol:'El mensaje de Iker («no quieres volver a vernos nunca»).'},
+  {t:'theory',title:'El antídoto: el principio de caridad',text:'Antes de responder, repite el argumento del otro como lo diría él, en su versión más fuerte y razonable.',
+    foot:'Si aun así puedes rebatirlo, tu respuesta vale. Si necesitas deformarlo para tumbarlo, no lo has rebatido.'},
+  {t:'fill',pre:'Interpretar el argumento del otro en su versión más razonable antes de rebatirlo se llama principio de',post:'y es el mejor antídoto contra el hombre de paja.',opts:['caridad','autoridad','precaución'],correct:0,
+    exp:'Se llama principio de caridad porque le concedes al otro la mejor interpretación posible de lo que dice. Si después lo rebates, has ganado la discusión de verdad, no contra un muñeco.',sol:'Caridad.'},
+  {t:'versus',q:'Samu: «No estoy seguro de que reciclar sirva de mucho». ¿Quién responde a lo que ha dicho de verdad?',a:{who:'vega',text:'O sea, que según tú hay que dejar de reciclar ya.'},b:{who:'nora',text:'¿Dudas de que sirva? Yo he leído que sí ayuda bastante. ¿Te paso el enlace?'},correct:'b',
+    exp:'Samu solo ha expresado una duda. Vega la convierte en una propuesta («dejar de reciclar») que él no ha hecho. Nora responde a la duda tal como es y ofrece una prueba.',sol:'Nora: responde a la duda real con una prueba.'},
+  {t:'build',q:'Te sueltan: «¡Así que quieres prohibir la carne!». Monta una respuesta tranquila que devuelva tu idea real a la mesa.',hint:'Toca las fichas para colocarlas. Sobran dos.',
+    slots:['a','b','d'],labels:['Corrige','Tu idea real','Devuelve el debate'],chips:[
+    {x:'He dicho comer un poco menos.',r:'b'},
+    {x:'Bueno, pues prohibámosla.',r:'x'},
+    {x:'¿Qué te parece eso?',r:'d'},
+    {x:'Tú siempre lo exageras todo.',r:'x'},
+    {x:'Yo no he dicho prohibir.',r:'a'}],
+    exp:'Primero desmontas el muñeco («no he dicho prohibir»), luego pones tu idea real sobre la mesa y al final invitas al otro a discutirla. «Bueno, pues prohibámosla» acepta el muñeco, y «tú siempre lo exageras todo» pasa a atacar a la persona.',sol:'Yo no he dicho prohibir. → He dicho comer un poco menos. → ¿Qué te parece eso?'},
+  {t:'summary',lead:'Ya sabes distinguir un hombre de paja: no es burlarse, es cambiar la postura del otro por una más débil y atacar esa. El antídoto es el principio de caridad.',
+    rule:'Antes de responder, repite el argumento del otro como lo diría él. Si necesitas deformarlo para tumbarlo, no lo has rebatido: has golpeado a un muñeco de paja.',
+    biblio:'Douglas Walton, Informal Logic: A Pragmatic Approach (Cambridge University Press, 2008). Scott Aikin y John Casey, «Straw Men, Weak Men, and Hollow Men», Argumentation (2011).'}
 ]}
 ];
+const GROUPS=[
+  {name:'Fundamentos',sub:'Qué es un argumento y cómo se juzga',col:'--c2',ids:[0,1,2,4]},
+  {name:'Sesgos',sub:'Las trampas de tu propia cabeza',col:'--c3',ids:[3]},
+  {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5]}];
+function groupOf(n){const g=GROUPS.find(g=>g.ids.includes(n));return g?g.name:''}
 
 /* ---------- Utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -474,23 +628,41 @@ const main=$('#main'),go=$('#go'),fb=$('#fb'),owl=$('#owl');
 let L=0,I=0,wrong=[],cur=null,phase='idle',revealFn=()=>{};
 
 /* ---------- Menú ---------- */
-function showMenu(){
-  $('#top').hidden=true;$('#foot').hidden=true;main.className='fade';main.replaceChildren();
+let G=0;
+function screen(){$('#top').hidden=true;$('#foot').hidden=true;main.className='fade';void main.offsetWidth;main.replaceChildren();window.scrollTo(0,0)}
+function brandRow(){const b=el('div','brand');b.append(owlMini(),el('span','','FiloNesi · Filosofía 1º Bach'));return b}
+function showHome(){
+  screen();
   const done=store.get(DONE_KEY)||{};
-  const brand=el('div','brand');brand.append(owlMini(),el('span','','FiloNesi · Filosofía 1º Bach'));
-  const h=el('h1','h-big','Lógica de pasillo');
-  const lead=el('p','lead','Lecciones cortas para aprender a reconocer, juzgar y construir argumentos, y a pillar las trampas de tu propia cabeza, con ejemplos del instituto. Unos diez minutos cada una.');
-  const list=el('div','lessons');
-  LESSONS.forEach((les,n)=>{
-    const b=btn('opt lesson'+(done[n]?' done':''));
-    const num=el('span','num',String(n+1));
-    const t=el('span');t.append(el('b','',les.title),el('small','',les.sub));
-    b.append(num,t,el('span','st',done[n]?'Hecha':'Empezar'));
-    b.onclick=()=>startLesson(n);list.append(b);
+  const lead=el('p','lead','Lecciones cortas para aprender a reconocer, juzgar y construir argumentos, y a pillar las trampas de tu propia cabeza, con ejemplos del instituto. Elige un bloque para empezar.');
+  const list=el('div','blocks');
+  GROUPS.forEach((g,gi)=>{
+    const b=btn('block');b.style.setProperty('--g','var('+g.col+')');
+    const n=g.ids.filter(i=>done[LESSONS[i].title]).length;
+    const top=el('div','b-top');top.append(el('span','b-name',g.name),el('span','b-count',n+' de '+g.ids.length+' hechas'));
+    const pips=el('div','pips');g.ids.forEach(i=>pips.append(el('i',done[LESSONS[i].title]?'on':'')));
+    const ls=el('p','b-list',g.ids.map(i=>LESSONS[i].title).join(' · '));
+    b.append(top,el('p','',g.sub),ls,pips);
+    b.onclick=()=>showGroup(gi);list.append(b);
   });
-  main.append(brand,h,lead,list,el('p','credit','Inés Pradana · Recurso educativo abierto'));
-  window.scrollTo(0,0);
+  main.append(brandRow(),el('h1','h-big','Lógica de pasillo'),lead,list,el('p','credit','Inés Pradana · Recurso educativo abierto'));
 }
+function showGroup(gi){
+  G=gi;screen();const g=GROUPS[gi];
+  const done=store.get(DONE_KEY)||{};
+  const back=btn('back','← Todos los bloques');back.onclick=showHome;
+  const k=el('p','kicker');k.append(el('span','','Bloque '+(gi+1)+' de '+GROUPS.length));
+  const ls=el('div','lessons');
+  g.ids.forEach((n,j)=>{
+    const les=LESSONS[n],d=done[les.title];
+    const b=btn('opt lesson'+(d?' done':''));
+    const t=el('span');t.append(el('b','',les.title),el('small','',les.sub));
+    b.append(el('span','num',String(j+1)),t,el('span','st',d?'Hecha':'Empezar'));
+    b.onclick=()=>startLesson(n);ls.append(b);
+  });
+  main.append(back,k,el('h1','h-big',g.name),el('p','lead',g.sub+'.'),ls);
+}
+function showMenu(){const gi=GROUPS.findIndex(g=>g.ids.includes(L));showGroup(gi<0?0:gi)}
 function owlMini(){const s=owl.cloneNode(true);s.removeAttribute('id');s.style.width='30px';s.style.height='30px';return s}
 
 function startLesson(n){L=n;I=0;wrong=[];$('#top').hidden=false;$('#foot').hidden=false;renderStep()}
@@ -504,7 +676,7 @@ function renderStep(){
   $('#count').textContent=(Math.min(I+1,steps.length-1))+'/'+(steps.length-1);
   if(s.t==='intro')main.classList.add('center');
   cur=R[s.t](s)||null;
-  go.textContent=s.t==='summary'?'Volver al menú':s.t==='reflect'?'Revelar':(cur?'Comprobar':'Continuar');
+  go.textContent=s.t==='summary'?'Volver al bloque':s.t==='reflect'?'Revelar':(cur?'Comprobar':'Continuar');
   update();window.scrollTo(0,0);
 }
 function update(){go.disabled=!!(cur&&phase==='idle'&&!cur.ready())}
@@ -553,7 +725,7 @@ function chatBox(s,pickable){
 
 const R={
   intro(s){
-    const k=el('p','kicker');k.append(el('span','',s.kicker));
+    const k=el('p','kicker');k.append(el('span','',groupOf(L)));
     const c=el('div','cast');
     s.cast.forEach(key=>{const f=el('figure');whoColor(f,key);f.append(av(key,'lg'),el('figcaption','',CH[key].n));c.append(f)});
     main.append(k,el('h1','h-big',s.title),el('p','lead',s.text),c);
@@ -587,7 +759,7 @@ const R={
     return single([a,b],s.correct==='a'?0:1);
   },
   mcq(s){
-    head(s);const box=el('div','opts');const bs=s.opts.map(o=>{const b=btn('opt',o);box.append(b);return b});main.append(box);
+    head(s);const box=el('div','opts'+(s.row?' two':''));const bs=s.opts.map(o=>{const b=btn('opt',o);box.append(b);return b});main.append(box);
     return single(bs,s.correct);
   },
   multi(s){
@@ -618,7 +790,8 @@ const R={
       if(k<s.items.length){
         const deck=el('div','deck'),dots=el('div','dots');
         s.items.forEach((_,i)=>{const d=el('i');if(i===k)d.className='on';else if(ans[i]!==null)d.className='done';dots.append(d)});
-        deck.append(dots,el('p','',s.items[k].x));
+        const ct=el('div','ct');ct.append(el('p','',s.items[k].x));if(s.items[k].sub)ct.append(el('small','',s.items[k].sub));
+        deck.append(dots,ct);
         const two=el('div','two');
         s.labels.forEach((lab,li)=>{const b=btn('opt interactive',lab);b.onclick=()=>{ans[k]=li;k++;draw();update()};two.append(b)});
         const wrap=el('div','opts');wrap.append(deck,two);
@@ -661,7 +834,7 @@ const R={
     head(s);
     const slotsEl=el('div','slots'),pool=el('div','pool');
     const fill=new Array(s.slots.length).fill(null);
-    const drops=s.slots.map((r,i)=>{const row=el('div','slot'+(r==='c'?' concl':''));row.append(el('span','lab',r==='c'?'Conclusión':'Premisa'));const d=el('div','drop');row.append(d);slotsEl.append(row);return d});
+    const drops=s.slots.map((r,i)=>{const row=el('div','slot'+(r==='c'?' concl':''));row.append(el('span','lab',s.labels?s.labels[i]:(r==='c'?'Conclusión':'Premisa')));const d=el('div','drop');row.append(d);slotsEl.append(row);return d});
     const chips=s.chips.map((c,ci)=>{const b=btn('opt interactive',c.x);b.onclick=()=>{
       const at=fill.indexOf(ci);
       if(at>=0){fill[at]=null}else{const e=fill.indexOf(null);if(e<0)return;fill[e]=ci}
@@ -675,7 +848,7 @@ const R={
   },
   summary(s){
     $('#fill').style.width='100%';$('#count').textContent='';
-    const done=store.get(DONE_KEY)||{};done[L]=true;store.set(DONE_KEY,done);
+    const done=store.get(DONE_KEY)||{};done[LESSONS[L].title]=true;store.set(DONE_KEY,done);
     owl.setAttribute('class','owl happy');
     const k=el('p','kicker');k.append(el('span','','Lección completada'));
     main.append(k,el('h2','','Lo que te llevas'),el('p','lead',s.lead));
@@ -687,7 +860,7 @@ const R={
   }
 };
 
-showMenu();
+showHome();
 </script>
-
-</body></html>
+</body>
+</html>
