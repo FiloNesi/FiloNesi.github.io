@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lisa · Capítulo I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: consola de aula en tres columnas — temas (qué sale) · idea del manual · sesión en curso */
+:root{
+  --bg:#F1F4F1; --surface:#FFFFFF; --ink:#1B2629; --muted:#5A6A6B; --line:#D3DBD5;
+  --accent:#2C5B72; --accent-ink:#FFFFFF; --accent-soft:#E0EAEE;
+  --mark:#A8701A; --mark-soft:#F4E8D2; --ok:#2F7448; --ok-soft:#DDEFE2;
+  --b1:#7A4E8C; --b2:#2F7448; --b3:#2C5B72; --b4:#A8701A;
+  --shadow:0 1px 2px rgba(20,40,40,.06),0 4px 14px rgba(20,40,40,.06);
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121819; --surface:#1A2223; --ink:#E5ECEA; --muted:#9AA9A8; --line:#2C3839;
+  --accent:#8DBBD0; --accent-ink:#0F1A1F; --accent-soft:#1F3139;
+  --mark:#E3B266; --mark-soft:#3A2E1B; --ok:#7CC293; --ok-soft:#1C3324;
+  --b1:#C49AD6; --b2:#7CC293; --b3:#8DBBD0; --b4:#E3B266;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121819; --surface:#1A2223; --ink:#E5ECEA; --muted:#9AA9A8; --line:#2C3839;
+  --accent:#8DBBD0; --accent-ink:#0F1A1F; --accent-soft:#1F3139;
+  --mark:#E3B266; --mark-soft:#3A2E1B; --ok:#7CC293; --ok-soft:#1C3324;
+  --b1:#C49AD6; --b2:#7CC293; --b3:#8DBBD0; --b4:#E3B266;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pg{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+
+/* ---------- barra superior ---------- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;
+  display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand h1{font-size:19px}
+.brand span{font-size:12.5px;color:var(--muted)}
+.search{flex:1 1 260px;position:relative;min-width:0;max-width:520px}
+.search input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted)}
+.search .kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.phases{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.phase{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 9px;font-size:12.5px;display:flex;gap:6px;align-items:center}
+.phase b{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+.phase[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.phase[aria-pressed="true"] b{color:inherit}
+.phase.done{opacity:.55}
+.clock{font-variant-numeric:tabular-nums;font-family:var(--f-display);font-weight:700;font-size:18px;min-width:64px;text-align:right}
+.clock.over{color:var(--mark)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 8px;font-size:12.5px}
+
+/* ---------- rejilla principal ---------- */
+.grid{display:grid;grid-template-columns:270px minmax(0,1fr) 330px;gap:18px;align-items:start;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px;max-width:1500px;margin:0 auto}
+aside,main{min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 74px);max-height:calc(100vh - 92px);overflow:auto}
+
+/* temas */
+.temas{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 10px;font-size:13.5px;text-align:left}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.tema-hits{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.hit{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);text-align:left;width:100%}
+.hit small{display:block;color:var(--muted);font-size:12.5px}
+.sep{height:1px;background:var(--line);margin:14px 0}
+
+/* mapa de ideas */
+.bloque{margin-top:10px}
+.bloque h3{font-size:13px;font-family:var(--f-body);font-weight:700;display:flex;gap:6px;align-items:center;margin-bottom:4px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.ilist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.ilist button{width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:4px 6px;font-size:13.5px;display:flex;gap:6px;align-items:baseline}
+.ilist button:hover{background:var(--bg)}
+.ilist button[aria-current="true"]{background:var(--accent-soft);font-weight:700}
+.ilist .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;min-width:30px}
+.ilist .w{margin-left:auto;color:var(--ok);font-size:12px}
+
+/* idea */
+.idea-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.idea-head h2{font-size:clamp(24px,3vw,32px);flex:1 1 100%}
+.tag{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;color:var(--surface)}
+.toggle-worked{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font-size:12.5px}
+.toggle-worked[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:700}
+.olink{font-size:12.5px;color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.box h3{font-size:15px;margin-bottom:6px}
+.box p{margin:0}
+.box ul{margin:4px 0 0;padding-left:18px}
+.box li{margin:3px 0}
+.ojo{background:var(--mark-soft);border-color:transparent}
+.ojo h3{color:var(--mark)}
+.section-title{display:flex;align-items:baseline;gap:10px;margin:22px 0 8px}
+.section-title h3{font-size:19px}
+.section-title .hint{font-size:12.5px;color:var(--muted)}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.plan-h{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+.plan-h b{font-size:14.5px}
+.plan-h .pg{margin-left:auto}
+.qs{list-style:none;margin:0;padding:4px 0}
+.q{display:flex;gap:4px;align-items:flex-start;padding:2px 8px 2px 4px}
+.q .qt{flex:1;text-align:left;border:0;background:transparent;padding:6px 8px;border-radius:6px;display:flex;gap:10px;align-items:flex-start}
+.q .qt:hover{background:var(--bg)}
+.q .box-ck{flex:none;width:18px;height:18px;border:1.5px solid var(--muted);border-radius:5px;margin-top:2px;display:grid;place-items:center;font-size:12px}
+.q.used .qt{color:var(--muted)}
+.q.used .qt span.txt{text-decoration:line-through;text-decoration-color:var(--mark)}
+.q.used .box-ck{background:var(--mark);border-color:var(--mark);color:var(--surface)}
+.proj{flex:none;border:0;background:transparent;color:var(--muted);padding:6px;border-radius:6px;font-size:13px}
+.proj:hover{background:var(--bg);color:var(--accent)}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.act-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.act-h b{font-size:15.5px;font-family:var(--f-display)}
+.pill{font-size:12px;border-radius:999px;padding:1px 9px;background:var(--accent-soft);color:var(--ink)}
+.act p{margin:6px 0 0}
+.ejs{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.ej{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;display:flex;gap:8px;align-items:flex-start}
+.ej .et{flex:1}
+.ej .clave{display:block;font-size:13.5px;color:var(--ok);margin-top:3px}
+.reveal{border:1px solid var(--line);background:var(--bg);border-radius:6px;font-size:12.5px;padding:3px 8px;margin-top:8px}
+.conn{display:flex;flex-wrap:wrap;gap:6px}
+.conn button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px;text-align:left}
+.conn button:hover{border-color:var(--accent)}
+.conn small{color:var(--muted)}
+
+/* sesión (derecha) */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:-4px -4px 12px;padding:0 4px}
+.tabs button{border:0;background:transparent;padding:8px 10px;font-size:13.5px;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted)}
+.tabs button[aria-selected="true"]{border-color:var(--accent);color:var(--ink);font-weight:700}
+.ag-form{display:flex;flex-direction:column;gap:6px}
+.ag-form textarea{width:100%;min-height:58px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);resize:vertical}
+.ag-row{display:flex;gap:6px}
+.ag-row input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--bg)}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:6px 12px;font-weight:700;font-size:13.5px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.agenda{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ag{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg)}
+.ag.chosen{border-color:var(--accent);background:var(--accent-soft)}
+.ag .who{font-size:12px;color:var(--muted)}
+.ag .ex{font-size:11px;color:var(--mark);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.ag-ctl{display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.ag-ctl button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:1px 8px;font-size:12.5px}
+.votes{font-variant-numeric:tabular-nums;font-weight:700;min-width:16px;text-align:center}
+.sug{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.sug button{border:0;background:transparent;color:var(--accent);font-size:12.5px;padding:0;text-decoration:underline;text-underline-offset:2px}
+.moves{display:flex;flex-direction:column;gap:6px}
+details.mv{border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+details.mv summary{cursor:pointer;padding:8px 10px;font-weight:700;font-size:14px;list-style:none;display:flex;gap:8px;align-items:center}
+details.mv summary::-webkit-details-marker{display:none}
+details.mv summary::before{content:"+";color:var(--muted);width:12px}
+details.mv[open] summary::before{content:"−"}
+details.mv ul{margin:0;padding:0 10px 10px 30px}
+details.mv li{margin:3px 0;font-size:14px}
+.sit{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--bg)}
+.sit b{display:block;font-size:14px}
+.sit p{margin:3px 0 0;font-size:13.5px}
+.sit .go{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+.sit .go button{border:0;background:transparent;color:var(--accent);padding:0;font-size:13px;text-decoration:underline;text-underline-offset:2px}
+.log{font-size:13px;color:var(--muted);margin-top:10px}
+.confirm{display:flex;gap:6px;align-items:center;font-size:12.5px;flex-wrap:wrap}
+
+/* proyectar */
+.overlay{position:fixed;inset:0;z-index:50;background:var(--surface);display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:max(24px,env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px))}
+.overlay p{font-family:var(--f-display);font-weight:500;font-size:clamp(28px,5vw,64px);line-height:1.2;max-width:22ch;text-align:center;text-wrap:balance;margin:0}
+.overlay small{margin-top:28px;color:var(--muted);font-size:14px}
+.overlay button{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:calc(16px + env(safe-area-inset-right,0px))}
+
+.results{display:flex;flex-direction:column;gap:6px}
+.res{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px;text-align:left;width:100%}
+.res small{color:var(--muted);display:block;font-size:12.5px}
+mark{background:var(--mark-soft);color:inherit;border-radius:3px;padding:0 2px}
+
+@media (max-width:1180px){
+  .grid{grid-template-columns:250px minmax(0,1fr)}
+  #session{grid-column:1 / -1}
+  #session .stick{position:static;max-height:none}
+}
+@media (max-width:760px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  #nav .stick{position:static;max-height:none}
+  .two{grid-template-columns:1fr}
+  .phases{order:3;width:100%}
+  .search .kbd{display:none}
+}
+@media (prefers-reduced-motion:no-preference){.chip,.ilist button,.q .qt{transition:background .12s,border-color .12s}}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Lisa · Capítulo I</h1><span>Episodios 1 y 2 · Manual <i>Investigación ética</i>, págs. 1-2 a 1-64</span></div>
+  <label class="search" for="q">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Busca: caza, coherencia, derecho, promesa…" autocomplete="off">
+    <span class="kbd">/</span>
+  </label>
+  <div class="phases" id="phases"></div>
+  <div class="clock" id="clock" aria-live="off">0:00</div>
+</header>
+
+<div class="grid">
+  <aside id="nav">
+    <div class="panel stick">
+      <div class="eyebrow">¿Qué está saliendo en clase?</div>
+      <div class="temas" id="temas"></div>
+      <div class="tema-hits" id="temaHits"></div>
+      <div class="sep"></div>
+      <div class="eyebrow">Mapa del capítulo</div>
+      <div id="mapa"></div>
+    </div>
+  </aside>
+
+  <main id="main"></main>
+
+  <aside id="session">
+    <div class="panel stick">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="t-agenda" aria-selected="true" data-tab="agenda">Agenda</button>
+        <button role="tab" id="t-sit" aria-selected="false" data-tab="sit">Si pasa…</button>
+        <button role="tab" id="t-mov" aria-selected="false" data-tab="mov">Preguntas comodín</button>
+      </div>
+      <section id="tab-agenda">
+        <form class="ag-form" id="agForm">
+          <textarea id="agTxt" placeholder="Anota la pregunta tal como la dice el alumno"></textarea>
+          <div class="ag-row"><input id="agWho" placeholder="Nombre (opcional)"><button class="btn" type="submit">Añadir</button></div>
+        </form>
+        <ul class="agenda" id="agenda"></ul>
+        <div class="sep"></div>
+        <div class="confirm" id="resetBox"><button class="iconbtn" id="resetBtn" type="button">Nueva sesión</button><span style="color:var(--muted)">Borra agenda, preguntas marcadas y cronómetro</span></div>
+        <div class="log" id="log"></div>
+      </section>
+      <section id="tab-sit" hidden><div class="moves" id="sits"></div></section>
+      <section id="tab-mov" hidden><div class="moves" id="moves"></div></section>
+    </div>
+  </aside>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <button class="iconbtn" id="closeOv" type="button">Cerrar (Esc)</button>
+  <p id="ovText"></p>
+  <small id="ovSrc"></small>
+</div>
+
+<script>
+/* =============================== CONTENIDO ===============================
+   Resúmenes y preguntas redactados a partir del manual (Lipman y Sharp, ed. Ediciones de la Torre).
+   Para las listas completas, ir a la página indicada. */
+const OBS = "obsidian://open?vault=Programaci%C3%B3n&file=" + encodeURIComponent("40 Recursos/49 FPN - Lisa/49 FPN - Lisa Cap 1/");
+const BLOQUES = {
+  A:{nom:"Vivir bien", c:"var(--b1)"},
+  B:{nom:"Animales y derechos", c:"var(--b2)"},
+  C:{nom:"Herramientas para razonar", c:"var(--b3)"},
+  D:{nom:"Preguntar (episodio 2)", c:"var(--b4)"}
+};
+const IDEAS = [
+{id:"e1-1",ep:1,n:1,b:"A",t:"¿Cómo debemos vivir?",pag:"1-3",
+ obs:"49 FPN -  Lisa Capítulo I, Episodio 1, Idea principal Nº 1. ¿Cómo debemos vivir?",
+ nov:"Es la pregunta de fondo de todo el capítulo. Aparece explícita cuando Harry habla con su padre sobre qué hacer y cómo decidirlo.",
+ clave:["La investigación ética consiste en plantear qué es una vida «buena» en sentido moral y responderlo de forma imparcial.","No se investiga en solitario: el objetivo del programa es que el grupo se convierta en comunidad de investigación, y tu papel principal es facilitarlo.","Lisa no es un manual de respuestas. Sirve para reconocer qué hay que tener en cuenta al formar un punto de vista propio."],
+ ojo:"Si el grupo busca «la respuesta correcta», devuelve la pregunta: el manual insiste en que cada cual decide cómo vivir, pero con razones.",
+ planes:[
+  {t:"¿Cómo debemos vivir?",pag:"1-5",qs:["¿Qué es lo que más te importa ahora? ¿Crees que te importará lo mismo dentro de diez años?","¿Hay algo que te importe más que ser feliz?","¿Se puede ser completamente feliz si a tu alrededor otros sufren?","¿Podrías ser feliz haciendo cosas que hacen daño a quien no lo merece?","¿Qué prefieres: dar placer a los demás o aliviar su dolor?","¿Vivirías de una forma que los demás aprueban pero a ti te parece mal? ¿Y al revés?"]},
+  {t:"¿Cuándo debemos llamar a algo «bueno»?",pag:"1-5",qs:["Si algo te gusta, ¿es bueno por eso? ¿Y si le gusta a casi todo el mundo?","¿Puede gustarte algo sabiendo que es malo?","¿Puede algo ser valioso aunque nadie lo valore?","¿Qué preferirías: algo sin valor que todos desean o algo valioso que nadie quiere?","¿Llamamos «bueno» a lo deseado o a lo deseable? ¿Cuál es la diferencia?"]}
+ ],
+ acts:[
+  {t:"Comunidad de investigación",pag:"1-4",fmt:"SÍ / NO / ?",min:10,como:"13 actitudes. El grupo decide cuáles son propias de una comunidad de investigación. Sirve para pactar las normas el primer día.",obs:"49 FPN - Lisa - Comunidad de investigación",
+   ejs:[{t:"Criticar a quien habla en vez de lo que dice.",k:"NO: es atacar a la persona (enlaza con la idea 16)."},{t:"Abandonar tu opinión porque todos los demás piensan otra cosa.",k:"Discutible: se cambia por razones, no por mayoría."}],nota:"La clave comentada de los 13 ítems está en tu nota de Obsidian."}
+ ],
+ con:["e1-3","e1-11","e1-12","e2-3"]},
+
+{id:"e1-2",ep:1,n:2,b:"A",t:"Lo apropiado: partes y todos",pag:"1-6",
+ nov:"Lisa se mira al espejo y piensa que sus facciones «no van bien» juntas: duda de que las partes formen un todo armonioso.",
+ clave:["En la primera página hay tres problemas parte-todo: estético (la cara), lógico (las falacias) y ético.","Una buena acción se parece a una cara armoniosa: es lo que encaja en esa situación concreta.","Razonar sobre partes y todos genera falacias: atribuir al todo lo que tienen las partes (composición) o a las partes lo que tiene el todo (división)."],
+ ojo:"Funciona bien como calentamiento lógico de 10 minutos y lleva a lo ético con preguntas como «¿un acto malo te hace mala persona?».",
+ planes:[
+  {t:"Partes y todos",pag:"1-9 / 1-10",qs:["Si haces un favor una vez, ¿eres una persona generosa?","Si estás contento un rato, ¿eres una persona feliz?","Si en un concierto te pones de pie ves mejor. ¿Y si se levanta todo el mundo?","Si cada jugador de un equipo es buenísimo, ¿el equipo lo es?","Si una parte de la manzana está podrida, ¿es una manzana podrida? ¿Y si una parte de tu vida va mal?","Si cada miembro de una empresa es honrado, ¿puede la empresa hacer daño?"]}
+ ],
+ acts:[
+  {t:"Errores parte-todo y todo-parte",pag:"1-7",fmt:"Correcto / Incorrecto / Discutible + tipo de error",min:10,como:"Primero los ejemplos modelo de cada error y después 8 razonamientos para clasificar. Que digan qué tipo de error es.",
+   ejs:[{t:"Cada pieza del puzle es pequeña, así que el puzle es pequeño.",k:"Incorrecto, error parte-todo (composición)."},{t:"El instituto es muy antiguo, así que sus ordenadores serán antiguos.",k:"Incorrecto, error todo-parte (división)."},{t:"Si la cara de Mike tiene facciones bonitas, su rostro será bonito.",k:"Discutible: es justo la duda de Lisa ante el espejo."}]}
+ ],
+ con:["e1-9","e1-15"]},
+
+{id:"e1-3",ep:1,n:3,b:"A",t:"Bien y mal",pag:"1-11",
+ nov:"Las palabras «bien», «mal», «bueno» y «malo» aparecen sin parar en el capítulo y cada vez quieren decir algo distinto.",
+ clave:["Son palabras muy cargadas y muy familiares, sobre todo referidas al comportamiento.","El objetivo es separar sus distintos sentidos (moral, técnico, salud, cortesía, acierto) y no hacer un ejercicio de diccionario.","El lenguaje cotidiano es la puerta de entrada a los problemas filosóficos."],
+ ojo:"Si alguien dice «está mal» en el debate, pregunta en qué sentido: ¿prohibido, perjudicial, feo, injusto?",
+ planes:[
+  {t:"La palabra «mal»",pag:"1-11",qs:["¿Puede algo ser desagradable y, aun así, no estar mal?","¿Puede algo ser agradable de hacer y estar mal?","¿Hay cosas permitidas que están mal? Pon un ejemplo.","¿Hay cosas prohibidas que no están mal?"]}
+ ],
+ acts:[
+  {t:"¿Qué significa «bien» y «mal»?",pag:"1-12",fmt:"Sustituir la palabra por otra",min:8,como:"17 frases cotidianas con «bien» o «mal». En cada una, decir qué significa y cambiarla por otra expresión.",
+   ejs:[{t:"Este móvil va mal.",k:"Funcionamiento: falla o no funciona."},{t:"Está mal mentir a un amigo.",k:"Sentido moral: es incorrecto o injusto."},{t:"Has hecho bien en avisar.",k:"Acierto: era lo adecuado."},{t:"Hoy no me encuentro bien.",k:"Salud."}]}
+ ],
+ con:["e1-1","e1-13"]},
+
+{id:"e1-4",ep:1,n:4,b:"B",t:"«Yo también soy un perro»",pag:"1-12",
+ obs:"49 FPN -  Lisa Capítulo I, Episodio 1, Idea principal Nº 4. La pregunta de la empatía y la conducta",
+ nov:"Lisa ve a un hombre maltratar a un perro e intenta pararlo gritando «¡Yo también soy un perro!».",
+ clave:["Lisa se identifica con la víctima. Como destreza, eso es adoptar la perspectiva del otro; si se subraya lo afectivo, es empatía.","Ponerse en el lugar del otro da objetividad, igual que los astrónomos observan un planeta desde varios puntos de la Tierra.","La imaginación moral suele funcionar por analogía: recurro a algo que yo viví para entender lo que siente otro."],
+ ojo:"Distingue ponerse en el lugar del otro de proyectar lo propio («como a mí me gusta, a él también»). El ejercicio de los casos de Margarita trabaja justo eso.",
+ planes:[
+  {t:"Sobre niños y animales",pag:"1-15",qs:["¿Te has sentido alguna vez más comprendido por un animal que por una persona?","¿Podemos llegar a saber qué es ser un perro?","¿Pueden los animales entender lo que es ser humano?","Cuando un animal es agresivo, ¿es su naturaleza o lo hemos hecho así nosotros?"]},
+  {t:"Razonamiento analógico en ética",pag:"1-16",qs:["Si recuerdo lo que sentí al pillarme los dedos con la puerta, ¿sé lo que siente otro que se ha hecho daño?","¿Puedes imaginar lo que vive alguien si nunca te ha pasado nada parecido?","Cuando decimos que un perro «está triste», ¿lo sabemos o lo proyectamos?","¿La imaginación moral es una forma de razonar o solo de sentir?"]}
+ ],
+ acts:[
+  {t:"Ponerse en el lugar de otro",pag:"1-13",fmt:"SÍ / NO / ?",min:8,como:"Seis personas dicen haberse puesto en el lugar de Margarita (o de Lisa). ¿Lo han hecho de verdad? Que den razones.",
+   ejs:[{t:"«Vestimos parecido, así que siente lo mismo que yo sobre la ropa.»",k:"NO: es una proyección basada en un parecido superficial."},{t:"«Vi cómo se reían de su ropa y me sentó fatal, porque podían haberse reído de cualquiera.»",k:"SÍ: hay identificación real con la situación de la otra persona."}]},
+  {t:"Empatía",pag:"1-14",fmt:"¿Cómo crees que se siente?",min:8,como:"Diez situaciones escolares. Primero te pasa a ti y después a otra persona. Bueno para hacerlo por parejas.",ejs:[]}
+ ],
+ con:["e1-7","e1-16","e1-6"]},
+
+{id:"e1-5",ep:1,n:5,b:"B",t:"¿Qué es un derecho?",pag:"1-16",
+ obs:"49 FPN -  Lisa Capítulo I, Episodio 1, Idea principal Nº 5. ¿Qué es un derecho?",
+ nov:"Randy dice que cazar es un derecho porque «está en la Constitución». Mark le corrige: la Constitución habla de llevar armas para defenderse, no de cazar.",
+ clave:["Un derecho es un «estar autorizado» que se apoya en principios fundamentales, no en leyes de ocasión.","Hay que esperar grandes diferencias de opinión, porque los expertos también las tienen.","Las fuentes que pueden aparecer son Dios, la naturaleza, la razón y la sociedad. Algunos dirán que los derechos son inalienables, aunque no hubiera constitución."],
+ ojo:"No lo zanjes. Haz en la pizarra un mapa con «¿de dónde salen los derechos?» y cuatro columnas, y que cada intervención se sitúe en una.",
+ planes:[
+  {t:"¿Qué es un derecho? (casos de Elena)",pag:"1-17",qs:["Si falta un libro de texto y no hay forma de conseguirlo, ¿sigues teniendo derecho a él?","Si deseas muchísimo algo que tiene otro, ¿tienes derecho a quitárselo?","Si hay dos trozos y tres personas que los quieren, ¿quién tiene derecho?","¿Tiene derecho a vivir un perro que se está haciendo viejo?","¿De dónde salen los derechos?","¿Hay derechos que se tienen al nacer y otros que se adquieren con la edad?","¿Pueden los derechos de unos anular los de otros?"]},
+  {t:"Derechos y deberes",pag:"1-18",qs:["¿Te «deben» tus padres comida y casa? ¿Les debes tú algo a cambio?","¿Haces cosas solo porque crees que es tu deber, aunque no te apetezca?","¿Tienen los jóvenes derecho a la intimidad? ¿Y a elegir sus amistades?","¿Pueden los jóvenes decidir por sí mismos cuáles son sus derechos?"]},
+  {t:"¿Tienen derechos los animales y los niños?",pag:"1-19",qs:["Si tienes comida de sobra, ¿tienes derecho a dejar sin comer a tu mascota?","¿Tenemos derecho a comernos a los animales?","Si los niños tienen derechos, ¿los adultos tienen deberes?","Si tenemos deberes con los animales, ¿significa que ellos tienen derechos?"]},
+  {t:"Derechos y obligaciones",pag:"1-19",qs:["Si alguien te lleva en coche a menudo, ¿le debes algo? ¿Gratitud, dinero, cariño?","«Si no le debo nada, no le daré nada.» ¿Es un buen razonamiento?","¿Tener un hermano mayor obliga a obedecerle?"]}
+ ],
+ acts:[
+  {t:"Derechos, privilegios y obligaciones",pag:"1-19 / 1-20",fmt:"Rellenar: derecho, obligación, privilegio u otro",min:10,como:"16 frases para completar. Lo importante es que justifiquen la respuesta y vean que algunas admiten más de una.",
+   ejs:[{t:"Votar al cumplir 18 años es un/una…",k:"Derecho."},{t:"Ayudar a las víctimas de un accidente es un/una … de los médicos.",k:"Obligación (deber profesional)."},{t:"Que te inviten a una recepción oficial es un/una…",k:"Privilegio."}],nota:"Las respuestas comentadas están en tu nota de Obsidian."}
+ ],
+ con:["e1-7","e1-6","e1-8"]},
+
+{id:"e1-6",ep:1,n:6,b:"B",t:"¿Qué diferencia a los animales de los humanos?",pag:"1-21",
+ nov:"Randy sostiene que matar animales es «completamente diferente» de matar personas.",
+ clave:["Randy da a entender que la diferencia entre animales y personas es de clase y no de grado, y de ahí deduce que se les puede tratar de forma completamente distinta.","Una diferencia de grado se da dentro del mismo orden (peso, altura). Una diferencia de clase compara órdenes distintos (una fruta y un animal).","Lo difícil: ¿puede una diferencia de grado ser tan grande que se vuelva de clase? Biológicamente somos mamíferos, pero la inteligencia…"],
+ ojo:"Es la pieza lógica que sostiene el debate sobre la caza. Si sale «no es lo mismo un animal que una persona», ven aquí.",
+ planes:[
+  {t:"Preguntas para el debate",pag:"1-21",qs:["Cuando Randy dice «completamente diferente», ¿qué quiere decir exactamente?","Si la diferencia fuera solo de grado, ¿podríamos tratar a los animales de forma «completamente diferente»?","¿Qué rasgo, si hay alguno, separa del todo a los humanos de los demás animales?","Si un día supiéramos mucho más sobre la inteligencia animal, ¿cambiaría tu respuesta?"]}
+ ],
+ acts:[
+  {t:"Diferencias de grado y de clase",pag:"1-22 y 1-23",fmt:"Grado / Clase",min:8,como:"Dos listas de comparaciones. La segunda acaba en «peces y monos» y «monos y hombres», que es donde está el debate.",
+   ejs:[{t:"Un 5 y un 9 en un examen.",k:"Grado."},{t:"Un poema y un teorema.",k:"Clase."},{t:"Un chimpancé y un ser humano.",k:"Discutible: es justo lo que se discute."}]},
+  {t:"¿Qué distingue a los animales de los humanos?",pag:"1-22",fmt:"Clasificar verbos en 4 casillas",min:10,como:"Verbos como reír, apostar, preocuparse, contemplar, amar o razonar: ¿lo hacen los animales, los humanos, ambos o ninguno?",ejs:[]},
+  {t:"¿Son los humanos animales?",pag:"1-23",fmt:"Juego de rol: llamada desde Júpiter",min:8,como:"Alguien llama desde Júpiter y pregunta qué somos: ¿plantas sin raíces?, ¿aves sin plumas?, ¿animales que piensan? Muy útil para romper el hielo.",ejs:[]}
+ ],
+ con:["e1-7","e1-4","e1-5"]},
+
+{id:"e1-7",ep:1,n:7,b:"B",t:"¿Tienen derechos los animales?",pag:"1-24",
+ nov:"El padre de Lisa le pregunta si los animales tienen derecho a la vida. Ella responde que nunca ha oído tal cosa. Más tarde Bill dirá que los derechos se basan en la fuerza.",
+ clave:["El manual recoge cinco fundamentos posibles para los derechos: la Constitución, la capacidad de sentir dolor, la inteligencia, el simple hecho de estar vivo y la fuerza (la postura de Bill).","Cada fundamento tiene supuestos: el del dolor presupone que los animales sienten, cosa que no todo el mundo acepta.","Pide al grupo que busque otros fundamentos."],
+ ojo:"Es un tema que despierta emociones, y puede haber alumnos de familias cazadoras o ganaderas. Recuerda que se evalúan razones, nunca a las familias.",
+ puente:"En España, desde 2022 el Código Civil considera a los animales «seres vivos dotados de sensibilidad» (Ley 17/2021), y en 2023 se aprobó una ley de protección de los derechos y el bienestar de los animales (Ley 7/2023). Sirve para preguntar si una ley crea un derecho o lo reconoce.",
+ planes:[
+  {t:"¿Cómo deberían ser tratados los animales?",pag:"1-24",qs:["No puedes sentir el dolor de un amigo. ¿Significa eso que no lo siente?","Si tu perro no puede decir que le duele, ¿significa que no siente dolor?","¿Deberían sufrir los animales que no han hecho nada malo?","¿Qué opinas de la caza como deporte? ¿Y de las corridas de toros?","¿Deberíamos tratar peor a los animales salvajes que a los domésticos?"]},
+  {t:"Matar animales",pag:"1-25",qs:["¿Está bien matar a un animal que pone en peligro tu vida? ¿Y a uno que no?","Que los animales sean distintos de nosotros, ¿es una buena razón para matarlos?","Que se parezcan a nosotros, ¿es una buena razón para no hacerlo?","¿Es lo mismo matar animales para comer cuando no hay otra opción que hacerlo por deporte?"]},
+  {t:"Comer animales",pag:"1-26",qs:["«Están buenos.» ¿Es una buena razón para comer animales? ¿Y para comer perros?","«Hay demasiados.» ¿Es una buena razón?","Si existiera un alimento igual de rico y nutritivo que la carne, ¿la dejaríamos de comer?"]},
+  {t:"Hacer daño a los animales",pag:"1-26",qs:["Elige una de cada par y da tu razón: «No sienten dolor, así que no está mal hacerles daño» o «Sienten dolor, así que está mal».","«Como no son humanos, no está mal» o «Aunque no sean humanos, está mal».","«Como no hablan, no podemos saber si sufren» o «Aunque no hablen, podemos saberlo»."]}
+ ],
+ acts:[
+  {t:"Mapa de fundamentos (pizarra)",pag:"1-24",fmt:"Actividad propia sobre el texto del manual",min:10,como:"Escribe cinco columnas: Ley, Dolor, Inteligencia, Vida y Fuerza. Cada alumno coloca su postura con un pósit y una razón. Al final, pregunta qué animales quedan dentro y cuáles fuera según cada columna.",ejs:[]}
+ ],
+ con:["e1-14","e1-8","e1-10","e1-6"]},
+
+{id:"e1-8",ep:1,n:8,b:"C",t:"Buenas razones",pag:"1-27",
+ nov:"Durante toda la discusión sobre la caza, los personajes defienden sus posturas con razones de calidad muy desigual.",
+ clave:["Quien no da razones pasa por dogmático. Pero no vale cualquier razón.","Una buena razón suele basarse en hechos, es pertinente, ayuda a comprender y resulta creíble para quien la escucha.","Las razones son buenas o malas por comparación: una es mejor que otra."],
+ ojo:"El manual pide no dar estos criterios como reglas para memorizar. Modélalos tú al responder y el grupo los irá adoptando.",
+ planes:[
+  {t:"Preguntas para afinar razones",pag:"1-27",qs:["¿Eso es un hecho o una opinión?","¿Qué tiene que ver esa razón con lo que estamos discutiendo?","¿Esa razón nos ayuda a entender por qué lo piensas?","¿Convencería a alguien que no piensa como tú?","De las dos razones que han salido, ¿cuál es mejor? ¿Por qué?"]}
+ ],
+ acts:[
+  {t:"Apoyar los juicios en razones",pag:"1-28",fmt:"Inventar razones posibles",min:6,como:"Frases que oyes a lo largo del día («Vamos a tener tormenta», «Mi cuarto está hecho un asco»). ¿Qué razones podría tener quien las dice?",ejs:[]},
+  {t:"¿Cuándo es buena una razón?",pag:"1-29",fmt:"Buena razón / Razón / No es razón",min:10,como:"Diez personas sospechan de Gregorio, o le defienden, por motivos muy distintos. Funciona muy bien como juego de detectives.",
+   ejs:[{t:"«Sospecho de él porque el ladrón llevaba zapatos y él también.»",k:"Es una razón, pero mala: no distingue a nadie."},{t:"«Es inocente: me lo ha dicho el horóscopo.»",k:"No es una razón."},{t:"«Ha confesado.»",k:"Buena razón, aunque discutible si luego se retracta."}]}
+ ],
+ con:["e1-16","e1-7","e1-1"]},
+
+{id:"e1-9",ep:1,n:9,b:"C",t:"Generalizar: ¿y si todos lo hicieran?",pag:"1-30",
+ nov:"Harry pregunta: «Si todo el mundo dejara de comer carne, ¿no sería mejor?».",
+ clave:["Generalizar o universalizar convierte un caso particular en una cuestión de principio que afecta a todos.","Si no querrías un mundo donde todos lo hicieran, no deberías hacerlo tú.","Al generalizar se habla de las consecuencias de la regla, no de un acto suelto."],
+ ojo:"El segundo plan contrapone «lo que querría que hiciera todo el mundo» con «lo más beneficioso para todos los afectados». Ahí asoman Kant y el utilitarismo, si quieres nombrarlos.",
+ planes:[
+  {t:"¿Qué pasaría si todo el mundo lo hiciera?",pag:"1-30",qs:["Si todos a tu alrededor hicieran trampas, ¿las harías tú?","Si todos se preocuparan solo de sí mismos, ¿te preocuparías solo de ti?","Si todos odiaran a los animales, ¿los odiarías tú?","Si todos se creyeran lo que se les dice, ¿te lo creerías todo?"]},
+  {t:"Generalizar frente al caso concreto",pag:"1-31",qs:["Cuando tomas una decisión, ¿te preguntas qué pasaría si todos hicieran lo mismo?","Te llaman vago y alguien te dice «¿y si todo el mundo fuera como tú?». ¿Qué respondes?","¿Es lo mismo decidir pensando en «si todos lo hicieran» que en «a quién beneficia y a quién daña»?","En una emergencia, ¿hay tiempo para generalizar?"]}
+ ],
+ acts:[],
+ con:["e1-10","e1-2","e1-11"]},
+
+{id:"e1-10",ep:1,n:10,b:"C",t:"Anticipar las consecuencias",pag:"1-32",
+ nov:"El padre de Harry le pide pensar qué pasaría si nadie comiera carne: ¿hay tierra cultivable suficiente para tanto cereal y verdura? ¿Y la salud?",
+ clave:["No basta con tener una postura moral: hay que comparar los resultados prácticos de cada alternativa.","Hay cuatro consideraciones: bueno para otros, bueno para mí, malo para otros y malo para mí. Ninguna es absoluta y ninguna puede omitirse.","Hay que distinguir las consecuencias de un acto («si yo dejo la carne») de las de una regla («si todos la dejan»)."],
+ ojo:"El manual observa que los chicos de la novela no se plantean si la carne es necesaria en la dieta. Hoy el grupo puede sacar también el impacto ambiental.",
+ planes:[
+  {t:"Anticipar las consecuencias",pag:"1-33",qs:["Si dejas tú de comer carne, ¿qué cambia? ¿Y si lo hace todo el instituto?","¿Quién sale ganando y quién perdiendo con esa decisión?","Si les dices a tus amigos que mañana no hay clase y sí la hay, ¿qué pasará?","Si tus amigos y tú nunca discutís vuestras ideas, ¿qué es probable que ocurra?"]}
+ ],
+ acts:[
+  {t:"Tabla de las cuatro consideraciones",pag:"1-32",fmt:"Actividad propia sobre el texto del manual",min:8,como:"Dibuja en la pizarra una tabla de 2×2: bueno o malo, para mí o para otros. Rellenadla con la decisión que esté saliendo, por ejemplo hacerse vegetariano o prohibir la caza.",ejs:[]}
+ ],
+ con:["e1-9","e1-11","e1-12"]},
+
+{id:"e1-11",ep:1,n:11,b:"C",t:"Abarcarlo todo",pag:"1-33",
+ nov:"Harry se desespera porque no puede tenerlo todo en cuenta. Su padre le dice que sin todos los hechos no verá «el cuadro completo» y que depende mucho «de la clase de mundo en que queramos vivir».",
+ clave:["Abarcarlo todo es tener en cuenta toda la información pertinente.","Metodológicamente son tres cosas: las circunstancias, las posibilidades (consecuencias) y la situación ideal.","El ideal no es el mundo que quiere cada uno, sino el mundo en que todos deseemos vivir."],
+ ojo:"Para usarlo con un problema real del instituto: circunstancias, alternativas, qué abre cada una y cuál sería la solución ideal.",
+ planes:[
+  {t:"Abarcarlo todo",pag:"1-34",qs:["¿Cuál es la situación ahora mismo? ¿Qué sabemos y qué no?","¿Qué alternativas hay? ¿Qué posibilidades abre cada una?","¿Cómo sería la solución ideal?","¿Se nos escapa algo importante?"]}
+ ],
+ acts:[
+  {t:"Resolver un problema completo",pag:"1-34",fmt:"Análisis en 4 pasos",min:12,como:"El manual propone problemas como la comida en el mundo, la educación para todos o los libros de la biblioteca. Cambia alguno por uno del centro (el transporte, el recreo, el uso del móvil).",ejs:[]}
+ ],
+ con:["e1-10","e1-13","e1-12"]},
+
+{id:"e1-12",ep:1,n:12,b:"C",t:"Medios y fines",pag:"1-35",
+ nov:"El señor Stottlemeier pregunta si lo que debemos hacer depende mucho de la clase de mundo en que nos gustaría vivir.",
+ clave:["Medios y fines dependen unos de otros: unas veces el fin decide el medio y otras el medio disponible sugiere el fin.","Los medios tienen que ser proporcionados: puedes matar un mosquito con un martillo y romperte el brazo.","Hay un continuo de medios y fines: cada fin es medio para otro (autobús → ciudad → colegio → educación → …).","Ante «el fin justifica los medios», pregunta: ¿sin tener en cuenta las consecuencias, o teniéndolas?"],
+ ojo:"La cadena de «¿y eso para qué?» es una buena forma de llegar rápido a los valores de fondo.",
+ planes:[
+  {t:"Problemas entre medios y fines",pag:"1-38",qs:["¿Cuál es aquí el medio y cuál el fin?","¿Ese medio sirve de verdad para ese fin?","¿Produciría otras consecuencias que no queremos?","¿Hay otro medio que consiga lo mismo con menos daño?","¿Es deseable el fin en sí mismo?"]},
+  {t:"¿El fin justifica los medios?",pag:"1-40",qs:["¿Puede un fin ser tan importante que justifique cualquier medio?","¿Es lo mismo «el fin justifica los medios» que «el fin explica por qué uso este medio»?","«Para acabar con las peleas del patio, quitamos el recreo.» ¿Qué opinas?","«Para aprobar, copio.» ¿Qué fin hay detrás? ¿Y detrás de ese?"]}
+ ],
+ acts:[
+  {t:"Ajustar los medios a los fines",pag:"1-35",fmt:"¿Proporcionado o no?",min:6,como:"Cinco casos, como comprar otra lavadora porque se ha acumulado ropa sucia o acabar con el divorcio eliminando el matrimonio.",ejs:[]},
+  {t:"Medios y fines (diálogos)",pag:"1-36",fmt:"Medio / Fin / ?",min:8,como:"Diálogos breves en los que hay que distinguir qué es medio y qué es fin. Algunas cosas son las dos.",ejs:[]},
+  {t:"Medios y fines (ordenar)",pag:"1-37",fmt:"Tres medios para una tarea y tres fines para un objeto",min:8,como:"(A) Tres formas de hacer algo, ordenadas. (B) Tres usos posibles de un objeto, como un cubo de hielo, una gallina o el ideal de justicia.",ejs:[]}
+ ],
+ con:["e1-11","e1-10","e1-13"]},
+
+{id:"e1-13",ep:1,n:13,b:"C",t:"Tener en cuenta las circunstancias",pag:"1-41",
+ nov:"Harry pregunta a su padre si ser generoso es bueno siempre, sean cuales sean las circunstancias.",
+ clave:["Hay dos formas de juzgar: «en cualquier caso» o «considerándolo todo».","Las circunstancias a veces cuentan (correr con el coche para llevar a alguien al hospital) y a veces no deberían contar (dos candidatas con los mismos méritos).","«En igualdad de condiciones» es un recurso para aislar lo que interesa discutir."],
+ ojo:"Si el debate acaba en «todo depende», pregunta: «¿De qué depende, exactamente? ¿Y qué no debería cambiar nunca?».",
+ planes:[
+  {t:"Tener en cuenta las circunstancias al decidir",pag:"1-43",qs:["¿Ser generoso es bueno siempre? ¿Y si das a quien no lo necesita a costa de quien sí?","Te han contado un secreto. ¿Qué tienes que tener en cuenta antes de contarlo?","Encuentras una cartera en el suelo. ¿Quien la encuentra se la queda?","Un amante de los animales recibe un rifle de caza como regalo. ¿Qué debe considerar antes de responder?","¿Qué circunstancias cambian que algo esté bien o mal y cuáles no deberían cambiarlo?"]}
+ ],
+ acts:[
+  {t:"Tener en cuenta las circunstancias",pag:"1-42",fmt:"¿Qué circunstancias importan?",min:8,como:"Se parte de un golfista que calcula el viento y la distancia, y siguen siete intenciones de acción (patinar, cruzar con el semáforo en verde…). ¿Qué hay que mirar antes?",ejs:[]}
+ ],
+ con:["e1-11","e1-9","e1-3"]},
+
+{id:"e1-14",ep:1,n:14,b:"C",t:"Razonamiento condicional",pag:"1-44",
+ obs:"49 FPN -  Lisa Capítulo I, Episodio 1, Idea principal Nº 15. Dilema de la Coherencia y el Razonamiento Condicional",
+ nov:"Lisa razona: «Si de verdad me importaran los animales, no me los comería. Me los como. Luego no me importan».",
+ clave:["Es un razonamiento válido (modus tollens). La forma es correcta y las premisas parecen verdaderas, pero la conclusión choca con lo que Lisa sabe que siente.","Cuando una conclusión válida resulta inaceptable, hay que desandar el camino.","Salida 1: usar la otra forma válida. «Si me importaran, no me los comería. Me importan. Luego no debería comérmelos.»","Salida 2: revisar la premisa mayor. ¿Es verdad que querer a alguien excluye comerlo?"],
+ ojo:"Ten a mano las cuatro formas: afirmar el antecedente (válida), negar el consecuente (válida), afirmar el consecuente (falacia) y negar el antecedente (falacia).",
+ planes:[
+  {t:"Preguntas sobre el dilema de Lisa",pag:"1-44",qs:["¿Es correcto el razonamiento de Lisa? ¿Y la conclusión?","Si la conclusión no te convence, ¿qué premisa cambiarías?","¿Querer a los animales obliga a no comerlos? ¿A cuáles?","¿Puede uno querer algo y aun así usarlo?"]}
+ ],
+ acts:[
+  {t:"Razonamiento hipotético o condicional",pag:"1-44 / 1-45",fmt:"¿Qué se sigue? + contraejemplos",min:10,como:"(I) Diez pares de premisas: ¿qué conclusión se deduce válidamente? (II) Una circunstancia que haga falso un condicional. (III) ¿Razonan bien?",
+   ejs:[{t:"Si llueve, se suspende la excursión. No se suspende.",k:"No llueve (modus tollens, válido)."},{t:"Si estudias, apruebas. Has aprobado.",k:"No se sigue que hayas estudiado (afirmar el consecuente)."},{t:"Si estudias, apruebas. No has estudiado.",k:"No se sigue que suspendas (negar el antecedente)."}],nota:"Las soluciones de los ítems del manual están en tu nota de Obsidian."},
+  {t:"El juego de las condiciones",pag:"1-46 / 1-47",fmt:"Ruleta por equipos",min:15,como:"Una ruleta de cuatro círculos genera oraciones «si…, entonces…». Después hay que decir tres consecuencias. Para una sesión con más tiempo.",ejs:[]}
+ ],
+ con:["e1-15","e1-7","e1-10"]},
+
+{id:"e1-15",ep:1,n:15,b:"C",t:"Coherencia",pag:"1-48",
+ obs:"49 FPN -  Lisa Capítulo I, Episodio 1, Idea principal Nº 15. Dilema de la Coherencia y el Razonamiento Condicional",
+ nov:"Harry dice que no se debería decir una cosa y hacer otra. Lisa, sin decirlo, sospecha de sí misma por cómo trató a Bill Beck: «Si no hubiera querido hacerle daño, no me habría burlado. Me burlé. Luego quería hacerle daño».",
+ clave:["Dos enunciados son incoherentes si no pueden ser verdaderos a la vez, y contradictorios si la verdad de uno implica la falsedad del otro.","Lo nuevo aquí es la coherencia entre pensamiento y acción. Si falta, se cae en la hipocresía.","Se exige coherencia hasta para atacar la coherencia. Y además a uno mismo no le conviene ser incoherente con sus propios planes."],
+ ojo:"El plan de discusión del manual avisa de que no vale responder sí o no: cada frase es para discutirla.",
+ planes:[
+  {t:"Incoherencia",pag:"1-48",qs:["¿Es Lisa una hipócrita? ¿Es lo mismo ser incoherente que ser hipócrita?","¿Hay incoherencias que no son malas, como cambiar de opinión?","¿Se puede querer a alguien y a la vez hacerle daño?","«Me encanta leer, pero nunca encuentro libros interesantes, así que no leo.» ¿Hay incoherencia?"]}
+ ],
+ acts:[
+  {t:"Hallar las incoherencias",pag:"1-49",fmt:"¿Incoherente o no?",min:10,como:"Quince frases, algunas muy divertidas («Sé bucear, flotar y chapotear, pero no sé nadar»). Que el grupo explique dónde está el choque.",
+   ejs:[{t:"«No me preocupan las personas, pero amo a la humanidad.»",k:"Discutible: ¿se puede amar el todo sin las partes? (enlaza con la idea 2)."}],nota:"El análisis de las frases del plan de discusión está en tu nota de Obsidian."}
+ ],
+ con:["e1-14","e1-17","e1-16"]},
+
+{id:"e1-16",ep:1,n:16,b:"C",t:"Insultos y ataques a la persona",pag:"1-50",
+ nov:"En el capítulo hay un intercambio de insultos y Lisa se burla de Bill Beck.",
+ clave:["Teoría del «golpe previo»: insulta quien antes ha sido humillado, para dar antes de que le den. Es una excusa, no una justificación.","Ad hominem, o «a la persona»: atacar a quien habla en vez de lo que dice es una falacia informal.","No toda referencia a la persona es falaz. A veces es pertinente: si alguien está borracho, o si tiene un interés personal en el asunto."],
+ ojo:"Conecta con la norma número 1 de la comunidad de investigación: se critican las ideas, no a las personas.",
+ planes:[
+  {t:"Preguntas para el debate",pag:"1-50",qs:["¿Por qué crees que Lisa se burló de Bill?","¿Explicar por qué alguien insulta lo justifica?","«No le hagas caso, que viste fatal.» ¿Responde eso a lo que ha dicho?","¿Cuándo sí es relevante tener en cuenta quién habla?"]}
+ ],
+ acts:[
+  {t:"¿Cuándo es falacia el argumento ad hominem?",pag:"1-51",fmt:"Falacia / No falacia / ?",min:8,como:"Siete casos con Silvia, Federico y compañía. La gracia está en los que no son falacia.",
+   ejs:[{t:"«¿Cómo va a saber de coches con esas orejas?»",k:"Falacia: las orejas no tienen nada que ver."},{t:"«No te fíes de lo que dice del producto: le pagan por anunciarlo.»",k:"No es falacia: el interés personal es relevante."}]}
+ ],
+ con:["e1-8","e1-4","e1-1"]},
+
+{id:"e1-17",ep:1,n:17,b:"A",t:"Promesas",pag:"1-52",
+ nov:"Lisa decide ser más considerada con los demás: en la práctica se hace una promesa a sí misma.",
+ clave:["Una promesa es una obligación que uno se impone. Romperla es ser incoherente con uno mismo.","Una promesa no es una predicción. Lo predicho ocurre al margen de nuestro esfuerzo; lo prometido, gracias a él.","Ojo como adultos: a veces los alumnos toman por promesas lo que eran predicciones nuestras."],
+ ojo:"Funciona como cierre de sesión: cada alumno escribe un propósito y el grupo decide si es promesa o predicción.",
+ planes:[
+  {t:"Preguntas para el debate",pag:"1-52",qs:["¿Puede uno prometerse algo a sí mismo? ¿Quién te lo exige?","Si no cumples un propósito, ¿has roto una promesa?","¿Es lo mismo decir «lo intentaré» que «te lo prometo»?","¿Hay promesas que es mejor no cumplir?"]}
+ ],
+ acts:[
+  {t:"Promesas y predicciones",pag:"1-53",fmt:"Promesa / Predicción / Ambas / Ninguna",min:8,como:"Diez diálogos con personajes de cuentos y mitos (Barba Azul, Thor y Loki, Aladino…).",
+   ejs:[{t:"«Te prometo que mañana hará sol.»",k:"Predicción disfrazada de promesa."},{t:"«Mañana te devuelvo el cargador.»",k:"Promesa."},{t:"«Si apruebas, te invito.»",k:"Promesa condicional."}]}
+ ],
+ con:["e1-15","e1-1"]},
+
+{id:"e2-1",ep:2,n:1,b:"D",t:"¿Qué es una pregunta?",pag:"1-55",
+ nov:"Harry pregunta a su padre qué es una pregunta. El padre esquiva hasta que Harry reformula: «¿Qué pasa cuando hacemos una pregunta?».",
+ clave:["Las preguntas no son verdaderas ni falsas: piden información y son señal de duda.","Hay formulaciones problemáticas: las que tienen un presupuesto falso, las vagas, las contradictorias, las que usan palabras sin sentido, los enunciados disfrazados de pregunta y las que presuponen la respuesta.","Preguntar «qué es» pide una definición; preguntar «qué pasa cuando» pide consecuencias.","Muchas afirmaciones son respuestas a preguntas, así que es importante encontrar la pregunta."],
+ ojo:"Úsalo en la fase de agenda: revisa con el grupo si alguna pregunta de la pizarra cae en esos seis tipos problemáticos.",
+ planes:[
+  {t:"Preguntas",pag:"1-57",qs:["¿Es fácil hacer preguntas o cuesta ponerlas en palabras?","¿Tienes preguntas que crees que nadie puede contestar?","¿Te molesta que te pregunten «¿por qué?»?","¿Qué es más importante: preguntar o contestar?"]}
+ ],
+ acts:[
+  {t:"¿Qué preguntas presuponen estas respuestas?",pag:"1-56",fmt:"Inventar la pregunta",min:8,como:"A partir de palabras sueltas (preparado, grueso, cerrado, justo) y de frases, inventar preguntas que las tengan por respuesta.",ejs:[]},
+  {t:"¿Cuándo es apropiado hacer preguntas?",pag:"1-58",fmt:"Apropiada / Inapropiada / ?",min:8,como:"Diez situaciones sociales. Trabaja el tacto y el contexto de una pregunta.",ejs:[]}
+ ],
+ con:["e2-2","e2-3"]},
+
+{id:"e2-2",ep:2,n:2,b:"D",t:"Confusión, asombro y duda",pag:"1-59",
+ nov:"El padre razona por analogía: si buscas comida es que tenías hambre, así que si buscas una respuesta es que estabas confuso.",
+ clave:["Hay una confusión pequeña (no te sale una palabra del crucigrama) y otra abrumadora (estás solo en una ciudad cuyo idioma no conoces).","Casi siempre el mundo nos resulta familiar, pero cuando se vuelve extraño empezamos a preguntar.","Hay que distinguir dudar, asombrarse y estar confuso."],
+ ojo:"Funciona bien para empezar la agenda: «¿Qué te ha descolocado del capítulo?».",
+ planes:[
+  {t:"Dudas",pag:"1-60",qs:["Si la silla en la que estás sentado tiene una pata agrietada y no dudas, ¿eres sensato?","¿Qué te haría dudar de la lealtad de un amigo?","¿Cuándo tiene sentido dudar y cuándo creer?","¿Qué diferencia hay entre dudar, asombrarse y estar confuso?"]}
+ ],
+ acts:[
+  {t:"Asombrarse",pag:"1-59",fmt:"¿De acuerdo con el segundo interlocutor?",min:6,como:"Cinco diálogos breves sobre qué es asombroso (las cataratas del Niágara, los anillos de Saturno, las burbujas del agua con gas).",ejs:[]},
+  {t:"Asombro, dudas",pag:"1-60",fmt:"Sustituir la palabra",min:5,como:"Cinco frases. ¿Qué palabra puede reemplazar a dudar, estar perplejo o reflexionar?",ejs:[]}
+ ],
+ con:["e2-1","e2-3"]},
+
+{id:"e2-3",ep:2,n:3,b:"D",t:"Problemas y misterios",pag:"1-61",
+ nov:"Harry se pregunta qué hay debajo de los problemas. El padre da una respuesta ambigua: puede significar «no lo sé» o que debajo hay un misterio.",
+ clave:["Afirmaciones, preguntas y problemas forman una cadena: las afirmaciones responden a preguntas y las preguntas presuponen problemas.","Un problema se puede plantear y resolver; un misterio no, como la muerte.","Lo que hoy es misterio puede ser un problema para otra generación."],
+ ojo:"El último caso del ejercicio de técnicas es una propuesta para que la clase sea conocida por oponerse a comer carne. Sirve para cerrar el capítulo: ¿se decide votando?",
+ planes:[
+  {t:"Problemas y misterios",pag:"1-63",qs:["¿Se puede conocer un problema sin saber su respuesta?","¿Hay algún método para resolver un misterio?","Si te pierdes en una ciudad desconocida, ¿es un problema o un misterio?","Si mañana te despertaras siendo adulto, ¿sería un problema o un misterio?"]}
+ ],
+ acts:[
+  {t:"Preguntas y problemas",pag:"1-62",fmt:"Pregunta / Problema / Ambos / ?",min:6,como:"Diez frases. Algunas tienen forma de pregunta sin plantear un problema, y otras plantean un problema sin tener forma de pregunta.",ejs:[]},
+  {t:"Técnicas para resolver problemas",pag:"1-63",fmt:"Elegir la técnica",min:10,como:"Votación, comité, expertos, juzgado, parlamento o que decida cada uno: ¿cuál usarías en cada situación?",ejs:[]}
+ ],
+ con:["e1-1","e2-1","e1-11"]}
+];
+
+const TEMAS = [
+ {l:"¿Es incoherente comer carne?",ids:["e1-14","e1-15","e1-7"],kw:["incoheren","comer carne","comérmelos","comerlos","contradic"]},
+ {l:"Hacerse vegetariano",ids:["e1-14","e1-10","e1-9"],kw:["vegetarian","vegano","dejar la carne","dejar de comer"]},
+ {l:"La caza",ids:["e1-5","e1-7","e1-6"],kw:["caza","cazar","cazador"]},
+ {l:"¿Los animales sufren?",ids:["e1-7","e1-4"],kw:["sufr","dolor","sienten","sentir"]},
+ {l:"Derechos de los animales",ids:["e1-7","e1-5","e1-6"],kw:["derecho","animal"]},
+ {l:"Derechos de los niños y jóvenes",ids:["e1-5"],kw:["niño","jóvenes","menores","padres"]},
+ {l:"Animales y personas, ¿lo mismo?",ids:["e1-6","e1-7"],kw:["mismo que una persona","personas","humano","diferencia"]},
+ {l:"Ponerse en su lugar",ids:["e1-4"],kw:["empat","lugar del otro","perro","ponerse"]},
+ {l:"Burlas e insultos",ids:["e1-16","e1-15","e1-4"],kw:["burla","insult","reírse","bill"]},
+ {l:"Hipocresía: decir y no hacer",ids:["e1-15","e1-17"],kw:["hipócrit","decir y hacer","coheren"]},
+ {l:"¿Y si todos lo hicieran?",ids:["e1-9","e1-2"],kw:["todo el mundo","todos","si todos"]},
+ {l:"Consecuencias",ids:["e1-10","e1-11"],kw:["consecuencia","qué pasaría","pasaría"]},
+ {l:"«Depende de la situación»",ids:["e1-13","e1-11"],kw:["depende","situación","circunstancia"]},
+ {l:"El fin justifica los medios",ids:["e1-12"],kw:["fin justifica","medios","para qué"]},
+ {l:"Bueno = lo que me gusta",ids:["e1-1","e1-3"],kw:["bueno","gusta","malo","bien","mal"]},
+ {l:"La felicidad, vivir bien",ids:["e1-1"],kw:["feliz","felicidad","vivir"]},
+ {l:"«Es mi opinión y ya»",ids:["e1-8","e1-1"],kw:["opinión","razón","razones","porque sí"]},
+ {l:"Lisa en el espejo",ids:["e1-2"],kw:["espejo","cara","guapa","fea","belleza"]},
+ {l:"Propósitos y promesas",ids:["e1-17"],kw:["promet","promesa","propósito"]},
+ {l:"¿Para qué preguntamos?",ids:["e2-1","e2-3"],kw:["pregunta","preguntar"]},
+ {l:"Dudas y confusión",ids:["e2-2"],kw:["duda","confus","no entiendo","asombr"]},
+ {l:"¿Lo decidimos votando?",ids:["e2-3","e1-1"],kw:["votar","votación","mayoría"]}
+];
+
+const MOVES = [
+ {t:"Aclarar",qs:["¿Qué quieres decir con…?","¿Puedes decirlo con otras palabras?","¿Alguien puede explicar lo que acaba de decir tu compañero?"]},
+ {t:"Pedir razones",qs:["¿Por qué lo piensas?","¿En qué te basas?","¿Eso es un hecho o una opinión?"]},
+ {t:"Ejemplos y contraejemplos",qs:["¿Se te ocurre un caso?","¿Alguien conoce un caso en que eso no se cumpla?","¿Y si en vez de un perro fuera una vaca? ¿Y un mosquito?"]},
+ {t:"Sacar supuestos",qs:["¿Qué estás dando por hecho?","¿Qué tendría que ser verdad para que tengas razón?"]},
+ {t:"Consecuencias",qs:["Si eso fuera verdad, ¿qué más tendría que serlo?","¿Y si todo el mundo lo hiciera?","¿A quién beneficia y a quién perjudica?"]},
+ {t:"Distinguir",qs:["¿Es lo mismo X que Y?","¿Es una diferencia de grado o de clase?","¿Está prohibido, es perjudicial o es injusto?"]},
+ {t:"Coherencia",qs:["¿Encaja esto con lo que dijiste antes?","¿Encaja con lo que ha dicho tu compañero?","¿Se pueden sostener las dos cosas a la vez?"]},
+ {t:"Conectar voces",qs:["¿Alguien quiere responder a lo que ha dicho…?","¿Estás de acuerdo con…? ¿Por qué?","¿Quién no ha hablado y tiene algo que decir?"]},
+ {t:"Resumir y reconducir",qs:["Hasta ahora tenemos estas posturas… ¿Me falta alguna?","¿Qué relación tiene esto con nuestra pregunta?","¿Hemos avanzado respecto al principio?"]},
+ {t:"Metacognición (cierre)",qs:["¿Nos hemos escuchado sin interrumpirnos?","¿Hemos dado razones al defender una postura?","¿Alguien ha cambiado de opinión o ha matizado? ¿Qué le hizo cambiar?"]}
+];
+
+const SITS = [
+ {t:"Todos están de acuerdo",d:"Busca un contraejemplo o haz de abogado del diablo. Prueba con «¿Y si fuera un perro?».",go:["e1-6","e1-14"]},
+ {t:"Se atacan entre ellos",d:"Recuerda la norma número 1: se critica la idea, no a la persona. Pide que se reformule.",go:["e1-16","e1-1"]},
+ {t:"Silencio o nadie arranca",d:"Plantea una pregunta personal del plan «¿Cómo debemos vivir?» o deja un minuto para hablarlo por parejas.",go:["e1-1","e1-4"]},
+ {t:"«Es mi opinión y punto»",d:"Toda opinión vale como punto de partida, pero aquí se pide una razón. Pregunta qué la apoya.",go:["e1-8"]},
+ {t:"«Todo depende»",d:"Pregunta: «¿De qué depende, exactamente? ¿Hay algo que no dependa?».",go:["e1-13","e1-11"]},
+ {t:"Se van del tema",d:"Pregunta qué relación tiene con la pregunta elegida. Si es más interesante, anótalo en la agenda.",go:["e2-1"]},
+ {t:"Quieren votar quién tiene razón",d:"Explica que votar decide qué hacemos, no qué es verdad. Ver la idea de problemas y misterios.",go:["e2-3"]},
+ {t:"Se emocionan mucho (caza, toros)",d:"Valida la emoción, pide la razón que hay detrás y recuerda que se evalúan razones, no a familias.",go:["e1-7","e1-4"]},
+ {t:"Dicen «Lisa es una hipócrita»",d:"Pregunta si ser incoherente es lo mismo que ser hipócrita y qué salidas tiene Lisa.",go:["e1-15","e1-14"]}
+];
+
+const FASES = [
+ {k:"f1",t:"Comunidad",min:10,go:"e1-1"},
+ {k:"f2",t:"Lectura",min:8,go:null},
+ {k:"f3",t:"Agenda",min:7,go:"e2-1"},
+ {k:"f4",t:"Diálogo",min:15,go:null},
+ {k:"f5",t:"Cierre",min:5,go:"e1-17"}
+];
+
+/* =============================== ESTADO =============================== */
+const KEY="lisa-cap1-v1";
+const EXAMPLE_AGENDA=[
+ {id:"x1",txt:"¿Es incoherente decir que quieres a los animales si sigues comiendo carne?",who:"María",v:2,ch:false,ex:true},
+ {id:"x2",txt:"¿Tienen derechos los animales o solo los seres humanos?",who:"Carlos",v:1,ch:false,ex:true}
+];
+let S={cur:"e1-1",used:{},worked:{},agenda:EXAMPLE_AGENDA.slice(),phase:null,phaseStart:null,phaseDone:{},log:[],tab:"agenda",tema:null};
+try{const raw=localStorage.getItem(KEY); if(raw){S=Object.assign(S,JSON.parse(raw));}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const $=s=>document.querySelector(s);
+const byId=Object.fromEntries(IDEAS.map(i=>[i.id,i]));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const label=i=>(i.ep===1?"Ep. 1":"Ep. 2")+" · Nº "+i.n;
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+
+/* =============================== RENDER =============================== */
+function renderMapa(){
+  const out=[];
+  for(const [k,b] of Object.entries(BLOQUES)){
+    const items=IDEAS.filter(i=>i.b===k);
+    out.push(`<div class="bloque"><h3><span class="dot" style="background:${b.c}"></span>${b.nom}</h3><ul class="ilist">`+
+      items.map(i=>`<li><button data-go="${i.id}" aria-current="${S.cur===i.id}"><span class="n">${i.ep}.${i.n}</span><span>${esc(i.t)}</span>${S.worked[i.id]?'<span class="w" title="Trabajada">✓</span>':''}</button></li>`).join("")+
+      `</ul></div>`);
+  }
+  $("#mapa").innerHTML=out.join("");
+}
+function renderTemas(){
+  $("#temas").innerHTML=TEMAS.map((t,ix)=>`<button class="chip" data-tema="${ix}" aria-pressed="${S.tema===ix}">${esc(t.l)}</button>`).join("");
+  const h=$("#temaHits");
+  if(S.tema===null||!TEMAS[S.tema]){h.innerHTML="";return;}
+  h.innerHTML=TEMAS[S.tema].ids.map(id=>{const i=byId[id];return `<button class="hit" data-go="${id}"><span class="dot" style="background:${BLOQUES[i.b].c};margin-top:6px"></span><span><b>${esc(i.t)}</b><small>${label(i)} · pág. ${i.pag}</small></span></button>`}).join("");
+}
+function qId(ideaId,pi,qi){return ideaId+"|"+pi+"|"+qi}
+function renderIdea(){
+  const i=byId[S.cur]; if(!i) return;
+  const b=BLOQUES[i.b];
+  const planes=i.planes.map((p,pi)=>`<div class="plan"><div class="plan-h"><b>${esc(p.t)}</b><span class="pg">pág. ${p.pag}</span></div><ul class="qs">`+
+    p.qs.map((q,qi)=>{const id=qId(i.id,pi,qi),u=!!S.used[id];return `<li class="q ${u?"used":""}"><button class="qt" data-q="${id}" aria-pressed="${u}"><span class="box-ck">${u?"✓":""}</span><span class="txt">${esc(q)}</span></button><button class="proj" data-proj="${esc(q)}" data-src="${esc(i.t)} · ${esc(p.t)}" title="Proyectar en grande" aria-label="Proyectar">⤢</button></li>`}).join("")+
+    `</ul></div>`).join("");
+  const acts=i.acts.length?i.acts.map((a,ai)=>`<div class="act"><div class="act-h"><b>${esc(a.t)}</b><span class="pill">${esc(a.fmt)}</span><span class="pill">≈ ${a.min} min</span><span class="pg" style="margin-left:auto">pág. ${a.pag}</span></div><p>${esc(a.como)}</p>`+
+     (a.ejs.length?`<ul class="ejs">`+a.ejs.map(e=>`<li class="ej"><span class="et">${esc(e.t)}<span class="clave" hidden>${esc(e.k)}</span></span><button class="proj" data-proj="${esc(e.t)}" data-src="${esc(a.t)}" title="Proyectar" aria-label="Proyectar">⤢</button></li>`).join("")+`</ul><button class="reveal" data-reveal="${ai}">Mostrar clave</button>`:"")+
+     (a.nota?`<p style="font-size:13px;color:var(--muted)">${esc(a.nota)} ${a.obs||i.obs?`<a class="olink" href="${OBS+encodeURIComponent(a.obs||i.obs)}">Abrir nota</a>`:""}</p>`:"")+
+     `</div>`).join(""):`<p style="color:var(--muted)">El manual no trae ejercicio propio para esta idea: trabájala con los planes de discusión.</p>`;
+  const con=i.con.map(id=>{const c=byId[id];return `<button data-go="${id}"><b>${esc(c.t)}</b><br><small>${label(c)} · pág. ${c.pag}</small></button>`}).join("");
+  $("#main").innerHTML=`
+   <div class="idea-head">
+     <span class="tag" style="background:${b.c}">${b.nom}</span>
+     <span class="eyebrow">${label(i)}</span><span class="pg">Manual, pág. ${i.pag}</span>
+     <h2>${esc(i.t)}</h2>
+     <button class="toggle-worked" id="worked" aria-pressed="${!!S.worked[i.id]}">${S.worked[i.id]?"✓ Trabajada hoy":"Marcar como trabajada"}</button>
+     ${i.obs?`<a class="olink" href="${OBS+encodeURIComponent(i.obs)}">Abrir mi nota en Obsidian</a>`:""}
+   </div>
+   <div class="two">
+     <div class="box"><h3>En la novela</h3><p>${esc(i.nov)}</p></div>
+     <div class="box ojo"><h3>Para ti</h3><p>${esc(i.ojo)}</p></div>
+   </div>
+   <div class="box" style="margin-top:14px"><h3>Lo que busca el manual</h3><ul>${i.clave.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>${i.puente?`<p style="margin-top:10px"><b>Puente a hoy:</b> ${esc(i.puente)}</p>`:""}</div>
+   <div class="section-title"><h3>Preguntas para el debate</h3><span class="hint">Toca para marcarla como hecha · ⤢ para proyectarla</span></div>
+   ${planes}
+   <div class="section-title"><h3>Actividades</h3></div>
+   ${acts}
+   <div class="section-title"><h3>Si el debate deriva hacia…</h3></div>
+   <div class="conn">${con}</div>`;
+}
+function renderAgenda(){
+  const list=S.agenda.slice().sort((a,b)=>(b.ch-a.ch)||(b.v-a.v));
+  $("#agenda").innerHTML=list.length?list.map(a=>{
+    const sug=suggest(a.txt);
+    return `<li class="ag ${a.ch?"chosen":""}"><div>${esc(a.txt)}</div><div class="who">${a.who?esc(a.who):"—"}${a.ex?'<span class="ex">ejemplo</span>':""}</div>
+     <div class="ag-ctl"><button data-vote="${a.id}" data-d="-1" aria-label="Quitar voto">−</button><span class="votes">${a.v}</span><button data-vote="${a.id}" data-d="1" aria-label="Sumar voto">+</button>
+     <button data-choose="${a.id}">${a.ch?"★ Elegida":"Elegir"}</button><button data-del="${a.id}">Quitar</button></div>
+     ${sug.length?`<div class="sug"><span style="font-size:12px;color:var(--muted)">Ir a:</span>${sug.map(id=>`<button data-go="${id}">${esc(byId[id].t)}</button>`).join("")}</div>`:""}</li>`}).join(""):`<li style="color:var(--muted);font-size:14px">Aún no hay preguntas. Anótalas tal como las formulen.</li>`;
+  const w=Object.keys(S.worked).filter(k=>S.worked[k]).map(k=>byId[k]&&byId[k].t).filter(Boolean);
+  const u=Object.values(S.used).filter(Boolean).length;
+  $("#log").innerHTML=(w.length||u)?`Hoy: ${u} pregunta${u===1?"":"s"} usada${u===1?"":"s"}${w.length?" · trabajado: "+w.map(esc).join(", "):""}`:"";
+}
+function suggest(txt){
+  const n=norm(txt), score={};
+  TEMAS.forEach(t=>{ if(t.kw.some(k=>n.includes(norm(k)))) t.ids.forEach((id,ix)=>score[id]=(score[id]||0)+(3-ix)); });
+  return Object.entries(score).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+}
+function renderMoves(){
+  $("#moves").innerHTML=MOVES.map((m,ix)=>`<details class="mv" ${ix<2?"open":""}><summary>${esc(m.t)}</summary><ul>${m.qs.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></details>`).join("");
+  $("#sits").innerHTML=SITS.map(s=>`<div class="sit"><b>${esc(s.t)}</b><p>${esc(s.d)}</p><div class="go">${s.go.map(id=>`<button data-go="${id}">→ ${esc(byId[id].t)}</button>`).join("")}</div></div>`).join("");
+}
+function renderTabs(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===S.tab)));
+  ["agenda","sit","mov"].forEach(k=>$("#tab-"+k).hidden=(k!==S.tab));
+}
+function renderPhases(){
+  $("#phases").innerHTML=FASES.map(f=>`<button class="phase ${S.phaseDone[f.k]&&S.phase!==f.k?"done":""}" data-phase="${f.k}" aria-pressed="${S.phase===f.k}">${f.t} <b>${f.min}′</b></button>`).join("")+
+   (S.phase?`<button class="iconbtn" id="stopPhase" type="button">Parar</button>`:"");
+}
+function tick(){
+  const c=$("#clock");
+  if(!S.phase||!S.phaseStart){c.textContent="0:00";c.classList.remove("over");c.title="Elige una fase para cronometrar";return;}
+  const f=FASES.find(x=>x.k===S.phase), el=Math.floor((Date.now()-S.phaseStart)/1000), rem=f.min*60-el;
+  const a=Math.abs(rem); c.textContent=(rem<0?"+":"")+Math.floor(a/60)+":"+String(a%60).padStart(2,"0");
+  c.classList.toggle("over",rem<0); c.title=rem<0?"Tiempo de la fase superado":"Tiempo restante de "+f.t;
+}
+function renderSearch(term){
+  const t=norm(term.trim()); if(!t){renderIdea();return;}
+  const res=[];
+  IDEAS.forEach(i=>{
+    const hay=[i.t,i.nov,i.ojo,...i.clave].join(" ");
+    if(norm(hay).includes(t)) res.push({go:i.id,title:i.t,sub:label(i)+" · pág. "+i.pag});
+    i.planes.forEach(p=>p.qs.forEach(q=>{ if(norm(q).includes(t)) res.push({go:i.id,title:q,sub:"Pregunta · "+i.t+" · "+p.t}); }));
+    i.acts.forEach(a=>{ if(norm(a.t+" "+a.como).includes(t)) res.push({go:i.id,title:a.t,sub:"Actividad · "+i.t+" · pág. "+a.pag}); });
+  });
+  const hl=s=>{const n=norm(s),ix=n.indexOf(t); if(ix<0) return esc(s); return esc(s.slice(0,ix))+"<mark>"+esc(s.slice(ix,ix+t.length))+"</mark>"+esc(s.slice(ix+t.length));};
+  $("#main").innerHTML=`<div class="section-title" style="margin-top:0"><h3>Resultados para «${esc(term)}»</h3><span class="hint">${res.length} coincidencia${res.length===1?"":"s"} · Esc para volver</span></div>
+   <div class="results">${res.slice(0,60).map(r=>`<button class="res" data-go="${r.go}">${hl(r.title)}<small>${esc(r.sub)}</small></button>`).join("")||'<p style="color:var(--muted)">Nada con ese término. Prueba con una palabra más corta: «derech», «coheren», «caza»…</p>'}</div>`;
+}
+function renderAll(){renderMapa();renderTemas();renderIdea();renderAgenda();renderTabs();renderPhases();tick();}
+
+/* =============================== EVENTOS =============================== */
+function go(id){ if(!byId[id]) return; S.cur=id; $("#q").value=""; save(); renderMapa(); renderIdea(); $("#main").scrollIntoView({block:"start",behavior:"smooth"}); }
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a"); if(!t) return;
+  if(t.dataset.go){go(t.dataset.go);return;}
+  if(t.dataset.tema!==undefined){const ix=+t.dataset.tema; S.tema=(S.tema===ix?null:ix); save(); renderTemas(); if(S.tema!==null) go(TEMAS[ix].ids[0]); return;}
+  if(t.dataset.q){S.used[t.dataset.q]=!S.used[t.dataset.q]; save(); renderIdea(); renderAgenda(); return;}
+  if(t.dataset.proj){$("#ovText").textContent=t.dataset.proj; $("#ovSrc").textContent=t.dataset.src||""; $("#overlay").hidden=false; $("#closeOv").focus(); return;}
+  if(t.dataset.reveal!==undefined){const box=t.closest(".act"); const hid=box.querySelector(".clave").hidden; box.querySelectorAll(".clave").forEach(c=>c.hidden=!hid); t.textContent=hid?"Ocultar clave":"Mostrar clave"; return;}
+  if(t.id==="worked"){S.worked[S.cur]=!S.worked[S.cur]; save(); renderIdea(); renderMapa(); renderAgenda(); return;}
+  if(t.dataset.tab){S.tab=t.dataset.tab; save(); renderTabs(); return;}
+  if(t.dataset.vote){const a=S.agenda.find(x=>x.id===t.dataset.vote); if(a){a.v=Math.max(0,a.v+(+t.dataset.d)); save(); renderAgenda();} return;}
+  if(t.dataset.choose){S.agenda.forEach(x=>x.ch=(x.id===t.dataset.choose)?!x.ch:false); save(); renderAgenda(); const a=S.agenda.find(x=>x.id===t.dataset.choose); if(a&&a.ch){const s=suggest(a.txt); if(s[0]) go(s[0]);} return;}
+  if(t.dataset.del){S.agenda=S.agenda.filter(x=>x.id!==t.dataset.del); save(); renderAgenda(); return;}
+  if(t.dataset.phase){const k=t.dataset.phase; if(S.phase&&S.phase!==k) S.phaseDone[S.phase]=true; S.phase=k; S.phaseStart=Date.now(); const f=FASES.find(x=>x.k===k); save(); renderPhases(); tick(); if(f.go) go(f.go); if(k==="f3"){S.tab="agenda";renderTabs();} if(k==="f5"){S.tab="mov";renderTabs();} return;}
+  if(t.id==="stopPhase"){if(S.phase) S.phaseDone[S.phase]=true; S.phase=null; S.phaseStart=null; save(); renderPhases(); tick(); return;}
+  if(t.id==="closeOv"){$("#overlay").hidden=true; return;}
+  if(t.id==="resetBtn"){ $("#resetBox").innerHTML=`<span>¿Borrar la sesión?</span><button class="btn" id="resetYes" type="button">Sí, empezar de cero</button><button class="iconbtn" id="resetNo" type="button">Cancelar</button>`; return;}
+  if(t.id==="resetNo"||t.id==="resetYes"){
+    if(t.id==="resetYes"){S.used={};S.worked={};S.agenda=[];S.phase=null;S.phaseStart=null;S.phaseDone={};S.tema=null;save();renderAll();}
+    $("#resetBox").innerHTML=`<button class="iconbtn" id="resetBtn" type="button">Nueva sesión</button><span style="color:var(--muted)">Borra agenda, preguntas marcadas y cronómetro</span>`; return;}
+});
+$("#agForm").addEventListener("submit",e=>{
+  e.preventDefault(); const txt=$("#agTxt").value.trim(); if(!txt) return;
+  S.agenda=S.agenda.filter(a=>!a.ex);
+  S.agenda.push({id:"a"+Date.now(),txt,who:$("#agWho").value.trim(),v:0,ch:false});
+  $("#agTxt").value=""; $("#agWho").value=""; save(); renderAgenda(); $("#agTxt").focus();
+});
+$("#agTxt").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#agForm").requestSubmit();}});
+$("#q").addEventListener("input",e=>renderSearch(e.target.value));
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ if(!$("#overlay").hidden){$("#overlay").hidden=true;return;} if($("#q").value){$("#q").value="";renderIdea();} }
+  if(e.key==="/"&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$("#q").focus();}
+});
+$("#overlay").addEventListener("click",e=>{if(e.target.id==="overlay")$("#overlay").hidden=true;});
+
+renderMoves(); renderAll(); setInterval(tick,1000);
+</script>
+
+</body>
+</html>
