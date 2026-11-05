@@ -660,12 +660,76 @@ const LESSONS=[
   {t:'summary',lead:'Ya reconoces un doble vínculo por sus señales y sabes salir de él metacomunicando.',
     rule:'Hay situaciones sin respuesta correcta porque no están diseñadas para tenerla. Lo inteligente no es buscar la salida dentro de la trampa, sino decir en voz alta que la trampa existe.',
     biblio:'Gregory Bateson, Pasos hacia una ecología de la mente (1972). Paul Watzlawick, Janet Beavin y Don Jackson, Teoría de la comunicación humana (1967).'}
+]},
+{ title:'Falso dilema', sub:'Solo dos puertas… ¿seguro?', steps:[
+  {t:'intro',title:'Falso dilema',text:'Hay frases que te encierran entre dos puertas y esconden todas las demás. Hoy aprendes a encontrar la salida que no te enseñan.',cast:['papa','pili','lia','nora','vega','iker']},
+  {t:'chat',title:'Familia',members:['papa','pili','lia'],msgs:[
+    {who:'yo',text:'Estoy mirando qué estudiar. Me llama mucho el diseño gráfico.'},
+    {who:'papa',text:'O estudias Medicina o serás un fracasado. Te lo digo yo.'},
+    {who:'pili',text:'¡Un médico en la familia! Ya me veo enseñando la foto con la bata.'},
+    {who:'lia',text:'¿Y entre médico y fracasado no hay nada más? ¿Eso quién lo dice?'}],
+    note:'Atención, que aquí hay trampa.'},
+  {t:'theory',title:'¿De verdad solo hay dos?',text:'El falso dilema presenta solo dos opciones cuando en realidad hay más. Te obliga a elegir entre A y B, como si C, D o «un poco de cada» no existieran. Así te empuja hacia la opción que le interesa a quien lo plantea.',
+    foot:'La pregunta clave: ¿de verdad solo hay dos?'},
+  {t:'mcq',q:'«O estudias Medicina o serás un fracasado». ¿Cuál es el fallo?',opts:[
+    'Ninguno: son literalmente las dos únicas opciones.',
+    'Solo te da dos salidas, pero hay muchas más.',
+    'Te insulta al llamarte fracasado.'],correct:1,
+    exp:'Hay cientos de estudios y trabajos con los que nadie es un fracasado: diseño gráfico, para empezar. Lo de «fracasado» suena mal, pero el error de razonamiento está en esconder todas esas opciones.',sol:'Solo te da dos salidas, pero hay muchas más.'},
+  {t:'theory',title:'Las palabras que te acorralan',text:'El falso dilema suele esconderse tras estas fórmulas. Cuando las oigas, busca la tercera opción.',ordered:true,items:[
+    {k:'«O… o…»',v:'«O sacas un diez o no vales para esto».'},
+    {k:'«Si no…, entonces…»',v:'«Si no estás conmigo, estás contra mí».'},
+    {k:'«Solo hay dos opciones»',v:'Cuando alguien insiste tanto, suele haber más.'}]},
+  {t:'mcq',row:true,q:'«Un número entero o es par o es impar» es un falso dilema. ¿Verdadero o falso?',opts:['Verdadero','Falso'],correct:1,
+    exp:'Aquí no se esconde nada: todo número entero es par o impar, y no hay una tercera posibilidad. Un «o… o…» solo es falso dilema cuando existen otras opciones que se callan.',sol:'Falso: es un dilema real, no hay tercera opción.'},
+  {t:'chatPick',q:'¿Qué mensaje plantea un falso dilema?',title:'Fiesta de fin de trimestre',members:['nora','vega','iker'],msgs:[
+    {who:'nora',text:'Para la fiesta hay opciones: el parque, la bolera o alquilar un local.'},
+    {who:'vega',text:'El parque me encanta, pero si llueve nos fastidiamos.'},
+    {who:'iker',text:'O la hacemos en mi casa o no hay fiesta. No hay otra.'}],correct:2,
+    exp:'Nora abre el abanico y Vega pone una pega razonable a una de las opciones. Iker borra el parque, la bolera y el local para dejar solo «mi casa» o «nada».',sol:'El mensaje de Iker: «O la hacemos en mi casa o no hay fiesta».'},
+  {t:'versus',q:'Iker: «O hacemos mi plan o el de Vega, no hay más». ¿Quién rompe el falso dilema?',a:{who:'vega',text:'Bueno, el tuyo, que no quiero discutir.'},b:{who:'nora',text:'¿Y si probamos algo distinto a los dos?'},correct:'b',
+    exp:'Vega elige una de las dos puertas que le ofrecen, así que acepta la trampa. Nora pregunta por una tercera opción, que es justo lo que el falso dilema intenta esconder.',sol:'Nora: busca una tercera opción.'},
+  {t:'match',q:'Empareja cada falso dilema con la opción que esconde.',hint:'Toca un falso dilema y luego la opción escondida.',heads:['Falso dilema','Opción escondida'],left:[
+    '«O el móvil más caro o uno que se rompa enseguida».',
+    '«O te tomas el piano en serio o lo dejas».',
+    '«O estás conmigo en todo o estás contra mí».'],right:[
+    'Estar de acuerdo en unas cosas y en otras no.',
+    'Uno de precio medio y fiable.',
+    'Tocar por gusto, sin competir.'],pairs:[1,2,0],
+    exp:'Entre los dos extremos casi siempre hay término medio: un móvil normal que funciona bien, tocar el piano para disfrutar o coincidir con alguien en unas cosas sí y en otras no.',sol:'Móvil: precio medio y fiable. Piano: tocar por gusto. «Conmigo o contra mí»: de acuerdo en unas cosas y en otras no.'},
+  {t:'build',q:'Tu madre: «O te apuntas a todas las extraescolares o te quedarás atrás». Monta una respuesta que abra otra salida.',hint:'Toca las fichas para colocarlas. Sobran dos.',
+    slots:['a','b','d'],labels:['Rechaza el dilema','Otra opción','Propón'],chips:[
+    {x:'¿Lo probamos un trimestre?',r:'d'},
+    {x:'No creo que sean las únicas opciones.',r:'a'},
+    {x:'Tú nunca entiendes nada.',r:'x'},
+    {x:'Bueno, me apunto a todas.',r:'x'},
+    {x:'Puedo elegir las dos que más me gustan.',r:'b'}],
+    exp:'Primero señalas que hay más opciones, después pones una sobre la mesa y al final propones probarla. «Me apunto a todas» acepta la trampa, y «tú nunca entiendes nada» deja el argumento para atacar a la persona.',sol:'No creo que sean las únicas opciones. → Puedo elegir las dos que más me gustan. → ¿Lo probamos un trimestre?'},
+  {t:'cards',q:'¿Falso dilema o dilema real, con solo dos salidas de verdad?',labels:['Falso dilema','Dilema real'],items:[
+    {x:'«El semáforo o está en verde o no lo está».',a:1},
+    {x:'«O te gusta el fútbol o no tienes ni idea de deporte».',a:0},
+    {x:'«O comes carne o no sabes comer bien».',a:0},
+    {x:'«O has cumplido los 18 o todavía no».',a:1}],
+    exp:'Los dilemas reales parten la realidad en dos sin dejar huecos: o está en verde o no lo está, o has cumplido los 18 o no. Los falsos se saltan opciones: hay mil deportes además del fútbol y se puede comer bien sin carne.',sol:'Dilema real: el semáforo y los 18. Falso dilema: el fútbol y la carne.'},
+  {t:'theory',title:'El truco: la tercera opción',text:'Cuando alguien te ponga «o esto o lo otro», pregunta en voz alta: «¿Y una tercera opción?». A veces es un término medio, a veces algo totalmente distinto y a veces «ninguna de las dos».',
+    foot:'Basta con nombrar la tercera opción para que la trampa se deshaga.'},
+  {t:'cards',q:'Reto final: ¿te deforman lo que dijiste o te dejan solo dos salidas?',labels:['Hombre de paja','Falso dilema'],items:[
+    {x:'«¿Dices que el examen era largo? Entonces es que es imposible aprobar».',a:0},
+    {x:'«O eres de ciencias o eres de letras: no hay más».',a:1},
+    {x:'«O me dejas los apuntes o no eres mi amigo de verdad».',a:1},
+    {x:'«¿Que quieres salir menos? O sea, que ya no te importamos».',a:0},
+    {x:'«O inviertes ya en criptomonedas o serás pobre toda la vida».',a:1}],
+    exp:'El hombre de paja cambia lo que dijiste por algo más extremo: «largo» se convierte en «imposible», y «salir menos» en «no me importáis». El falso dilema no deforma nada: te encierra entre dos opciones cuando hay más. Ojo con «o me dejas los apuntes…»: no exagera nada que hayas dicho, solo te deja dos salidas.',sol:'Hombre de paja: el examen y salir menos. Falso dilema: ciencias o letras, los apuntes y las criptomonedas.'},
+  {t:'summary',lead:'Ya sabes cazar falsos dilemas: distinguirlos de los dilemas reales y abrir la puerta que intentan esconderte.',
+    rule:'Cuando te pongan «o esto o lo otro», pregunta: ¿de verdad solo hay dos? Busca la tercera (o la cuarta) opción antes de dejarte acorralar.',
+    biblio:'Anthony Weston, Las claves de la argumentación (Ariel). Irving M. Copi y Carl Cohen, Introducción a la lógica (Limusa).'}
 ]}
+
 ];
 const GROUPS=[
   {name:'Fundamentos',sub:'Qué es un argumento y cómo se juzga',col:'--c2',ids:[0,1,2,4,6]},
   {name:'Sesgos',sub:'Las trampas de tu propia cabeza',col:'--c3',ids:[3]},
-  {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5]}];
+  {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5,7]}];
 function groupOf(n){const g=GROUPS.find(g=>g.ids.includes(n));return g?g.name:''}
 
 /* ---------- Utilidades ---------- */
@@ -872,7 +936,7 @@ const R={
   },
   match(s){
     head(s);const grid=el('div','match'),lc=el('div','col'),rc=el('div','col');
-    lc.append(el('p','col-h','Argumento'));rc.append(el('p','col-h','Diagnóstico'));
+    const hd=s.heads||['Argumento','Diagnóstico'];lc.append(el('p','col-h',hd[0]));rc.append(el('p','col-h',hd[1]));
     const pair=new Array(s.left.length).fill(null);let act=null;
     const lb=s.left.map((t,i)=>{const b=btn('opt interactive',t);b.onclick=()=>{if(pair[i]!==null){pair[i]=null;act=null}else act=i;paint();update()};lc.append(b);return b});
     const rb=s.right.map((t,j)=>{const b=btn('opt interactive',t);b.onclick=()=>{if(act===null)return;for(let i=0;i<pair.length;i++)if(pair[i]===j)pair[i]=null;pair[act]=j;act=null;paint();update()};rc.append(b);return b});
