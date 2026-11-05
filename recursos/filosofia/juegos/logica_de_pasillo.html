@@ -82,6 +82,8 @@ mark{background:linear-gradient(transparent 52%, var(--mark) 52%);color:inherit;
 .chat-b{padding:14px;display:flex;flex-direction:column;gap:10px}
 .msg{display:flex;gap:10px;align-items:flex-start}
 .bubble{background:var(--surface);border:2px solid transparent;border-radius:4px 18px 18px 18px;padding:8px 14px;text-align:left;max-width:88%;min-width:0;display:flex;flex-direction:column}
+.msg.mine{justify-content:flex-end}
+.bubble.mine{background:color-mix(in srgb,var(--mark) 30%,var(--surface));border-radius:18px 4px 18px 18px;max-width:80%}
 .bubble .who{font-weight:700;font-size:13px;color:var(--who)}
 .bubble.pick{border-color:var(--line);box-shadow:0 3px 0 var(--line)}
 .bubble.pick:hover{border-color:var(--muted)}
@@ -269,7 +271,8 @@ const CH={
   nora:{n:'Nora',i:'N',c:'--c1'}, iker:{n:'Iker',i:'I',c:'--c2'}, vega:{n:'Vega',i:'V',c:'--c3'},
   samu:{n:'Samu',i:'S',c:'--c4'}, julia:{n:'Profe Julia',i:'J',c:'--c5'},
   papa:{n:'Papá',i:'P',c:'--c6'}, carmen:{n:'Abuela Carmen',i:'C',c:'--c7'}, marta:{n:'Prima Marta',i:'M',c:'--c1'},
-  rafa:{n:'Tío Rafa',i:'R',c:'--c2'}, lia:{n:'Lía',i:'L',c:'--c3'}, pili:{n:'Tía Pili',i:'P',c:'--c5'}, tomas:{n:'Abuelo Tomás',i:'T',c:'--c7'}
+  rafa:{n:'Tío Rafa',i:'R',c:'--c2'}, lia:{n:'Lía',i:'L',c:'--c3'}, pili:{n:'Tía Pili',i:'P',c:'--c5'}, tomas:{n:'Abuelo Tomás',i:'T',c:'--c7'},
+  entrenadora:{n:'Entrenadora',i:'E',c:'--c6'}
 };
 
 /* ---------- Contenido ---------- */
@@ -607,10 +610,60 @@ const LESSONS=[
   {t:'summary',lead:'Ya sabes distinguir un hombre de paja: no es burlarse, es cambiar la postura del otro por una más débil y atacar esa. El antídoto es el principio de caridad.',
     rule:'Antes de responder, repite el argumento del otro como lo diría él. Si necesitas deformarlo para tumbarlo, no lo has rebatido: has golpeado a un muñeco de paja.',
     biblio:'Douglas Walton, Informal Logic: A Pragmatic Approach (Cambridge University Press, 2008). Scott Aikin y John Casey, «Straw Men, Weak Men, and Hollow Men», Argumentation (2011).'}
+]},
+{ title:'Doble vínculo', sub:'Trampas en las que pierdes hagas lo que hagas', steps:[
+  {t:'intro',title:'Doble vínculo',text:'Hay trampas en las que pierdes hagas lo que hagas. El antropólogo Gregory Bateson las llamó dobles vínculos. Hoy aprendes a reconocerlas y a salir de ellas.',cast:['iker','nora','vega','entrenadora']},
+  {t:'chat',title:'Pandilla',members:['iker','nora','vega'],msgs:[
+    {who:'iker',text:'Mi novia dice que sea más espontáneo. Que siempre hago lo mismo.'},
+    {who:'nora',text:'Pues sorpréndela con algo, ¿no?'},
+    {who:'iker',text:'¡Ya, pero si lo hago ahora, es porque me lo ha pedido! Eso no es espontáneo.'},
+    {who:'vega',text:'Y si no haces nada, tampoco cumples. Estás atrapado, Iker.'},
+    {who:'iker',text:'¿Y cómo se sale de esto?'}],
+    note:'Haga lo que haga Iker, falla. Al final de la lección sabrás qué contestarle.'},
+  {t:'mcq',q:'«Sé más espontáneo». ¿Por qué es una trampa?',opts:[
+    'Porque obedecerla la incumple: por encargo no hay espontaneidad.',
+    'Porque suena a reproche: le está llamando aburrido sin decirlo.',
+    'Porque nadie cambia su forma de ser solo porque se lo pidan.'],correct:0,
+    exp:'Puede que también suene a reproche, pero la trampa está en la propia orden: si Iker la cumple, lo hace porque se lo han pedido, y entonces ya no es espontáneo. Obedecer es desobedecer.',sol:'Obedecerla la incumple: por encargo no hay espontaneidad.'},
+  {t:'theory',title:'¿Doble vínculo o solo un lío?',text:'Un doble vínculo son exigencias que se contradicen, de alguien que te importa y de quien no es fácil alejarse. Se reconoce por tres señales:',ordered:true,items:[
+    {k:'Se repite',v:'Es un patrón, no un choque puntual.'},
+    {k:'Hagas lo que hagas, pierdes',v:'No es que elijas mal: todas las opciones fallan.'},
+    {k:'Señalar la contradicción también se castiga',v:'Ni siquiera puedes decir en voz alta que la trampa existe.'}]},
+  {t:'mcq',row:true,q:'Un amigo te repite: «Si tengo que pedírtelo, ya no lo quiero». Y si se lo comentas, se ofende. ¿Es un doble vínculo?',opts:['Sí','No'],correct:0,
+    exp:'Tiene las tres señales: se repite, pierdes tanto si esperas a que te lo pida como si no haces nada, y hablar de ello también se castiga.',sol:'Sí: se repite, no hay opción buena y no se puede hablar de ello.'},
+  {t:'cards',q:'¿Doble vínculo o un malentendido con salida?',labels:['Doble vínculo','Malentendido normal'],items:[
+    {x:'Siempre te piden que te abras; cuando lo haces, te dicen: «No puedo creer que sientas eso». Y si lo señalas, se enfadan.',a:0},
+    {x:'Te dijeron una hora y tú entendiste otra; lo habláis y queda aclarado.',a:1},
+    {x:'Un amigo se enfada un día, se lo explicas y todo queda en paz.',a:1},
+    {x:'El jefe de tu trabajo de verano te riñe si decides sin consultar y también si le consultas. Si se lo comentas, peor.',a:0}],
+    exp:'La diferencia está en la salida. En un malentendido, hablarlo lo arregla. En un doble vínculo se repite la contradicción y, además, hablar de ella empeora las cosas.',sol:'Doble vínculo: el de «ábrete» y el del jefe. Malentendidos: la hora y el enfado puntual.'},
+  {t:'chatPick',q:'Toca el mensaje que castiga hablar de la contradicción.',title:'Equipo de baloncesto',members:['entrenadora','samu'],msgs:[
+    {who:'entrenadora',text:'Quiero que cada uno me diga las cosas a la cara. Sin miedo.'},
+    {who:'yo',text:'Pues yo creo que los entrenamientos del sábado son demasiado largos.'},
+    {who:'samu',text:'Uy. Valiente.'},
+    {who:'yo',text:'Entrenadora, desde que lo dije no he jugado ni un minuto. ¿Lo hablamos?'},
+    {who:'entrenadora',text:'Si vienes a quejarte, mejor ni vengas.'}],correct:4,
+    exp:'La entrenadora pide sinceridad y luego castiga al que es sincero. Esa es la contradicción. Cuando intentas hablar de ella, la última respuesta también lo castiga: la tercera señal del doble vínculo.',sol:'El último mensaje de la entrenadora: «Si vienes a quejarte, mejor ni vengas».'},
+  {t:'theory',title:'La salida no está dentro de la trampa',text:'Bateson y su equipo vieron que la trampa se sostiene porque no se puede hablar de ella. La salida es subir un nivel: hablar de la situación misma en vez de buscar la respuesta correcta. Se llama metacomunicar.',
+    foot:'Metacomunicar es comunicarse sobre la comunicación: no respondes a la orden, sino que dices qué está pasando con ella.'},
+  {t:'versus',q:'La novia de Iker insiste: «Sé más espontáneo con los detalles». ¿Qué consejo le saca de la trampa?',a:{who:'nora',text:'Prométele que desde mañana la sorprenderás cada día.'},b:{who:'vega',text:'Dile: «Por encargo ya no vale. ¿Qué es lo que echas de menos?».'},correct:'b',
+    exp:'El consejo de Nora sigue dentro de la trampa: una sorpresa prometida tampoco es espontánea. Vega propone hablar de la situación (nombrar la contradicción) y preguntar qué hay detrás de la petición.',sol:'Vega: nombra la contradicción y pregunta qué echa de menos.'},
+  {t:'build',q:'Monta una respuesta que salga de la trampa.',hint:'Toca las fichas para colocarlas. Sobran dos.',quote:'El jefe de tu trabajo de verano te riñe si decides sin consultar… y también si le consultas todo.',
+    slots:['a','b'],labels:['Nombra el patrón','Pregunta qué espera'],chips:[
+    {x:'Cuando decido solo hay problema, y cuando pregunto, también.',r:'a'},
+    {x:'El problema es que eres un jefe imposible.',r:'x'},
+    {x:'¿Qué prefieres que decida yo y qué vemos juntos?',r:'b'},
+    {x:'Perdona, no volveré a preguntarte nada.',r:'x'}],
+    exp:'Primero describes el patrón sin acusar, y después preguntas qué se espera de ti. «Eres un jefe imposible» ataca a la persona, y «no volveré a preguntarte nada» solo cambia de lado dentro de la misma trampa.',sol:'«Cuando decido solo hay problema, y cuando pregunto, también». → «¿Qué prefieres que decida yo y qué vemos juntos?»'},
+  {t:'theory',title:'Se gana señalando el juego',text:'Un doble vínculo no se gana jugando: se gana señalando que el juego está trucado. La próxima vez que sientas que pierdes hagas lo que hagas, para y pregunta con calma: «¿Qué se espera de mí, exactamente?».',
+    foot:'Si una situación así se repite con alguien cercano y te hace sentir mal, cuéntaselo a un adulto de confianza, a tu tutor o al departamento de orientación.'},
+  {t:'summary',lead:'Ya reconoces un doble vínculo por sus señales y sabes salir de él metacomunicando.',
+    rule:'Hay situaciones sin respuesta correcta porque no están diseñadas para tenerla. Lo inteligente no es buscar la salida dentro de la trampa, sino decir en voz alta que la trampa existe.',
+    biblio:'Gregory Bateson, Pasos hacia una ecología de la mente (1972). Paul Watzlawick, Janet Beavin y Don Jackson, Teoría de la comunicación humana (1967).'}
 ]}
 ];
 const GROUPS=[
-  {name:'Fundamentos',sub:'Qué es un argumento y cómo se juzga',col:'--c2',ids:[0,1,2,4]},
+  {name:'Fundamentos',sub:'Qué es un argumento y cómo se juzga',col:'--c2',ids:[0,1,2,4,6]},
   {name:'Sesgos',sub:'Las trampas de tu propia cabeza',col:'--c3',ids:[3]},
   {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5]}];
 function groupOf(n){const g=GROUPS.find(g=>g.ids.includes(n));return g?g.name:''}
@@ -713,6 +766,7 @@ function chatBox(s,pickable){
   h.append(st,t);box.append(h);
   const body=el('div','chat-b'),picks=[];
   s.msgs.forEach((m,idx)=>{
+    if(m.who==='yo'){const r=el('div','msg mine');r.append(el('div','bubble mine',m.text));body.append(r);return}
     const row=el('div','msg');row.append(av(m.who,'sm'));
     const can=pickable&&m.pick!==false;
     const b=can?btn('bubble pick'):el('div','bubble');whoColor(b,m.who);
