@@ -272,7 +272,7 @@ const CH={
   samu:{n:'Samu',i:'S',c:'--c4'}, julia:{n:'Profe Julia',i:'J',c:'--c5'},
   papa:{n:'Papá',i:'P',c:'--c6'}, carmen:{n:'Abuela Carmen',i:'C',c:'--c7'}, marta:{n:'Prima Marta',i:'M',c:'--c1'},
   rafa:{n:'Tío Rafa',i:'R',c:'--c2'}, lia:{n:'Lía',i:'L',c:'--c3'}, pili:{n:'Tía Pili',i:'P',c:'--c5'}, tomas:{n:'Abuelo Tomás',i:'T',c:'--c7'},
-  entrenadora:{n:'Entrenadora',i:'E',c:'--c6'}
+  entrenadora:{n:'Entrenadora',i:'E',c:'--c6'}, vecino:{n:'Vecino del 4.º',i:'V',c:'--c4'}
 };
 
 /* ---------- Contenido ---------- */
@@ -723,13 +723,70 @@ const LESSONS=[
   {t:'summary',lead:'Ya sabes cazar falsos dilemas: distinguirlos de los dilemas reales y abrir la puerta que intentan esconderte.',
     rule:'Cuando te pongan «o esto o lo otro», pregunta: ¿de verdad solo hay dos? Busca la tercera (o la cuarta) opción antes de dejarte acorralar.',
     biblio:'Anthony Weston, Las claves de la argumentación (Ariel). Irving M. Copi y Carl Cohen, Introducción a la lógica (Limusa).'}
+]},
+{ title:'Ad hominem', sub:'Atacar a la persona en vez de a la idea', steps:[
+  {t:'intro',title:'Ad hominem',text:'Cuando alguien no puede con tu idea, a veces va a por ti. Hoy aprendes a notarlo y a devolver la discusión a su sitio.',cast:['vecino','papa','pili','carmen','lia']},
+  {t:'chat',title:'Vecinos del barrio',members:['vecino','papa','pili','carmen'],msgs:[
+    {who:'vecino',text:'El pilar del puente tiene una grieta enorme. Que alguien lo revise, por favor.'},
+    {who:'papa',text:'¿Y tú qué sabrás de puentes, si vendes fruta?'},
+    {who:'pili',text:'Ay, que por ahí paso yo todos los días con el carro de la compra.'},
+    {who:'carmen',text:'Yo tampoco soy ingeniera, hijo, y la grieta la veo desde el balcón.'}],
+    note:'Aquí huele a trampa. ¿La notas?'},
+  {t:'theory',title:'El mensaje no depende del mensajero',text:'El ad hominem («contra la persona», en latín) rechaza un argumento atacando a quien lo defiende, en vez de rebatir lo que ha dicho. Cambia el tema: de la idea a la persona.',
+    foot:'Que el vecino venda fruta no hace que la grieta exista o deje de existir.'},
+  {t:'versus',q:'Dos críticas al mismo estudio sobre el sueño. ¿Cuál ataca a la persona en vez de al estudio?',a:{who:'lia',text:'Ese estudio solo midió a veinte personas durante una semana. Es muy poco.'},b:{who:'papa',text:'Ese estudio no vale nada: el que lo firma es un antipático que no saluda ni a sus vecinos.'},correct:'b',
+    exp:'Lía critica el estudio: veinte personas durante una semana es una muestra pequeña. Papá habla del carácter del autor, que no dice nada sobre si el estudio está bien hecho.',sol:'Papá: ataca al autor, no al estudio.'},
+  {t:'mcq',row:true,q:'Tu hermano usa el móvil hasta muy tarde y te dice: «Usarlo de noche te quita horas de sueño». Como él lo hace, su consejo no vale. ¿Verdadero o falso?',opts:['Verdadero','Falso'],correct:1,
+    exp:'Tu hermano será incoherente, pero eso no cambia si el consejo es verdadero. Rechazarlo porque él no lo cumple es el ad hominem del «tú también».',sol:'Falso: que él no lo cumpla no hace falso el consejo.'},
+  {t:'theory',title:'El ad hominem viene disfrazado',text:'No siempre es un insulto. Sus disfraces más comunes:',ordered:true,items:[
+    {k:'Insulto o descrédito',v:'«Ni caso: no tiene estudios».'},
+    {k:'Tú también',v:'«¿Puntualidad, tú? Si siempre llegas tarde».'},
+    {k:'Sospecha de intenciones',v:'«Claro que lo defiende, algo ganará».'},
+    {k:'Envenenar el pozo',v:'Antes de que hable: «Ya sabéis cómo miente».'}]},
+  {t:'match',q:'Empareja cada ataque con su disfraz.',hint:'Toca un ataque y luego su disfraz.',heads:['Ataque','Disfraz'],left:[
+    '«Cállate, que eres un exagerado».',
+    '«¿Tú criticando el desorden? Tu cuarto es un caos».',
+    '«Lo dice solo porque le conviene».',
+    '«Antes de que hable Samu: ya sabéis que se lo inventa todo».'],right:[
+    'Sospecha de intenciones',
+    'Tú también',
+    'Insulto',
+    'Envenenar el pozo'],pairs:[2,1,0,3],
+    exp:'Llamarle exagerado es un insulto; echarle en cara su propio desorden es el «tú también»; suponer que habla por interés es sospechar de sus intenciones; y desacreditarlo antes de que abra la boca es envenenar el pozo.',sol:'Exagerado: insulto. Desorden: tú también. Le conviene: sospecha de intenciones. Samu: envenenar el pozo.'},
+  {t:'chatPick',q:'¿Qué mensaje ataca a la persona en vez de a la propuesta?',title:'1º Bach B',members:['vega','iker','nora'],msgs:[
+    {who:'vega',text:'Propongo reciclar en clase: ahora todo el papel acaba en la misma papelera.'},
+    {who:'iker',text:'Mira quién habla, si te dejas siempre la luz encendida. Tu idea no vale.'},
+    {who:'nora',text:'A mí me parece bien. Tú eres la delegada: ¿lo pides en dirección?'}],correct:1,
+    exp:'Iker no dice nada sobre la propuesta de reciclar: le echa en cara a Vega algo que hace ella. Aunque sea verdad que se deja la luz encendida, el papel sigue acabando en la misma papelera.',sol:'El mensaje de Iker: «Mira quién habla…».'},
+  {t:'theory',title:'Cuándo sí importa quién habla',text:'Hablar de la persona no siempre es falaz. La pregunta es: ¿lo que dices de ella afecta a lo que afirma?',ordered:true,items:[
+    {k:'Un testigo que ese día estaba en otra ciudad',v:'Dudar de él es legítimo: no pudo verlo.'},
+    {k:'Un falso médico',v:'Su falta de título importa si opina como experto.'},
+    {k:'Una médica con ropa anticuada',v:'Su ropa no importa nada.'}]},
+  {t:'cards',q:'¿Ataque que no viene al caso o duda legítima sobre quien habla?',labels:['Ad hominem','Duda legítima'],items:[
+    {x:'«Se presenta como piloto para opinar de aviones, pero nunca ha volado».',a:1},
+    {x:'«Su propuesta de horarios no vale: es el más nuevo del equipo».',a:0},
+    {x:'«Dice que vio el robo de la calle desde su ventana, pero su ventana da al patio».',a:1},
+    {x:'«No le hagas caso con lo del clima: va en coche a todas partes».',a:0},
+    {x:'«¿Esa receta? La ha subido una chica de quince años».',a:0}],
+    exp:'Dudar de alguien es legítimo cuando lo que señalas afecta a lo que afirma: no pudo ver el robo, o finge ser experto. Ir en coche, ser nuevo o tener quince años no tocan lo que dicen.',sol:'Duda legítima: el falso piloto y la ventana que da al patio. Ad hominem: los horarios, el clima y la receta.'},
+  {t:'build',q:'«Este restaurante tiene malas reseñas». «Bah, si esa ni sabe cocinar». Monta una respuesta que vuelva al argumento.',hint:'Toca las fichas para colocarlas. Sobran dos.',
+    slots:['a','b','d'],labels:['Señala el desvío','Vuelve al argumento','Invita a mirarlo'],chips:[
+    {x:'Bueno, mejor no discutimos.',r:'x'},
+    {x:'Que ella sepa cocinar o no da igual.',r:'a'},
+    {x:'¿Les echamos un vistazo?',r:'d'},
+    {x:'Pues tú tampoco eres chef.',r:'x'},
+    {x:'Lo que importa es lo que dicen las reseñas.',r:'b'}],
+    exp:'Señalas que el ataque a la persona no toca el argumento y devuelves el foco a lo que importa: las reseñas. Contestar «tú tampoco eres chef» sería caer en lo mismo, y «mejor no discutimos» deja el argumento sin responder.',sol:'Que ella sepa cocinar o no da igual. → Lo que importa es lo que dicen las reseñas. → ¿Les echamos un vistazo?'},
+  {t:'summary',lead:'Ya sabes cazar el ad hominem, también cuando llega disfrazado, y distinguirlo de una duda legítima sobre un testigo o un experto.',
+    rule:'Separa el mensaje del mensajero: la verdad de una idea no depende de quién la diga. Ataca el argumento, no a la persona… salvo cuando su credibilidad es justo lo que está en juego.',
+    biblio:'Douglas Walton, Ad Hominem Arguments (University of Alabama Press, 1998). Anthony Weston, Las claves de la argumentación (Ariel).'}
 ]}
 
 ];
 const GROUPS=[
   {name:'Fundamentos',sub:'Qué es un argumento y cómo se juzga',col:'--c2',ids:[0,1,2,4,6]},
   {name:'Sesgos',sub:'Las trampas de tu propia cabeza',col:'--c3',ids:[3]},
-  {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5,7]}];
+  {name:'Falacias',sub:'Argumentos que parecen buenos y no lo son',col:'--c4',ids:[5,7,8]}];
 function groupOf(n){const g=GROUPS.find(g=>g.ids.includes(n));return g?g.name:''}
 
 /* ---------- Utilidades ---------- */
